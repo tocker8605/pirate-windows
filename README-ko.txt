@@ -1,0 +1,74 @@
+Pirate II — Godot 포팅 v7
+작성일: 2026-10-25
+
+실행
+  ZIP을 압축 해제하고 Pirate-II.exe를 실행하십시오.
+  Windows x64 / OpenGL 3.3 환경용이며 VB6나 Godot 설치는 필요 없습니다.
+  원본 코드 폴더와 별도로 실행되는 독립 배포판입니다.
+
+조작과 메뉴
+  방향키: 이동 / Z: 사격 / X: 레이저 / C: 실드
+  Space: 타이틀 시작·메뉴 선택
+  NEW GAME / BOSS RUSH / CONTINUE를 방향키와 Space로 선택합니다.
+  설정 화면에서는 좌우로 GAMESPEED / GAMELEVEL을 조절하고 무기 TYPE1~3을 선택합니다.
+  P: 일시정지 / Ctrl+R: 현재 선택된 시작 스테이지부터 재시작
+  M: 음소거 / F11: 전체화면 / Esc: 타이틀 복귀(타이틀에서는 종료)
+  포커스를 잃으면 일시정지됩니다. P로 계속하십시오.
+  원본 C+R+U 입력 이후 F6 회복 / F7 스테이지 진행 / F8 파워 기능도 유지합니다.
+
+포팅 범위
+  일반 1~4스테이지의 655개 원본 이벤트, 보스와 무장 부위를 포함합니다.
+  BOSS RUSH의 stage11~14와 원본 메뉴·설정·CONTINUE도 포함합니다.
+  보스 격파 후 240틱 폭발과 로딩을 거쳐 다음 스테이지로 진행합니다.
+  마지막 보스 격파 또는 플레이어 사망 뒤에는 원본 Space 대기 화면으로 돌아갑니다.
+  사망 시 원본 GAME OVER 이미지를 표시합니다.
+  HUD·탄환·피격·레이저·실드·로딩·오프닝 이미지는 원본 리소스를 사용합니다.
+  400x480 화면을 기본 800x960 창으로 확대합니다.
+
+v7 변경
+  일반 4스테이지의 시작 속도2·배경 모드2 예외를 복원하여 초반의 잘못된 반복을 수정했습니다.
+  첫 600틱과 가속 이벤트, 반복 경계를 회귀 검사합니다. AUDIT-v7.txt를 참고하십시오.
+
+v6 변경
+  원본의 발사·이동·스테이지 읽기 타이머, 시작 위치와 에너지 회복 주기를 대조·수정했습니다.
+  탄환·아이템 공유 슬롯, 발사 커서, 적 슬롯 재사용과 VB 호환 난수열을 복원했습니다.
+  적 좌표에 따른 발사 방향과 점 기반 피격 판정, 보스 비대칭 판정 범위를 반영했습니다.
+  구조 기체의 개방·구조 보상, 적 방향 이미지, 연기·피격·폭발과 사망 전환을 수정했습니다.
+  구름의 원본 GDI 비트 연산 합성, 타이틀의 직전 점수 표시를 복원했습니다.
+  진행·그리기·전투 판정·타이머·오디오·스테이지 이벤트를 별도 모듈로 정리했습니다.
+  상세 대조 내역과 검증 한계는 AUDIT-v6.txt를 참고하십시오.
+
+음악
+  원본 MIDI 6곡(title, bgm01~04, boss01)을 Ogg로 변환하여 포함했습니다.
+  원본처럼 곡은 한 번 재생하며, Space로 타이틀 시작·스테이지·보스 이벤트에서 전환합니다.
+  보스 폭발 중 음악은 이어지고 일반 스테이지에서 플레이어 사망 시 음악을 멈춥니다.
+  효과음은 원본 sndPlaySound처럼 새 효과음이 이전 효과음을 중단하는 단일 채널입니다.
+  MIDI 플레이어나 GM 음원 설치는 필요 없습니다.
+  GeneralUser GS 렌더링이므로 과거 Windows MIDI 신시사이저와 음색 차이는 있습니다.
+  자세한 변환 정보와 라이선스는 licenses 폴더에 있습니다.
+
+개발·재빌드
+  Godot 4.7.2 일반판으로 project.godot를 가져와 F5로 실행하십시오.
+  해당 Godot 버전의 Windows Export Templates를 설치한 뒤:
+    .\tools\build.ps1 -Godot 'C:\Tools\Godot\Godot_v4.7.2-stable_win64_console.exe'
+  전체 검증(화면 검증 포함):
+    .\tools\test.ps1 -Godot 'C:\Tools\Godot\Godot_v4.7.2-stable_win64_console.exe' -Render
+  배포 ZIP 생성(동일 이름의 기존 ZIP은 덮어쓰지 않음):
+    .\tools\package.ps1 -Version local
+  game.gd는 진행을 조율하며 renderer/combat/timing/audio/stage_events/lifecycle,
+  bullet_pool/random/enemy_rules/world_effects가 개별 규칙을 담당합니다.
+  movement/enemy_fire/boss는 원본 좌표 수식과 공격을 담당합니다.
+  테스트 결과는 work/test-logs에 저장되며 배포 소스에는 캐시·작업 폴더를 포함하지 않습니다.
+
+검증·보존
+  자동 검증 389개 및 GPU 합성·원본 이미지 표본 비교를 통과했습니다.
+  일부 진행 검증은 무적·상태 주입을 사용합니다. 사람의 전 구간 클리어 검증은 아닙니다.
+  원본 EXE와 전체 구간을 프레임별로 대조한 완전 동일성 검증은 수행하지 않았습니다.
+  원본 폴더는 읽기만 했으며 최초 해시 기록 69개 파일은 변경하지 않았습니다.
+  세부 결과와 실행 파일 해시는 VALIDATION.txt에 기록합니다.
+
+표기
+  원작: Pirate II / Tocker Ent (원본 프로젝트 표기)
+  Godot Engine: https://godotengine.org/license/
+  음원: GeneralUser GS 2.0.3 / S. Christian Collins
+  엔진 및 제3자 고지는 licenses 폴더에 있습니다.

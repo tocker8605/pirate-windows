@@ -1,0 +1,15 @@
+# Godot caches and generated files
+.godot/
+build/
+work/
+*.tmp
+
+# Development screenshots and their import metadata
+/preview*.png
+/preview*.png.import
+
+# Local editor/OS files
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

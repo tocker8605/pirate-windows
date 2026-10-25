@@ -1,0 +1,26 @@
+Music rendering provenance
+
+Source MIDI: the original game's title.mid, bgm01.mid, bgm02.mid, bgm03.mid,
+bgm04.mid and boss01.mid, preserved in assets/audio.
+
+Offline renderer: FluidSynth 2.6.1 Windows x64
+https://github.com/FluidSynth/fluidsynth/releases/tag/v2.6.1
+Soundfont: GeneralUser GS 2.0.3 by S. Christian Collins
+https://www.schristiancollins.com/generaluser.php
+https://github.com/mrbumpy409/GeneralUser-GS
+License: GENERALUSER-GS-LICENSE.txt in this directory.
+
+Render settings: 44,100 Hz stereo, gain 0.4, floating-point intermediate WAV.
+Converted to Ogg Vorbis using the renderer's bundled libsndfile library.
+Tracks with PCM peaks above 0.98 were attenuated to avoid clipping.
+Conversion reports are included below. GeneralUser GS, FluidSynth and libsndfile
+binaries are build tools and are not shipped or required by the game.
+Original MIDI instrumentation and arrangement are retained, but the sampled
+instrument timbres differ from historical Windows GM/GS playback devices.
+
+.\outputs\Pirate-II-Godot\assets\music\title.ogg: seconds=268.26, peak=0.7857, RMS=0.09526, clipping_gain=1.0000
+.\outputs\Pirate-II-Godot\assets\music\bgm01.ogg: seconds=429.57, peak=0.5730, RMS=0.08717, clipping_gain=1.0000
+.\outputs\Pirate-II-Godot\assets\music\bgm02.ogg: seconds=253.07, peak=0.5649, RMS=0.08197, clipping_gain=1.0000
+.\outputs\Pirate-II-Godot\assets\music\bgm03.ogg: seconds=307.11, peak=1.1955, RMS=0.15566, clipping_gain=0.8198
+.\outputs\Pirate-II-Godot\assets\music\bgm04.ogg: seconds=226.24, peak=0.6324, RMS=0.09044, clipping_gain=1.0000
+.\outputs\Pirate-II-Godot\assets\music\boss01.ogg: seconds=143.12, peak=0.8824, RMS=0.12296, clipping_gain=1.0000

@@ -1,0 +1,19 @@
+Pirate II v7 — Validation / 2026-10-25
+Engine: Godot 4.7.2 / Windows x64 / Compatibility OpenGL 3.3
+Automated suite: 389 checks, 0 failures
+  smoke 38; combat_reference 43; special_effects 28; campaign 115;
+  presentation_audio 63; full_audit 72; pool_reference 17;
+  random_reference 9; render_rop 4.
+New regression coverage: normal-stage-4 initialization, every one of the first 600 ticks,
+  tick601 acceleration, mode2 wrap threshold, stages1-3, Boss Rush Case14.
+Original source: frmtmrs.frm fload Case4 (map=2, mapsr=2), stage04.dat t20 kind71.
+Verified slow-entry Y3360 -> Y2160 over 600 ticks; no premature 480px loop.
+All tests passed; no script errors. Release export and both capture logs: no errors/warnings.
+Actual exported EXE screenshots, visually inspected:
+  preview-stage4-stage-start-v7.png
+  preview-stage4-stage-start-late-v7.png
+EXE SHA-256: 115D9F8E7627B004926369C6249291DBF3AC4370C9D5576A053C4DA2582A160F
+Original baseline 69 recorded files: 0 changed.
+No exhaustive original-EXE frame-by-frame comparison or full human playthrough performed.
+Previous source-audit details and remaining runtime/audio differences: AUDIT-v6.txt.
+This correction: AUDIT-v7.txt.
