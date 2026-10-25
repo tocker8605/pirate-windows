@@ -2,9 +2,17 @@ extends Node2D
 ## Rendering consumes game state; input, simulation and audio live elsewhere.
 const Weapons = preload("res://scripts/player_weapons.gd")
 const HUD = preload("res://scripts/hud.gd")
-const Effects = preload("res://scripts/special_effects.gd")
+const Particles = preload("res://scripts/combat_vfx.gd")
 const Scenery = preload("res://scripts/scenery.gd")
-const WorldEffects = preload("res://scripts/world_effects.gd")
+const Renewed = preload("res://scripts/renewed_art.gd")
+const Clock = preload("res://scripts/timing.gd")
+const Regions = preload("res://scripts/background_regions.gd")
+
+var vfx = Particles.new()
+var renewal = Renewed.new()
+var background: Sprite2D
+var old_cloud_shader = preload("res://scripts/cloud_rop.gdshader")
+var new_cloud_shader = preload("res://scripts/renewed_cloud.gdshader")
 var g: Node
 var foreground_only: bool = false
 var cloud_nodes: Array = []
@@ -13,6 +21,21 @@ var foreground: Node2D
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	if foreground_only: return
+	background = Sprite2D.new()
+	background.centered = false
+	background.texture = renewal.environments
+	background.scale = Vector2(400.0/background.texture.get_width(),480.0/background.texture.get_height())
+	var background_material := ShaderMaterial.new()
+	background_material.shader = preload("res://scripts/renewed_background.gdshader")
+	background_material.set_shader_parameter("atlas_texture",renewal.environments)
+	background_material.set_shader_parameter("earth_texture",renewal.earth)
+	background_material.set_shader_parameter("cavern_texture",renewal.cavern)
+	background_material.set_shader_parameter("earth_uv_width",400.0/(Regions.SCREEN*2)*renewal.earth.get_height()/renewal.earth.get_width())
+	background_material.set_shader_parameter("region_edges",Regions.EDGES)
+	background_material.set_shader_parameter("screen_height",Regions.SCREEN)
+	background.material = background_material
+	background.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	add_child(background)
 	for i in range(2):
 		var copy := BackBufferCopy.new()
 		copy.copy_mode = BackBufferCopy.COPY_MODE_VIEWPORT
@@ -29,16 +52,31 @@ func _ready() -> void:
 	foreground = get_script().new()
 	foreground.g = g
 	foreground.foreground_only = true
+	foreground.vfx = vfx
+	foreground.renewal = renewal
 	add_child(foreground)
 	refresh()
 
 func refresh() -> void:
 	if not foreground_only:
+		vfx.observe(g)
+		renewal.observe(g)
+		if g.state!="paused": renewal.render_fraction = clampf(g.accumulator/Clock.interval(g.title.speed),0,1) if g.automatic else 1.0
 		var in_game: bool = g.state not in ["menu","loading"]
+		background.visible = in_game and g.renewed_art
+		if background.visible:
+			background.material.set_shader_parameter("stage",g.stage)
+			background.material.set_shader_parameter("boss_rush",g.boss_rush)
+			background.material.set_shader_parameter("source_top",g.background_y)
 		for i in range(cloud_nodes.size()):
 			cloud_nodes[i].visible = in_game
 			if in_game:
-				cloud_nodes[i].texture = g.art.texture(["","cl03","cl02","cl01","cl01"][g.stage])
+				var cloud: Sprite2D = cloud_nodes[i]
+				cloud.material.shader = new_cloud_shader if g.renewed_art else old_cloud_shader
+				cloud.region_enabled = not g.renewed_art
+				cloud.texture = vfx.glow if g.renewed_art else g.art.texture(["","cl03","cl02","cl01","cl01"][g.stage])
+				cloud.scale = Vector2.ONE*(300.0/vfx.glow.get_width()) if g.renewed_art else Vector2.ONE
+				if g.renewed_art: cloud.material.set_shader_parameter("phase",g.frame)
 				cloud_nodes[i].position = g.clouds[i]
 		foreground.queue_redraw()
 	queue_redraw()
@@ -53,8 +91,10 @@ func _center(y: float, text: String, size: int = 16, color: Color = Color.WHITE)
 func _draw() -> void:
 	if not foreground_only:
 		if g.state=="menu": _draw_menu()
-		elif g.state=="loading": draw_texture(g.art.texture(g.loading_image),Vector2.ZERO)
-		else: draw_texture_rect_region(g.art.texture("stage%d"%g.stage),Rect2(0,0,400,480),Rect2(0,g.background_y,400,480))
+		elif g.state=="loading":
+			if g.loading_image=="loading2": g.title.weapon_preview.draw_loading(self,g.art,g.frame)
+			else: draw_texture(g.art.texture(g.loading_image),Vector2.ZERO)
+		elif not g.renewed_art: draw_texture_rect_region(g.art.texture("stage%d"%g.stage),Rect2(0,0,400,480),Rect2(0,g.background_y,400,480))
 		return
 	if g.state in ["menu","loading"]: return
 	for item in g.items:
@@ -64,32 +104,36 @@ func _draw() -> void:
 	for bullet in g.bullets:
 		_draw_bullet(bullet)
 	if not g.boss.is_empty():
-		draw_texture(g.art.sprite("boss%02d"%g.stage,Rect2i(0,0,150,100),Vector2i(0,100)),g.boss.pos+Vector2(-75,0))
+		if g.renewed_art: renewal.draw_boss(self,g.stage,g.boss.pos)
+		else: draw_texture(g.art.sprite("boss%02d"%g.stage,Rect2i(0,0,150,100),Vector2i(0,100)),g.boss.pos+Vector2(-75,0))
 	if g.state != "dead" and (g.invulnerable_render_ticks%2==0):
 		draw_texture(g.art.sprite("picair",Rect2i(g.player_bank*50,0,50,50),Vector2i(g.player_bank*50,50)),g.player)
-	if g.render_hp<40: _commands(WorldEffects.player_smoke(g.player,g.animation,g.scroll_speed))
-	for e in (g.enemy_visuals if not g.enemy_visuals.is_empty() else g.enemies):
+
+	for e in g.enemies:
 		var offset := Vector2.ZERO
 		if e.kind in [21,22]: offset = Vector2(-25,-45 if e.kind==22 else -25)
 		if e.kind in [41,42]: offset = Vector2(-50,-25)
 		if int(e.kind) in [111,112,121,122,131,132]: offset = Vector2(0,-50)
 		if e.kind==133: offset = Vector2(0,-15)
-		draw_texture(g.art.enemy(int(e.get("render_kind",e.kind)),e.velocity,g.animation,g.stage,e.pos.y),e.pos+offset)
+		if g.renewed_art: renewal.draw_enemy(self,e,e.pos+offset,g.frame)
+		else: draw_texture(g.art.enemy(int(e.get("render_kind",e.kind)),e.velocity,g.animation,g.stage,e.pos.y),e.pos+offset)
 		var preparation: Dictionary = Scenery.preparation(e,g.boss)
 		if not preparation.is_empty():
-			draw_texture(g.art.sprite("enemy_mid",preparation.rect,preparation.mask),preparation.pos)
-		_commands(WorldEffects.enemy_smoke(e,g.animation,g.scroll_speed))
+			vfx.draw_charge(self,preparation.pos+Vector2(25,25),g.frame)
 
-	for blast in g.explosions: _commands(WorldEffects.explosion(blast,g.scroll_speed))
+
+	for blast in g.explosions: vfx.draw_explosion(self,blast)
+	var fraction: float = g.accumulator/Clock.interval(g.title.speed) if g.automatic and g.state!="paused" else 0.0
+	vfx.draw_particles(self,clampf(fraction,0,1))
 	for shot in (g.shot_visuals if not g.shot_visuals.is_empty() else g.shots):
 		_draw_shot(shot)
-	Effects.render(self,g.art,g.player,g.laser_render_ticks,g.shield_center,g.shield_render_ticks,g.laser_contacts,g.shield_contacts)
+	vfx.draw_special(self,g)
 	for e in g.enemies:
 		if int(e.kind) in [19,201]:
 			draw_texture(g.art.sprite("enemy_sm",Rect2i(2550,0,50,50),Vector2i(2550,50)),e.pos)
 	if g.death_ticks>0:
 		draw_texture(g.art.sprite("picgov",Rect2i(0,0,200,30),Vector2i(0,30)),Vector2(100,230))
-	_commands(WorldEffects.hit_flash(g.player,g.hit_flash_render_ticks))
+
 	_draw_hud()
 	if g.banner_ticks > 0:
 		if g.banner.begins_with("WARNING"):
@@ -102,50 +146,10 @@ func _draw() -> void:
 		_center(278,"P: RESUME",14)
 		_center(307,"ESC: TITLE",12,Color(0.65,0.75,0.85))
 func _draw_bullet(b: Dictionary) -> void:
-	var p: Vector2 = b.get("render_pos",b.pos)
-	var v: Vector2 = b.get("render_velocity",b.velocity)
-	var rect := Rect2i(0,0,10,10)
-	var mask := Vector2i(0,10)
-	var offset := Vector2(-5,-5)
-	match int(b.kind):
-		2,8:
-			var tall: bool = int(b.kind)==2
-			var trail_y: int = 15 if tall else 10
-			draw_texture(g.art.sprite("eweapons",Rect2i(60,80,20,20),Vector2i(40,80)),_pixel(p-Vector2(10+v.x*2,trail_y+v.y*2)))
-			draw_texture(g.art.sprite("eweapons",Rect2i(23,83,14,14),Vector2i(3,83)),_pixel(p-Vector2(7+v.x*2,trail_y-3+v.y)))
-			rect = Rect2i(g.animation*20,20 if tall else 180,20,30 if tall else 20)
-			mask = Vector2i(g.animation*20,50 if tall else 200)
-			offset = Vector2(-10,-15 if tall else -10)
-		3:
-			if v.y<=0: return
-			rect = Rect2i(50,0,30,10)
-			mask = Vector2i(50,10)
-			offset = Vector2(-15,0)
-		4:
-			rect = Rect2i(0,220,20,20)
-			mask = Vector2i(0,240)
-			offset = Vector2(-10,-10)
-		5:
-			rect = Rect2i(g.animation*20,100,20,20)
-			mask = Vector2i(g.animation*20,120)
-			offset = Vector2(-10,-10)
-		6,7:
-			var x: int = 40 if int(b.kind)==6 else 0
-			draw_texture(g.art.sprite("eweapons",Rect2i(x+24,144,12,12),Vector2i(x+24,164)),_pixel(p-Vector2(6,6)-v))
-			rect = Rect2i(x,140,20,20)
-			mask = Vector2i(x,160)
-			offset = Vector2(-10,-10)
-	draw_texture(g.art.sprite("eweapons",rect,mask),_pixel(p+offset))
-
-
-func _pixel(pos: Vector2) -> Vector2:
-	return Vector2(Weapons.vb_integer(pos.x),Weapons.vb_integer(pos.y))
-
+	vfx.draw_bullet(self,b)
 
 func _draw_shot(shot: Dictionary) -> void:
-	var visual: Dictionary = shot.get("visual",Weapons.visual(shot,g.player))
-	draw_texture(g.art.sprite("weapon%d" % g.weapon,visual.rect,visual.mask),_pixel(shot.pos+visual.offset))
-
+	vfx.draw_shot(self,shot,g.player,g.weapon)
 
 func _draw_hud() -> void:
 	HUD.render(self,g.art,clampi(Weapons.vb_integer(g.hp),0,100),clampf(g.energy,0,100),g.weapon,g.power,g.score,int(g.boss.hp) if not g.boss.is_empty() else -1,int(g.boss.get("max_hp",1000)))
@@ -153,8 +157,3 @@ func _draw_hud() -> void:
 
 func _draw_menu() -> void:
 	g.title.render(self,g.art,g.last_score)
-
-
-func _commands(commands: Array) -> void:
-	for command in commands:
-		draw_texture(g.art.sprite(command.sheet,command.rect,command.mask),_pixel(command.pos))

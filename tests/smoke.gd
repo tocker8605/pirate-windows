@@ -63,7 +63,7 @@ func run() -> void:
 	game._bullet(game.player+Vector2(25,25),Vector2(0,0.1))
 	game._update_bullets()
 	check(game.hp == 91, "invulnerability prevents repeated damage")
-	game.items = [{"pos":game.player+Vector2(25,20),"kind":1}]
+	game.items.replace_all([{"pos":game.player+Vector2(25,20),"kind":1}])
 	game._update_items()
 	check(game.power == 2 and game.energy == 100, "power-up collection")
 	key(game,KEY_P)
@@ -85,7 +85,7 @@ func run() -> void:
 		check(game.stats.boss_spawned and not game.boss.is_empty(), "weapon %d: boss appears" % w)
 		check(game.stats.killed > 0 and game.stats.hits > 0, "weapon %d: shots destroy enemies" % w)
 		check(game.event_cursor == 133, "weapon %d: event stream completes" % w)
-		check(game.bullets.size() <= 200 and game.enemies.size() < 40, "weapon %d: entity collections remain bounded" % w)
+		check(game.bullets.valid() and game.enemies.valid(), "weapon %d: dynamic entity stores remain consistent" % w)
 	# Exercise the real hit path against the boss body and wing protection.
 	game.start_game()
 	game.events = game.events.filter(func(row): return int(row[0])==116)
@@ -126,4 +126,6 @@ func run() -> void:
 	await create_timer(0.15).timeout
 	game.queue_free()
 	await process_frame
+	# Allow the freed audio player to leave the asynchronous mixer.
+	await create_timer(0.2).timeout
 	quit(0 if failed == 0 else 1)

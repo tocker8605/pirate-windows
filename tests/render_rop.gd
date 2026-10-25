@@ -7,6 +7,8 @@ func _rop(dest: Color, source: Color, mask: Color) -> Color:
 func run() -> void:
 	var game = Game.new()
 	game.automatic = false
+	# Preserve the old renderer as an explicit source-reference fixture.
+	game.renewed_art = false
 	game.mute = true
 	root.add_child(game)
 	await process_frame
@@ -14,6 +16,8 @@ func run() -> void:
 	game.background_y = 1800
 	game.clouds = [Vector2(10,100),Vector2(30,140)]
 	game.player = Vector2(340,430)
+	# This reference scene isolates clouds after manually moving the pilot.
+	game.view.vfx.reset()
 	game.enemies.clear()
 	game.bullets.clear()
 	game.shots.clear()
@@ -84,4 +88,6 @@ func run() -> void:
 	await create_timer(0.15).timeout
 	game.queue_free()
 	await process_frame
+	# Allow the freed audio player to leave the asynchronous mixer.
+	await create_timer(0.2).timeout
 	quit(0 if failures==0 else 1)

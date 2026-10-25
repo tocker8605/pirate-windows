@@ -12,12 +12,12 @@ $import|Set-Content (Join-Path $logRoot 'import.log') -Encoding utf8
 if(($import-join"
 ") -match 'SCRIPT ERROR|ERROR:'){throw 'Project import contained errors'}
 if($LASTEXITCODE -ne 0){throw 'Project import failed'}
-$tests=@('smoke','combat_reference','special_effects','campaign','presentation_audio','full_audit','pool_reference','random_reference')
-if($Render){$tests+='render_rop'}
+$tests=@('smoke','combat_reference','special_effects','campaign','presentation_audio','full_audit','pool_reference','random_reference','combat_vfx','entity_store','entity_scale','renewal','regions_turning','stage4_regions')
+if($Render){$tests+=@('render_rop','render_renewal')}
 $total=0
 foreach($name in $tests){
  $arguments=@('--path',$projectRoot,'--script',"tests/$name.gd")
- if($name -eq 'render_rop'){$arguments+=@('--position','0,0')}else{$arguments+=@('--headless','--audio-driver',$AudioDriver)}
+ if($name -like 'render_*'){$arguments+=@('--position','0,0')}else{$arguments+=@('--headless','--audio-driver',$AudioDriver)}
  $output=& $Godot @arguments 2>&1
  $status=$LASTEXITCODE
  $lines=$output|ForEach-Object{$_.ToString()}

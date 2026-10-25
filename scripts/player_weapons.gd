@@ -2,7 +2,8 @@ class_name PiratePlayerWeapons
 extends RefCounted
 const Rng = preload("res://scripts/random.gd")
 ## Position is the original cwx/cwy anchor, NOT the visible sprite centre.
-static func volley(player: Vector2, weapon: int, power: int) -> Array:
+static func volley(player: Vector2, weapon: int, power: int, random_source: Variant = null) -> Array:
+	var random: Variant = Rng if random_source==null else random_source
 	var plan: Array = []
 	var kind: int = 4 if weapon == 3 else 1
 	if power <= 2:
@@ -15,7 +16,7 @@ static func volley(player: Vector2, weapon: int, power: int) -> Array:
 			_add(plan,player,17,3,1)
 			_add(plan,player,5,3,1)
 		else:
-			for i in range(2): _add(plan,player,7+Rng.between(0,8),0,4)
+			for i in range(2): _add(plan,player,7+random.between(0,8),0,4)
 	elif power <= 6:
 		if weapon == 1:
 			_add(plan,player,-5,5,2)
@@ -24,7 +25,7 @@ static func volley(player: Vector2, weapon: int, power: int) -> Array:
 			_add(plan,player,0,2,1)
 			_add(plan,player,20,2,1)
 		else:
-			for i in range(3): _add(plan,player,5+Rng.between(0,12),-Rng.between(0,1),4)
+			for i in range(3): _add(plan,player,5+random.between(0,12),-random.between(0,1),4)
 		if weapon < 3: _add(plan,player,10,0,1)
 	else:
 		if weapon == 1:
@@ -38,7 +39,7 @@ static func volley(player: Vector2, weapon: int, power: int) -> Array:
 			_add(plan,player,15,2,1)
 			_add(plan,player,25,5,1)
 		else:
-			for i in range(4): _add(plan,player,3+Rng.between(0,16),-Rng.between(0,2),4)
+			for i in range(4): _add(plan,player,3+random.between(0,16),-random.between(0,2),4)
 	return plan
 
 static func _add(plan: Array, player: Vector2, x: float, y: float, kind: int) -> void:

@@ -2,17 +2,17 @@ class_name PirateBoss
 extends RefCounted
 const Rng = preload("res://scripts/random.gd")
 ## Four original boss bodies, attached weapons and body attack phases.
-static func parts_alive(enemies: Array) -> bool:
+static func parts_alive(enemies: Variant) -> bool:
 	for e in enemies:
 		if e.kind>=100 and e.kind<200 and e.hp>0: return true
 	return false
 
-static func has_part(enemies: Array, kind: int) -> bool:
+static func has_part(enemies: Variant, kind: int) -> bool:
 	for e in enemies:
 		if e.kind==kind and e.hp>0: return true
 	return false
 
-static func steer(b: Dictionary, player: Vector2, enemies: Array) -> void:
+static func steer(b: Dictionary, player: Vector2, enemies: Variant) -> void:
 	var p: Vector2 = b.pos
 	var v: Vector2 = b.velocity
 	match int(b.stage):
@@ -70,7 +70,7 @@ static func attach(e: Dictionary, b: Dictionary) -> void:
 				e.pattern = 2401
 				e.velocity.y = -5
 
-static func fire(b: Dictionary, enemies: Array, phase: int, timer: int, section: int = 0) -> Array:
+static func fire(b: Dictionary, enemies: Variant, phase: int, timer: int, section: int = 0) -> Array:
 	var result: Array = []
 	var p: Vector2 = b.pos
 	var v: Vector2 = b.velocity

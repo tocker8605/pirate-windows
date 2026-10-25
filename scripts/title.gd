@@ -1,5 +1,8 @@
 class_name PirateTitle
 extends RefCounted
+const WeaponPreview = preload("res://scripts/weapon_preview.gd")
+var weapon_preview = WeaponPreview.new()
+var preview_clock: int = 0
 var loading_ticks: int = 1
 var phase: int = 0
 var slide: int = 0
@@ -15,6 +18,7 @@ func reset() -> void:
 	scroll = 0
 
 func tick() -> void:
+	preview_clock += 1
 	loading_ticks = maxi(0,loading_ticks-1)
 	if phase==1 and slide>0: slide += 1
 	if slide==95:
@@ -70,7 +74,10 @@ func render(canvas: Node2D, art: RefCounted, last_score: int) -> void:
 	elif phase>=21:
 		copy(canvas,art,Vector2(250,260),Rect2i(0,0,120,20))
 		copy(canvas,art,Vector2(250,290),Rect2i(0,20,130,20))
-		for i in range(3): copy(canvas,art,Vector2(250,335+i*40),Rect2i(0,100+i*30,130,30))
+		for i in range(3):
+			copy(canvas,art,Vector2(250,335+i*40),Rect2i(0,100+i*30,55,30))
+			weapon_preview.draw_small(canvas,Rect2(307,332+i*40,83,36),i+1,preview_clock,phase==23+i)
+		weapon_preview.draw_large(canvas,art,Rect2(16,250,210,192),clampi(phase-22,1,3),preview_clock)
 		for pair in [[speed,260],[difficulty,290]]:
 			canvas.draw_texture(art.sprite("pichud",Rect2i(pair[0]*10,156,10,20),Vector2i(pair[0]*10,176)),Vector2(370,pair[1]))
 		copy(canvas,art,Vector2(240,[260,290,340,380,420][phase-21]),Rect2i(120,0,10,20))

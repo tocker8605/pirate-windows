@@ -93,20 +93,20 @@ func run() -> void:
 	game.frame = 31
 	game._read_events()
 	check(game.event_cursor==1 and game.banner_ticks==80,"event t=1 fires at tick 31 and warning lasts 80 ticks")
-	game.enemies = [enemy(1,Vector2(100,100),10),enemy(1,Vector2(100,100),10)]
+	game.enemies.replace_all([enemy(1,Vector2(100,100),10),enemy(1,Vector2(100,100),10)])
 	game.boss = {"pos":Vector2(100,100),"hp":10.0}
 	game.shots = [{"pos":Vector2(110,121),"kind":1,"alive":true,"impact_ticks":-1}]
 	game._update_shots()
-	check(game.enemies[0].hp==7 and game.enemies[1].hp==7 and game.boss.hp==7,"one original shot can hit overlapping enemies and boss body")
+	check(game.enemies.at(0).hp==7 and game.enemies.at(1).hp==7 and game.boss.hp==7,"one original shot can hit overlapping enemies and boss body")
 	check(game.shots[0].impact_ticks==9,"overlap still produces one impact lifecycle")
 	game.start_game()
 	var carrier: Dictionary = enemy(19,Vector2(100,291),0)
-	game.enemies = [carrier]
+	game.enemies.replace_all([carrier])
 	game._destroy_enemy(carrier)
 	check(carrier.kind==201 and carrier.hp==1 and carrier.pattern==1091,"rescued carrier escapes instead of exploding")
-	check(game.score==500 and game.explosions.is_empty() and game.items[0].pos==Vector2(125,306),"carrier rescue preserves score/drop without a fake explosion")
+	check(game.score==500 and game.explosions.is_empty() and game.items.at(0).pos==Vector2(125,306),"carrier rescue preserves score/drop without a fake explosion")
 	for i in range(4): game._drop_item({"pos":Vector2(i,0),"kind":1})
-	check(game.items.size()==3,"three-slot original item ring overwrites oldest slots")
+	check(game.items.size()==5,"independent pickups retain every drop instead of a three-slot overwrite")
 	game.start_game()
 	game.events = []
 	game.hp = 0
@@ -156,4 +156,6 @@ func run() -> void:
 	await create_timer(0.15).timeout
 	game.queue_free()
 	await process_frame
+	# Allow the freed audio player to leave the asynchronous mixer.
+	await create_timer(0.2).timeout
 	quit(0 if failures==0 else 1)

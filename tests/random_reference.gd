@@ -30,26 +30,24 @@ func run() -> void:
 	await process_frame
 	g.start_game()
 	g.clock.phase = 3
-	g.bullet_cursor = 3
-	g.bullets = [{"slot":3,"kind":1,"pos":Vector2(100,100),"velocity":Vector2.DOWN,"alive":true}]
+	g.bullets.replace_all([{"slot":3,"kind":1,"pos":Vector2(100,100),"velocity":Vector2.DOWN,"alive":true}])
 	Rng.state = 0x50000
 	g._enemy_fire({"kind":9,"pos":Vector2(100,100),"velocity":Vector2.ZERO,"hp":10,"pattern":0})
-	check(Rng.state==0x50000,"occupied enemy cursor does not consume random numbers")
+	check(g.bullets.size()==2 and Rng.state==8949370,"crowded storage does not suppress an authored random missile")
 	g.bullets.clear()
 	g.items.clear()
 	g.enemies.clear()
 	g.boss = {"stage":4,"pos":Vector2(200,100),"velocity":Vector2.ZERO,"hp":1500.0,"age":0}
 	g.clock.phase = 1
-	g.bullet_cursor = 3
-	g.BulletPool.body(g)
-	check(g.bullets.size()==1 and g.bullets[0].pos==Vector2(196,135) and g.bullets[0].velocity==Vector2(0,-5),"final missile consumes random muzzle X before horizontal velocity")
-	check(Rng.state==8949370,"one final missile consumes exactly two random values")
-	g.bullets = [{"slot":5,"kind":1,"pos":Vector2(100,100),"velocity":Vector2.DOWN,"alive":true}]
-	g.clock.phase = 2
-	g.bullet_cursor = 3
 	Rng.state = 0x50000
 	g.BulletPool.body(g)
-	check(g.bullet_cursor==5 and Rng.state==8949370,"blocked final-boss missile section does not consume additional RNG")
+	check(g.bullets.size()==1 and g.bullets.at(0).pos==Vector2(196,135) and g.bullets.at(0).velocity==Vector2(0,-5),"final missile consumes random muzzle X before horizontal velocity")
+	check(Rng.state==8949370,"one final missile consumes exactly two random values")
+	g.bullets.replace_all([{"slot":5,"kind":1,"pos":Vector2(100,100),"velocity":Vector2.DOWN,"alive":true}])
+	g.clock.phase = 2
+	Rng.state = 0x50000
+	g.BulletPool.body(g)
+	check(g.bullets.size()==4 and Rng.state==4858052,"complete boss volley consumes all four authored random values without slot gating")
 	var before: int = Rng.state
 	g._load_stage(2)
 	check(Rng.state==before,"stage loading does not reseed or consume original Rnd state")
@@ -62,4 +60,6 @@ func run() -> void:
 	await create_timer(0.15).timeout
 	g.queue_free()
 	await process_frame
+	# Audio playback release is asynchronous; let the freed player leave the mixer.
+	await create_timer(0.2).timeout
 	quit(0 if failures==0 else 1)

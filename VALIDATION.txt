@@ -1,19 +1,49 @@
-Pirate II v7 — Validation / 2026-10-25
-Engine: Godot 4.7.2 / Windows x64 / Compatibility OpenGL 3.3
-Automated suite: 389 checks, 0 failures
-  smoke 38; combat_reference 43; special_effects 28; campaign 115;
-  presentation_audio 63; full_audit 72; pool_reference 17;
-  random_reference 9; render_rop 4.
-New regression coverage: normal-stage-4 initialization, every one of the first 600 ticks,
-  tick601 acceleration, mode2 wrap threshold, stages1-3, Boss Rush Case14.
-Original source: frmtmrs.frm fload Case4 (map=2, mapsr=2), stage04.dat t20 kind71.
-Verified slow-entry Y3360 -> Y2160 over 600 ticks; no premature 480px loop.
-All tests passed; no script errors. Release export and both capture logs: no errors/warnings.
-Actual exported EXE screenshots, visually inspected:
-  preview-stage4-stage-start-v7.png
-  preview-stage4-stage-start-late-v7.png
-EXE SHA-256: 115D9F8E7627B004926369C6249291DBF3AC4370C9D5576A053C4DA2582A160F
-Original baseline 69 recorded files: 0 changed.
-No exhaustive original-EXE frame-by-frame comparison or full human playthrough performed.
-Previous source-audit details and remaining runtime/audio differences: AUDIT-v6.txt.
-This correction: AUDIT-v7.txt.
+Pirate II v12 — Validation / 2026-10-25
+Godot4.7.2 / Windows x64 / Compatibility OpenGL3.3 / NVIDIA RTX4080
+
+526 checks passed,0 failed
+  smoke38; combat_reference43; special_effects28; campaign115;
+  presentation_audio63; full_audit72; pool_reference14; random_reference9;
+  combat_vfx14; entity_store15; entity_scale6; renewal41;
+  regions_turning35; stage4_regions21; render_rop4; render_renewal8.
+All current import/test logs contain no script/shader errors or resource-in-use errors.
+
+Stage4-specific checks
+  Four visual environments, original source bands and Earth panorama's unwrapped phase.
+  Initial map2/speed2 retained;960px of departure crossed exactly once with no source reset.
+  Complete viewport becomes space after the Earth exits; no Earth imagery reappears in map2.
+  Space repeats until original t91 releases it and sets target speed2.
+  Moon surface is traversed once; map3 finally loops entirely inside the lunar cavern.
+  t91 changes mode/speed target without teleporting the source coordinate.
+
+GPU verification
+  Original shared480px source reset: sampled RGB difference0.00000.
+  Earth departure between sourceY3360/2880: RGB difference0.72157, proving non-repeating panorama.
+  Space480px repeat: sampled max RGB difference0.00000.
+  Cavern480px repeat: sampled max RGB difference0.00392 (one8-bit level).
+  Thirteen environments distinct: stages1-3 have3 each, stage4 has4.
+  Shared texture seam converges0.04314 over0.2px to0.00392 over0.02px.
+  Legacy GDI, score and GAME OVER references remain covered.
+
+Actual final Windows executable
+  Export completed without errors/warnings.
+  Eight final EXE captures completed without runtime errors/warnings:
+    region1, earth-horizon, region2, region3, lunar-entry, region4,
+    stage-start-late (600tick intro), boss; all in stage4.
+  Earth/horizon/surface/entrance/cavern and final underground boss scenes visually inspected.
+  EXE SHA-256: B808BDB356FB76CD0ECDEFCD325BDA69C6A20197BAA9E42FABA595F6AD3FF15A
+
+Review images
+  preview-stage4-original-renewed-v12.png: top2 rows original, bottom2 rows renewed.
+  Within each half, left-to-right then next row: sourceY3360,2880,2400,1920 /1440,960,480,0.
+  preview-regions-v12.png: all stage region cards, stage4 includes the fourth underground card.
+
+Preservation/provenance/limits (snapshot at release packaging; before subsequent GitHub publication)
+  Original baseline69 files:0 changed. Old source art and all previous release ZIPs retained.
+  No commit or push performed; HEAD remains 190aee3589f0c4a6e90cf60318e1227f67cf696a.
+  Built-in image_gen Earth/cavern PNGs saved unchanged under assets/renewed.
+  Exact prompts/paths: assets/renewed/STAGE4-GENERATION-v12.txt.
+  Common stages1-3, v9 dynamic entity stores, v10 timing and v11 enemy attitude handling retained.
+  Boss Rush14 preserves its original map1 initialization separately from normal stage4.
+  No full human playthrough or exhaustive original-EXE frame equivalence was performed.
+  Details: AUDIT-v12.txt, which corrects the stage4 interpretation in the v11 report.

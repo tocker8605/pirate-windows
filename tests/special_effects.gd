@@ -43,9 +43,9 @@ func run() -> void:
 	game._update_bullets()
 	check(game.bullets.is_empty() and game.shield==remaining-4 and game.shield_contacts.size()==1,"interception spawns original hit sprite and reduces lifetime")
 	game.start_game()
-	game.enemies = [{"kind":1,"pos":Vector2(170,120),"velocity":Vector2.ZERO,"pattern":1011,"hp":100.0}]
+	game.enemies.replace_all([{"kind":1,"pos":Vector2(170,120),"velocity":Vector2.ZERO,"pattern":1011,"hp":100.0}])
 	game._tick(Vector2.ZERO,false,true,false)
-	check(game.laser_contacts==[Vector2(180,145)] and game.enemies[0].hp==96,"beam contact keeps original hit artwork anchor")
+	check(game.laser_contacts==[Vector2(180,145)] and game.enemies.at(0).hp==96,"beam contact keeps original hit artwork anchor")
 	for i in range(14): game._tick(Vector2.ZERO,false,false,false)
 	check(game.laser==0 and game.laser_render_ticks==1,"last beam sprite is visible on final active tick")
 	game._tick(Vector2.ZERO,false,false,false)
@@ -68,4 +68,6 @@ func run() -> void:
 	await create_timer(0.15).timeout
 	game.queue_free()
 	await process_frame
+	# Allow the freed audio player to leave the asynchronous mixer.
+	await create_timer(0.2).timeout
 	quit(0 if failed==0 else 1)

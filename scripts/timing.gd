@@ -26,3 +26,10 @@ func recover(alive: bool) -> bool:
 		recovery = 0
 		return true
 	return false
+
+# Default 25ms -> 30ms: 33.33 simulation ticks/sec, a 16.7% slower tuned baseline.
+# Menu animation retains the original requested interval; gameplay counters are unchanged.
+const PLAYBACK_TIME_SCALE: float = 1.2
+static func interval(speed: int, gameplay: bool = true) -> float:
+	var original: float = (30.0-5.0*clampi(speed,1,5))/1000.0
+	return original*PLAYBACK_TIME_SCALE if gameplay else original

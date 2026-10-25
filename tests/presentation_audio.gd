@@ -168,4 +168,6 @@ func run() -> void:
 	await create_timer(0.15).timeout
 	game.queue_free()
 	await process_frame
+	# Allow the freed audio player to leave the asynchronous mixer.
+	await create_timer(0.2).timeout
 	quit(0 if failures==0 else 1)

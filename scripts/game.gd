@@ -18,13 +18,13 @@ const Capture = preload("res://scripts/preview.gd")
 const Lifecycle = preload("res://scripts/lifecycle.gd")
 const StageEvents = preload("res://scripts/stage_events.gd")
 const BulletPool = preload("res://scripts/bullet_pool.gd")
+const Entities = preload("res://scripts/entity_store.gd")
 const Scenery = preload("res://scripts/scenery.gd")
-const STEP: float = 0.025
+const Regions = preload("res://scripts/background_regions.gd")
 var art = Art.new()
 var title = Title.new()
 var clock = Clock.new()
 var audio: Node
-var enemy_visuals: Array = []
 var shot_visuals: Array = []
 var invulnerable_render_ticks: int = 0
 var render_hp: float = 100
@@ -35,9 +35,6 @@ var death_ticks: int = 0
 var boss_death_ticks: int = 0
 var hit_flash_ticks: int = 0
 var shot_cursor: int = 0
-var enemy_cursor: int = 0
-var item_cursor: int = 0
-var bullet_cursor: int = 0
 var loading_image: String = "loading2"
 var loading_target: int = 1
 var loading_preserve: bool = false
@@ -78,16 +75,18 @@ var laser_render_ticks: int = 0
 var shield_render_ticks: int = 0
 var laser_contacts: Array = []
 var shield_contacts: Array = []
+var renewed_art: bool = true
+var scenery_distance: float = 0.0
 var background_y: float = 3360
 var scroll_speed: float = 20
 var scroll_target: float = 2
 var map_mode: int = 1
 var banner: String = ""
 var banner_ticks: int = 0
-var enemies: Array = []
+var enemies = Entities.new()
 var shots: Array = []
-var bullets: Array = []
-var items: Array = []
+var bullets = Entities.new()
+var items = Entities.new()
 var explosions: Array = []
 var boss: Dictionary = {}
 var mute: bool = false
@@ -130,7 +129,6 @@ func _load_stage(number: int, preserve_run: bool = false) -> void:
 	boss_defeated = false
 	hit_flash_ticks = 0
 	hit_flash_render_ticks = 0
-	enemy_cursor = 0
 	state = "playing"
 	player = Vector2(170, 300)
 	hp = 100
@@ -142,7 +140,6 @@ func _load_stage(number: int, preserve_run: bool = false) -> void:
 	invulnerable = 0
 	invulnerable_render_ticks = 0
 	render_hp = hp
-	enemy_visuals.clear()
 	shot_visuals.clear()
 	laser = 0
 	shield = 0
@@ -150,6 +147,7 @@ func _load_stage(number: int, preserve_run: bool = false) -> void:
 	shield_render_ticks = 0
 	laser_contacts.clear()
 	shield_contacts.clear()
+	scenery_distance = 0.0
 	background_y = 3360
 	scroll_speed = 20
 	scroll_target = 2
@@ -174,6 +172,8 @@ func _load_stage(number: int, preserve_run: bool = false) -> void:
 		hp = saved_hp
 		power = saved_power
 		score = saved_score
+	view.vfx.reset()
+	view.renewal.reset_motion()
 	_redraw()
 
 func _unhandled_key_input(event: InputEvent) -> void:
@@ -235,7 +235,7 @@ func _notification(what: int) -> void:
 func _process(delta: float) -> void:
 	if not automatic: return
 	_sync_audio()
-	var step: float = (30.0-5.0*title.speed)/1000.0
+	var step: float = Clock.interval(title.speed,state!="menu")
 	if state=="menu":
 		title_repeat += delta
 		if title_repeat>=0.12:
@@ -247,7 +247,13 @@ func _process(delta: float) -> void:
 			accumulator -= step
 			if Input.is_physical_key_pressed(KEY_SPACE): _title_accept()
 			title.tick()
-			if state!="menu": break
+			if state!="menu":
+				_redraw()
+				return
+	if state=="menu":
+		_redraw()
+		return
+	# A menu-to-game transition already consumed this frame's elapsed time.
 	if state in ["playing","dying","boss_dying","loading"]:
 		accumulator += minf(delta, 0.15)
 		while accumulator >= step:
@@ -301,7 +307,6 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool) 
 		_sound("shi")
 	render_hp = hp
 	_read_events()
-	enemies.sort_custom(func(a,b): return a.get("slot",-1)<b.get("slot",-1))
 	if due.move:
 		for e in enemies: Movement.steer(e,player,boss.get("pos",Vector2(200,-100)))
 		_boss_steer()
@@ -316,16 +321,18 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool) 
 	WorldEffects.advance(explosions,scroll_speed)
 	explosions = explosions.filter(func(blast): return blast.ticks>=0)
 	_update_boss()
-	enemy_visuals.clear()
 	for e in enemies:
 		e.pos += e.velocity
 		Boss.attach(e,boss)
 		e.render_kind = e.kind
 		e.render_hp = e.hp
-		enemy_visuals.append(e.duplicate(true))
 		EnemyRules.carrier(e)
 		if e.hp<=0: _destroy_enemy(e)
-	enemies = enemies.filter(func(e): return e.hp>0 and not EnemyRules.out_of_bounds(e))
+	# Removal unlinks the current entry in O(1); iteration preserves spawn order.
+	for e in enemies:
+		if e.hp<=0 or EnemyRules.out_of_bounds(e):
+			view.renewal.forget(e.entity_id)
+			enemies.remove(e.entity_id)
 	_advance_shots()
 	laser_render_ticks = laser
 	shield_render_ticks = shield
@@ -343,12 +350,14 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool) 
 	_update_items()
 	_update_bullets()
 	if clock.finish(death_ticks==0): energy = minf(100,energy+1)
+	if view!=null:
+		view.vfx.observe(self)
+		view.renewal.observe(self)
 
 func _update_scenery() -> void:
+	scenery_distance += scroll_speed
 	background_y = Weapons.vb_integer(background_y-scroll_speed)
-	if map_mode==1 and background_y<2880: background_y += 480
-	elif map_mode==2 and background_y<1440: background_y += 480
-	elif map_mode==3 and background_y<0: background_y += 480
+	background_y = Regions.wrap(background_y,map_mode)
 	if scroll_speed>scroll_target: scroll_speed -= 0.2
 	if scroll_speed<scroll_target: scroll_speed += 0.2
 	Scenery.advance_clouds(clouds,scroll_speed)
@@ -464,7 +473,8 @@ func _update_bullets() -> void:
 			hit_flash_ticks = 19
 			bullet.alive = false
 			_sound("damage")
-	bullets = bullets.filter(func(b): return b.alive and b.pos.x>=0 and b.pos.x<=400 and b.pos.y>=0 and b.pos.y<=480)
+	for bullet in bullets:
+		if not bullet.alive: bullets.remove(bullet.entity_id)
 
 func _destroy_enemy(e: Dictionary) -> void:
 	var kind: int = int(e.kind)
@@ -478,20 +488,14 @@ func _destroy_enemy(e: Dictionary) -> void:
 		e.pattern = 1091
 		return
 	_explosion(e.pos,EnemyRules.explosion_ticks(kind))
-	explosions[-1].owner_slot = e.get("slot",-1)
+	explosions[-1].owner_id = e.get("entity_id",-1)
 	stats.killed += 1
 
 func _drop_item(item: Dictionary) -> void:
-	var slot: int = item_cursor
-	items = items.filter(func(active): return active.get("slot",-1)!=slot)
-	item.slot = slot
 	item.born_frame = frame
 	items.append(item)
-	bullets = bullets.filter(func(b): return b.get("slot",-1)!=slot)
-	item_cursor = (item_cursor+1)%3
 
 func _update_items() -> void:
-	items.sort_custom(func(a,b): return a.get("slot",-1)<b.get("slot",-1))
 	for item in items:
 		item.render_pos = item.pos
 		if item.get("born_frame",-1)!=frame: item.pos.y += 3
@@ -503,7 +507,8 @@ func _update_items() -> void:
 			score += 1000
 			item.pos.y = 600
 			_sound("get")
-	items = items.filter(func(item): return item.pos.y < 520)
+	for item in items:
+		if item.pos.y>=520: items.remove(item.entity_id)
 
 func _explosion(pos: Vector2, ticks: int = 20, pending_sound: bool = false) -> void:
 	explosions.append({"pos":pos,"ticks":ticks,"render_ticks":0,"render_pos":pos,"pending_sound":pending_sound,"delay":1 if pending_sound else 0})

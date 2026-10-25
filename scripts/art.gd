@@ -1,5 +1,6 @@
 class_name PirateArt
 extends RefCounted
+const Pose = preload("res://scripts/enemy_pose.gd")
 ## Converts the original colour/mask pairs to ordinary alpha textures once.
 var sheets: Dictionary = {}
 var textures: Dictionary = {}
@@ -35,22 +36,8 @@ func sprite(id: String, colour: Rect2i, mask: Vector2i) -> Texture2D:
 	return textures[key]
 
 func enemy(kind: int, velocity: Vector2, frame: int, stage: int = 1, y: float = 0) -> Texture2D:
-	var x: int = 0
+	var x: int = Pose.sprite_x(kind,velocity,frame,y)
 	match kind:
-		1:
-			x = 0 if velocity.y > 2 else (50 if velocity.y >= 0 else (100 if velocity.y > -4 else 150))
-		2, 6, 7:
-			var base: int = 200 if kind == 2 else (1100 if kind == 6 else 1400)
-			x = base + (150 if (velocity.y>0)==(kind==7) else 0) + (100 if velocity.x > 2 else (50 if velocity.x < -2 else 0))
-		3: x = 500 + frame * 50
-		4: x = 700 + frame * 50
-		5: x = 900 + frame * 50
-		8: x = 1700 + (100 if velocity.x > 1 else (50 if velocity.x < -1 else 0))
-		9: x = 1850 + frame * 50
-		10: x = 2050 + (0 if velocity.y > 2 else (50 if velocity.y >= 0 else (100 if velocity.y > -4 else 150)))
-		11: x = 2250 + (100 if velocity.x > 2 else (50 if velocity.x < -2 else 0))
-		19: x = 2400
-		201: x = 2500 if y>290 else 2450
 		21, 22:
 			return sprite("enemy_mid", Rect2i(0 if kind == 21 else 100, 0, 100, 100), Vector2i(0 if kind == 21 else 100, 100))
 		41, 42:

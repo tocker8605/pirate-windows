@@ -36,7 +36,7 @@ func run() -> void:
 			check(game.event_cursor==totals[stage] and game.stats.spawned==spawn_totals[stage],"stage %d weapon %d consumes all enemy and control events"%[stage,weapon])
 			check(game.stats.boss_spawned and game.boss.get("stage",0)==stage,"stage %d weapon %d creates matching boss body"%[stage,weapon])
 			check(game.stats.killed>0 and game.stats.hits>0,"stage %d weapon %d combat remains active"%[stage,weapon])
-			check(game.bullets.size()<=200 and game.shots.size()<=50 and game.enemies.size()<40,"stage %d weapon %d bounded entity lifecycle"%[stage,weapon])
+			check(game.bullets.valid() and game.shots.size()<=50 and game.enemies.valid(),"stage %d weapon %d dynamic entity lifecycle remains consistent"%[stage,weapon])
 		game._load_stage(stage)
 		game.events = game.events.filter(func(row): return int(row[0])==times[stage])
 		game.frame = times[stage]*30+1
@@ -132,4 +132,6 @@ func run() -> void:
 	await create_timer(0.15).timeout
 	game.queue_free()
 	await process_frame
+	# Allow the freed audio player to leave the asynchronous mixer.
+	await create_timer(0.2).timeout
 	quit(0 if failed==0 else 1)

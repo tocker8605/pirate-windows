@@ -19,7 +19,7 @@ foreach($type in @('source','windows')){
    }
   }else{
    [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive,$exe,'Pirate-II.exe',[System.IO.Compression.CompressionLevel]::Optimal)|Out-Null
-   foreach($name in @('README-ko.txt','AUDIT-v6.txt','AUDIT-v7.txt','VALIDATION.txt')){
+   foreach($name in @('README-ko.txt','AUDIT-v6.txt','AUDIT-v7.txt','AUDIT-v8.txt','AUDIT-v9.txt','AUDIT-v10.txt','AUDIT-v11.txt','AUDIT-v12.txt','VALIDATION.txt')){
     $path=Join-Path $projectRoot $name
     if(Test-Path -LiteralPath $path){[System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive,$path,$name,[System.IO.Compression.CompressionLevel]::Optimal)|Out-Null}
    }

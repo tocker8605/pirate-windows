@@ -100,29 +100,31 @@ func run() -> void:
 	root.add_child(game)
 	await process_frame
 	game.start_game()
-	game.enemies = [enemy(1,Vector2(100,100))]
+	game.enemies.replace_all([enemy(1,Vector2(100,100))])
 	game.shots = [{"pos":Vector2(110,140),"kind":1,"alive":true,"impact_ticks":-1}]
 	game._update_shots()
-	check(game.enemies[0].hp==97 and game.shots.size()==1 and game.shots[0].impact_ticks==9,"collision retains shot for impact animation")
+	check(game.enemies.at(0).hp==97 and game.shots.size()==1 and game.shots[0].impact_ticks==9,"collision retains shot for impact animation")
 	var rows: Array = []
 	for i in range(9):
 		game._update_shots()
 		rows.append(game.shots[0].visual.rect.position.y)
 	check(rows==[60,60,60,120,120,120,180,180,180],"all nine impact frames are displayed in original order")
-	check(game.enemies[0].hp==97,"impact sprite cannot damage the enemy a second time")
+	check(game.enemies.at(0).hp==97,"impact sprite cannot damage the enemy a second time")
 	game._update_shots()
 	check(game.shots.is_empty(),"spent impact returns projectile slot")
 	game.bullets.clear()
 	game._bullet(Vector2(100,100),Vector2(0,-1),2)
 	game._update_bullets()
-	check(is_equal_approx(game.bullets[0].velocity.y,-0.7) and game.bullets[0].pos.y==99,"missile acceleration +0.3 and integer Y restored")
+	check(is_equal_approx(game.bullets.at(0).velocity.y,-0.7) and game.bullets.at(0).pos.y==99,"missile acceleration +0.3 and integer Y restored")
 	game.bullets.clear()
 	game._bullet(Vector2(100,100),Vector2(0,-1),8)
 	game._update_bullets()
-	check(is_equal_approx(game.bullets[0].velocity.y,-0.8),"type 8 acceleration +0.2 restored")
+	check(is_equal_approx(game.bullets.at(0).velocity.y,-0.8),"type 8 acceleration +0.2 restored")
 	print("RESULT: %d checks, %d failures" % [checks,failed])
 	game._stop_music()
 	await create_timer(0.15).timeout
 	game.queue_free()
 	await process_frame
+	# Allow the freed audio player to leave the asynchronous mixer.
+	await create_timer(0.2).timeout
 	quit(0 if failed==0 else 1)
