@@ -1,49 +1,47 @@
-Pirate II v12 — Validation / 2026-10-25
+Pirate II v20 — Validation / 2026-11-07
 Godot4.7.2 / Windows x64 / Compatibility OpenGL3.3 / NVIDIA RTX4080
+Project: E:\CodexWork\Pirate-II-Godot
 
-526 checks passed,0 failed
+714 checks passed,0 failed across28 suites.
   smoke38; combat_reference43; special_effects28; campaign115;
   presentation_audio63; full_audit72; pool_reference14; random_reference9;
   combat_vfx14; entity_store15; entity_scale6; renewal41;
-  regions_turning35; stage4_regions21; render_rop4; render_renewal8.
-All current import/test logs contain no script/shader errors or resource-in-use errors.
+  regions_turning35; stage4_regions21; presentation26; native_tick34;
+  boss_mecha15; carrier_reward28; cockpit_fireball9; weapon_parallel13; claw_smoke17;
+  supply_boss_v20=27;
+  render_rop4; render_renewal8; render_60fps6; render_title_earth8;
+  render_combat_style2; render_vfx_strength3.
+All final active import/test logs are free of script/shader errors and failures.
+Changed menu navigation, drop position and active-atlas assertions were updated
+for the new requirements. Already-passed suites were retained while affected
+and remaining suites were rerun. Final results were aggregated from all28 logs.
 
-Stage4-specific checks
-  Four visual environments, original source bands and Earth panorama's unwrapped phase.
-  Initial map2/speed2 retained;960px of departure crossed exactly once with no source reset.
-  Complete viewport becomes space after the Earth exits; no Earth imagery reappears in map2.
-  Space repeats until original t91 releases it and sets target speed2.
-  Moon surface is traversed once; map3 finally loops entirely inside the lunar cavern.
-  t91 changes mode/speed target without teleporting the source coordinate.
+Real frame sample: 1.999sec,60.02 process FPS,60.02 drawn FPS,60.02 gameplay ticks/s.
+Actual game integration uses level1 only; removed title.speed setting and menu row.
 
-GPU verification
-  Original shared480px source reset: sampled RGB difference0.00000.
-  Earth departure between sourceY3360/2880: RGB difference0.72157, proving non-repeating panorama.
-  Space480px repeat: sampled max RGB difference0.00000.
-  Cavern480px repeat: sampled max RGB difference0.00392 (one8-bit level).
-  Thirteen environments distinct: stages1-3 have3 each, stage4 has4.
-  Shared texture seam converges0.04314 over0.2px to0.00392 over0.02px.
-  Legacy GDI, score and GAME OVER references remain covered.
+New behavioral validation:
+  single-port enemy3/7/11 X centres; enemy22 charge/projectile shared anchor;
+  boss HP strict40percent threshold at multiple maximum HP values;
+  live boss smoke observer emits6 size16 puffs across3 body ports;
+  mounted cargo disappears on hit and reward is created at the exact same anchor;
+  one release burst only; reward falls and expands from carried size;
+  actual1sec game processing uses60 native ticks and level1 metadata conversion.
 
-Actual final Windows executable
-  Export completed without errors/warnings.
-  Eight final EXE captures completed without runtime errors/warnings:
-    region1, earth-horizon, region2, region3, lunar-entry, region4,
-    stage-start-late (600tick intro), boss; all in stage4.
-  Earth/horizon/surface/entrance/cavern and final underground boss scenes visually inspected.
-  EXE SHA-256: B808BDB356FB76CD0ECDEFCD325BDA69C6A20197BAA9E42FABA595F6AD3FF15A
+Rendered/inspected:
+  preview-supply-v20.png: enlarged carrier carrying/open/empty states and v18 enemies.
+  preview-carrier-loaded-v20.png / preview-carrier-release-v20.png: actual renderer.
+  preview-boss-smoke-v20.png: actual low-health boss observer and scroll smoke.
+  preview-settings-v20.png: no GAME SPEED label/value/selection, difficulty and weapons retained.
+  Actual exported EXE: preview-exe-weapons-v20.png and preview-exe-stage-v20.png.
+Full campaign behavior is covered by regression fixtures; no full human playthrough.
 
-Review images
-  preview-stage4-original-renewed-v12.png: top2 rows original, bottom2 rows renewed.
-  Within each half, left-to-right then next row: sourceY3360,2880,2400,1920 /1440,960,480,0.
-  preview-regions-v12.png: all stage region cards, stage4 includes the fourth underground card.
+Export completed without errors after selecting a writable workspace temp directory.
+Windows EXE SHA256: 17E53B3B97260E4AC9700FC60B6C494516AC21E78537E691C19233286293E319
+Original VB6 baseline:69 files,0 changed.
+No commit or push.
 
-Preservation/provenance/limits (snapshot at release packaging; before subsequent GitHub publication)
-  Original baseline69 files:0 changed. Old source art and all previous release ZIPs retained.
-  No commit or push performed; HEAD remains 190aee3589f0c4a6e90cf60318e1227f67cf696a.
-  Built-in image_gen Earth/cavern PNGs saved unchanged under assets/renewed.
-  Exact prompts/paths: assets/renewed/STAGE4-GENERATION-v12.txt.
-  Common stages1-3, v9 dynamic entity stores, v10 timing and v11 enemy attitude handling retained.
-  Boss Rush14 preserves its original map1 initialization separately from normal stage4.
-  No full human playthrough or exhaustive original-EXE frame equivalence was performed.
-  Details: AUDIT-v12.txt, which corrects the stage4 interpretation in the v11 report.
+Art:
+  Active regular atlas is the original enemies-v18.png with v18 pose renderer.
+  Boss atlas remains bosses-v15.png; existing fists/claw anchors preserved.
+  New carrier-v20.png is from built-in imagegen, original alpha retained.
+  Final prompt and provenance: assets/renewed/CARRIER-GENERATION-v20.txt.

@@ -86,10 +86,11 @@ static func run(g: Node) -> void:
 			g.animation = 1
 			g.scroll_speed = 2
 			g.clouds = [Vector2(-500,-500),Vector2(-500,-500)]
-			g.enemies.replace_all([{"kind":1,"pos":Vector2(70,100),"velocity":Vector2(2,1),"hp":2,"pattern":0},{"kind":21,"pos":Vector2(250,170),"velocity":Vector2(-1,0),"hp":20,"pattern":0}])
+			g.enemies.replace_all([{"kind":1,"pos":Vector2(70,100),"velocity":Vector2(2,1),"pattern":0,"hp":2},{"kind":21,"pos":Vector2(250,170),"velocity":Vector2(-1,0),"pattern":0,"hp":20}])
 			g.explosions = [{"pos":Vector2(70,250),"render_pos":Vector2(70,250),"ticks":19,"render_ticks":19},{"pos":Vector2(250,250),"render_pos":Vector2(250,250),"ticks":34,"render_ticks":34}]
 		if g.preview_mode=="damage":
-			for i in range(6): g._tick(Vector2.ZERO,false,false,false)
+			g.events = []
+			for i in range(24): g._tick(Vector2.ZERO,false,false,false)
 		if g.preview_mode in ["boss-death","gameover","loading"]:
 			g._load_stage(4 if g.preview_mode=="boss-death" else 1)
 			g.events = []

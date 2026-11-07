@@ -1,5 +1,5 @@
 extends Node2D
-## Orchestrates original-tick gameplay rules; rendering, audio and combat are separate modules.
+## Native60Hz integration of authored gameplay metadata; rendering/audio/combat are separate.
 const Art = preload("res://scripts/art.gd")
 const Movement = preload("res://scripts/movement.gd")
 const EnemyFire = preload("res://scripts/enemy_fire.gd")
@@ -21,24 +21,26 @@ const BulletPool = preload("res://scripts/bullet_pool.gd")
 const Entities = preload("res://scripts/entity_store.gd")
 const Scenery = preload("res://scripts/scenery.gd")
 const Regions = preload("res://scripts/background_regions.gd")
+const Presentation = preload("res://scripts/presentation.gd")
+var presentation = Presentation.new()
 var art = Art.new()
 var title = Title.new()
 var clock = Clock.new()
 var audio: Node
 var shot_visuals: Array = []
-var invulnerable_render_ticks: int = 0
+var invulnerable_render_ticks: float = 0
 var render_hp: float = 100
 var view: Node2D
-var hit_flash_render_ticks: int = 0
+var hit_flash_render_ticks: float = 0
 var last_score: int = 0
-var death_ticks: int = 0
-var boss_death_ticks: int = 0
-var hit_flash_ticks: int = 0
+var death_ticks: float = 0
+var boss_death_ticks: float = 0
+var hit_flash_ticks: float = 0
 var shot_cursor: int = 0
 var loading_image: String = "loading2"
 var loading_target: int = 1
 var loading_preserve: bool = false
-var loading_ticks: int = 0
+var loading_ticks: float = 0
 var debug_enabled: bool = false
 var boss_defeated: bool = false
 var title_repeat: float = 0
@@ -64,15 +66,17 @@ var energy: float = 100
 var power: int = 1
 var score: int = 0
 var frame: int = 0
+var elapsed_units: float = 0
+var tick_units: float = 1.0
 var accumulator: float = 0
 var animation: int = 0
-var invulnerable: int = 0
-var fire_cooldown: int = 0
-var laser: int = 0
-var shield: int = 0
+var invulnerable: float = 0
+var fire_cooldown: float = 0
+var laser: float = 0
+var shield: float = 0
 var shield_center: Vector2 = Vector2.ZERO
-var laser_render_ticks: int = 0
-var shield_render_ticks: int = 0
+var laser_render_ticks: float = 0
+var shield_render_ticks: float = 0
 var laser_contacts: Array = []
 var shield_contacts: Array = []
 var renewed_art: bool = true
@@ -82,7 +86,7 @@ var scroll_speed: float = 20
 var scroll_target: float = 2
 var map_mode: int = 1
 var banner: String = ""
-var banner_ticks: int = 0
+var banner_ticks: float = 0
 var enemies = Entities.new()
 var shots: Array = []
 var bullets = Entities.new()
@@ -99,6 +103,7 @@ var stats: Dictionary = {"spawned":0,"killed":0,"shots":0,"hits":0,"boss_spawned
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	get_tree().auto_accept_quit = false
+	Engine.max_fps = 60
 	view = Renderer.new()
 	view.g = self
 	add_child(view)
@@ -136,6 +141,8 @@ func _load_stage(number: int, preserve_run: bool = false) -> void:
 	power = 1
 	score = 0
 	frame = 0
+	elapsed_units = 0
+	tick_units = 1.0
 	event_cursor = 0
 	invulnerable = 0
 	invulnerable_render_ticks = 0
@@ -172,6 +179,7 @@ func _load_stage(number: int, preserve_run: bool = false) -> void:
 		hp = saved_hp
 		power = saved_power
 		score = saved_score
+	presentation.reset(self)
 	view.vfx.reset()
 	view.renewal.reset_motion()
 	_redraw()
@@ -235,7 +243,7 @@ func _notification(what: int) -> void:
 func _process(delta: float) -> void:
 	if not automatic: return
 	_sync_audio()
-	var step: float = Clock.interval(title.speed,state!="menu")
+	var step: float = Clock.interval(1,state!="menu")
 	if state=="menu":
 		title_repeat += delta
 		if title_repeat>=0.12:
@@ -256,22 +264,25 @@ func _process(delta: float) -> void:
 	# A menu-to-game transition already consumed this frame's elapsed time.
 	if state in ["playing","dying","boss_dying","loading"]:
 		accumulator += minf(delta, 0.15)
-		while accumulator >= step:
-			accumulator -= step
+		while accumulator+0.000000001 >= step:
+			accumulator = maxf(0,accumulator-step)
 			var direction := Vector2(float(Input.is_physical_key_pressed(KEY_RIGHT)) - float(Input.is_physical_key_pressed(KEY_LEFT)), float(Input.is_physical_key_pressed(KEY_DOWN)) - float(Input.is_physical_key_pressed(KEY_UP)))
-			_tick(direction, Input.is_physical_key_pressed(KEY_Z), Input.is_physical_key_pressed(KEY_X), Input.is_physical_key_pressed(KEY_C))
+			_tick(direction, Input.is_physical_key_pressed(KEY_Z), Input.is_physical_key_pressed(KEY_X), Input.is_physical_key_pressed(KEY_C),Clock.units_per_tick())
 			if state=="loading" or state not in ["playing","dying","boss_dying"]: break
 	_redraw()
 
-func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool) -> void:
+func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, units: float = 1.0) -> void:
+	tick_units = units
 	if state=="loading":
 		if loading_ticks>0:
-			loading_ticks -= 1
+			loading_ticks = Clock.countdown(loading_ticks,units)
 			return
 		_load_stage(loading_target,loading_preserve)
 		return
 	if state not in ["playing","dying","boss_dying"]: return
+	presentation.capture(self)
 	frame += 1
+	elapsed_units += units
 	var due: Dictionary = clock.begin()
 	animation = clock.animation-1
 	var alive: bool = death_ticks==0
@@ -281,7 +292,7 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool) 
 			if Input.is_physical_key_pressed(code): held.append(code)
 		if _debug_controls(held): return
 	if alive:
-		player += direction*6
+		player += direction*6*units
 		player_bank = 1 if direction.x<0 else (2 if direction.x>0 else 0)
 		if automatic and Input.is_physical_key_pressed(KEY_RIGHT): player_bank = 2
 	player.x = clampf(player.x,10,340)
@@ -290,19 +301,22 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool) 
 	energy = clampf(energy,0,100)
 	power = mini(7,power)
 	invulnerable_render_ticks = invulnerable
-	invulnerable = maxi(0,invulnerable-1)
-	banner_ticks = maxi(0,banner_ticks-1)
+	invulnerable = Clock.countdown(invulnerable,units)
+	banner_ticks = Clock.countdown(banner_ticks,units)
 	hit_flash_render_ticks = hit_flash_ticks
-	hit_flash_ticks = maxi(0,hit_flash_ticks-1)
-	if firing and alive and fire_cooldown==0 and energy>1: _fire()
-	fire_cooldown = maxi(0,fire_cooldown-1)
-	if use_laser and alive and laser==0 and energy>7:
+	hit_flash_ticks = Clock.countdown(hit_flash_ticks,units)
+	while firing and alive and fire_cooldown<=0.000001 and energy>1:
+		var before: float = fire_cooldown
+		_fire()
+		if fire_cooldown<=before: break
+	if fire_cooldown>0: fire_cooldown -= units
+	if use_laser and alive and laser<=0.000001 and energy>7:
 		energy -= 8
-		laser = 15
+		laser += 15
 		_sound("pil")
-	if use_shield and alive and shield==0 and energy>39:
+	if use_shield and alive and shield<=0.000001 and energy>39:
 		energy -= 40
-		shield = 200
+		shield += 200
 		shield_center = player+Vector2(25,25)
 		_sound("shi")
 	render_hp = hp
@@ -311,22 +325,25 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool) 
 		for e in enemies: Movement.steer(e,player,boss.get("pos",Vector2(200,-100)))
 		_boss_steer()
 	if due.fire and boss_death_ticks==0:
-		BulletPool.body(self)
-		for e in enemies: _enemy_fire(e)
+		for phase in due.phases:
+			clock.phase = phase
+			BulletPool.body(self)
+			for e in enemies: _enemy_fire(e)
 	_update_scenery()
 	for blast in explosions:
 		if blast.get("pending_sound",false):
 			_sound("bang-e")
 			blast.pending_sound = false
-	WorldEffects.advance(explosions,scroll_speed)
+	WorldEffects.advance(explosions,scroll_speed,units)
 	explosions = explosions.filter(func(blast): return blast.ticks>=0)
 	_update_boss()
 	for e in enemies:
-		e.pos += e.velocity
+		var previous_y: float = e.pos.y
+		e.pos += e.velocity*units
 		Boss.attach(e,boss)
 		e.render_kind = e.kind
 		e.render_hp = e.hp
-		EnemyRules.carrier(e)
+		EnemyRules.carrier(e,previous_y)
 		if e.hp<=0: _destroy_enemy(e)
 	# Removal unlinks the current entry in O(1); iteration preserves spawn order.
 	for e in enemies:
@@ -339,45 +356,49 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool) 
 	laser_contacts.clear()
 	shield_contacts.clear()
 	if shield>0:
-		shield_center.y -= 1
-		shield -= 1
+		shield_center.y -= units
+		shield = Clock.countdown(shield,units)
 	_apply_beam()
 	_update_lifecycle()
 	if state in ["menu","loading"]:
-		if clock.recover(death_ticks==0): energy = minf(100,energy+1)
+		if clock.recover(death_ticks==0,units): energy = minf(100,energy+1)
 		return
 	_resolve_shots()
 	_update_items()
 	_update_bullets()
-	if clock.finish(death_ticks==0): energy = minf(100,energy+1)
+	if clock.finish(death_ticks==0,units): energy = minf(100,energy+1)
 	if view!=null:
 		view.vfx.observe(self)
 		view.renewal.observe(self)
 
 func _update_scenery() -> void:
-	scenery_distance += scroll_speed
-	background_y = Weapons.vb_integer(background_y-scroll_speed)
+	scenery_distance += scroll_speed*tick_units
+	background_y = Weapons.vb_integer(background_y-scroll_speed) if tick_units==1 else background_y-scroll_speed*tick_units
 	background_y = Regions.wrap(background_y,map_mode)
-	if scroll_speed>scroll_target: scroll_speed -= 0.2
-	if scroll_speed<scroll_target: scroll_speed += 0.2
-	Scenery.advance_clouds(clouds,scroll_speed)
+	if scroll_speed>scroll_target: scroll_speed = move_toward(scroll_speed,scroll_target,0.2*tick_units)
+	if scroll_speed<scroll_target: scroll_speed = move_toward(scroll_speed,scroll_target,0.2*tick_units)
+	Scenery.advance_clouds(clouds,scroll_speed,tick_units)
 
 func _apply_beam() -> void:
-	if laser<=0: return
+	if laser<=0.000001: return
 	for e in enemies:
 		if Combat.beam_hits(player,e):
-			e.hp -= 4
+			e.hp -= 4*tick_units
 			laser_contacts.append(Vector2(player.x+10,e.pos.y+25))
 	if Combat.beam_hits_boss(player,boss):
-		boss.hp -= 2
+		boss.hp -= 2*tick_units
 		laser_contacts.append(Vector2(player.x+10,boss.pos.y+45))
-	laser -= 1
+	laser -= tick_units
 
 func _update_lifecycle() -> void:
 	Lifecycle.update(self)
 
 func _complete_stage() -> void:
 	Lifecycle.complete_stage(self)
+
+func timeline() -> float:
+	# Direct authored-step fixtures/previews pass units=1; real play always uses60Hz.
+	return float(frame) if tick_units==1 else elapsed_units
 
 func _read_events() -> void:
 	StageEvents.consume(self)
@@ -394,7 +415,7 @@ func _fire() -> void:
 		shots.append(shot)
 		stats.shots += 1
 	energy -= Weapons.cost(power)
-	fire_cooldown = 2 if power%2==0 else 3
+	fire_cooldown += 2 if power%2==0 else 3
 
 func _update_shots() -> void:
 	_advance_shots()
@@ -404,23 +425,23 @@ func _advance_shots() -> void:
 	shot_visuals.clear()
 	shots.sort_custom(func(a,b): return a.get("slot",-1)<b.get("slot",-1))
 	for shot in shots:
-		if int(shot.get("impact_ticks",-1))>=0:
-			if shot.impact_ticks==0:
+		if float(shot.get("impact_ticks",-1))>=0:
+			if shot.impact_ticks<=0.000001:
 				shot.alive = false
 				continue
-			shot.pos.y -= 2
+			shot.pos.y -= 2*tick_units
 			shot.visual = Weapons.visual(shot,player)
-			shot.impact_ticks -= 1
+			shot.impact_ticks = Clock.countdown(shot.impact_ticks,tick_units)
 			shot_visuals.append(shot.duplicate(true))
 		else:
-			Weapons.advance(shot,player)
+			Weapons.advance(shot,player,tick_units)
 			shot.visual = Weapons.visual(shot,player)
 			shot_visuals.append(shot.duplicate(true))
 	shots = shots.filter(func(s): return s.alive and s.pos.y>=0 and s.pos.x>=0 and s.pos.x<=400)
 
 func _resolve_shots() -> void:
 	for shot in shots:
-		if int(shot.get("impact_ticks",-1))>=0: continue
+		if float(shot.get("impact_ticks",-1))>=0: continue
 		var hit: bool = false
 		for e in enemies:
 			if Combat.shot_hits(shot.pos,e):
@@ -445,8 +466,8 @@ func _boss_steer() -> void:
 
 func _update_boss() -> void:
 	if boss.is_empty(): return
-	boss.age += 1
-	boss.pos += boss.velocity
+	boss.age += tick_units
+	boss.pos += boss.velocity*tick_units
 
 func _finish_stage() -> void:
 	Lifecycle.begin_boss_death(self)
@@ -455,17 +476,17 @@ func _update_bullets() -> void:
 	for bullet in bullets:
 		bullet.render_pos = bullet.pos
 		bullet.render_velocity = bullet.velocity
-		if int(bullet.kind)==2: bullet.velocity.y = minf(15,bullet.velocity.y+0.3)
-		if int(bullet.kind)==8: bullet.velocity.y = minf(10,bullet.velocity.y+0.2)
-		bullet.pos.x += bullet.velocity.x
-		bullet.pos.y = Weapons.vb_integer(bullet.pos.y+bullet.velocity.y)
+		if int(bullet.kind)==2: bullet.velocity.y = minf(15,bullet.velocity.y+0.3*tick_units)
+		if int(bullet.kind)==8: bullet.velocity.y = minf(10,bullet.velocity.y+0.2*tick_units)
+		bullet.pos.x += bullet.velocity.x*tick_units
+		bullet.pos.y = Weapons.vb_integer(bullet.pos.y+bullet.velocity.y) if tick_units==1 else bullet.pos.y+bullet.velocity.y*tick_units
 		if bullet.velocity==Vector2.ZERO or bullet.pos.x<0 or bullet.pos.x>400 or bullet.pos.y<0 or bullet.pos.y>480:
 			bullet.alive = false
 			continue
 		if Effects.shield_contains(shield_center,bullet.pos,shield):
 			bullet.alive = false
 			shield_contacts.append(bullet.pos)
-			shield = maxi(0,shield-4)
+			shield = maxf(0,shield-4)
 			score += 25*title.difficulty
 		elif hp>0 and invulnerable==0 and Combat.hurts_player(player,bullet.pos):
 			hp -= Combat.DAMAGE[int(bullet.kind)]*title.difficulty
@@ -483,6 +504,7 @@ func _destroy_enemy(e: Dictionary) -> void:
 	var item: Dictionary = EnemyRules.drop(e,boss_rush)
 	if not item.is_empty(): _drop_item(item)
 	if kind==19:
+		e.rescued = true
 		e.kind = 201
 		e.hp = 1
 		e.pattern = 1091
@@ -498,7 +520,8 @@ func _drop_item(item: Dictionary) -> void:
 func _update_items() -> void:
 	for item in items:
 		item.render_pos = item.pos
-		if item.get("born_frame",-1)!=frame: item.pos.y += 3
+		item.age = item.get("age",0.0)+tick_units
+		if item.get("born_frame",-1)!=frame: item.pos.y += 3*tick_units
 		if hp>0 and Combat.collects_item(player,item.pos):
 			if item.kind == 1:
 				power = mini(7,power+1)

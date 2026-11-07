@@ -1,12 +1,14 @@
 class_name PirateScenery
 extends RefCounted
+const Boss = preload("res://scripts/boss.gd")
+const Fire = preload("res://scripts/enemy_fire.gd")
 static func initial_clouds() -> Array:
 	return [Vector2(120,400),Vector2(320,20)]
-static func advance_clouds(clouds: Array, speed: float) -> void:
+static func advance_clouds(clouds: Array, speed: float, units: float = 1.0) -> void:
 	var dy: int = int(floorf(speed*1.5))
 	for i in range(2):
 		var p: Vector2 = clouds[i]
-		p.y += dy
+		p.y += dy*units
 		if p.y>480:
 			p.x += 100 if i==0 else 50
 			p.y = -300
@@ -22,4 +24,5 @@ static func preparation(e: Dictionary, boss: Dictionary) -> Dictionary:
 	if not visible: return {}
 	var parity: int = int(e.pos.y)%2
 	if parity<0: return {}
-	return {"rect":Rect2i(200,parity*100,50,50),"mask":Vector2i(200,50+parity*100),"pos":e.pos+Vector2(0,10)}
+	var pos: Vector2 = Boss.claw_muzzle(e)-Vector2(25,25) if e.kind in [131,132] else Fire.single_muzzle(e)-Vector2(25,25)
+	return {"rect":Rect2i(200,parity*100,50,50),"mask":Vector2i(200,50+parity*100),"pos":pos}

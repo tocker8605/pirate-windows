@@ -7,6 +7,9 @@ const Scenery = preload("res://scripts/scenery.gd")
 const Renewed = preload("res://scripts/renewed_art.gd")
 const Clock = preload("res://scripts/timing.gd")
 const Regions = preload("res://scripts/background_regions.gd")
+const Supply = preload("res://scripts/supply_visual.gd")
+const Pilot = preload("res://scripts/pilot_art.gd")
+var pilot = Pilot.new()
 
 var vfx = Particles.new()
 var renewal = Renewed.new()
@@ -23,6 +26,7 @@ func _ready() -> void:
 	if foreground_only: return
 	background = Sprite2D.new()
 	background.centered = false
+	background.z_index = -1
 	background.texture = renewal.environments
 	background.scale = Vector2(400.0/background.texture.get_width(),480.0/background.texture.get_height())
 	var background_material := ShaderMaterial.new()
@@ -54,20 +58,24 @@ func _ready() -> void:
 	foreground.foreground_only = true
 	foreground.vfx = vfx
 	foreground.renewal = renewal
+	foreground.pilot = pilot
 	add_child(foreground)
 	refresh()
 
 func refresh() -> void:
 	if not foreground_only:
+		g.presentation.refresh(g)
 		vfx.observe(g)
 		renewal.observe(g)
-		if g.state!="paused": renewal.render_fraction = clampf(g.accumulator/Clock.interval(g.title.speed),0,1) if g.automatic else 1.0
+		renewal.render_fraction = g.presentation.alpha
 		var in_game: bool = g.state not in ["menu","loading"]
-		background.visible = in_game and g.renewed_art
+		var title_earth: bool = g.state=="menu" and g.title.phase>0 and g.title.loading_ticks==0
+		background.position = Vector2(-round(g.title.scroll/3.5),0) if title_earth else Vector2.ZERO
+		background.visible = (in_game or title_earth) and g.renewed_art
 		if background.visible:
-			background.material.set_shader_parameter("stage",g.stage)
-			background.material.set_shader_parameter("boss_rush",g.boss_rush)
-			background.material.set_shader_parameter("source_top",g.background_y)
+			background.material.set_shader_parameter("stage",4 if title_earth else g.stage)
+			background.material.set_shader_parameter("boss_rush",false if title_earth else g.boss_rush)
+			background.material.set_shader_parameter("source_top",3360.0-g.title.scroll if title_earth else g.presentation.background(g))
 		for i in range(cloud_nodes.size()):
 			cloud_nodes[i].visible = in_game
 			if in_game:
@@ -76,8 +84,8 @@ func refresh() -> void:
 				cloud.region_enabled = not g.renewed_art
 				cloud.texture = vfx.glow if g.renewed_art else g.art.texture(["","cl03","cl02","cl01","cl01"][g.stage])
 				cloud.scale = Vector2.ONE*(300.0/vfx.glow.get_width()) if g.renewed_art else Vector2.ONE
-				if g.renewed_art: cloud.material.set_shader_parameter("phase",g.frame)
-				cloud_nodes[i].position = g.clouds[i]
+				if g.renewed_art: cloud.material.set_shader_parameter("phase",g.presentation.phase(g))
+				cloud_nodes[i].position = g.presentation.cloud(g,i)
 		foreground.queue_redraw()
 	queue_redraw()
 func _text(pos: Vector2, text: String, size: int = 14, color: Color = Color.WHITE) -> void:
@@ -97,17 +105,24 @@ func _draw() -> void:
 		elif not g.renewed_art: draw_texture_rect_region(g.art.texture("stage%d"%g.stage),Rect2(0,0,400,480),Rect2(0,g.background_y,400,480))
 		return
 	if g.state in ["menu","loading"]: return
+	var fraction: float = g.presentation.alpha
+	vfx.draw_particles(self,clampf(fraction,0,1),1) # Dense smoke stays behind actors and bullets.
 	for item in g.items:
 		if item.get("born_frame",-1)==g.frame: continue
-		var y: int = 260 if item.kind == 1 else 320
-		draw_texture(g.art.sprite("eweapons",Rect2i(g.animation*20,y,20,30),Vector2i(g.animation*20,y+30)),item.get("render_pos",item.pos)-Vector2(10,15))
+		if item.kind==1:
+			Supply.draw_item(self,g.art,g.presentation.position(item),g.animation,g.presentation.phase(g),Supply.released_scale(item))
+		else:
+			draw_texture(g.art.sprite("eweapons",Rect2i(g.animation*20,320,20,30),Vector2i(g.animation*20,350)),g.presentation.position(item)-Vector2(10,15))
 	for bullet in g.bullets:
 		_draw_bullet(bullet)
 	if not g.boss.is_empty():
-		if g.renewed_art: renewal.draw_boss(self,g.stage,g.boss.pos)
+		if g.renewed_art:
+			renewal.draw_boss_links(self,g.presentation.position(g.boss),g.enemies,g.presentation)
+			renewal.draw_boss(self,g.stage,g.presentation.position(g.boss))
 		else: draw_texture(g.art.sprite("boss%02d"%g.stage,Rect2i(0,0,150,100),Vector2i(0,100)),g.boss.pos+Vector2(-75,0))
-	if g.state != "dead" and (g.invulnerable_render_ticks%2==0):
-		draw_texture(g.art.sprite("picair",Rect2i(g.player_bank*50,0,50,50),Vector2i(g.player_bank*50,50)),g.player)
+	if g.state != "dead" and (int(ceil(g.invulnerable_render_ticks))%2==0):
+		if g.renewed_art: pilot.draw(self,g.presentation.player(g),g.player_bank)
+		else: draw_texture(g.art.sprite("picair",Rect2i(g.player_bank*50,0,50,50),Vector2i(g.player_bank*50,50)),g.presentation.player(g))
 
 	for e in g.enemies:
 		var offset := Vector2.ZERO
@@ -115,22 +130,22 @@ func _draw() -> void:
 		if e.kind in [41,42]: offset = Vector2(-50,-25)
 		if int(e.kind) in [111,112,121,122,131,132]: offset = Vector2(0,-50)
 		if e.kind==133: offset = Vector2(0,-15)
-		if g.renewed_art: renewal.draw_enemy(self,e,e.pos+offset,g.frame)
+		if g.renewed_art: renewal.draw_enemy(self,e,g.presentation.position(e)+offset,g.frame)
 		else: draw_texture(g.art.enemy(int(e.get("render_kind",e.kind)),e.velocity,g.animation,g.stage,e.pos.y),e.pos+offset)
 		var preparation: Dictionary = Scenery.preparation(e,g.boss)
 		if not preparation.is_empty():
-			vfx.draw_charge(self,preparation.pos+Vector2(25,25),g.frame)
+			vfx.draw_charge(self,preparation.pos+g.presentation.position(e)-e.pos+Vector2(25,25),g.presentation.phase(g))
 
 
-	for blast in g.explosions: vfx.draw_explosion(self,blast)
-	var fraction: float = g.accumulator/Clock.interval(g.title.speed) if g.automatic and g.state!="paused" else 0.0
-	vfx.draw_particles(self,clampf(fraction,0,1))
+	for blast in g.explosions: vfx.draw_explosion(self,blast,g.presentation.position(blast))
+	vfx.draw_particles(self,clampf(fraction,0,1),2)
 	for shot in (g.shot_visuals if not g.shot_visuals.is_empty() else g.shots):
 		_draw_shot(shot)
-	vfx.draw_special(self,g)
+	vfx.draw_special(self,g,g.presentation.player(g),g.presentation.shield(g),g.presentation.phase(g))
 	for e in g.enemies:
 		if int(e.kind) in [19,201]:
-			draw_texture(g.art.sprite("enemy_sm",Rect2i(2550,0,50,50),Vector2i(2550,50)),e.pos)
+			if g.renewed_art: Supply.draw_mount(self,g.art,e,g.presentation.position(e),g.animation,g.presentation.phase(g))
+			else: draw_texture(g.art.sprite("enemy_sm",Rect2i(2550,0,50,50),Vector2i(2550,50)),g.presentation.position(e))
 	if g.death_ticks>0:
 		draw_texture(g.art.sprite("picgov",Rect2i(0,0,200,30),Vector2i(0,30)),Vector2(100,230))
 
@@ -146,14 +161,16 @@ func _draw() -> void:
 		_center(278,"P: RESUME",14)
 		_center(307,"ESC: TITLE",12,Color(0.65,0.75,0.85))
 func _draw_bullet(b: Dictionary) -> void:
-	vfx.draw_bullet(self,b)
+	vfx.draw_bullet(self,b,g.presentation.position(b),g.presentation.phase(g))
 
 func _draw_shot(shot: Dictionary) -> void:
-	vfx.draw_shot(self,shot,g.player,g.weapon)
+	var pos: Vector2 = g.presentation.position(shot)
+	if shot.get("visual",{}).get("phase","")=="launch": pos += g.presentation.player(g)-g.player
+	vfx.draw_shot(self,shot,g.presentation.player(g),g.weapon,pos)
 
 func _draw_hud() -> void:
 	HUD.render(self,g.art,clampi(Weapons.vb_integer(g.hp),0,100),clampf(g.energy,0,100),g.weapon,g.power,g.score,int(g.boss.hp) if not g.boss.is_empty() else -1,int(g.boss.get("max_hp",1000)))
 
 
 func _draw_menu() -> void:
-	g.title.render(self,g.art,g.last_score)
+	g.title.render(self,g.art,g.last_score,g.renewed_art and g.title.phase>0 and g.title.loading_ticks==0)

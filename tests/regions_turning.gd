@@ -36,7 +36,7 @@ func run() -> void:
 	for kind in [2,6,7]:
 		check(Pose.target(kind,Vector2(0,1),0).pitch==0 and Pose.target(kind,Vector2(0,0),0).pitch==PI,"kind %d preserves original vY>0 versus vY<=0 facing threshold"%kind)
 	check(Pose.target(8,Vector2(1,0),0).bank==0 and Pose.target(8,Vector2(2,0),0).bank==1 and Pose.target(8,Vector2(-2,0),0).bank== -1,"type8 uses original strict left/right bank thresholds")
-	check(Pose.project(0,0,8).x<Pose.project(0,1,8).x and Pose.project(0,1,8).x==Pose.project(0,-1,8).x,"type8 opens its wing span when banking, matching the original folded-center frames")
+	check(Pose.wing_fold(0)==1 and Pose.wing_fold(1)==0 and Pose.wing_fold(-1)==0,"type8 opens its wing span when banking, matching the original folded-center frames")
 	var down_right: Vector2 = Vector2.DOWN.rotated(Pose.bank_yaw(1,1))
 	var up_right: Vector2 = Vector2.UP.rotated(Pose.bank_yaw(1,-1))
 	check(down_right.x>0 and up_right.x>0 and Pose.bank_yaw(1,0)==0,"right bank leans the nose right in both down/up attitudes and stays level at the wing edge")

@@ -10,8 +10,8 @@ static func volley(player: Vector2, weapon: int, power: int, random_source: Vari
 		_add(plan,player,11,0,kind)
 	elif power <= 4:
 		if weapon == 1:
-			_add(plan,player,7,3,2)
-			_add(plan,player,13,3,3)
+			_add(plan,player,3,3,1)
+			_add(plan,player,19,3,1)
 		elif weapon == 2:
 			_add(plan,player,17,3,1)
 			_add(plan,player,5,3,1)
@@ -48,16 +48,17 @@ static func _add(plan: Array, player: Vector2, x: float, y: float, kind: int) ->
 static func cost(power: int) -> float:
 	return [0.0,0.8,0.6,1.0,0.8,1.2,1.0,1.3][power]
 
-static func advance(shot: Dictionary, player: Vector2) -> void:
+static func advance(shot: Dictionary, player: Vector2, units: float = 1.0) -> void:
 	var p: Vector2 = shot.pos
 	match int(shot.get("kind",1)):
-		1: p.y -= 19
-		2: p += Vector2(-1,-17)
-		3: p += Vector2(1,-17)
+		1: p.y -= 19*units
+		2: p += Vector2(-1,-17)*units
+		3: p += Vector2(1,-17)*units
 		4:
-			p.x -= (player.x+11-p.x)/14.0
+			p.x -= (player.x+11-p.x)/14.0*units
 			var dy: float = absf(player.y+20-p.y)
-			p.y = vb_integer(p.y-(dy/8.0+5 if dy<120 else 20))
+			var next_y: float = p.y-(dy/8.0+5 if dy<120 else 20)*units
+			p.y = vb_integer(next_y) if units==1 else next_y
 	shot.pos = p
 
 static func vb_integer(value: float) -> int:

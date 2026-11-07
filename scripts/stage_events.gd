@@ -3,7 +3,7 @@ extends RefCounted
 static func consume(g: Node) -> void:
 	# Each event time unit was 30 original ticks (0.75 seconds).
 	var actor_events: int = 0
-	while actor_events<5 and g.event_cursor < g.events.size() and float(g.events[g.event_cursor][0]) * 30 < g.frame:
+	while actor_events<5 and g.event_cursor < g.events.size() and float(g.events[g.event_cursor][0]) * 30+0.0000001 < g.timeline():
 		var row: Array = g.events[g.event_cursor]
 		g.event_cursor += 1
 		var kind: int = int(row[1])

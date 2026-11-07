@@ -22,15 +22,15 @@ static func player_smoke(player: Vector2, frame: int, speed: float) -> Array:
 	smoke(commands,player+Vector2(0,25+speed*2),frame+1)
 	smoke(commands,player+Vector2(0,40+speed*4),frame)
 	return commands
-static func advance(blasts: Array, speed: float) -> void:
+static func advance(blasts: Array, speed: float, units: float = 1.0) -> void:
 	for blast in blasts:
 		if blast.get("delay",0)>0:
-			blast.delay -= 1
+			blast.delay = maxf(0,blast.delay-units)
 			continue
 		blast.render_pos = blast.pos
 		blast.render_ticks = blast.ticks
-		blast.pos.y += speed
-		blast.ticks -= 1
+		blast.pos.y += speed*units
+		blast.ticks -= units
 static func explosion(blast: Dictionary, speed: float) -> Array:
 	var n: int = int(blast.get("render_ticks",0))
 	var p: Vector2 = blast.get("render_pos",blast.pos)

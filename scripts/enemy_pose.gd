@@ -35,21 +35,25 @@ static func target(kind: int, velocity: Vector2, cycle: int) -> Dictionary:
 	var pitch: float = pitch_target(kind,velocity)
 	var bank: float = bank_target(kind,velocity)
 	var pulse: float = pulse_target(cycle)
-	return {"pitch":pitch,"bank":bank,"pulse":pulse,"previous_pitch":pitch,"previous_bank":bank,"previous_pulse":pulse}
-static func advance(pose: Dictionary, kind: int, velocity: Vector2, cycle: int) -> void:
+	return {"pitch":pitch,"bank":bank,"pulse":pulse,"previous_pitch":pitch,"previous_bank":bank,"previous_pulse":pulse,"spin":0.0,"previous_spin":0.0}
+static func advance(pose: Dictionary, kind: int, velocity: Vector2, cycle: int, units: float = 1.0) -> void:
+	pose.previous_spin = pose.get("spin",0.0)
+	pose.spin = pose.previous_spin+units*(TAU/18 if kind==3 else (PI/36 if kind==9 else 0.0))
 	pose.previous_pitch = pose.pitch
 	pose.previous_bank = pose.bank
 	pose.previous_pulse = pose.pulse
-	pose.pitch = move_toward(pose.pitch,pitch_target(kind,velocity),TURN_STEP)
-	pose.bank = move_toward(pose.bank,bank_target(kind,velocity),0.2)
-	pose.pulse = lerpf(pose.pulse,pulse_target(cycle),0.3)
+	pose.pitch = move_toward(pose.pitch,pitch_target(kind,velocity),TURN_STEP*units)
+	pose.bank = move_toward(pose.bank,bank_target(kind,velocity),0.2*units)
+	pose.pulse = lerpf(pose.pulse,pulse_target(cycle),1-pow(0.7,units))
 static func projection(pose: Dictionary) -> Vector2:
 	return project(pose.pitch,pose.bank)
+static func wing_fold(bank: float) -> float:
+	return clampf(1-absf(bank),0,1)
 static func project(pitch: float, bank: float, kind: int = 0) -> Vector2:
 	var y: float = cos(pitch)
 	# Keep a visible wing edge while pitching through 90 degrees.
 	if absf(y)<0.12: y = 0.12 if pitch<=PI/2 else -0.12
-	var span: float = 0.65+absf(bank)*0.35 if kind==8 else 1.0-absf(bank)*0.2
+	var span: float = 1.0-absf(bank)*0.08 if kind==8 else 1.0-absf(bank)*0.2
 	return Vector2(span,y)
 
 static func bank_yaw(bank: float, projected_y: float) -> float:

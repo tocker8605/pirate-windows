@@ -3,6 +3,8 @@ extends RefCounted
 const Weapons = preload("res://scripts/player_weapons.gd")
 const Particles = preload("res://scripts/combat_vfx.gd")
 const Renewed = preload("res://scripts/renewed_art.gd")
+const Pilot = preload("res://scripts/pilot_art.gd")
+var pilot_art = Pilot.new()
 var fx = Particles.new()
 var art = Renewed.new()
 class DemoRandom:
@@ -36,7 +38,7 @@ func draw_large(c: Node2D, original: RefCounted, rect: Rect2, weapon: int, clock
 	var pilot: Vector2 = rect.position+Vector2(rect.size.x/2-25,rect.size.y-57)
 	var target: Vector2 = rect.position+Vector2(rect.size.x/2-25,41)
 	art.draw_enemy(c,{"kind":1,"velocity":Vector2(0,3)},target,0)
-	c.draw_texture(original.sprite("picair",Rect2i(0,0,50,50),Vector2i(0,50)),pilot)
+	pilot_art.draw(c,pilot)
 	var age: int = int(clock%60/4)
 	for shot in samples(weapon,pilot,mini(age,5)):
 		if age>=5:

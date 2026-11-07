@@ -1,0 +1,14 @@
+Carrier retouch v20 / 2026-11-07
+Mode: built-in image_gen editing; transparent output preserved without pixel editing.
+Reference: assets/renewed/enemies-v18.png (row3 column4 supply craft).
+Output: assets/renewed/carrier-v20.png
+Original output: C:\Users\전명종\.codex\generated_images\01a17194-e644-7cf1-b506-6c1a20515e70\exec-67cd97db-8afb-47ee-a7f6-f71387fa0b36.png
+
+Prompt:
+Use case: precise-object-edit. Asset: ONE transparent top-down game sprite, a retouched supply craft for Pirate II. Reference image is the existing v18 enemy atlas. Only reinterpret the supply craft at row 3 column 4 (white/gunmetal swept wings, cyan cockpit, green sphere cargo under its nose). Output ONLY that single aircraft, large and centered on a square fully transparent canvas, pointed UP (cockpit near upper center), with equal left/right symmetry. Keep the v18 metallic ivory/gunmetal/cyan/orange painted sci-fi style and recognizable silhouette. Retouch the central cargo mount into two curved mechanical grabber fingers opening down toward the bottom of image. Important: REMOVE the green sphere entirely: render an EMPTY open cargo cradle. The removable green power item will be drawn separately by the game between those fingers in the lower center of this sprite, around x50%, y72%. Leave that lower center bay truly transparent; two fingers flank it without covering the item. Wings flare to both sides; engines/cockpit remain in upper/middle area. No ground, no shadow outside sprite, no lettering, no labels, no extra sprites. Crisp smooth shaded sprite, not pixel art. Preserve actual alpha transparency.
+
+Integration:
+The mounted item uses the original green power-item sprite; it is a separate payload,
+not baked into the ship image. Common cargo anchor (25,40) is shared by drawing,
+release particles, and reward spawn. The cargo is shown for both approach/protected
+and opened/vulnerable states, and hidden after rescue. Empty ship escapes as before.

@@ -31,7 +31,7 @@ func run() -> void:
 	key(game,KEY_SPACE)
 	for i in range(94): game.title.tick()
 	key(game,KEY_SPACE)
-	for i in range(3): key(game,KEY_DOWN)
+	for i in range(2): key(game,KEY_DOWN)
 	check(game.title.phase==24,"original title weapon selection handles input")
 	key(game,KEY_SPACE)
 	game._tick(Vector2.ZERO,false,false,false)
@@ -57,10 +57,10 @@ func run() -> void:
 	check(game.bullets.is_empty(), "shield intercepts incoming projectiles")
 	game.shield = 0
 	game.invulnerable = 0
-	game._bullet(game.player+Vector2(25,25),Vector2(0,0.1))
+	game._bullet(game.player+Vector2(25,18),Vector2(0,0.1))
 	game._update_bullets()
 	check(game.hp == 91 and game.invulnerable == 50, "bullet damage grants temporary invulnerability")
-	game._bullet(game.player+Vector2(25,25),Vector2(0,0.1))
+	game._bullet(game.player+Vector2(25,18),Vector2(0,0.1))
 	game._update_bullets()
 	check(game.hp == 91, "invulnerability prevents repeated damage")
 	game.items.replace_all([{"pos":game.player+Vector2(25,20),"kind":1}])
@@ -104,7 +104,7 @@ func run() -> void:
 	game.start_game()
 	game.hp = 1
 	game.invulnerable = 0
-	game._bullet(game.player+Vector2(25,25),Vector2(0,0.1))
+	game._bullet(game.player+Vector2(25,18),Vector2(0,0.1))
 	game._tick(Vector2.ZERO,false,false,false)
 	game._tick(Vector2.ZERO,false,false,false)
 	check(game.state=="dying" and game.death_ticks==239, "fatal damage starts original game-over explosion sequence")

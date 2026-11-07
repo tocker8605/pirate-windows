@@ -46,7 +46,7 @@ func run() -> void:
 	for pair in [[1,15],[21,35],[41,55],[131,15]]:
 		check(not Combat.beam_hits(Vector2(100,300),enemy(pair[0],Vector2(100+pair[1],100))) and Combat.beam_hits(Vector2(100,300),enemy(pair[0],Vector2(99+pair[1],100))),"kind %d laser uses original top-left X threshold"%pair[0])
 	check(not Combat.beam_hits(Vector2(100,300),enemy(201)),"beam cannot destroy an unopened carrier")
-	check(not Combat.hurts_player(Vector2(100,100),Vector2(113,120)) and Combat.hurts_player(Vector2(100,100),Vector2(114,120)),"player damage rectangle has strict pixel edges")
+	check(not Combat.hurts_player(Vector2(100,100),Vector2(121,118)) and Combat.hurts_player(Vector2(100,100),Vector2(125,118)),"player damage is confined to the cockpit circle with strict edges")
 	check(not Combat.collects_item(Vector2(100,100),Vector2(95,120)) and Combat.collects_item(Vector2(100,100),Vector2(96,120)),"pickup rectangle has strict pixel edges")
 	check(Weapons.vb_integer(2.5000001)==3 and Weapons.vb_integer(2.5)==2,"VB rounding does not treat near-half values as exact ties")
 	check(FX.enemy_smoke(enemy(1,Vector2.ZERO,3),0,2).is_empty(),"enemy smoke begins strictly below threshold")
@@ -57,7 +57,7 @@ func run() -> void:
 	for pair in [[35,0],[34,3],[20,0],[19,1],[14,2],[8,1],[0,0]]:
 		check(FX.explosion({"pos":Vector2.ZERO,"render_ticks":pair[0]},2).size()==pair[1],"original explosion composition at remaining tick %d"%pair[0])
 	check(Rules.explosion_ticks(1)==20 and Rules.explosion_ticks(21)==35 and Rules.explosion_ticks(111)==30,"small/medium/boss-part destruction lifetimes")
-	check(Rules.drop(enemy(19),false).pos==Vector2(125,115),"carrier drop original position")
+	check(Rules.drop(enemy(19),false).pos==Vector2(125,140),"carrier drops its payload at the visible grabber anchor")
 	check(Rules.drop(enemy(41),false).pos==Vector2(125,140),"large enemy repair drop original Y+40")
 	check(Rules.drop(enemy(22),false).is_empty(),"type 22 does not drop a repair item")
 	check(Rules.drop(enemy(111),true).pos==Vector2(125,140),"Boss Rush attachment drops original power item")
@@ -104,7 +104,7 @@ func run() -> void:
 	game.enemies.replace_all([carrier])
 	game._destroy_enemy(carrier)
 	check(carrier.kind==201 and carrier.hp==1 and carrier.pattern==1091,"rescued carrier escapes instead of exploding")
-	check(game.score==500 and game.explosions.is_empty() and game.items.at(0).pos==Vector2(125,306),"carrier rescue preserves score/drop without a fake explosion")
+	check(game.score==500 and game.explosions.is_empty() and game.items.at(0).pos==Vector2(125,331),"carrier rescue preserves score/drop without a fake explosion")
 	for i in range(4): game._drop_item({"pos":Vector2(i,0),"kind":1})
 	check(game.items.size()==5,"independent pickups retain every drop instead of a three-slot overwrite")
 	game.start_game()

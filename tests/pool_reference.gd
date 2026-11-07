@@ -59,7 +59,7 @@ func run() -> void:
 	g.start_game()
 	g.events = []
 	g.hp = 1
-	g._bullet(g.player+Vector2(25,25),Vector2(0,0.1))
+	g._bullet(g.player+Vector2(25,18),Vector2(0,0.1))
 	g._drop_item({"pos":g.player+Vector2(25,25),"kind":2})
 	g._tick(Vector2.ZERO,false,false,false)
 	check(g.hp==17,"repair pickups still resolve before incoming damage")

@@ -11,18 +11,22 @@ static func update(g: Node) -> void:
 		g.laser_render_ticks = 0
 		if g.music_track!="boss01": g._stop_music()
 	if g.boss_death_ticks>0:
-		g.boss_death_ticks -= 1
+		var previous: float = g.boss_death_ticks
+		g.boss_death_ticks = maxf(0,g.boss_death_ticks-g.tick_units)
+		if g.boss_death_ticks<0.000001: g.boss_death_ticks = 0
 		for e in g.enemies: e.hp = 0
 		g.bullets.clear()
 		g.items.clear()
-		if g.boss_death_ticks%10==0:
+		if int(ceil(previous/10))!=int(ceil(g.boss_death_ticks/10)):
 			g._explosion(g.boss.pos+Vector2(20-Rng.between(0,59),-30),20,true)
 		if g.boss_death_ticks==0 and g.death_ticks==0:
 			g._complete_stage()
 			return
 	if g.death_ticks>0:
-		g.death_ticks -= 1
-		if g.death_ticks>0 and g.death_ticks%10==0:
+		var previous: float = g.death_ticks
+		g.death_ticks = maxf(0,g.death_ticks-g.tick_units)
+		if g.death_ticks<0.000001: g.death_ticks = 0
+		if g.death_ticks>0 and int(ceil(previous/10))!=int(ceil(g.death_ticks/10)):
 			g._explosion(g.player+Vector2(20-Rng.between(0,39),-10),20,true)
 		if g.death_ticks==0:
 			g._return_title()

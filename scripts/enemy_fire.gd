@@ -1,5 +1,6 @@
 class_name PirateEnemyFire
 extends RefCounted
+const Boss = preload("res://scripts/boss.gd")
 const Rng = preload("res://scripts/random.gd")
 ## Original pixel-coordinate rules, expressed independently of game/render state.
 ## Player/enemy positions are TOP LEFT, not muzzle centres. Do not normalize aim.
@@ -8,6 +9,9 @@ static func aim(enemy: Vector2, player: Vector2, speed: float) -> Vector2:
 	var denominator: float = floorf(Vector2(delta.x, delta.y + 20).length())
 	# The original skipped one coincidence case but could still divide by zero.
 	return delta * speed / denominator if denominator > 0 else Vector2.ZERO
+
+static func single_muzzle(e: Dictionary, y: float = 25) -> Vector2:
+	return e.pos+Vector2(25,y)
 
 static func burst(e: Dictionary, player: Vector2, phase: int, timer: int, boss: Dictionary = {}) -> Array:
 	var result: Array = []
@@ -23,14 +27,14 @@ static func burst(e: Dictionary, player: Vector2, phase: int, timer: int, boss: 
 			if phase % 3 == 0 and v.x != 0: _add(result,p+Vector2(25,20),Vector2(-v.x,11-absf(v.x)))
 			if v.x == 0 and phase % 6 == 0 and v.y > -1: _add(result,p+Vector2(25,20),Vector2(0,9),3)
 		3:
-			if phase % 2 == 0 and p.y < 199 and p.y > 20: _add(result,p+Vector2(20,30),Vector2((10-absf(20-int(p.y)%41))/3.0,8),5)
+			if phase % 2 == 0 and p.y < 199 and p.y > 20: _add(result,single_muzzle(e,30),Vector2((10-absf(20-int(p.y)%41))/3.0,8),5)
 		4:
-			if phase % 5 == 0: _add(result,p+Vector2(25,25),target*9,4)
+			if phase % 5 == 0: _add(result,single_muzzle(e),target*9,4)
 		5:
 			if v.x == 0 and phase % 2 == 0:
 				var vx: float = (25-absf(25-int(p.y)%51))/3.0
 				if p.x > 175: vx = -vx
-				_add(result,p+Vector2(25,25),Vector2(vx,(25-int(p.y)%51)/2.0),6)
+				_add(result,single_muzzle(e),Vector2(vx,(25-int(p.y)%51)/2.0),6)
 		6:
 			if phase % 4 == 0:
 				if v.y > 0:
@@ -41,16 +45,16 @@ static func burst(e: Dictionary, player: Vector2, phase: int, timer: int, boss: 
 					_add(result,p+Vector2(35,30),target*9,7)
 		7:
 			if phase % 9 == 0:
-				_add(result,p+Vector2(20,25),target*9,5)
-				_add(result,p+Vector2(20,25),target*7+Vector2(-2,0),5)
-				_add(result,p+Vector2(20,25),target*7+Vector2(2,0),5)
+				_add(result,single_muzzle(e),target*9,5)
+				_add(result,single_muzzle(e),target*7+Vector2(-2,0),5)
+				_add(result,single_muzzle(e),target*7+Vector2(2,0),5)
 		8:
 			if phase % 10 == 0: _add(result,p+Vector2(25,30),Vector2(0,-1),2)
 			if v.y > 0 and phase % 3 == 0:
 				_add(result,p+Vector2(30,25),Vector2(1+v.y,11-v.y))
 				_add(result,p+Vector2(10,25),Vector2(-1-v.y,11-v.y))
 		9:
-			if p.y < 220 and phase % 3 == 0: _add(result,p+Vector2(25,25),Vector2(3-Rng.between(0,6),-1-Rng.between(0,2)),8)
+			if p.y < 220 and phase % 3 == 0: _add(result,single_muzzle(e),Vector2(3-Rng.between(0,6),-1-Rng.between(0,2)),8)
 		10:
 			if v.y > 1 and phase % 6 == 0:
 				_add(result,p+Vector2(10,40),Vector2(0,8))
@@ -58,8 +62,8 @@ static func burst(e: Dictionary, player: Vector2, phase: int, timer: int, boss: 
 			if v.y < 4 and v.y > -5 and phase % 5 == 0: _add(result,p+Vector2(25,20),target*7)
 		11:
 			if phase % 7 == 0:
-				_add(result,p+Vector2(20,25),Vector2(-v.x/2,9),7)
-				_add(result,p+Vector2(20,25),Vector2(-v.x/3,6),5)
+				_add(result,single_muzzle(e),Vector2(-v.x/2,9),7)
+				_add(result,single_muzzle(e),Vector2(-v.x/3,6),5)
 		21:
 			if phase % 12 == 0:
 				_add(result,p+Vector2(0,40),Vector2(-1,-1),2)
@@ -67,8 +71,8 @@ static func burst(e: Dictionary, player: Vector2, phase: int, timer: int, boss: 
 			if phase % 4 == 0: _add(result,p+Vector2(25,40),target*10)
 		22:
 			if p.y < 150 and p.y > 100:
-				_add(result,p+Vector2(25,25),target*9+Vector2(3-int(p.y)%7,0),5)
-				if phase % 2 == 0: _add(result,p+Vector2(25,25),target*10,7)
+				_add(result,single_muzzle(e),target*9+Vector2(3-int(p.y)%7,0),5)
+				if phase % 2 == 0: _add(result,single_muzzle(e),target*10,7)
 		41:
 			if phase % 3 == 0: _add(result,p+Vector2(-20 if timer%4>1 else 70,40),target*10,6)
 			if phase % 12 == 0: _add(result,p+Vector2(25,40),Vector2(0,-1),2)
@@ -92,8 +96,8 @@ static func burst(e: Dictionary, player: Vector2, phase: int, timer: int, boss: 
 			if phase % 2 == 0 and p.y > 300:
 				var vx: float = 2-floorf((p.y-280)/20)
 				var vy: float = -floorf((500-p.y)/12)
-				_add(result,p+Vector2(25,25),Vector2(vx,vy),8)
-				_add(result,p+Vector2(25,25),Vector2(-vx,vy),8)
+				_add(result,single_muzzle(e),Vector2(vx,vy),8)
+				_add(result,single_muzzle(e),Vector2(-vx,vy),8)
 		121:
 			if phase % 8 == 0 and timer%4>1:
 				_add(result,p+Vector2(5,50),target*8+Vector2(-1,0),5)
@@ -105,12 +109,12 @@ static func burst(e: Dictionary, player: Vector2, phase: int, timer: int, boss: 
 				_add(result,p+Vector2(45,50),target*9,5)
 				_add(result,p+Vector2(45,50),target*8+Vector2(1,0),5)
 		123,124:
-			if phase % 5 == 0 and p.y > boss.get("pos",Vector2.ZERO).y+30: _add(result,p+Vector2(25,25),Vector2(0,9),7 if kind==123 else 6)
+			if phase % 5 == 0 and p.y > boss.get("pos",Vector2.ZERO).y+30: _add(result,single_muzzle(e),Vector2(0,9),7 if kind==123 else 6)
 		131,132:
 			var by: float = boss.get("pos",Vector2.ZERO).y
 			if (kind==131 and by<80 and by>40) or (kind==132 and by>120):
-				_add(result,p+Vector2(25,25),target*9+Vector2(3-int(p.y)%7,0),5)
-				if phase%2==0: _add(result,p+Vector2(25,25),target*10,7)
+				_add(result,Boss.claw_muzzle(e),target*9+Vector2(3-int(p.y)%7,0),5)
+				if phase%2==0: _add(result,Boss.claw_muzzle(e),target*10,7)
 		133:
 			if e.pattern == 2401:
 				var vx: int = 3-Rng.between(0,6)

@@ -34,7 +34,7 @@ func run() -> void:
 	check(a.size()==1 and a[0].kind==3 and a[0].velocity==Vector2(0,9),"type 2 stationary X changes bullet kind")
 	check(Fire.burst(enemy(3,Vector2(100,20)),player,2,0).is_empty(),"type 3 lower Y boundary is strict")
 	a = Fire.burst(enemy(3,Vector2(100,21)),player,2,0)
-	check(a.size()==1 and a[0].pos==Vector2(120,51) and near(a[0].velocity,Vector2(3,8)),"type 3 Y=21 pixel modulo direction")
+	check(a.size()==1 and a[0].pos==Vector2(125,51) and near(a[0].velocity,Vector2(3,8)),"type 3 Y=21 pixel modulo direction")
 	a = Fire.burst(enemy(3,Vector2(100,41)),player,2,0)
 	check(near(a[0].velocity,Vector2(-10.0/3,8)),"type 3 Y=41 wraps modulo, not a sine wave")
 	check(Fire.burst(enemy(3,Vector2(100,199)),player,2,0).is_empty(),"type 3 upper Y boundary is strict")
@@ -74,7 +74,7 @@ func run() -> void:
 	check(Fire.aim(Vector2(100,100),Vector2(100,80),7)==Vector2.ZERO,"zero denominator handled without a crash")
 	# Original shot anchors, power-specific layout and image lifecycle.
 	a = Weapons.volley(player,1,3)
-	check(a.size()==2 and a[0].pos==Vector2(177,383) and a[0].kind==2 and a[1].pos==Vector2(183,383) and a[1].kind==3,"spread power 3 restores exact two launch anchors")
+	check(a.size()==2 and a[0].pos==Vector2(173,383) and a[0].kind==1 and a[1].pos==Vector2(189,383) and a[1].kind==1,"weapon1 power3 uses a wider parallel pair")
 	a = Weapons.volley(player,2,7)
 	check(a.size()==4 and a[0].pos==Vector2(175,382) and a[3].pos==Vector2(195,385),"straight power 7 original staggered anchors")
 	a = Weapons.volley(player,1,1)

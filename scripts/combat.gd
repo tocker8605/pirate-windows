@@ -1,6 +1,7 @@
 class_name PirateCombat
 extends RefCounted
 ## Exact point tests in weaponhit/pil. Visible artwork is not a collision rectangle.
+const Pilot = preload("res://scripts/pilot_geometry.gd")
 const DAMAGE: Array = [0,3,10,4,6,5,6,7,4]
 static func between(value: float, low: float, high: float) -> bool: return value>low and value<high
 static func shot_hits(pos: Vector2, e: Dictionary) -> bool:
@@ -22,6 +23,6 @@ static func beam_hits(player: Vector2, e: Dictionary) -> bool:
 static func beam_hits_boss(player: Vector2, boss: Dictionary) -> bool:
 	return not boss.is_empty() and boss.pos.y<player.y and between(boss.pos.x,player.x-25,player.x+75)
 static func hurts_player(player: Vector2, point: Vector2) -> bool:
-	return between(point.x,player.x+13,player.x+36) and between(point.y,player.y+12,player.y+37)
+	return Pilot.hits(player,point)
 static func collects_item(player: Vector2, point: Vector2) -> bool:
 	return between(point.x,player.x-5,player.x+55) and between(point.y,player.y-5,player.y+55)

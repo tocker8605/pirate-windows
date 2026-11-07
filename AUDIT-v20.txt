@@ -1,0 +1,39 @@
+Pirate II v20 / 2026-11-07
+
+1. Restore v18 regular enemy visuals
+   enemies-v18.png and its measured atlas regions, hinged-wing and rotor/spin
+   animation are active again. The v15 boss atlas, v18 fist orientation,
+   v19 boss4 claw muzzle fix, hero, backgrounds and projectile renewal remain.
+   The supply craft is the only regular enemy with a new dedicated retouch.
+
+2. Centre single muzzle locations
+   Kinds3,7,11 now emit from local X25 rather than X20. Shared single_muzzle()
+   also aligns the kind22 preparation charge with actual projectile origin.
+   Projectile types, timing gates, source-coordinate modulo rules, original
+   non-normalized aim and dual/alternating launchers retain their algorithms.
+
+3. Supply craft carries a detachable power item
+   New carrier-v20.png is an empty mechanical grabber. One green power-item
+   sprite is drawn inside it for both approach201 and vulnerable19 states.
+   The same cargo_position() anchor(25,40) is used by mount, spawn and VFX.
+   A successful hit removes mounted cargo, emits one green release burst,
+   creates one falling reward and lets the empty craft escape. The reward
+   smoothly grows from mounted scale0.6 to normal scale1 over12 authored units.
+   Existing open-crossing detection, score and duplicate-reward protection stay.
+   The old dot decoration is no longer painted over renewed supply craft.
+
+4. Boss low-health smoke
+   Living boss bodies with HP strictly below40percent of actual max_hp emit
+   dense black smoke at three body/shoulder ports. Particle size16, cadence,
+   lifetime28 and current-scroll advection match large enemy damage smoke.
+   Exactly40percent and dead boss bodies do not emit this damage trail.
+
+5. Fixed game speed
+   GAME SPEED label, numeric value and selectable menu row removed.
+   Options begin at GAME LEVEL, followed by all three weapons.
+   Runtime always integrates level1 speed with native60 gameplay ticks/sec.
+   Historical timing helpers retain optional parameters for regression fixtures.
+
+Validation: see VALIDATION.txt for final results and rendered captures.
+Art provenance and final built-in imagegen prompt: assets/renewed/CARRIER-GENERATION-v20.txt.
+No commit or push. Original VB6 source directory is untouched.

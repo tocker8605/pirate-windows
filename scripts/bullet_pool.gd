@@ -9,9 +9,9 @@ static func group(g: Node, projectiles: Array) -> void:
 static func single(g: Node, pos: Vector2, velocity: Vector2, kind: int) -> void:
 	write(g,{"pos":pos,"velocity":velocity,"kind":kind})
 static func enemy(g: Node, e: Dictionary) -> void:
-	group(g,Fire.burst(e,g.player,g.clock.phase,int((g.frame-1)/30),g.boss))
+	group(g,Fire.burst(e,g.player,g.clock.phase,int((g.timeline()-g.tick_units)/30),g.boss))
 static func body(g: Node) -> void:
 	if g.boss.is_empty(): return
 	if int(g.boss.stage)==4:
-		for section in [1,2,3]: group(g,Boss.fire(g.boss,g.enemies,g.clock.phase,int((g.frame-1)/30),section))
-	else: group(g,Boss.fire(g.boss,g.enemies,g.clock.phase,int((g.frame-1)/30)))
+		for section in [1,2,3]: group(g,Boss.fire(g.boss,g.enemies,g.clock.phase,int((g.timeline()-g.tick_units)/30),section))
+	else: group(g,Boss.fire(g.boss,g.enemies,g.clock.phase,int((g.timeline()-g.tick_units)/30)))

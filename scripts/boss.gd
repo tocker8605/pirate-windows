@@ -113,3 +113,14 @@ static func fire(b: Dictionary, enemies: Variant, phase: int, timer: int, sectio
 
 static func _add(result: Array, pos: Vector2, velocity: Vector2, kind: int) -> void:
 	result.append({"pos":pos,"velocity":velocity,"kind":kind})
+
+static func part_side(kind: int) -> int:
+	if kind in [112,121,131]: return -1
+	if kind in [111,122,132]: return 1
+	return 0
+static func claw_muzzle(e: Dictionary) -> Vector2:
+	# Inner empty region of the existing50x100 claw sprite, mirrored about the torso.
+	match int(e.kind):
+		131: return e.pos+Vector2(14,36)
+		132: return e.pos+Vector2(36,36)
+	return e.pos+Vector2(25,25)
