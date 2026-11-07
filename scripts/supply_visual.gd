@@ -12,7 +12,7 @@ static func draw_item(c: Node2D, art: RefCounted, center: Vector2, cycle: int, p
 	var texture: Texture2D = art.sprite("eweapons",Rect2i(cycle*20,260,20,30),Vector2i(cycle*20,290))
 	c.draw_texture_rect(texture,Rect2(center-size/2,size),false)
 static func draw_mount(c: Node2D, art: RefCounted, e: Dictionary, pos: Vector2, cycle: int, phase: float) -> void:
-	var center: Vector2 = pos+Rules.CARGO_LOCAL
+	var center: Vector2 = pos+Rules.cargo_offset()
 	var loaded: bool = Rules.has_cargo(e)
 	var color: Color = GREEN if loaded else Color("64c9d9")
 	# Status lights belong to the grabber, not a second sprite painted over the hull.

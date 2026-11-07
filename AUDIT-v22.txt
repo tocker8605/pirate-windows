@@ -1,0 +1,34 @@
+Pirate II v22 / 2026-11-07
+
+1. Ring station / enemy3 (ring_rotor)
+   Replaced the v18 component with a dedicated two-layer station asset derived
+   from the original fixed axial tower / rotating habitat concept and the user
+   orbital-station reference. Removed the three-blade procedural propeller.
+   Only the habitat/truss layer rotates; the axial spindle/docking caps stay fixed.
+   Spin slowed from the former fast rotor to one revolution per7.2sec.
+   Clean alpha apertures, original50px frame/HP/collision/attacks retained.
+   Art prompt/provenance: assets/renewed/RING-GENERATION-v22.txt.
+
+2. Weapon1 power3/4
+   Remains a parallel pair, per the existing weapon design.
+   Origins change from X+3/+19 to X-5/+25:16px ->30px spacing.
+   These are the same side origins as power5/6 and the inner pair at power7,
+   and2.5times weapon2 power3/4 spacing12px. Count, cost, speed and power5~7
+   outward trajectories remain unchanged.
+
+3. Weapon3
+   Removed the pilot-X-relative horizontal correction from every projectile.
+   Initial randomized launch X remains, and is fixed throughout flight.
+   The original pilot-Y-distance vertical acceleration, cap/rounding, number
+   of shots, power-dependent launch jitter, cost and RNG sequence remain.
+
+4. Weapon selection/loading legends
+   Replaced uniform streak icons and fake target/impact previews with real
+   native60Hz trajectory plots from the actual volley/advance code.
+   Lines/arrows show direction; dots represent equal six-tick time intervals.
+   Increasing dot spacing explains weapon3 acceleration. No invented sideways
+   motion is used. Both icon and large preview alternate power4 and7 together.
+   Paths are cached and use isolated visual RNG, preserving gameplay randomness.
+
+Validation: VALIDATION.txt
+No commit or push. Original VB6 directory untouched.

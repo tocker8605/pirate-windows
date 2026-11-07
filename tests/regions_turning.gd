@@ -51,7 +51,7 @@ func run() -> void:
 	await process_frame
 	for stage in range(1,5):
 		game._load_stage(stage)
-		game.events = game.events.filter(func(row): return int(row[1])==71)
+		game.events = game.events.filter(func(row): return row.action=="scroll")
 		var path: Array = []
 		for tick in range(1,4200):
 			game.frame = tick
@@ -65,7 +65,7 @@ func run() -> void:
 	game.background_y = 3000
 	game.scroll_speed = 2
 	game.scroll_target = 2
-	game.events = [[0,71,2,2,0,0]]
+	game.events = [{"at":0,"action":"scroll","mode":2,"speed":2}]
 	game.frame = 1
 	game._read_events()
 	check(Regions.sample(game.background_y).near==1,"region2 command releases the old loop without immediately replacing the viewport")

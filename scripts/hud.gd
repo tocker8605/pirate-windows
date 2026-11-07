@@ -8,7 +8,10 @@ static func masked(canvas: Node2D, art: RefCounted, id: String, pos: Vector2, re
 static func opaque(canvas: Node2D, art: RefCounted, id: String, pos: Vector2, rect: Rect2i) -> void:
 	if rect.size.x > 0: canvas.draw_texture_rect_region(art.texture(id),Rect2(pos,Vector2(rect.size)),Rect2(rect))
 
-static func render(canvas: Node2D, art: RefCounted, hull: int, energy: float, weapon: int, power: int, score: int, boss_hp: int = -1, boss_max: int = 1000) -> void:
+static func boss_bar_width(hp: float, maximum: float) -> int:
+	return clampi(int(250.0*hp/maximum),0,250) if maximum>0 else 0
+
+static func render(canvas: Node2D, art: RefCounted, hull: int, energy: float, weapon: int, power: int, score: int, boss_hp: int = -1, boss_max: int = 0) -> void:
 	masked(canvas,art,"pichud",Vector2(250,5),Rect2i(0,0,134,24),Vector2i(0,24))
 	if hull > 0:
 		opaque(canvas,art,"pichud",Vector2(352-hull,7),Rect2i((100 if hull>40 else 40)-hull,96 if hull>40 else 116,hull,20))
@@ -28,4 +31,4 @@ static func render(canvas: Node2D, art: RefCounted, hull: int, energy: float, we
 		masked(canvas,art,"pichud",Vector2(375-i*10,35),Rect2i(digit*10,156,10,20),Vector2i(digit*10,176))
 	if boss_hp >= 0:
 		masked(canvas,art,"picbhp",Vector2(60,455),Rect2i(0,0,284,24),Vector2i(0,24))
-		opaque(canvas,art,"picbhp",Vector2(92,457),Rect2i(0,48,clampi(int(boss_hp/(6.0 if boss_max==1500 else 4.0)),0,250),20))
+		opaque(canvas,art,"picbhp",Vector2(92,457),Rect2i(0,48,boss_bar_width(boss_hp,boss_max),20))

@@ -114,8 +114,8 @@ func run() -> void:
 		check(game.music_track=="bgm%02d"%stage and game.music.playing,"stage %d starts its original MIDI arrangement"%stage)
 		check(game.music.stream.get_length()>120 and not game.music.stream.loop,"stage %d has original once-through Ogg music"%stage)
 		for row in game.events:
-			if int(row[1]) in [91,92,93,94]: game.frame = int(row[0])*30+1
-		while game.event_cursor<game.events.size() and int(game.events[game.event_cursor][0])*30<game.frame:
+			if int(row.get("definition_id",0)) in [91,92,93,94]: game.frame = int(row.at)*30+1
+		while game.event_cursor<game.events.size() and int(game.events[game.event_cursor].at)*30<game.frame:
 			game.enemies.clear()
 			game._read_events()
 		check(game.music_track=="boss01" and game.music.playing,"stage %d replaces BGM with original boss track"%stage)
@@ -158,7 +158,7 @@ func run() -> void:
 	for number in range(1,5):
 		game._load_stage(number)
 		game.frame = 300
-		while game.event_cursor<game.events.size() and int(game.events[game.event_cursor][0])*30<game.frame:
+		while game.event_cursor<game.events.size() and int(game.events[game.event_cursor].at)*30<game.frame:
 			game.enemies.clear()
 			game._read_events()
 		check(game.boss_rush and game.event_cursor==[0,6,7,8,7][number] and game.boss.get("stage",0)==number and game.music_track=="boss01","Boss Rush stage %d reads complete original alternate events and music"%number)

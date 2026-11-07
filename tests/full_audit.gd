@@ -86,7 +86,7 @@ func run() -> void:
 	game._tick(Vector2.ZERO,false,true,false)
 	check(game.laser_render_ticks==15 and game.energy<0,"original X threshold is energy>7, not energy>=8")
 	game.start_game()
-	game.events = [[1,61,0,0,0,0]]
+	game.events = [{"at":1,"action":"banner","name":"warning"}]
 	game.frame = 30
 	game._read_events()
 	check(game.event_cursor==0,"event t=1 does not fire at tick 30")

@@ -1,4 +1,5 @@
 extends RefCounted
+const Catalog = preload("res://scripts/enemy_catalog.gd")
 ## Development-only deterministic screenshots. Excluded from normal game flow.
 static func run(g: Node) -> void:
 	g.automatic = false
@@ -18,7 +19,7 @@ static func run(g: Node) -> void:
 		var preview_ticks: int = stills.get(g.preview_mode,1100)
 		if g.preview_mode == "boss":
 			for row in g.events:
-				if int(row[1]) in [91,92,93,94]: preview_ticks = int(row[0])*30+180
+				if Catalog.definition(int(row.get("definition_id",0))).get("role","")=="boss": preview_ticks = int(row.at)*30+180
 		for i in range(preview_ticks):
 			g.invulnerable = 100
 			g._tick(Vector2.ZERO if g.preview_mode=="boss" else Vector2(sin(i * 0.013),0),g.preview_mode!="boss",false,false)
@@ -77,7 +78,7 @@ static func run(g: Node) -> void:
 			g.view.vfx.burst(Vector2(210,213),18,g.view.vfx.CYAN,3.5)
 		if g.preview_mode=="preparation":
 			g._load_stage(4)
-			g.boss = {"stage":4,"pos":Vector2(200,100),"velocity":Vector2.ZERO,"hp":1500.0,"max_hp":1500.0,"age":0}
+			g.boss = Catalog.create(int(Catalog.boss_definition(4).id),Vector2(200,100))
 			g.enemies.replace_all([{"kind":22,"pos":Vector2(70,240),"velocity":Vector2.ZERO,"pattern":1073,"hp":100.0},{"kind":131,"pos":Vector2(120,165),"velocity":Vector2.ZERO,"pattern":0,"hp":600.0},{"kind":132,"pos":Vector2(230,165),"velocity":Vector2.ZERO,"pattern":0,"hp":600.0}])
 		if g.preview_mode=="damage":
 			g._load_stage(2)
@@ -95,7 +96,8 @@ static func run(g: Node) -> void:
 			g._load_stage(4 if g.preview_mode=="boss-death" else 1)
 			g.events = []
 			if g.preview_mode=="boss-death":
-				g.boss = {"stage":4,"pos":Vector2(200,100),"velocity":Vector2.ZERO,"hp":0,"max_hp":1500.0,"age":0}
+				g.boss = Catalog.create(int(Catalog.boss_definition(4).id),Vector2(200,100))
+				g.boss.hp = 0
 				g._play_music("boss01")
 			else: g.hp = 0
 			for i in range(60): g._tick(Vector2.ZERO,false,false,false)

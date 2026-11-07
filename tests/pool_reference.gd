@@ -38,15 +38,15 @@ func run() -> void:
 	check(g.bullets.size()==1005,"items cannot suppress authored enemy fire")
 	g.start_game()
 	g.events = []
-	for i in range(150): g.events.append([0,1,100,-50,1011,5])
+	for i in range(150): g.events.append({"at":0,"action":"spawn","definition_id":1,"position":[100,-50],"pattern":1011})
 	g.frame = 1
 	g._read_events()
-	check(g.event_cursor==5 and g.enemies.size()==5,"original five-record reader timing is preserved")
+	check(g.event_cursor==150 and g.enemies.size()==150,"all simultaneous spawns are admitted on schedule without a legacy five-record quota")
 	while g.event_cursor<g.events.size(): g._read_events()
 	check(g.enemies.size()==150 and g.stats.spawned==150 and g.stats.get("skipped",0)==0,"150 simultaneous enemies have unique identities with no 30-slot event loss")
 	check(g.enemies.valid(),"enemy links and ID map remain consistent under dense admission")
 	g.explosions = [{"owner_id":g.enemies.at(0).entity_id,"ticks":15}]
-	g.events.append([0,2,100,-50,1011,5])
+	g.events.append({"at":0,"action":"spawn","definition_id":2,"position":[100,-50],"pattern":1011})
 	g._read_events()
 	check(g.enemies.size()==151 and g.explosions.size()==1,"new spawns do not cancel another entity's lingering explosion")
 	g.bullets.clear()

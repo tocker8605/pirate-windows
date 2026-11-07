@@ -1,27 +1,27 @@
 class_name PirateCombat
 extends RefCounted
-## Exact point tests in weaponhit/pil. Visible artwork is not a collision rectangle.
+## Collision geometry is explicit metadata; preserve strict authored point edges.
+const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Pilot = preload("res://scripts/pilot_geometry.gd")
 const DAMAGE: Array = [0,3,10,4,6,5,6,7,4]
 static func between(value: float, low: float, high: float) -> bool: return value>low and value<high
+static func _shot_hits(pos: Vector2, actor: Dictionary, definition: Dictionary) -> bool:
+	if not definition.get("damageable",false): return false
+	var bounds: Array = definition.collision.shot_bounds
+	var local: Vector2 = pos-actor.pos
+	return between(local.x,bounds[0],bounds[2]) and between(local.y,bounds[1],bounds[3])
 static func shot_hits(pos: Vector2, e: Dictionary) -> bool:
-	var kind: int = int(e.kind)
-	if kind<=0 or kind>=200 or not between(pos.y,e.pos.y-25,e.pos.y+30): return false
-	var half: Vector2 = Vector2(15,35)
-	if kind>20 and kind<41: half = Vector2(40,60)
-	elif kind>40 and kind<101: half = Vector2(65,85)
-	return between(pos.x,e.pos.x-half.x,e.pos.x+half.y)
+	return _shot_hits(pos,e,Catalog.definition(int(e.kind)))
 static func shot_hits_boss(pos: Vector2, boss: Dictionary) -> bool:
-	return not boss.is_empty() and between(pos.x,boss.pos.x-90,boss.pos.x+60) and between(pos.y,boss.pos.y-25,boss.pos.y+60)
+	return not boss.is_empty() and _shot_hits(pos,boss,Catalog.for_actor(boss))
+static func _beam_hits(player: Vector2, actor: Dictionary, definition: Dictionary) -> bool:
+	if actor.pos.y>=player.y or not definition.get("damageable",false): return false
+	var bounds: Array = definition.collision.beam_bounds
+	return between(actor.pos.x,player.x+bounds[0],player.x+bounds[1])
 static func beam_hits(player: Vector2, e: Dictionary) -> bool:
-	var kind: int = int(e.kind)
-	if e.pos.y>=player.y or kind<=0 or kind>=200: return false
-	var width: float = 15
-	if kind>20 and kind<41: width = 35
-	elif kind>40 and kind<101: width = 55
-	return between(e.pos.x,player.x-width,player.x+width)
+	return _beam_hits(player,e,Catalog.definition(int(e.kind)))
 static func beam_hits_boss(player: Vector2, boss: Dictionary) -> bool:
-	return not boss.is_empty() and boss.pos.y<player.y and between(boss.pos.x,player.x-25,player.x+75)
+	return not boss.is_empty() and _beam_hits(player,boss,Catalog.for_actor(boss))
 static func hurts_player(player: Vector2, point: Vector2) -> bool:
 	return Pilot.hits(player,point)
 static func collects_item(player: Vector2, point: Vector2) -> bool:

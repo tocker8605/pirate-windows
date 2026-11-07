@@ -1,0 +1,28 @@
+Ring station v22 / 2026-11-07
+Mode: built-in image_gen. Selected transparent PNG copied unchanged.
+Asset: assets/renewed/ring-station-v22.png
+Original selected output:
+C:\Users\전명종\.codex\generated_images\01a17194-e644-7cf1-b506-6c1a20515e70\exec-5f65b7b4-9483-4329-94e6-646c6cd26c4a.png
+
+References reviewed:
+- Original enemy_sm.png type3 frames at X500/550/600/650, including the mask row.
+- User attachment codex-clipboard-35d6aa9d-abbb-4187-8de5-13d74f6f8477.png:
+  artificial-gravity orbital station with habitat ring and axial hub.
+- Existing enemies-v18.png metallic ivory/gunmetal/cyan/orange style.
+
+The first two tool outputs were rejected for unwanted translucent background haze:
+exec-e45a77aa-70cf-49fa-b785-6e8ff0d57cce.png
+exec-94685259-abbb-46eb-891c-dc5f3484d0db.png
+They are not project assets. The selected third generation uses the clean
+structure/material specification below. It contains actual zero-alpha apertures.
+
+FINAL PROMPT:
+Generate a clean sprite asset sheet, NOT a scene. Exactly TWO separate mechanical game-sprite components side by side on an entirely transparent canvas. Landscape 2:1 composition, two equal square cells, no labels. Left cell: a circular artificial-gravity space station HABITAT RING, substantial segmented ivory armor torus with dark gunmetal joints, tiny cyan window bands and orange docking lights. A very small bearing in its center is connected to the torus by FOUR THIN STRAIGHT INDUSTRIAL TRUSS BEAMS, like skeletal cross braces. The four LARGE openings between the beams must be EMPTY TRANSPARENT HOLES. No panels or glass inside the ring. Absolutely not a propeller, fan or turbine: no shaped blades. Right cell: a separate long vertical FIXED AXIAL SPINDLE to overlap the center of that ring in a game: slim ivory/gunmetal cylindrical structural column, circular saucerlike caps at north and south ends, small cyan indicator domes at the tips, compact central coupler. No ring in the right cell. Each sprite centered in its own half, with generous transparent margins and no overlap. Premium smooth painted-metal top-down 2D shooter asset, crisp readable silhouette for eventual50px display, not pixel art. The assembled concept is a small orbital station, with a rotating habitat ring around a fixed north-south tower. Only solid mechanical parts exist in this image. NO ENVIRONMENT: no planet, no clouds, no fog, no haze, no gradients, no light bloom outside metal, no cast shadows, no backdrop of any color, no white/gray glass disk, no mottled backdrop. All non-metal areas, including all ring apertures, must be actual alpha-zero transparent pixels. Do not use a checkerboard pattern. Metal highlights are contained strictly within solid surfaces.
+
+Integration:
+Native1774x887 sheet. Measured visible-alpha bounds are ring(30,27,829,832)
+and spindle(1230,26,201,833). Cached AtlasTexture regions preserve source pixels.
+The ring renders42x42 around the original50x50 centre; the fixed spindle retains
+its native aspect with50px height. Habitat spin is TAU/240 per authored unit,
+i.e. one revolution per7.2seconds at the current fixed native60Hz game speed.
+Original HP, collision, movement and attack timing are unchanged.

@@ -1,10 +1,11 @@
 class_name PirateBoss
 extends RefCounted
+const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Rng = preload("res://scripts/random.gd")
 ## Four original boss bodies, attached weapons and body attack phases.
 static func parts_alive(enemies: Variant) -> bool:
 	for e in enemies:
-		if e.kind>=100 and e.kind<200 and e.hp>0: return true
+		if Catalog.is_part(int(e.kind)) and e.hp>0: return true
 	return false
 
 static func has_part(enemies: Variant, kind: int) -> bool:
@@ -115,9 +116,7 @@ static func _add(result: Array, pos: Vector2, velocity: Vector2, kind: int) -> v
 	result.append({"pos":pos,"velocity":velocity,"kind":kind})
 
 static func part_side(kind: int) -> int:
-	if kind in [112,121,131]: return -1
-	if kind in [111,122,132]: return 1
-	return 0
+	return int(Catalog.definition(kind).get("part_side",0))
 static func claw_muzzle(e: Dictionary) -> Vector2:
 	# Inner empty region of the existing50x100 claw sprite, mirrored about the torso.
 	match int(e.kind):

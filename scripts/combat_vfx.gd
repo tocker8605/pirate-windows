@@ -1,5 +1,6 @@
 extends RefCounted
 ## Presentation-only CPU particles. Never consumes the original game's VB random stream.
+const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Rules = preload("res://scripts/enemy_rules.gd")
 const Weapons = preload("res://scripts/player_weapons.gd")
 const Pilot = preload("res://scripts/pilot_geometry.gd")
@@ -115,19 +116,18 @@ func observe(g: Node) -> void:
 		# Emit at the damaged hull; particle advection now creates the history trail.
 		if g.render_hp<40: emit_smoke(g.player+Pilot.visual_point(Vector2(25,40)),13)
 		for e in g.enemies:
-			if e.hp>=Rules.SMOKE.get(int(e.kind),0): continue
-			var size: float = 16 if e.kind>20 and e.kind<100 else 12
-			emit_smoke(e.pos+Vector2(25,25),size)
-			if e.kind>20 and e.kind<100: emit_smoke(e.pos+Vector2(60,35),size)
-			if e.kind>40 and e.kind<100: emit_smoke(e.pos+Vector2(-25,35),size)
-		if not g.boss.is_empty() and boss_smoking(g.boss):
-			for offset in [Vector2(-35,55),Vector2(0,45),Vector2(35,55)]:
-				emit_smoke(g.boss.pos+offset,16)
+			emit_actor_smoke(e)
+		if not g.boss.is_empty(): emit_actor_smoke(g.boss)
 		if g.death_ticks==0:
 			for x in [17,33]: emit(g.player+Pilot.visual_point(Vector2(x,43)),Vector2(0,2.5),6,2.8,CYAN)
 
 static func boss_smoking(b: Dictionary) -> bool:
-	return b.get("max_hp",0)>0 and b.hp>0 and b.hp<float(b.max_hp)*0.4
+	return b.get("max_hp",0)>0 and Catalog.smoking(b)
+
+func emit_actor_smoke(actor: Dictionary) -> void:
+	if not Catalog.smoking(actor): return
+	var settings: Dictionary = Catalog.smoke_settings(actor)
+	for offset in settings.ports: emit_smoke(actor.pos+offset,float(settings.size))
 
 func emit_smoke(pos: Vector2, size: float) -> void:
 	for i in range(2):

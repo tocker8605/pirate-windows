@@ -1,0 +1,877 @@
+{
+  "schema_version": 1,
+  "entities": {
+    "1": {
+      "name": "crescent_scout",
+      "role": "enemy",
+      "hp": 5,
+      "score": 15,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 20,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 3,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      }
+    },
+    "2": {
+      "name": "variable_wing_fighter",
+      "role": "enemy",
+      "hp": 8,
+      "score": 25,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 20,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 4,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      }
+    },
+    "3": {
+      "name": "ring_rotor",
+      "role": "enemy",
+      "hp": 15,
+      "score": 40,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 20,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 7,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      }
+    },
+    "4": {
+      "name": "cross_fighter_a",
+      "role": "enemy",
+      "hp": 20,
+      "score": 55,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 20,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 9,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      }
+    },
+    "5": {
+      "name": "cross_fighter_b",
+      "role": "enemy",
+      "hp": 20,
+      "score": 50,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 20,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 9,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      }
+    },
+    "6": {
+      "name": "swept_wing_fighter",
+      "role": "enemy",
+      "hp": 30,
+      "score": 65,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 20,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 13,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      }
+    },
+    "7": {
+      "name": "delta_fighter",
+      "role": "enemy",
+      "hp": 10,
+      "score": 35,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 20,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 5,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      }
+    },
+    "8": {
+      "name": "folding_wing_fighter",
+      "role": "enemy",
+      "hp": 35,
+      "score": 70,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 20,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 15,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      }
+    },
+    "9": {
+      "name": "fireball_disc",
+      "role": "enemy",
+      "hp": 25,
+      "score": 60,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 20,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 12,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      }
+    },
+    "10": {
+      "name": "crescent_fighter",
+      "role": "enemy",
+      "hp": 10,
+      "score": 45,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 20,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 5,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      }
+    },
+    "11": {
+      "name": "twin_pod_fighter",
+      "role": "enemy",
+      "hp": 10,
+      "score": 30,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 20,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 5,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      }
+    },
+    "19": {
+      "name": "supply_open",
+      "role": "supply",
+      "hp": 1,
+      "score": 500,
+      "score_scales_with_difficulty": false,
+      "damageable": true,
+      "explosion_ticks": 20,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "drop": {
+        "item": 1,
+        "offset": [25, 40],
+        "cargo_release": true
+      },
+      "on_defeat": {
+        "action": "release_and_escape",
+        "definition_id": 201,
+        "pattern": 1091
+      }
+    },
+    "21": {
+      "name": "medium_fighter",
+      "role": "enemy",
+      "hp": 100,
+      "score": 115,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 35,
+      "death_sound": "bang-be",
+      "draw_size": [100, 100],
+      "draw_offset": [-25, -25],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-40, -25, 60, 30],
+        "beam_bounds": [-35, 35]
+      },
+      "damage_smoke": {
+        "below_hp": 40,
+        "size": 16,
+        "ports": [
+          [25, 25],
+          [60, 35]
+        ]
+      },
+      "drop": {
+        "item": 2,
+        "offset": [25, 25]
+      }
+    },
+    "22": {
+      "name": "charge_fighter",
+      "role": "enemy",
+      "hp": 120,
+      "score": 145,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 35,
+      "death_sound": "bang-be",
+      "draw_size": [100, 100],
+      "draw_offset": [-25, -45],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-40, -25, 60, 30],
+        "beam_bounds": [-35, 35]
+      },
+      "damage_smoke": {
+        "below_hp": 50,
+        "size": 16,
+        "ports": [
+          [25, 25],
+          [60, 35]
+        ]
+      }
+    },
+    "41": {
+      "name": "heavy_fighter_a",
+      "role": "enemy",
+      "hp": 225,
+      "score": 185,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 35,
+      "death_sound": "bang-be",
+      "draw_size": [150, 100],
+      "draw_offset": [-50, -25],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-65, -25, 85, 30],
+        "beam_bounds": [-55, 55]
+      },
+      "damage_smoke": {
+        "below_hp": 90,
+        "size": 16,
+        "ports": [
+          [25, 25],
+          [60, 35],
+          [-25, 35]
+        ]
+      },
+      "drop": {
+        "item": 2,
+        "offset": [25, 40]
+      }
+    },
+    "42": {
+      "name": "heavy_fighter_b",
+      "role": "enemy",
+      "hp": 250,
+      "score": 205,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 35,
+      "death_sound": "bang-be",
+      "draw_size": [150, 100],
+      "draw_offset": [-50, -25],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-65, -25, 85, 30],
+        "beam_bounds": [-55, 55]
+      },
+      "damage_smoke": {
+        "below_hp": 100,
+        "size": 16,
+        "ports": [
+          [25, 25],
+          [60, 35],
+          [-25, 35]
+        ]
+      },
+      "drop": {
+        "item": 2,
+        "offset": [25, 40]
+      }
+    },
+    "91": {
+      "name": "boss_stage1",
+      "role": "boss",
+      "hp": 1000,
+      "score": 0,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 20,
+      "death_sound": "bang-e",
+      "draw_size": [115, 100],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-90, -25, 60, 60],
+        "beam_bounds": [-25, 75]
+      },
+      "stage": 1,
+      "music": "boss01",
+      "damage_smoke": {
+        "below_ratio": 0.4,
+        "size": 16,
+        "ports": [
+          [-35, 55],
+          [0, 45],
+          [35, 55]
+        ]
+      }
+    },
+    "92": {
+      "name": "boss_stage2",
+      "role": "boss",
+      "hp": 1000,
+      "score": 0,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 20,
+      "death_sound": "bang-e",
+      "draw_size": [100, 100],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-90, -25, 60, 60],
+        "beam_bounds": [-25, 75]
+      },
+      "stage": 2,
+      "music": "boss01",
+      "damage_smoke": {
+        "below_ratio": 0.4,
+        "size": 16,
+        "ports": [
+          [-35, 55],
+          [0, 45],
+          [35, 55]
+        ]
+      }
+    },
+    "93": {
+      "name": "boss_stage3",
+      "role": "boss",
+      "hp": 1000,
+      "score": 0,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 20,
+      "death_sound": "bang-e",
+      "draw_size": [100, 100],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-90, -25, 60, 60],
+        "beam_bounds": [-25, 75]
+      },
+      "stage": 3,
+      "music": "boss01",
+      "damage_smoke": {
+        "below_ratio": 0.4,
+        "size": 16,
+        "ports": [
+          [-35, 55],
+          [0, 45],
+          [35, 55]
+        ]
+      }
+    },
+    "94": {
+      "name": "boss_stage4",
+      "role": "boss",
+      "hp": 1500,
+      "score": 0,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 20,
+      "death_sound": "bang-e",
+      "draw_size": [100, 100],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-90, -25, 60, 60],
+        "beam_bounds": [-25, 75]
+      },
+      "stage": 4,
+      "music": "boss01",
+      "damage_smoke": {
+        "below_ratio": 0.4,
+        "size": 16,
+        "ports": [
+          [-35, 55],
+          [0, 45],
+          [35, 55]
+        ]
+      }
+    },
+    "101": {
+      "name": "boss1_left_fist",
+      "role": "part",
+      "hp": 200,
+      "score": 350,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 30,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 80,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      },
+      "boss_rush_drop": {
+        "item": 1,
+        "offset": [25, 40]
+      }
+    },
+    "102": {
+      "name": "boss1_right_fist",
+      "role": "part",
+      "hp": 200,
+      "score": 350,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 30,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 80,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      },
+      "boss_rush_drop": {
+        "item": 1,
+        "offset": [25, 40]
+      }
+    },
+    "111": {
+      "name": "boss2_right_arm",
+      "role": "part",
+      "hp": 200,
+      "score": 350,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 30,
+      "death_sound": "bang-e",
+      "draw_size": [50, 100],
+      "draw_offset": [0, -50],
+      "part_side": 1,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 80,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      },
+      "boss_rush_drop": {
+        "item": 1,
+        "offset": [25, 40]
+      }
+    },
+    "112": {
+      "name": "boss2_left_arm",
+      "role": "part",
+      "hp": 200,
+      "score": 350,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 30,
+      "death_sound": "bang-e",
+      "draw_size": [50, 100],
+      "draw_offset": [0, -50],
+      "part_side": -1,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 80,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      },
+      "boss_rush_drop": {
+        "item": 1,
+        "offset": [25, 40]
+      }
+    },
+    "113": {
+      "name": "boss2_centre_module",
+      "role": "part",
+      "hp": 300,
+      "score": 350,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 30,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 120,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      },
+      "boss_rush_drop": {
+        "item": 1,
+        "offset": [25, 40]
+      }
+    },
+    "121": {
+      "name": "boss3_left_arm",
+      "role": "part",
+      "hp": 400,
+      "score": 350,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 30,
+      "death_sound": "bang-e",
+      "draw_size": [50, 100],
+      "draw_offset": [0, -50],
+      "part_side": -1,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 160,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      },
+      "boss_rush_drop": {
+        "item": 1,
+        "offset": [25, 40]
+      }
+    },
+    "122": {
+      "name": "boss3_right_arm",
+      "role": "part",
+      "hp": 400,
+      "score": 350,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 30,
+      "death_sound": "bang-e",
+      "draw_size": [50, 100],
+      "draw_offset": [0, -50],
+      "part_side": 1,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 160,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      },
+      "boss_rush_drop": {
+        "item": 1,
+        "offset": [25, 40]
+      }
+    },
+    "123": {
+      "name": "boss3_orb_a",
+      "role": "part",
+      "hp": 200,
+      "score": 350,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 30,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 80,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      },
+      "boss_rush_drop": {
+        "item": 1,
+        "offset": [25, 40]
+      }
+    },
+    "124": {
+      "name": "boss3_orb_b",
+      "role": "part",
+      "hp": 200,
+      "score": 350,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 30,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 80,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      },
+      "boss_rush_drop": {
+        "item": 1,
+        "offset": [25, 40]
+      }
+    },
+    "131": {
+      "name": "boss4_left_claw",
+      "role": "part",
+      "hp": 600,
+      "score": 350,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 30,
+      "death_sound": "bang-e",
+      "draw_size": [50, 100],
+      "draw_offset": [0, -50],
+      "part_side": -1,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 240,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      },
+      "boss_rush_drop": {
+        "item": 1,
+        "offset": [25, 40]
+      }
+    },
+    "132": {
+      "name": "boss4_right_claw",
+      "role": "part",
+      "hp": 600,
+      "score": 350,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 30,
+      "death_sound": "bang-e",
+      "draw_size": [50, 100],
+      "draw_offset": [0, -50],
+      "part_side": 1,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 240,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      },
+      "boss_rush_drop": {
+        "item": 1,
+        "offset": [25, 40]
+      }
+    },
+    "133": {
+      "name": "boss4_centre_core",
+      "role": "part",
+      "hp": 800,
+      "score": 350,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "explosion_ticks": 30,
+      "death_sound": "bang-e",
+      "draw_size": [50, 80],
+      "draw_offset": [0, -15],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "damage_smoke": {
+        "below_hp": 200,
+        "size": 12,
+        "ports": [
+          [25, 25]
+        ]
+      },
+      "boss_rush_drop": {
+        "item": 1,
+        "offset": [25, 40]
+      }
+    },
+    "201": {
+      "name": "supply_approach",
+      "role": "supply",
+      "hp": 1,
+      "score": 0,
+      "score_scales_with_difficulty": true,
+      "damageable": false,
+      "explosion_ticks": 20,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15]
+      },
+      "open_at_y": 291,
+      "open_kind": 19
+    }
+  }
+}

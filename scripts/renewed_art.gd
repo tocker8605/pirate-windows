@@ -1,10 +1,14 @@
 extends RefCounted
+const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Pose = preload("res://scripts/enemy_pose.gd")
 const Boss = preload("res://scripts/boss.gd")
 var poses: Dictionary = {}
 var last_frame: int = -1
 var render_fraction: float = 1.0
 ## Generated alpha atlases are consumed non-destructively at the original game anchors.
+var station_atlas: Texture2D = preload("res://assets/renewed/ring-quarter-v23.png")
+var station_frame: AtlasTexture
+const STATION_RECT = Rect2i(207,187,837,799)
 var carrier: Texture2D = preload("res://assets/renewed/carrier-v20.png")
 var enemies: Texture2D = preload("res://assets/renewed/enemies-v18.png")
 var bosses: Texture2D = preload("res://assets/renewed/bosses-v15.png")
@@ -61,15 +65,30 @@ func cell(atlas: Texture2D, index: int, columns: int, rows: int) -> AtlasTexture
 		cells[key] = texture
 	return cells[key]
 func enemy_texture(kind: int) -> Texture2D:
+	if kind==3: return station_texture()
 	if kind in [19,201]: return carrier
 	if SMALL.has(kind): return cell(enemies,int(SMALL[kind]),4,4)
 	return cell(bosses,int(BOSS_PARTS.get(kind,11)),4,3)
+func station_texture() -> Texture2D:
+	if station_frame==null:
+		station_frame = AtlasTexture.new()
+		station_frame.atlas = station_atlas
+		station_frame.region = Rect2(STATION_RECT)
+		station_frame.filter_clip = true
+	return station_frame
+func draw_station(c: Node2D, center: Vector2, scale: Vector2, phase: float, tint: Color = Color.WHITE) -> void:
+	# Perspective and occlusion are painted together; never rotate a quarter-view card flat.
+	c.draw_set_transform(center,0,scale)
+	var texture: Texture2D = station_texture()
+	var native := Vector2(texture.get_width(),texture.get_height())
+	var size: Vector2 = native*minf(50/native.x,50/native.y)
+	c.draw_texture_rect(texture,Rect2(-size/2,size),false,tint)
+	for side in [-1,1]:
+		var pulse: float = 0.25+0.2*sin(phase*2+side*PI/2)
+		c.draw_circle(Vector2(side*23,0.2),0.5,Color(1,0.38,0.08,pulse),true,-1,true)
+	c.draw_set_transform(Vector2.ZERO)
 static func dimensions(kind: int) -> Vector2:
-	if kind in [21,22]: return Vector2(100,100)
-	if kind in [41,42]: return Vector2(150,100)
-	if kind in [111,112,121,122,131,132]: return Vector2(50,100)
-	if kind==133: return Vector2(50,80)
-	return Vector2(50,50)
+	return Catalog.definition(kind).get("draw_size",Vector2(50,50))
 func reset_motion() -> void:
 	poses.clear()
 	last_frame = -1
@@ -101,6 +120,9 @@ func draw_enemy(c: Node2D, e: Dictionary, pos: Vector2, _frame: int) -> void:
 	if pitch>PI/2: tint *= Color(0.78,0.86,0.96)
 	if Boss.part_side(int(e.kind))>0 or e.kind in [101,124]: projected.x *= -1
 	if e.kind==133: center.x += 1
+	if e.kind==3:
+		draw_station(c,center,projected,spin,tint)
+		return
 	var yaw: float = Pose.bank_yaw(bank,projected.y)+arm_roll(int(e.kind))+(spin if e.kind==9 else 0.0)
 	c.draw_set_transform(center,yaw,projected)
 	var painted_size: Vector2 = Vector2(41,80) if e.kind==133 else size
@@ -110,16 +132,7 @@ func draw_enemy(c: Node2D, e: Dictionary, pos: Vector2, _frame: int) -> void:
 		painted_size = native*minf(size.x/native.x,size.y/native.y)
 	if e.kind==8: draw_hinged_wings(c,center,yaw,projected,Pose.wing_fold(bank),tint)
 	else: c.draw_texture_rect(sprite,Rect2(-painted_size/2,painted_size),false,tint)
-	if e.kind==3:
-		var rotor := Vector2(0,-3)
-		c.draw_circle(rotor,11,Color("172025"),true,-1,true)
-		for i in range(3):
-			var direction := Vector2.from_angle(spin+i*TAU/3)
-			var side := direction.orthogonal()
-			c.draw_colored_polygon(PackedVector2Array([rotor+direction*2+side,rotor+direction*9+side*2,rotor+direction*8-side*2]),Color("8e9ca4"))
-			c.draw_line(rotor+direction*3+side,rotor+direction*9+side*2,Color("d3dde1"),0.7,true)
-		c.draw_circle(rotor,2,Color("b5c3cb"),true,-1,true)
-	elif e.kind in [4,5,9]:
+	if e.kind in [4,5,9]:
 		# Keep the generated metal/lens shading; only modulate its emissive centre.
 		c.draw_circle(Vector2.ZERO,3+pulse,Color(1,0.45,0.12,pulse*0.18),true,-1,true)
 	c.draw_set_transform(Vector2.ZERO)
@@ -165,5 +178,5 @@ func draw_boss_links(c: Node2D, pos: Vector2, actors: Variant, presentation: Ref
 
 func draw_boss(c: Node2D, stage: int, pos: Vector2) -> void:
 	# Original bodies are compact robot torsos; the wide old frame includes empty margins.
-	var width: float = 115 if stage==1 else 100
-	c.draw_texture_rect(cell(bosses,stage-1,4,3),Rect2(pos+Vector2(-width/2,0),Vector2(width,100)),false)
+	var size: Vector2 = Catalog.boss_definition(stage).draw_size
+	c.draw_texture_rect(cell(bosses,stage-1,4,3),Rect2(pos+Vector2(-size.x/2,0),size),false)

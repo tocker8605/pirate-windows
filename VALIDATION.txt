@@ -1,47 +1,32 @@
-Pirate II v20 — Validation / 2026-11-07
-Godot4.7.2 / Windows x64 / Compatibility OpenGL3.3 / NVIDIA RTX4080
-Project: E:\CodexWork\Pirate-II-Godot
+Pirate II v23 — Validation / 2026-11-07
+Godot4.7.2 / Windows x64 / OpenGL Compatibility / NVIDIA RTX4080
 
-714 checks passed,0 failed across28 suites.
-  smoke38; combat_reference43; special_effects28; campaign115;
-  presentation_audio63; full_audit72; pool_reference14; random_reference9;
-  combat_vfx14; entity_store15; entity_scale6; renewal41;
-  regions_turning35; stage4_regions21; presentation26; native_tick34;
-  boss_mecha15; carrier_reward28; cockpit_fireball9; weapon_parallel13; claw_smoke17;
-  supply_boss_v20=27;
-  render_rop4; render_renewal8; render_60fps6; render_title_earth8;
-  render_combat_style2; render_vfx_strength3.
-All final active import/test logs are free of script/shader errors and failures.
-Changed menu navigation, drop position and active-atlas assertions were updated
-for the new requirements. Already-passed suites were retained while affected
-and remaining suites were rerun. Final results were aggregated from all28 logs.
+Visual-scope revision;55 related checks passed,0 failed:
+  regions_turning35; render_station_weapons6; render_renewal8; render_60fps6.
+The full837-check suite last passed at v22. It was not rerun wholesale for this
+asset/camera change. Current affected pose/render/performance suites were rerun.
+MEASURED: 2.016 seconds; 60.02 process FPS; 60.02 drawn FPS; 60.02 gameplay ticks/s
 
-Real frame sample: 1.999sec,60.02 process FPS,60.02 drawn FPS,60.02 gameplay ticks/s.
-Actual game integration uses level1 only; removed title.speed setting and menu row.
+Visual review:
+  preview-station-style-v23.png: original / v22 / refined v23, plus the11
+  normal enemy kinds at exactly the same50px logical frame.
+  preview-station-game-v23.png: actual game renderer/background/HUD with mixed enemies.
+  The user-rejected exaggerated/chibi draft is not an active runtime asset.
+  Refined end caps are compact and the shaft is slender, with moderate metallic
+  shading and a coherent quarter-view ring/axle overlap.
+  Quarter-view card geometry stays fixed across animation phases; opposite
+  status lights pulse. No misleading flat ring/card rotation remains.
+  Alpha samples in the four ring apertures are0.
+  Final generated PNG bytes are preserved; cached atlas bounds207,187,837,799.
 
-New behavioral validation:
-  single-port enemy3/7/11 X centres; enemy22 charge/projectile shared anchor;
-  boss HP strict40percent threshold at multiple maximum HP values;
-  live boss smoke observer emits6 size16 puffs across3 body ports;
-  mounted cargo disappears on hit and reward is created at the exact same anchor;
-  one release burst only; reward falls and expands from carried size;
-  actual1sec game processing uses60 native ticks and level1 metadata conversion.
+Preservation:
+  Verified file hashes for player_weapons.gd, weapon_preview.gd, bosses-v15.png,
+  enemies-v18.png and data/enemies.json match the beginning of this task.
+  No HP, collision, movement, firing, boss, other-enemy or weapon changes.
 
-Rendered/inspected:
-  preview-supply-v20.png: enlarged carrier carrying/open/empty states and v18 enemies.
-  preview-carrier-loaded-v20.png / preview-carrier-release-v20.png: actual renderer.
-  preview-boss-smoke-v20.png: actual low-health boss observer and scroll smoke.
-  preview-settings-v20.png: no GAME SPEED label/value/selection, difficulty and weapons retained.
-  Actual exported EXE: preview-exe-weapons-v20.png and preview-exe-stage-v20.png.
-Full campaign behavior is covered by regression fixtures; no full human playthrough.
-
-Export completed without errors after selecting a writable workspace temp directory.
-Windows EXE SHA256: 17E53B3B97260E4AC9700FC60B6C494516AC21E78537E691C19233286293E319
-Original VB6 baseline:69 files,0 changed.
-No commit or push.
-
-Art:
-  Active regular atlas is the original enemies-v18.png with v18 pose renderer.
-  Boss atlas remains bosses-v15.png; existing fists/claw anchors preserved.
-  New carrier-v20.png is from built-in imagegen, original alpha retained.
-  Final prompt and provenance: assets/renewed/CARRIER-GENERATION-v20.txt.
+Windows build exported without errors.
+Direct exported EXE launch was not retried: v22 was blocked by Windows
+application-control policy. Source runtime was verified using installed Godot.
+EXE SHA256: 3BB21B923EB2E145F46C861E5D7C9FCB735099E32FDFAFF7DF9D0423C2CB30B7
+No commit or push. Original VB6 folder untouched. No full human campaign playthrough.
+Art prompts/provenance: assets/renewed/RING-GENERATION-v23.txt.

@@ -1,5 +1,6 @@
 extends RefCounted
 ## One source of truth for the old frame selectors and the renewed projected attitude.
+const STATION_PHASE_STEP: float = TAU/240.0
 const TURN_STEP: float = PI/10.0
 static func sprite_x(kind: int, v: Vector2, cycle: int, y: float = 0) -> int:
 	match kind:
@@ -38,7 +39,7 @@ static func target(kind: int, velocity: Vector2, cycle: int) -> Dictionary:
 	return {"pitch":pitch,"bank":bank,"pulse":pulse,"previous_pitch":pitch,"previous_bank":bank,"previous_pulse":pulse,"spin":0.0,"previous_spin":0.0}
 static func advance(pose: Dictionary, kind: int, velocity: Vector2, cycle: int, units: float = 1.0) -> void:
 	pose.previous_spin = pose.get("spin",0.0)
-	pose.spin = pose.previous_spin+units*(TAU/18 if kind==3 else (PI/36 if kind==9 else 0.0))
+	pose.spin = pose.previous_spin+units*(STATION_PHASE_STEP if kind==3 else (PI/36 if kind==9 else 0.0))
 	pose.previous_pitch = pose.pitch
 	pose.previous_bank = pose.bank
 	pose.previous_pulse = pose.pulse

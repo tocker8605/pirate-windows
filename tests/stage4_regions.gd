@@ -46,7 +46,7 @@ func run() -> void:
 	check(path==[2,3,4],"released space loop traverses the Moon surface once before the cavern loop")
 	check(g.background_y>=0 and g.background_y<=480 and Regions.sample(g.background_y+479,4).near==4,"map3's final loop stays entirely underground and never repeats the surface")
 	g._load_stage(4)
-	g.events = g.events.filter(func(row): return int(row[1])==71)
+	g.events = g.events.filter(func(row): return row.action=="scroll")
 	g.frame = 2730
 	g._read_events()
 	check(g.map_mode==2 and g.scroll_target==25,"surface approach remains gated by the original t91 event")

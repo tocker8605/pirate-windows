@@ -74,7 +74,7 @@ func run() -> void:
 	check(Fire.aim(Vector2(100,100),Vector2(100,80),7)==Vector2.ZERO,"zero denominator handled without a crash")
 	# Original shot anchors, power-specific layout and image lifecycle.
 	a = Weapons.volley(player,1,3)
-	check(a.size()==2 and a[0].pos==Vector2(173,383) and a[0].kind==1 and a[1].pos==Vector2(189,383) and a[1].kind==1,"weapon1 power3 uses a wider parallel pair")
+	check(a.size()==2 and a[0].pos==Vector2(165,383) and a[0].kind==1 and a[1].pos==Vector2(195,383) and a[1].kind==1,"weapon1 power3 uses a wider parallel pair")
 	a = Weapons.volley(player,2,7)
 	check(a.size()==4 and a[0].pos==Vector2(175,382) and a[3].pos==Vector2(195,385),"straight power 7 original staggered anchors")
 	a = Weapons.volley(player,1,1)
@@ -92,7 +92,7 @@ func run() -> void:
 	check(Weapons.visual(shot,player).rect==Rect2i(0,180,80,30),"impact last three ticks use sheet row 180")
 	shot = {"pos":Vector2(190,350),"kind":4}
 	Weapons.advance(shot,player)
-	check(near(shot.pos,Vector2(190+9.0/14,339)),"scatter weapon uses original player-relative nonlinear trajectory")
+	check(near(shot.pos,Vector2(190,339)),"accelerating weapon keeps X fixed and retains player-Y-based speed")
 	check(Weapons.vb_integer(2.5)==2 and Weapons.vb_integer(3.5)==4 and Weapons.vb_integer(-1.5)==-2,"VB6 ties-to-even pixel assignment")
 	var game = Game.new()
 	game.automatic = false

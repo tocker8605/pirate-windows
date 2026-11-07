@@ -72,7 +72,7 @@ func run() -> void:
 	ticks(180)
 	check(g.energy==25,"energy recovery retains25 points over3seconds without fractional duplicate recoveries")
 	reset()
-	g.events = [[1,62,0,0,0,0]]
+	g.events = [{"at":1,"action":"banner","name":"mission"}]
 	ticks(54)
 	check(g.event_cursor==0,"event at30 authored units does not trigger early")
 	ticks(1)

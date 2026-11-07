@@ -1,1066 +1,139 @@
-[
-  [
-    1,
-    62,
-    0,
-    0,
-    0,
-    0
-  ],
-  [
-    3,
-    1,
-    50,
-    -50,
-    1011,
-    5
-  ],
-  [
-    4,
-    1,
-    75,
-    -50,
-    1011,
-    5
-  ],
-  [
-    5,
-    1,
-    100,
-    -50,
-    1012,
-    5
-  ],
-  [
-    5,
-    1,
-    300,
-    -50,
-    1011,
-    5
-  ],
-  [
-    6,
-    10,
-    125,
-    -50,
-    1012,
-    10
-  ],
-  [
-    6,
-    1,
-    275,
-    -50,
-    1011,
-    5
-  ],
-  [
-    7,
-    1,
-    250,
-    -50,
-    1012,
-    5
-  ],
-  [
-    8,
-    10,
-    225,
-    -50,
-    1012,
-    10
-  ],
-  [
-    9,
-    201,
-    75,
-    480,
-    1074,
-    1
-  ],
-  [
-    11,
-    2,
-    50,
-    -50,
-    1021,
-    8
-  ],
-  [
-    12,
-    2,
-    125,
-    -50,
-    1021,
-    8
-  ],
-  [
-    13,
-    2,
-    300,
-    -50,
-    1022,
-    8
-  ],
-  [
-    14,
-    2,
-    225,
-    -50,
-    1022,
-    8
-  ],
-  [
-    17,
-    2,
-    400,
-    225,
-    1054,
-    8
-  ],
-  [
-    18,
-    11,
-    400,
-    230,
-    1054,
-    10
-  ],
-  [
-    19,
-    2,
-    400,
-    235,
-    1054,
-    8
-  ],
-  [
-    20,
-    11,
-    400,
-    240,
-    1054,
-    10
-  ],
-  [
-    20,
-    2,
-    -50,
-    225,
-    1053,
-    8
-  ],
-  [
-    21,
-    11,
-    -50,
-    230,
-    1053,
-    10
-  ],
-  [
-    22,
-    2,
-    -50,
-    235,
-    1053,
-    8
-  ],
-  [
-    23,
-    11,
-    -50,
-    240,
-    1053,
-    10
-  ],
-  [
-    26,
-    71,
-    1,
-    20,
-    0,
-    0
-  ],
-  [
-    26,
-    10,
-    75,
-    -50,
-    1011,
-    10
-  ],
-  [
-    27,
-    1,
-    50,
-    -50,
-    1012,
-    5
-  ],
-  [
-    27,
-    1,
-    100,
-    -50,
-    1012,
-    5
-  ],
-  [
-    27,
-    2,
-    -50,
-    220,
-    1053,
-    8
-  ],
-  [
-    28,
-    1,
-    25,
-    -50,
-    1012,
-    5
-  ],
-  [
-    28,
-    1,
-    125,
-    -50,
-    1012,
-    5
-  ],
-  [
-    28,
-    2,
-    -50,
-    230,
-    1053,
-    8
-  ],
-  [
-    29,
-    10,
-    275,
-    -50,
-    1011,
-    10
-  ],
-  [
-    30,
-    1,
-    250,
-    -50,
-    1012,
-    5
-  ],
-  [
-    30,
-    1,
-    300,
-    -50,
-    1012,
-    5
-  ],
-  [
-    30,
-    2,
-    400,
-    220,
-    1054,
-    8
-  ],
-  [
-    31,
-    1,
-    225,
-    -50,
-    1012,
-    5
-  ],
-  [
-    31,
-    1,
-    325,
-    -50,
-    1012,
-    5
-  ],
-  [
-    31,
-    2,
-    400,
-    230,
-    1054,
-    8
-  ],
-  [
-    33,
-    3,
-    100,
-    -50,
-    1072,
-    15
-  ],
-  [
-    35,
-    3,
-    250,
-    -50,
-    1072,
-    15
-  ],
-  [
-    37,
-    2,
-    -50,
-    230,
-    1053,
-    8
-  ],
-  [
-    37,
-    1,
-    100,
-    -50,
-    1011,
-    5
-  ],
-  [
-    38,
-    1,
-    250,
-    -50,
-    1011,
-    5
-  ],
-  [
-    38,
-    2,
-    -50,
-    220,
-    1053,
-    8
-  ],
-  [
-    39,
-    2,
-    -50,
-    210,
-    1053,
-    8
-  ],
-  [
-    39,
-    10,
-    150,
-    -50,
-    1012,
-    10
-  ],
-  [
-    39,
-    2,
-    400,
-    230,
-    1054,
-    8
-  ],
-  [
-    40,
-    71,
-    1,
-    2,
-    0,
-    0
-  ],
-  [
-    40,
-    10,
-    200,
-    -50,
-    1012,
-    10
-  ],
-  [
-    40,
-    2,
-    400,
-    220,
-    1054,
-    8
-  ],
-  [
-    41,
-    2,
-    400,
-    210,
-    1054,
-    8
-  ],
-  [
-    42,
-    201,
-    250,
-    480,
-    1074,
-    1
-  ],
-  [
-    43,
-    71,
-    2,
-    2,
-    0,
-    0
-  ],
-  [
-    43,
-    21,
-    175,
-    -90,
-    1031,
-    100
-  ],
-  [
-    44,
-    2,
-    400,
-    220,
-    1054,
-    8
-  ],
-  [
-    44,
-    11,
-    -50,
-    220,
-    1053,
-    10
-  ],
-  [
-    45,
-    11,
-    400,
-    240,
-    1054,
-    10
-  ],
-  [
-    45,
-    2,
-    -50,
-    240,
-    1053,
-    8
-  ],
-  [
-    46,
-    2,
-    50,
-    -50,
-    1021,
-    8
-  ],
-  [
-    46,
-    2,
-    300,
-    -50,
-    1022,
-    8
-  ],
-  [
-    47,
-    2,
-    150,
-    -50,
-    1021,
-    8
-  ],
-  [
-    47,
-    2,
-    200,
-    -50,
-    1022,
-    8
-  ],
-  [
-    50,
-    3,
-    150,
-    -50,
-    1072,
-    15
-  ],
-  [
-    51,
-    10,
-    100,
-    -50,
-    1011,
-    10
-  ],
-  [
-    52,
-    1,
-    125,
-    -50,
-    1012,
-    5
-  ],
-  [
-    53,
-    1,
-    150,
-    -50,
-    1012,
-    5
-  ],
-  [
-    54,
-    1,
-    175,
-    -50,
-    1012,
-    5
-  ],
-  [
-    54,
-    10,
-    250,
-    -50,
-    1011,
-    10
-  ],
-  [
-    55,
-    3,
-    250,
-    -50,
-    1072,
-    15
-  ],
-  [
-    55,
-    1,
-    225,
-    -50,
-    1012,
-    5
-  ],
-  [
-    56,
-    1,
-    200,
-    -50,
-    1012,
-    5
-  ],
-  [
-    57,
-    1,
-    175,
-    -50,
-    1012,
-    5
-  ],
-  [
-    60,
-    5,
-    -50,
-    270,
-    1032,
-    20
-  ],
-  [
-    61,
-    5,
-    -50,
-    280,
-    1032,
-    20
-  ],
-  [
-    62,
-    5,
-    400,
-    270,
-    1033,
-    20
-  ],
-  [
-    63,
-    5,
-    400,
-    280,
-    1033,
-    20
-  ],
-  [
-    65,
-    1,
-    25,
-    -50,
-    1012,
-    5
-  ],
-  [
-    66,
-    2,
-    75,
-    -50,
-    1021,
-    8
-  ],
-  [
-    67,
-    1,
-    125,
-    -50,
-    1012,
-    5
-  ],
-  [
-    68,
-    5,
-    -50,
-    60,
-    1034,
-    20
-  ],
-  [
-    68,
-    1,
-    325,
-    -50,
-    1012,
-    5
-  ],
-  [
-    69,
-    2,
-    300,
-    -50,
-    1022,
-    8
-  ],
-  [
-    70,
-    5,
-    -50,
-    50,
-    1034,
-    20
-  ],
-  [
-    70,
-    1,
-    275,
-    -50,
-    1012,
-    5
-  ],
-  [
-    70,
-    5,
-    400,
-    60,
-    1035,
-    20
-  ],
-  [
-    72,
-    5,
-    400,
-    50,
-    1035,
-    20
-  ],
-  [
-    73,
-    10,
-    50,
-    -50,
-    1011,
-    10
-  ],
-  [
-    73,
-    10,
-    300,
-    -50,
-    1011,
-    10
-  ],
-  [
-    74,
-    1,
-    100,
-    -50,
-    1012,
-    5
-  ],
-  [
-    74,
-    1,
-    250,
-    -50,
-    1012,
-    5
-  ],
-  [
-    75,
-    1,
-    150,
-    -50,
-    1011,
-    5
-  ],
-  [
-    75,
-    1,
-    200,
-    -50,
-    1011,
-    5
-  ],
-  [
-    75,
-    4,
-    -50,
-    50,
-    1041,
-    20
-  ],
-  [
-    76,
-    1,
-    100,
-    -50,
-    1012,
-    5
-  ],
-  [
-    76,
-    1,
-    250,
-    -50,
-    1012,
-    5
-  ],
-  [
-    76,
-    4,
-    -50,
-    50,
-    1041,
-    20
-  ],
-  [
-    78,
-    4,
-    400,
-    50,
-    1042,
-    20
-  ],
-  [
-    79,
-    4,
-    400,
-    50,
-    1042,
-    20
-  ],
-  [
-    80,
-    71,
-    3,
-    4,
-    0,
-    0
-  ],
-  [
-    82,
-    2,
-    400,
-    220,
-    1054,
-    8
-  ],
-  [
-    82,
-    11,
-    -50,
-    220,
-    1053,
-    10
-  ],
-  [
-    83,
-    11,
-    400,
-    240,
-    1054,
-    10
-  ],
-  [
-    83,
-    2,
-    -50,
-    240,
-    1053,
-    8
-  ],
-  [
-    84,
-    5,
-    -50,
-    270,
-    1032,
-    20
-  ],
-  [
-    85,
-    5,
-    400,
-    270,
-    1033,
-    20
-  ],
-  [
-    86,
-    5,
-    -50,
-    280,
-    1032,
-    20
-  ],
-  [
-    87,
-    5,
-    400,
-    280,
-    1033,
-    20
-  ],
-  [
-    88,
-    3,
-    250,
-    -50,
-    1072,
-    15
-  ],
-  [
-    88,
-    3,
-    100,
-    -50,
-    1072,
-    15
-  ],
-  [
-    91,
-    21,
-    175,
-    -90,
-    1031,
-    100
-  ],
-  [
-    91,
-    2,
-    75,
-    -50,
-    1021,
-    8
-  ],
-  [
-    92,
-    2,
-    150,
-    -50,
-    1021,
-    8
-  ],
-  [
-    93,
-    2,
-    275,
-    -50,
-    1022,
-    8
-  ],
-  [
-    94,
-    2,
-    200,
-    -50,
-    1022,
-    8
-  ],
-  [
-    95,
-    2,
-    100,
-    -50,
-    1021,
-    8
-  ],
-  [
-    96,
-    2,
-    250,
-    -50,
-    1022,
-    8
-  ],
-  [
-    97,
-    2,
-    50,
-    -50,
-    1021,
-    8
-  ],
-  [
-    98,
-    2,
-    300,
-    -50,
-    1022,
-    8
-  ],
-  [
-    100,
-    201,
-    100,
-    480,
-    1074,
-    1
-  ],
-  [
-    102,
-    10,
-    50,
-    -50,
-    1011,
-    10
-  ],
-  [
-    102,
-    10,
-    300,
-    -50,
-    1011,
-    10
-  ],
-  [
-    103,
-    4,
-    -50,
-    100,
-    1025,
-    20
-  ],
-  [
-    103,
-    1,
-    75,
-    -50,
-    1012,
-    5
-  ],
-  [
-    103,
-    1,
-    275,
-    -50,
-    1012,
-    5
-  ],
-  [
-    104,
-    4,
-    -50,
-    30,
-    1025,
-    20
-  ],
-  [
-    104,
-    1,
-    100,
-    -50,
-    1012,
-    5
-  ],
-  [
-    104,
-    1,
-    250,
-    -50,
-    1012,
-    5
-  ],
-  [
-    105,
-    4,
-    400,
-    100,
-    1026,
-    20
-  ],
-  [
-    106,
-    4,
-    400,
-    30,
-    1026,
-    20
-  ],
-  [
-    110,
-    71,
-    3,
-    25,
-    0,
-    0
-  ],
-  [
-    111,
-    61,
-    0,
-    0,
-    0,
-    0
-  ],
-  [
-    116,
-    91,
-    200,
-    -100,
-    0,
-    0
-  ],
-  [
-    116,
-    101,
-    75,
-    -50,
-    2101,
-    200
-  ],
-  [
-    116,
-    102,
-    275,
-    -50,
-    2102,
-    200
+{
+  "schema_version": 1,
+  "time_unit": "authored_30_ticks",
+  "events": [
+    {"at": 1, "action": "banner", "name": "mission"},
+    {"at": 3, "action": "spawn", "definition_id": 1, "position": [50, -50], "pattern": 1011},
+    {"at": 4, "action": "spawn", "definition_id": 1, "position": [75, -50], "pattern": 1011},
+    {"at": 5, "action": "spawn", "definition_id": 1, "position": [100, -50], "pattern": 1012},
+    {"at": 5, "action": "spawn", "definition_id": 1, "position": [300, -50], "pattern": 1011},
+    {"at": 6, "action": "spawn", "definition_id": 10, "position": [125, -50], "pattern": 1012},
+    {"at": 6, "action": "spawn", "definition_id": 1, "position": [275, -50], "pattern": 1011},
+    {"at": 7, "action": "spawn", "definition_id": 1, "position": [250, -50], "pattern": 1012},
+    {"at": 8, "action": "spawn", "definition_id": 10, "position": [225, -50], "pattern": 1012},
+    {"at": 9, "action": "spawn", "definition_id": 201, "position": [75, 480], "pattern": 1074},
+    {"at": 11, "action": "spawn", "definition_id": 2, "position": [50, -50], "pattern": 1021},
+    {"at": 12, "action": "spawn", "definition_id": 2, "position": [125, -50], "pattern": 1021},
+    {"at": 13, "action": "spawn", "definition_id": 2, "position": [300, -50], "pattern": 1022},
+    {"at": 14, "action": "spawn", "definition_id": 2, "position": [225, -50], "pattern": 1022},
+    {"at": 17, "action": "spawn", "definition_id": 2, "position": [400, 225], "pattern": 1054},
+    {"at": 18, "action": "spawn", "definition_id": 11, "position": [400, 230], "pattern": 1054},
+    {"at": 19, "action": "spawn", "definition_id": 2, "position": [400, 235], "pattern": 1054},
+    {"at": 20, "action": "spawn", "definition_id": 11, "position": [400, 240], "pattern": 1054},
+    {"at": 20, "action": "spawn", "definition_id": 2, "position": [-50, 225], "pattern": 1053},
+    {"at": 21, "action": "spawn", "definition_id": 11, "position": [-50, 230], "pattern": 1053},
+    {"at": 22, "action": "spawn", "definition_id": 2, "position": [-50, 235], "pattern": 1053},
+    {"at": 23, "action": "spawn", "definition_id": 11, "position": [-50, 240], "pattern": 1053},
+    {"at": 26, "action": "scroll", "mode": 1, "speed": 20},
+    {"at": 26, "action": "spawn", "definition_id": 10, "position": [75, -50], "pattern": 1011},
+    {"at": 27, "action": "spawn", "definition_id": 1, "position": [50, -50], "pattern": 1012},
+    {"at": 27, "action": "spawn", "definition_id": 1, "position": [100, -50], "pattern": 1012},
+    {"at": 27, "action": "spawn", "definition_id": 2, "position": [-50, 220], "pattern": 1053},
+    {"at": 28, "action": "spawn", "definition_id": 1, "position": [25, -50], "pattern": 1012},
+    {"at": 28, "action": "spawn", "definition_id": 1, "position": [125, -50], "pattern": 1012},
+    {"at": 28, "action": "spawn", "definition_id": 2, "position": [-50, 230], "pattern": 1053},
+    {"at": 29, "action": "spawn", "definition_id": 10, "position": [275, -50], "pattern": 1011},
+    {"at": 30, "action": "spawn", "definition_id": 1, "position": [250, -50], "pattern": 1012},
+    {"at": 30, "action": "spawn", "definition_id": 1, "position": [300, -50], "pattern": 1012},
+    {"at": 30, "action": "spawn", "definition_id": 2, "position": [400, 220], "pattern": 1054},
+    {"at": 31, "action": "spawn", "definition_id": 1, "position": [225, -50], "pattern": 1012},
+    {"at": 31, "action": "spawn", "definition_id": 1, "position": [325, -50], "pattern": 1012},
+    {"at": 31, "action": "spawn", "definition_id": 2, "position": [400, 230], "pattern": 1054},
+    {"at": 33, "action": "spawn", "definition_id": 3, "position": [100, -50], "pattern": 1072},
+    {"at": 35, "action": "spawn", "definition_id": 3, "position": [250, -50], "pattern": 1072},
+    {"at": 37, "action": "spawn", "definition_id": 2, "position": [-50, 230], "pattern": 1053},
+    {"at": 37, "action": "spawn", "definition_id": 1, "position": [100, -50], "pattern": 1011},
+    {"at": 38, "action": "spawn", "definition_id": 1, "position": [250, -50], "pattern": 1011},
+    {"at": 38, "action": "spawn", "definition_id": 2, "position": [-50, 220], "pattern": 1053},
+    {"at": 39, "action": "spawn", "definition_id": 2, "position": [-50, 210], "pattern": 1053},
+    {"at": 39, "action": "spawn", "definition_id": 10, "position": [150, -50], "pattern": 1012},
+    {"at": 39, "action": "spawn", "definition_id": 2, "position": [400, 230], "pattern": 1054},
+    {"at": 40, "action": "scroll", "mode": 1, "speed": 2},
+    {"at": 40, "action": "spawn", "definition_id": 10, "position": [200, -50], "pattern": 1012},
+    {"at": 40, "action": "spawn", "definition_id": 2, "position": [400, 220], "pattern": 1054},
+    {"at": 41, "action": "spawn", "definition_id": 2, "position": [400, 210], "pattern": 1054},
+    {"at": 42, "action": "spawn", "definition_id": 201, "position": [250, 480], "pattern": 1074},
+    {"at": 43, "action": "scroll", "mode": 2, "speed": 2},
+    {"at": 43, "action": "spawn", "definition_id": 21, "position": [175, -90], "pattern": 1031},
+    {"at": 44, "action": "spawn", "definition_id": 2, "position": [400, 220], "pattern": 1054},
+    {"at": 44, "action": "spawn", "definition_id": 11, "position": [-50, 220], "pattern": 1053},
+    {"at": 45, "action": "spawn", "definition_id": 11, "position": [400, 240], "pattern": 1054},
+    {"at": 45, "action": "spawn", "definition_id": 2, "position": [-50, 240], "pattern": 1053},
+    {"at": 46, "action": "spawn", "definition_id": 2, "position": [50, -50], "pattern": 1021},
+    {"at": 46, "action": "spawn", "definition_id": 2, "position": [300, -50], "pattern": 1022},
+    {"at": 47, "action": "spawn", "definition_id": 2, "position": [150, -50], "pattern": 1021},
+    {"at": 47, "action": "spawn", "definition_id": 2, "position": [200, -50], "pattern": 1022},
+    {"at": 50, "action": "spawn", "definition_id": 3, "position": [150, -50], "pattern": 1072},
+    {"at": 51, "action": "spawn", "definition_id": 10, "position": [100, -50], "pattern": 1011},
+    {"at": 52, "action": "spawn", "definition_id": 1, "position": [125, -50], "pattern": 1012},
+    {"at": 53, "action": "spawn", "definition_id": 1, "position": [150, -50], "pattern": 1012},
+    {"at": 54, "action": "spawn", "definition_id": 1, "position": [175, -50], "pattern": 1012},
+    {"at": 54, "action": "spawn", "definition_id": 10, "position": [250, -50], "pattern": 1011},
+    {"at": 55, "action": "spawn", "definition_id": 3, "position": [250, -50], "pattern": 1072},
+    {"at": 55, "action": "spawn", "definition_id": 1, "position": [225, -50], "pattern": 1012},
+    {"at": 56, "action": "spawn", "definition_id": 1, "position": [200, -50], "pattern": 1012},
+    {"at": 57, "action": "spawn", "definition_id": 1, "position": [175, -50], "pattern": 1012},
+    {"at": 60, "action": "spawn", "definition_id": 5, "position": [-50, 270], "pattern": 1032},
+    {"at": 61, "action": "spawn", "definition_id": 5, "position": [-50, 280], "pattern": 1032},
+    {"at": 62, "action": "spawn", "definition_id": 5, "position": [400, 270], "pattern": 1033},
+    {"at": 63, "action": "spawn", "definition_id": 5, "position": [400, 280], "pattern": 1033},
+    {"at": 65, "action": "spawn", "definition_id": 1, "position": [25, -50], "pattern": 1012},
+    {"at": 66, "action": "spawn", "definition_id": 2, "position": [75, -50], "pattern": 1021},
+    {"at": 67, "action": "spawn", "definition_id": 1, "position": [125, -50], "pattern": 1012},
+    {"at": 68, "action": "spawn", "definition_id": 5, "position": [-50, 60], "pattern": 1034},
+    {"at": 68, "action": "spawn", "definition_id": 1, "position": [325, -50], "pattern": 1012},
+    {"at": 69, "action": "spawn", "definition_id": 2, "position": [300, -50], "pattern": 1022},
+    {"at": 70, "action": "spawn", "definition_id": 5, "position": [-50, 50], "pattern": 1034},
+    {"at": 70, "action": "spawn", "definition_id": 1, "position": [275, -50], "pattern": 1012},
+    {"at": 70, "action": "spawn", "definition_id": 5, "position": [400, 60], "pattern": 1035},
+    {"at": 72, "action": "spawn", "definition_id": 5, "position": [400, 50], "pattern": 1035},
+    {"at": 73, "action": "spawn", "definition_id": 10, "position": [50, -50], "pattern": 1011},
+    {"at": 73, "action": "spawn", "definition_id": 10, "position": [300, -50], "pattern": 1011},
+    {"at": 74, "action": "spawn", "definition_id": 1, "position": [100, -50], "pattern": 1012},
+    {"at": 74, "action": "spawn", "definition_id": 1, "position": [250, -50], "pattern": 1012},
+    {"at": 75, "action": "spawn", "definition_id": 1, "position": [150, -50], "pattern": 1011},
+    {"at": 75, "action": "spawn", "definition_id": 1, "position": [200, -50], "pattern": 1011},
+    {"at": 75, "action": "spawn", "definition_id": 4, "position": [-50, 50], "pattern": 1041},
+    {"at": 76, "action": "spawn", "definition_id": 1, "position": [100, -50], "pattern": 1012},
+    {"at": 76, "action": "spawn", "definition_id": 1, "position": [250, -50], "pattern": 1012},
+    {"at": 76, "action": "spawn", "definition_id": 4, "position": [-50, 50], "pattern": 1041},
+    {"at": 78, "action": "spawn", "definition_id": 4, "position": [400, 50], "pattern": 1042},
+    {"at": 79, "action": "spawn", "definition_id": 4, "position": [400, 50], "pattern": 1042},
+    {"at": 80, "action": "scroll", "mode": 3, "speed": 4},
+    {"at": 82, "action": "spawn", "definition_id": 2, "position": [400, 220], "pattern": 1054},
+    {"at": 82, "action": "spawn", "definition_id": 11, "position": [-50, 220], "pattern": 1053},
+    {"at": 83, "action": "spawn", "definition_id": 11, "position": [400, 240], "pattern": 1054},
+    {"at": 83, "action": "spawn", "definition_id": 2, "position": [-50, 240], "pattern": 1053},
+    {"at": 84, "action": "spawn", "definition_id": 5, "position": [-50, 270], "pattern": 1032},
+    {"at": 85, "action": "spawn", "definition_id": 5, "position": [400, 270], "pattern": 1033},
+    {"at": 86, "action": "spawn", "definition_id": 5, "position": [-50, 280], "pattern": 1032},
+    {"at": 87, "action": "spawn", "definition_id": 5, "position": [400, 280], "pattern": 1033},
+    {"at": 88, "action": "spawn", "definition_id": 3, "position": [250, -50], "pattern": 1072},
+    {"at": 88, "action": "spawn", "definition_id": 3, "position": [100, -50], "pattern": 1072},
+    {"at": 91, "action": "spawn", "definition_id": 21, "position": [175, -90], "pattern": 1031},
+    {"at": 91, "action": "spawn", "definition_id": 2, "position": [75, -50], "pattern": 1021},
+    {"at": 92, "action": "spawn", "definition_id": 2, "position": [150, -50], "pattern": 1021},
+    {"at": 93, "action": "spawn", "definition_id": 2, "position": [275, -50], "pattern": 1022},
+    {"at": 94, "action": "spawn", "definition_id": 2, "position": [200, -50], "pattern": 1022},
+    {"at": 95, "action": "spawn", "definition_id": 2, "position": [100, -50], "pattern": 1021},
+    {"at": 96, "action": "spawn", "definition_id": 2, "position": [250, -50], "pattern": 1022},
+    {"at": 97, "action": "spawn", "definition_id": 2, "position": [50, -50], "pattern": 1021},
+    {"at": 98, "action": "spawn", "definition_id": 2, "position": [300, -50], "pattern": 1022},
+    {"at": 100, "action": "spawn", "definition_id": 201, "position": [100, 480], "pattern": 1074},
+    {"at": 102, "action": "spawn", "definition_id": 10, "position": [50, -50], "pattern": 1011},
+    {"at": 102, "action": "spawn", "definition_id": 10, "position": [300, -50], "pattern": 1011},
+    {"at": 103, "action": "spawn", "definition_id": 4, "position": [-50, 100], "pattern": 1025},
+    {"at": 103, "action": "spawn", "definition_id": 1, "position": [75, -50], "pattern": 1012},
+    {"at": 103, "action": "spawn", "definition_id": 1, "position": [275, -50], "pattern": 1012},
+    {"at": 104, "action": "spawn", "definition_id": 4, "position": [-50, 30], "pattern": 1025},
+    {"at": 104, "action": "spawn", "definition_id": 1, "position": [100, -50], "pattern": 1012},
+    {"at": 104, "action": "spawn", "definition_id": 1, "position": [250, -50], "pattern": 1012},
+    {"at": 105, "action": "spawn", "definition_id": 4, "position": [400, 100], "pattern": 1026},
+    {"at": 106, "action": "spawn", "definition_id": 4, "position": [400, 30], "pattern": 1026},
+    {"at": 110, "action": "scroll", "mode": 3, "speed": 25},
+    {"at": 111, "action": "banner", "name": "warning"},
+    {"at": 116, "action": "spawn", "definition_id": 91, "position": [200, -100], "pattern": 0},
+    {"at": 116, "action": "spawn", "definition_id": 101, "position": [75, -50], "pattern": 2101},
+    {"at": 116, "action": "spawn", "definition_id": 102, "position": [275, -50], "pattern": 2102}
   ]
-]
+}

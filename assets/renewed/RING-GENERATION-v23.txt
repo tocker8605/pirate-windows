@@ -1,0 +1,28 @@
+Ring station v23 / 2026-11-07
+Mode: built-in image_gen retouch and transparent-background extraction.
+Final asset: assets/renewed/ring-quarter-v23.png (generated pixels copied unchanged)
+Selected output: C:\Users\전명종\.codex\generated_images\01a17194-e644-7cf1-b506-6c1a20515e70\exec-7cc45ceb-c456-4330-9648-dda0b90e7b3b.png
+
+References:
+  Original type3 enemy_sm.png frames, enlarged in work/ring-original-v22.png.
+  Existing enemies-v18.png as authoritative material/style reference.
+
+Iteration notes:
+  exec-627e4fba-53fe-4d17-809f-817d02ef4fa7.png was rejected by the user for
+  excessive deformation: oversized near cap, swollen shaft and cartoon contour.
+  It is not an active project asset.
+  exec-a1c8eade-0c05-4614-9b09-5d86e935d422.png corrected the proportions.
+  Selected final extraction removes background residue without redesigning it.
+
+REFINEMENT PROMPT:
+Retouch Image1, a quarter-view ring spacecraft sprite, to REMOVE its excessive cartoon/chibi deformation. Image2 is the authoritative target for material rendering and realistic mechanical proportions: match those existing Pirate II enemies. Image3 gives original silhouette proportions. Keep a physically coherent mild oblique quarter view: the long axle passes perpendicular through the upright habitat ring plane, receding toward upper screen, with correct front/rear overlap. But change the proportions substantially: the oversized near/bottom docking cap in Image1 is WRONG. Make both end caps compact and similar in diameter (near only about20percent larger than far), each cap only about one quarter of the ring's outer diameter. Replace the swollen tapered/conical shaft with a slender mostly uniform cylindrical axle about one tenth of ring diameter. Keep the long-axis total height about50 game units, ring outer width about38-40units, ring projected ellipse height about28-30units, caps about10 and12units wide. The ring stays the dominant visual mass, not an enlarged front head. Use the restrained metallic game-art style of Image2: ivory armor, gunmetal structure, small red/orange ports and a few cyan highlights, soft controlled metallic gradients and readable mechanical edges. No thick black comic outline, flat cel-shading bands, inflated shapes, giant nose, toy look, cute/chibi proportions, exaggerated perspective or plastic appearance. At the same time do NOT add photoreal micro-detail: no dense rivets, miniature windows, tiny greebles, scratches, weathering grain, noisy texture or cinematic reflections. Match Image2's moderate level of detail when all sprites are displayed at50px. Around12-16 clean ring armor segments and slender structural spokes are enough. Keep the quarter-view ring/axle planes perpendicular; no face-on top-view circle or coplanar stick-and-wheel. ONE complete centered sprite only, generous transparent margins, genuine empty alpha background and ring openings; no scene, backdrop, haze, shadows outside the silhouette, checkerboard, text or labels.
+
+FINAL EXTRACTION PROMPT:
+Perform precise background extraction ONLY on this single quarter-view spacecraft sprite. Preserve its current slender mechanical proportions, geometry, colors, shading, orientation, edges, all ring armor and axle components unchanged. Remove every unwanted cloudy gray/white or colored residue around and inside the station. Specifically the pale gray mottled areas floating immediately behind the upper ring arc and in the two lower ring openings are BACKGROUND contamination, not glass or mechanical structure. They must be completely absent, with alpha exactly0. Keep only actual solid ivory/gunmetal/red/cyan parts. Every ring aperture between the axle/spokes and ring is completely empty transparent space. The surrounding canvas is entirely transparent. No atmospheric haze, drop shadows, bloom, background gradients, blur, matte fringe, checkerboard or white/gray panels. Clean anti-aliasing only along true solid edges. Do not redesign, enlarge, shrink, distort or add details to any mechanical component; just deliver a clean transparent cutout of exactly the same station.
+
+Integration:
+  Single coherent quarter-view sprite, native1254x1254, visible bounds(207,187,837,799).
+  Same50px logical display frame/filter as other normal enemies, aspect preserved.
+  No flat2D rotation of the painted quarter-view card. Existing animation phase
+  drives subtle opposite port lights instead, keeping perspective/occlusion fixed.
+  No changes to HP, collision, firing, movement or weapons.

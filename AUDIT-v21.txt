@@ -1,0 +1,41 @@
+Pirate II v21 / 2026-11-07
+
+Scope: entity definitions, spawn construction, named timelines and related metadata.
+No balance/art/attack-pattern rewrite. Original VB6 source directory untouched.
+
+Data ownership
+  data/enemies.json defines all33 regular enemy/supply/boss/part kinds.
+  Each definition owns HP, role, score and difficulty scaling, damageability,
+  collision bounds, explosion/sound, smoke thresholds/ports, item drops,
+  drawing size/offset, part handedness and supply transition/release settings.
+  Boss HP1000/1500 is now data, not conditional code.
+  Runtime actors receive their own hp/max_hp through enemy_catalog.create().
+  The catalog and its nested data are read-only, so damage or overrides cannot
+  mutate defaults used by future actors. Parsed vectors are cached once.
+
+Timeline migration
+  All683 events across stage01~04 and stage11~14 use named objects.
+  spawn / scroll / banner replace overloaded integer command IDs.
+  definition_id identifies a type; entity_id remains a dynamic instance ID.
+  Normal spawn events carry no HP. Intentional exceptions use overrides.hp.
+  New loader validates schema version, ordering, actions, references and overrides.
+  Existing event times/order/positions/patterns/control values and base HP were
+  compared against tests/fixtures/timeline_v20.json (test-only historical fixture).
+
+Intentional legacy behavior change
+  Removed the five-actor admission quota. Every due event executes in file order
+  during the scheduled update, so large simultaneous waves no longer acquire
+  extra update delays merely because more than five actors share a timestamp.
+  Strict original event time boundary and the authored time unit remain intact.
+
+Other removed assumptions
+  Enemy ID number ranges no longer determine collision size, score, drop,
+  damage smoke, rendering offsets or boss-part membership/handedness.
+  Boss HUD no longer assumes only1000/1500 maximum HP: fill is actualHP/maxHP.
+  Existing asymmetric collision geometry and per-type absolute smoke thresholds
+  are preserved. Boss smoke remains relative to actual maxHP, including overrides.
+  Movement/firing algorithms remain in their existing dedicated modules.
+
+Editing: data/README-ko.txt
+Validation: VALIDATION.txt
+No commit or push for v21.

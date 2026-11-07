@@ -1,0 +1,23 @@
+Pirate II v23 / 2026-11-07
+
+Correct ring_rotor camera/proportions/style after v22 feedback.
+- Replaced separate face-on ring/flat spindle with one coherent quarter-view card.
+- Ring plane, axial depth, front/rear caps and overlap are painted together.
+- Reduced the oversized near cap and swollen shaft from the rejected first draft.
+- Matched moderate metallic detail to existing enemies; removed micro-rivets,
+  dense windows and excessive high-resolution industrial surface detail.
+- Same50px display frame/filter as surrounding enemies, native aspect preserved.
+- Removed flat card/ring rotation that would contradict quarter-view geometry.
+  Subtle port-light animation keeps the camera and mechanical silhouette stable.
+- Kept the v22 weapon changes/legends, v21 definitions/timelines, boss art and
+  HP/collision/movement/firing unchanged.
+
+Visual QA:
+  preview-station-style-v23.png compares original / v22 / v23 and the other
+  normal enemies at the same actual50px frame.
+  preview-station-game-v23.png uses the real game renderer/background/HUD.
+  Rejected cartoon draft remains outside runtime assets in ignored work/ only.
+
+Related rendering/pose checks:55 passed,0 failed. See VALIDATION.txt.
+Art prompts/provenance: assets/renewed/RING-GENERATION-v23.txt.
+No commit or push. Original VB6 source directory untouched.

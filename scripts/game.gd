@@ -110,7 +110,7 @@ func _ready() -> void:
 	audio = Audio.new()
 	add_child(audio)
 	music = audio.music
-	events = JSON.parse_string(FileAccess.get_file_as_string("res://data/stage01.json"))
+	events = StageEvents.load_stage(1)
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--preview="): preview_path = arg.trim_prefix("--preview=")
 		if arg.begins_with("--preview-mode="): preview_mode = arg.trim_prefix("--preview-mode=")
@@ -125,7 +125,7 @@ func _load_stage(number: int, preserve_run: bool = false) -> void:
 	var saved_power: int = power
 	var saved_score: int = score
 	stage = clampi(number,1,4)
-	events = JSON.parse_string(FileAccess.get_file_as_string("res://data/stage%02d.json"%(stage+10 if boss_rush else stage)))
+	events = StageEvents.load_stage(stage,boss_rush)
 	checkpoint_stage = stage
 	checkpoint_rush = boss_rush
 	transition_ticks = 0
@@ -499,16 +499,11 @@ func _update_bullets() -> void:
 
 func _destroy_enemy(e: Dictionary) -> void:
 	var kind: int = int(e.kind)
-	_sound("bang-be" if kind>20 and kind<51 else "bang-e")
+	_sound(EnemyRules.death_sound(kind))
 	score += EnemyRules.score(kind,title.difficulty)
 	var item: Dictionary = EnemyRules.drop(e,boss_rush)
 	if not item.is_empty(): _drop_item(item)
-	if kind==19:
-		e.rescued = true
-		e.kind = 201
-		e.hp = 1
-		e.pattern = 1091
-		return
+	if EnemyRules.release_and_escape(e): return
 	_explosion(e.pos,EnemyRules.explosion_ticks(kind))
 	explosions[-1].owner_id = e.get("entity_id",-1)
 	stats.killed += 1

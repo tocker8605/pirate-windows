@@ -32,7 +32,7 @@ func run() -> void:
 	for speed in range(1,6):
 		g._load_stage(1)
 		g.clock = Clock.new()
-		g.events = g.events.filter(func(row): return int(row[1])==201).slice(0,1)
+		g.events = g.events.filter(func(row): return int(row.get("definition_id",0))==201).slice(0,1)
 		var units: float = Clock.units_per_tick(speed)
 		var found: Dictionary = {}
 		for i in range(2000):

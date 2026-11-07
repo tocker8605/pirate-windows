@@ -1,5 +1,6 @@
 extends Node2D
 ## Rendering consumes game state; input, simulation and audio live elsewhere.
+const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Weapons = preload("res://scripts/player_weapons.gd")
 const HUD = preload("res://scripts/hud.gd")
 const Particles = preload("res://scripts/combat_vfx.gd")
@@ -125,11 +126,7 @@ func _draw() -> void:
 		else: draw_texture(g.art.sprite("picair",Rect2i(g.player_bank*50,0,50,50),Vector2i(g.player_bank*50,50)),g.presentation.player(g))
 
 	for e in g.enemies:
-		var offset := Vector2.ZERO
-		if e.kind in [21,22]: offset = Vector2(-25,-45 if e.kind==22 else -25)
-		if e.kind in [41,42]: offset = Vector2(-50,-25)
-		if int(e.kind) in [111,112,121,122,131,132]: offset = Vector2(0,-50)
-		if e.kind==133: offset = Vector2(0,-15)
+		var offset: Vector2 = Catalog.definition(int(e.kind)).get("draw_offset",Vector2.ZERO)
 		if g.renewed_art: renewal.draw_enemy(self,e,g.presentation.position(e)+offset,g.frame)
 		else: draw_texture(g.art.enemy(int(e.get("render_kind",e.kind)),e.velocity,g.animation,g.stage,e.pos.y),e.pos+offset)
 		var preparation: Dictionary = Scenery.preparation(e,g.boss)
@@ -169,7 +166,7 @@ func _draw_shot(shot: Dictionary) -> void:
 	vfx.draw_shot(self,shot,g.presentation.player(g),g.weapon,pos)
 
 func _draw_hud() -> void:
-	HUD.render(self,g.art,clampi(Weapons.vb_integer(g.hp),0,100),clampf(g.energy,0,100),g.weapon,g.power,g.score,int(g.boss.hp) if not g.boss.is_empty() else -1,int(g.boss.get("max_hp",1000)))
+	HUD.render(self,g.art,clampi(Weapons.vb_integer(g.hp),0,100),clampf(g.energy,0,100),g.weapon,g.power,g.score,int(g.boss.hp) if not g.boss.is_empty() else -1,int(g.boss.get("max_hp",0)))
 
 
 func _draw_menu() -> void:

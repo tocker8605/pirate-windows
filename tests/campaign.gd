@@ -38,7 +38,7 @@ func run() -> void:
 			check(game.stats.killed>0 and game.stats.hits>0,"stage %d weapon %d combat remains active"%[stage,weapon])
 			check(game.bullets.valid() and game.shots.size()<=50 and game.enemies.valid(),"stage %d weapon %d dynamic entity lifecycle remains consistent"%[stage,weapon])
 		game._load_stage(stage)
-		game.events = game.events.filter(func(row): return int(row[0])==times[stage])
+		game.events = game.events.filter(func(row): return int(row.at)==times[stage])
 		game.frame = times[stage]*30+1
 		game._read_events()
 		check(game.boss.max_hp==(1500 if stage==4 else 1000),"stage %d original boss HP"%stage)

@@ -1,50 +1,12 @@
-[
-  [
-    0,
-    71,
-    3,
-    2,
-    0,
-    0
-  ],
-  [
-    1,
-    61,
-    0,
-    0,
-    0,
-    0
-  ],
-  [
-    6,
-    91,
-    200,
-    -100,
-    0,
-    0
-  ],
-  [
-    6,
-    101,
-    75,
-    -50,
-    2101,
-    200
-  ],
-  [
-    6,
-    102,
-    275,
-    -50,
-    2102,
-    200
-  ],
-  [
-    7,
-    62,
-    0,
-    0,
-    0,
-    0
+{
+  "schema_version": 1,
+  "time_unit": "authored_30_ticks",
+  "events": [
+    {"at": 0, "action": "scroll", "mode": 3, "speed": 2},
+    {"at": 1, "action": "banner", "name": "warning"},
+    {"at": 6, "action": "spawn", "definition_id": 91, "position": [200, -100], "pattern": 0},
+    {"at": 6, "action": "spawn", "definition_id": 101, "position": [75, -50], "pattern": 2101},
+    {"at": 6, "action": "spawn", "definition_id": 102, "position": [275, -50], "pattern": 2102},
+    {"at": 7, "action": "banner", "name": "mission"}
   ]
-]
+}
