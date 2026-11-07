@@ -1,32 +1,17 @@
-Pirate II v23 — Validation / 2026-11-07
-Godot4.7.2 / Windows x64 / OpenGL Compatibility / NVIDIA RTX4080
+Pirate II v24.9 — Validation / 2026-11-07
 
-Visual-scope revision;55 related checks passed,0 failed:
-  regions_turning35; render_station_weapons6; render_renewal8; render_60fps6.
-The full837-check suite last passed at v22. It was not rerun wholesale for this
-asset/camera change. Current affected pose/render/performance suites were rerun.
-MEASURED: 2.016 seconds; 60.02 process FPS; 60.02 drawn FPS; 60.02 gameplay ticks/s
+Visual-only core alignment: definition133 draw_offsetY:-15 ->-8.
+The opening moves7logical pixels down onto boss4's chest circle. Original atlas,
+logical attachment/movement,projectile muzzles,collision metadata and attacks unchanged.
 
-Visual review:
-  preview-station-style-v23.png: original / v22 / refined v23, plus the11
-  normal enemy kinds at exactly the same50px logical frame.
-  preview-station-game-v23.png: actual game renderer/background/HUD with mixed enemies.
-  The user-rejected exaggerated/chibi draft is not an active runtime asset.
-  Refined end caps are compact and the shaft is slender, with moderate metallic
-  shading and a coherent quarter-view ring/axle overlap.
-  Quarter-view card geometry stays fixed across animation phases; opposite
-  status lights pulse. No misleading flat ring/card rotation remains.
-  Alpha samples in the four ring apertures are0.
-  Final generated PNG bytes are preserved; cached atlas bounds207,187,837,799.
+Affected108checks passed,0 failures:
+boss_mecha15; enemy_catalog87; render_boss4_sweep6 (including actual60FPS).
+Full969-check suite last passed at v24.8; not rerun for this position-only change.
+Reviewed preview-core-alignment-v24.9.png: body alone,previous overlay,aligned overlay.
 
-Preservation:
-  Verified file hashes for player_weapons.gd, weapon_preview.gd, bosses-v15.png,
-  enemies-v18.png and data/enemies.json match the beginning of this task.
-  No HP, collision, movement, firing, boss, other-enemy or weapon changes.
-
-Windows build exported without errors.
-Direct exported EXE launch was not retried: v22 was blocked by Windows
-application-control policy. Source runtime was verified using installed Godot.
-EXE SHA256: 3BB21B923EB2E145F46C861E5D7C9FCB735099E32FDFAFF7DF9D0423C2CB30B7
+Portable export completed without errors. Final copied EXE rendered boss4-sweep
+outside the source tree and exited0 (outputs/Pirate-II-v24.9/verified-boss4.png).
+Official Godot GUI runtime unchanged; keep EXE and PCK together.
+EXE SHA256: AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424
+PCK SHA256: 831888E95060DF8F7FF0D05CC06358AEEE9FDE8F90BDB7F7F2460A36391951B9
 No commit or push. Original VB6 folder untouched. No full human campaign playthrough.
-Art prompts/provenance: assets/renewed/RING-GENERATION-v23.txt.

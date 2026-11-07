@@ -1,7 +1,7 @@
 extends RefCounted
 ## Shared, immutable entity defaults. Runtime HP lives only on created actors.
 const PATH = "res://data/enemies.json"
-const FIELDS: Array = ["name","role","hp","score","score_scales_with_difficulty","damageable","explosion_ticks","death_sound","draw_size","draw_offset","part_side","collision","damage_smoke","boss_rush_drop","drop","stage","music","open_at_y","open_kind","on_defeat"]
+const FIELDS: Array = ["name","role","hp","score","score_scales_with_difficulty","damageable","explosion_ticks","death_sound","draw_size","draw_offset","part_side","collision","damage_smoke","boss_rush_drop","drop","stage","music","open_at_y","open_kind","on_defeat","attack"]
 static var _entities: Dictionary = _load_definitions()
 static func _number(value: Variant) -> bool:
 	return (value is int or value is float) and is_finite(float(value))
@@ -36,6 +36,31 @@ static func validate_document(document: Variant) -> PackedStringArray:
 		if not _vector(collision.get("shot_bounds"),4) or not _vector(collision.get("beam_bounds"),2): errors.append(prefix+"invalid collision bounds")
 		if _vector(collision.get("shot_bounds"),4) and (collision.shot_bounds[0]>=collision.shot_bounds[2] or collision.shot_bounds[1]>=collision.shot_bounds[3]): errors.append(prefix+"shot bounds must have increasing edges")
 		if _vector(collision.get("beam_bounds"),2) and collision.beam_bounds[0]>=collision.beam_bounds[1]: errors.append(prefix+"beam bounds must have increasing edges")
+		if not _vector(collision.get("contact_bounds"),4): errors.append(prefix+"invalid contact bounds")
+		elif collision.contact_bounds[0]>=collision.contact_bounds[2] or collision.contact_bounds[1]>=collision.contact_bounds[3]: errors.append(prefix+"contact bounds must have increasing edges")
+		if d.has("attack") and not d.attack is Dictionary: errors.append(prefix+"attack must be an object")
+		if d.get("attack") is Dictionary:
+			var attack: Dictionary = d.attack
+			var attack_type: String = str(attack.get("type",""))
+			if attack_type not in ["spiral","alternating"]: errors.append(prefix+"unknown attack type")
+			if not _number(attack.get("interval_seconds")) or float(attack.interval_seconds)<=0: errors.append(prefix+"invalid attack interval")
+			if not _number(attack.get("projectile_kind")) or int(attack.projectile_kind) not in range(1,9): errors.append(prefix+"invalid attack projectile")
+			if attack.has("requires_stationary_x") and not attack.requires_stationary_x is bool: errors.append(prefix+"invalid stationary-X attack flag")
+			if attack.has("min_y") and not _number(attack.min_y): errors.append(prefix+"invalid attack minimumY")
+			if attack.has("ports"):
+				if not attack.ports is Array or attack.ports.is_empty() or not attack.ports.all(func(p): return _vector(p,2)): errors.append(prefix+"invalid attack ports")
+			if attack_type=="spiral":
+				for field in ["speed","step_degrees"]:
+					if not _number(attack.get(field)) or float(attack[field])<=0: errors.append(prefix+"invalid attack "+field)
+				if not _number(attack.get("initial_degrees")): errors.append(prefix+"invalid spiral initial angle")
+				if attack.has("ports"):
+					if not attack.get("rotation_directions") is Array or not attack.ports is Array: errors.append(prefix+"attack port directions missing")
+					elif attack.rotation_directions.size()!=attack.ports.size() or not attack.rotation_directions.all(func(v): return _number(v) and absf(float(v))==1.0): errors.append(prefix+"invalid attack rotation directions")
+			elif attack_type=="alternating":
+				for field in ["enraged_interval_seconds","speed_y"]:
+					if not _number(attack.get(field)) or float(attack[field])<=0: errors.append(prefix+"invalid alternating attack "+field)
+				if not _number(attack.get("horizontal_base")): errors.append(prefix+"invalid alternating horizontal base")
+				if not attack.get("ports") is Array or attack.ports.size()!=2: errors.append(prefix+"alternating attack needs two ports")
 		if not _number(d.get("explosion_ticks")) or float(d.get("explosion_ticks",0))<=0: errors.append(prefix+"invalid explosion duration")
 		if d.get("role")=="boss" and (int(d.get("stage",0)) not in [1,2,3,4] or not d.get("music") is String): errors.append(prefix+"boss stage/music missing")
 		if d.has("damage_smoke"):

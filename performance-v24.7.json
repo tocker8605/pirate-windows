@@ -1,0 +1,261 @@
+{
+  "version": "0.24.7",
+  "date": "2026-11-07",
+  "environment": "Godot4.7.2 Windows x64 OpenGL Compatibility RTX4080 800x960 vsync off",
+  "method": "Uncapped wall-clock tick+draw submission/frame_post_draw,300 samples after60 warm frames. Not GPU-only timing. Static effect audit120 samples after30 warm frames.",
+  "boss4_before": [
+    {
+      "draw_calls_p50": 2878.0,
+      "fireball_cpu_p50_ms": 2.522,
+      "frame_max_ms": 32.351,
+      "frame_p50_ms": 28.646,
+      "frame_p95_ms": 30.516,
+      "max_bullets": 68,
+      "max_particles": 1397,
+      "mode": "full",
+      "particles_cpu_p50_ms": 3.915,
+      "tick_p50_ms": 3.819
+    },
+    {
+      "draw_calls_p50": 2509.0,
+      "fireball_cpu_p50_ms": 0.0,
+      "frame_max_ms": 25.573,
+      "frame_p50_ms": 22.961,
+      "frame_p95_ms": 24.802,
+      "max_bullets": 68,
+      "max_particles": 1384,
+      "mode": "no_fireball_shape",
+      "particles_cpu_p50_ms": 3.928,
+      "tick_p50_ms": 3.794
+    },
+    {
+      "draw_calls_p50": 596.0,
+      "fireball_cpu_p50_ms": 2.51,
+      "frame_max_ms": 14.565,
+      "frame_p50_ms": 13.424,
+      "frame_p95_ms": 14.107,
+      "max_bullets": 68,
+      "max_particles": 1384,
+      "mode": "no_trails",
+      "particles_cpu_p50_ms": 0.45,
+      "tick_p50_ms": 3.772
+    },
+    {
+      "draw_calls_p50": 217.0,
+      "fireball_cpu_p50_ms": 0.0,
+      "frame_max_ms": 8.429,
+      "frame_p50_ms": 7.312,
+      "frame_p95_ms": 7.904,
+      "max_bullets": 68,
+      "max_particles": 1384,
+      "mode": "no_all_vfx",
+      "particles_cpu_p50_ms": 0.0,
+      "tick_p50_ms": 3.747
+    }
+  ],
+  "boss4_after": [
+    {
+      "draw_calls_p50": 115.0,
+      "fireball_cpu_p50_ms": 0.084,
+      "frame_max_ms": 8.342,
+      "frame_p50_ms": 7.216,
+      "frame_p95_ms": 7.887,
+      "max_bullets": 68,
+      "max_particles": 657,
+      "mode": "full",
+      "particles_cpu_p50_ms": 1.906,
+      "tick_p50_ms": 2.257
+    },
+    {
+      "draw_calls_p50": 115.0,
+      "fireball_cpu_p50_ms": 0.0,
+      "frame_max_ms": 8.712,
+      "frame_p50_ms": 7.091,
+      "frame_p95_ms": 7.735,
+      "max_bullets": 68,
+      "max_particles": 659,
+      "mode": "no_fireball_shape",
+      "particles_cpu_p50_ms": 1.893,
+      "tick_p50_ms": 2.243
+    },
+    {
+      "draw_calls_p50": 113.0,
+      "fireball_cpu_p50_ms": 0.084,
+      "frame_max_ms": 5.198,
+      "frame_p50_ms": 4.482,
+      "frame_p95_ms": 4.886,
+      "max_bullets": 68,
+      "max_particles": 652,
+      "mode": "no_trails",
+      "particles_cpu_p50_ms": 0.221,
+      "tick_p50_ms": 2.23
+    },
+    {
+      "draw_calls_p50": 112.0,
+      "fireball_cpu_p50_ms": 0.0,
+      "frame_max_ms": 4.968,
+      "frame_p50_ms": 4.147,
+      "frame_p95_ms": 4.565,
+      "max_bullets": 68,
+      "max_particles": 666,
+      "mode": "no_all_vfx",
+      "particles_cpu_p50_ms": 0.0,
+      "tick_p50_ms": 2.218
+    }
+  ],
+  "effects_before": [
+    {
+      "draw_calls_p50": 11.0,
+      "frame_p50_ms": 0.42,
+      "frame_p95_ms": 0.566,
+      "mode": "baseline",
+      "particles": 0
+    },
+    {
+      "draw_calls_p50": 13.0,
+      "frame_p50_ms": 0.435,
+      "frame_p95_ms": 0.534,
+      "mode": "clouds",
+      "particles": 0
+    },
+    {
+      "draw_calls_p50": 35.0,
+      "frame_p50_ms": 0.766,
+      "frame_p95_ms": 0.988,
+      "mode": "laser_shield",
+      "particles": 0
+    },
+    {
+      "draw_calls_p50": 511.0,
+      "frame_p50_ms": 8.157,
+      "frame_p95_ms": 8.677,
+      "mode": "energy_100",
+      "particles": 0
+    },
+    {
+      "draw_calls_p50": 211.0,
+      "frame_p50_ms": 2.877,
+      "frame_p95_ms": 3.145,
+      "mode": "missiles_100",
+      "particles": 0
+    },
+    {
+      "draw_calls_p50": 12.0,
+      "frame_p50_ms": 1.168,
+      "frame_p95_ms": 1.352,
+      "mode": "fireballs_100",
+      "particles": 0
+    },
+    {
+      "draw_calls_p50": 83.0,
+      "frame_p50_ms": 1.716,
+      "frame_p95_ms": 1.845,
+      "mode": "explosions_12",
+      "particles": 0
+    },
+    {
+      "draw_calls_p50": 86.0,
+      "frame_p50_ms": 6.867,
+      "frame_p95_ms": 7.207,
+      "mode": "explosions_12_particles",
+      "particles": 962
+    },
+    {
+      "draw_calls_p50": 31.0,
+      "frame_p50_ms": 0.825,
+      "frame_p95_ms": 0.958,
+      "mode": "charge_4",
+      "particles": 0
+    },
+    {
+      "draw_calls_p50": 12.0,
+      "frame_p50_ms": 0.652,
+      "frame_p95_ms": 0.773,
+      "mode": "smoke_120",
+      "particles": 120
+    }
+  ],
+  "effects_after": [
+    {
+      "draw_calls_p50": 11.0,
+      "frame_p50_ms": 0.359,
+      "frame_p95_ms": 0.395,
+      "mode": "baseline",
+      "particles": 0
+    },
+    {
+      "draw_calls_p50": 13.0,
+      "frame_p50_ms": 0.405,
+      "frame_p95_ms": 0.475,
+      "mode": "clouds",
+      "particles": 0
+    },
+    {
+      "draw_calls_p50": 35.0,
+      "frame_p50_ms": 0.709,
+      "frame_p95_ms": 0.797,
+      "mode": "laser_shield",
+      "particles": 0
+    },
+    {
+      "draw_calls_p50": 12.0,
+      "frame_p50_ms": 0.928,
+      "frame_p95_ms": 0.985,
+      "mode": "energy_100",
+      "particles": 0
+    },
+    {
+      "draw_calls_p50": 12.0,
+      "frame_p50_ms": 1.022,
+      "frame_p95_ms": 1.195,
+      "mode": "missiles_100",
+      "particles": 0
+    },
+    {
+      "draw_calls_p50": 12.0,
+      "frame_p50_ms": 0.865,
+      "frame_p95_ms": 1.054,
+      "mode": "fireballs_100",
+      "particles": 0
+    },
+    {
+      "draw_calls_p50": 83.0,
+      "frame_p50_ms": 1.666,
+      "frame_p95_ms": 1.826,
+      "mode": "explosions_12",
+      "particles": 0
+    },
+    {
+      "draw_calls_p50": 86.0,
+      "frame_p50_ms": 4.453,
+      "frame_p95_ms": 6.966,
+      "mode": "explosions_12_particles",
+      "particles": 962
+    },
+    {
+      "draw_calls_p50": 31.0,
+      "frame_p50_ms": 0.781,
+      "frame_p95_ms": 0.821,
+      "mode": "charge_4",
+      "particles": 0
+    },
+    {
+      "draw_calls_p50": 12.0,
+      "frame_p50_ms": 0.592,
+      "frame_p95_ms": 0.633,
+      "mode": "smoke_120",
+      "particles": 120
+    }
+  ],
+  "native60_result": "BOSS4_FINAL: drawnFPS60.01 ticks/s60.01 frameP9516.667ms medianDrawCalls115 maxParticles665 maxBullets68",
+  "checks": 933,
+  "suites": 41,
+  "unchanged_gameplay_sha256": {
+    "scripts/game.gd": "62c294abdff5e3be0ed4d25d9ef72be5d3cf890a8cfeffad07ffd3bd1dd2ff7e",
+    "scripts/boss.gd": "32938ff9bfd6a3ec65cf9bab38f54a346dcab6e5b3eb302e1f6d5762e6a5b5af",
+    "scripts/enemy_fire.gd": "f6ac7b108173f7280e6af82f8a8eac2909a831d655bd16f1bb61304db94e15fe",
+    "scripts/bullet_pool.gd": "df657376efc929466612dfd99920ec5e22096d60d117029ff14e7f6252fda70e",
+    "scripts/timing.gd": "85462803642b2c270915cb8040e1df7471a4d1e7185d96a3cb26c68d10502f1f",
+    "data/enemies.json": "ce224e568228c0cda1f893261880081bbaae9295698f72e1d418261eafc8c523"
+  }
+}

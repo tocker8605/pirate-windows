@@ -15,7 +15,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 3,
@@ -39,7 +40,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 4,
@@ -63,7 +65,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 7,
@@ -87,7 +90,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 9,
@@ -111,7 +115,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 9,
@@ -119,6 +124,15 @@
         "ports": [
           [25, 25]
         ]
+      },
+      "attack": {
+        "type": "spiral",
+        "interval_seconds": 0.1,
+        "speed": 7,
+        "step_degrees": 15,
+        "requires_stationary_x": true,
+        "initial_degrees": -90,
+        "projectile_kind": 6
       }
     },
     "6": {
@@ -135,7 +149,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 13,
@@ -159,7 +174,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 5,
@@ -183,7 +199,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 15,
@@ -207,7 +224,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 12,
@@ -231,7 +249,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 5,
@@ -255,7 +274,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 5,
@@ -279,7 +299,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "drop": {
         "item": 1,
@@ -306,7 +327,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-40, -25, 60, 30],
-        "beam_bounds": [-35, 35]
+        "beam_bounds": [-35, 35],
+        "contact_bounds": [-10.0, -10.0, 60.0, 60.0]
       },
       "damage_smoke": {
         "below_hp": 40,
@@ -335,7 +357,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-40, -25, 60, 30],
-        "beam_bounds": [-35, 35]
+        "beam_bounds": [-35, 35],
+        "contact_bounds": [-10.0, -30.0, 60.0, 40.0]
       },
       "damage_smoke": {
         "below_hp": 50,
@@ -360,7 +383,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-65, -25, 85, 30],
-        "beam_bounds": [-55, 55]
+        "beam_bounds": [-55, 55],
+        "contact_bounds": [-27.5, -10.0, 77.5, 60.0]
       },
       "damage_smoke": {
         "below_hp": 90,
@@ -390,7 +414,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-65, -25, 85, 30],
-        "beam_bounds": [-55, 55]
+        "beam_bounds": [-55, 55],
+        "contact_bounds": [-27.5, -10.0, 77.5, 60.0]
       },
       "damage_smoke": {
         "below_hp": 100,
@@ -420,10 +445,20 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-90, -25, 60, 60],
-        "beam_bounds": [-25, 75]
+        "beam_bounds": [-25, 75],
+        "contact_bounds": [-40.25, 15.0, 40.25, 85.0]
       },
       "stage": 1,
       "music": "boss01",
+      "attack": {
+        "type": "alternating",
+        "interval_seconds": 0.3,
+        "enraged_interval_seconds": 0.15,
+        "ports": [[-40, 50], [40, 50]],
+        "horizontal_base": 1,
+        "speed_y": 9,
+        "projectile_kind": 1
+      },
       "damage_smoke": {
         "below_ratio": 0.4,
         "size": 16,
@@ -448,7 +483,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-90, -25, 60, 60],
-        "beam_bounds": [-25, 75]
+        "beam_bounds": [-25, 75],
+        "contact_bounds": [-35.0, 15.0, 35.0, 85.0]
       },
       "stage": 2,
       "music": "boss01",
@@ -476,7 +512,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-90, -25, 60, 60],
-        "beam_bounds": [-25, 75]
+        "beam_bounds": [-25, 75],
+        "contact_bounds": [-35.0, 15.0, 35.0, 85.0]
       },
       "stage": 3,
       "music": "boss01",
@@ -504,10 +541,22 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-90, -25, 60, 60],
-        "beam_bounds": [-25, 75]
+        "beam_bounds": [-25, 75],
+        "contact_bounds": [-35.0, 15.0, 35.0, 85.0]
       },
       "stage": 4,
       "music": "boss01",
+      "attack": {
+        "type": "spiral",
+        "interval_seconds": 0.1,
+        "speed": 7,
+        "step_degrees": 10,
+        "initial_degrees": 90,
+        "projectile_kind": 6,
+        "min_y": 49,
+        "ports": [[-25, 50], [25, 50]],
+        "rotation_directions": [-1, 1]
+      },
       "damage_smoke": {
         "below_ratio": 0.4,
         "size": 16,
@@ -532,7 +581,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 80,
@@ -560,7 +610,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 80,
@@ -588,7 +639,8 @@
       "part_side": 1,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, -35.0, 42.5, 35.0]
       },
       "damage_smoke": {
         "below_hp": 80,
@@ -616,7 +668,8 @@
       "part_side": -1,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, -35.0, 42.5, 35.0]
       },
       "damage_smoke": {
         "below_hp": 80,
@@ -644,7 +697,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 120,
@@ -672,7 +726,8 @@
       "part_side": -1,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, -35.0, 42.5, 35.0]
       },
       "damage_smoke": {
         "below_hp": 160,
@@ -700,7 +755,8 @@
       "part_side": 1,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, -35.0, 42.5, 35.0]
       },
       "damage_smoke": {
         "below_hp": 160,
@@ -728,7 +784,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 80,
@@ -756,7 +813,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 80,
@@ -784,7 +842,8 @@
       "part_side": -1,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, -35.0, 42.5, 35.0]
       },
       "damage_smoke": {
         "below_hp": 240,
@@ -812,7 +871,8 @@
       "part_side": 1,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, -35.0, 42.5, 35.0]
       },
       "damage_smoke": {
         "below_hp": 240,
@@ -836,11 +896,12 @@
       "explosion_ticks": 30,
       "death_sound": "bang-e",
       "draw_size": [50, 80],
-      "draw_offset": [0, -15],
+      "draw_offset": [0, -8],
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, -3.0, 42.5, 53.0]
       },
       "damage_smoke": {
         "below_hp": 200,
@@ -868,7 +929,8 @@
       "part_side": 0,
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15]
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "open_at_y": 291,
       "open_kind": 19

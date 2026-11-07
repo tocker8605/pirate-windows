@@ -1,5 +1,6 @@
 class_name PirateMovement
 extends RefCounted
+const Depth = preload("res://scripts/enemy_depth.gd")
 ## Independent enemy motion state; velocities use pixels per original 25 ms tick.
 static func steer(e: Dictionary, player: Vector2, boss: Vector2) -> void:
 	var p: Vector2 = e.pos
@@ -59,7 +60,7 @@ static func steer(e: Dictionary, player: Vector2, boss: Vector2) -> void:
 			v.y -= 2
 			if v.y < -4: e.pattern -= 2
 		1071, 1074:
-			if p.y > (250 if e.pattern == 1071 else 460): v.y = -10
+			if p.y > (Depth.SURFACE_Y if e.pattern == Depth.ASCENT_PATTERN else 460): v.y = -10
 			elif v.y < -1: v.y += 3
 		1072, 1073:
 			if p.y < (205 if e.pattern == 1072 else 150): v.y = 1

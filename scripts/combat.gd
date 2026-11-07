@@ -1,8 +1,10 @@
 class_name PirateCombat
 extends RefCounted
 ## Collision geometry is explicit metadata; preserve strict authored point edges.
+const Depth = preload("res://scripts/enemy_depth.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Pilot = preload("res://scripts/pilot_geometry.gd")
+const CONTACT_DAMAGE: float = 10.0
 const DAMAGE: Array = [0,3,10,4,6,5,6,7,4]
 static func between(value: float, low: float, high: float) -> bool: return value>low and value<high
 static func _shot_hits(pos: Vector2, actor: Dictionary, definition: Dictionary) -> bool:
@@ -24,5 +26,13 @@ static func beam_hits_boss(player: Vector2, boss: Dictionary) -> bool:
 	return not boss.is_empty() and _beam_hits(player,boss,Catalog.for_actor(boss))
 static func hurts_player(player: Vector2, point: Vector2) -> bool:
 	return Pilot.hits(player,point)
+static func touches_player(player: Vector2, actor: Dictionary) -> bool:
+	if actor.is_empty() or actor.get("hp",0)<=0: return false
+	var definition: Dictionary = Catalog.for_actor(actor)
+	if definition.get("role","")=="supply" or Depth.is_below(actor): return false
+	var bounds: Array = definition.collision.contact_bounds
+	var local: Vector2 = player+Pilot.COCKPIT-actor.pos
+	var closest := Vector2(clampf(local.x,bounds[0],bounds[2]),clampf(local.y,bounds[1],bounds[3]))
+	return local.distance_squared_to(closest)<Pilot.HIT_RADIUS*Pilot.HIT_RADIUS
 static func collects_item(player: Vector2, point: Vector2) -> bool:
 	return between(point.x,player.x-5,player.x+55) and between(point.y,player.y-5,player.y+55)

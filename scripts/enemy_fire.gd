@@ -2,6 +2,7 @@ class_name PirateEnemyFire
 extends RefCounted
 const Boss = preload("res://scripts/boss.gd")
 const Rng = preload("res://scripts/random.gd")
+const Catalog = preload("res://scripts/enemy_catalog.gd")
 ## Original pixel-coordinate rules, expressed independently of game/render state.
 ## Player/enemy positions are TOP LEFT, not muzzle centres. Do not normalize aim.
 static func aim(enemy: Vector2, player: Vector2, speed: float) -> Vector2:
@@ -30,11 +31,7 @@ static func burst(e: Dictionary, player: Vector2, phase: int, timer: int, boss: 
 			if phase % 2 == 0 and p.y < 199 and p.y > 20: _add(result,single_muzzle(e,30),Vector2((10-absf(20-int(p.y)%41))/3.0,8),5)
 		4:
 			if phase % 5 == 0: _add(result,single_muzzle(e),target*9,4)
-		5:
-			if v.x == 0 and phase % 2 == 0:
-				var vx: float = (25-absf(25-int(p.y)%51))/3.0
-				if p.x > 175: vx = -vx
-				_add(result,single_muzzle(e),Vector2(vx,(25-int(p.y)%51)/2.0),6)
+		5: pass # Per-actor spiral cadence is integrated every native tick, not global phases.
 		6:
 			if phase % 4 == 0:
 				if v.y > 0:
@@ -119,6 +116,27 @@ static func burst(e: Dictionary, player: Vector2, phase: int, timer: int, boss: 
 			if e.pattern == 2401:
 				var vx: int = 3-Rng.between(0,6)
 				_add(result,p+Vector2(25,20),Vector2(vx,-5+absi(vx)),8)
+	return result
+
+# Elapsed seconds avoids quantizing the 100ms cadence to the legacy 60ms fire clock.
+# Bullets fly straight; sequential emission angles form the expanding spiral.
+static func advance(e: Dictionary, seconds: float) -> Array:
+	var attack: Dictionary = Catalog.definition(int(e.kind)).get("attack",{})
+	var result: Array = []
+	if attack.is_empty() or attack.get("type","")!="spiral" or e.hp<=0: return result
+	# Horizontal travel pauses the sweep and discards partial cadence: no queued burst on stopping.
+	if attack.get("requires_stationary_x",false) and e.velocity.x!=0:
+		e.attack_elapsed = 0.0
+		return result
+	var interval: float = attack.interval_seconds
+	e.attack_elapsed = float(e.get("attack_elapsed",0.0))+seconds
+	var angle: float = float(e.get("attack_angle",deg_to_rad(attack.initial_degrees)))
+	while e.attack_elapsed>=interval-0.0000001:
+		e.attack_elapsed = maxf(0,e.attack_elapsed-interval)
+		_add(result,single_muzzle(e),Vector2.from_angle(angle)*float(attack.speed),int(attack.projectile_kind))
+		var direction: float = 1 if single_muzzle(e).x<=200 else -1
+		angle = wrapf(angle+deg_to_rad(attack.step_degrees)*direction,-PI,PI)
+	e.attack_angle = angle
 	return result
 
 static func _add(result: Array, pos: Vector2, velocity: Vector2, kind: int = 1) -> void:

@@ -1,4 +1,4 @@
-Pirate II 적 정의·타임라인 편집 안내 (v21)
+Pirate II 적 정의·타임라인 편집 안내 (v24)
 ==========================================
 
 1. HP 등 적의 기본 속성은 enemies.json 한 곳에서 편집합니다.
@@ -12,7 +12,7 @@ Pirate II 적 정의·타임라인 편집 안내 (v21)
    score_scales_with_difficulty 난이도 배점 배율 사용 여부
    role                       enemy / part / boss / supply
    damageable                 탄환·레이저 피격 가능 여부
-   collision                  실제 탄환/레이저 판정 경계
+   collision                  탄환/레이저 및 콕핏 접촉(contact_bounds) 판정 경계
    explosion_ticks/death_sound 처치 연출·소리
    damage_smoke               연기 시작 조건·크기·발생 위치
    drop/boss_rush_drop         일반/Boss Rush 처치 드롭
@@ -65,3 +65,30 @@ Pirate II 적 정의·타임라인 편집 안내 (v21)
    tests/fixtures/timeline_v20.json은 이관 확인용 과거 스냅샷입니다.
    실제 게임에서는 읽지 않으며 실행본에서도 제외됩니다.
    밸런스를 의도적으로 변경할 때는 검사의 HP 기대값도 함께 갱신하십시오.
+
+6. 접촉·나선 공격(v24)
+   collision.contact_bounds는 해당 개체의 pos 기준[xmin,ymin,xmax,ymax]입니다.
+   보스 본체의 pos.x는 중심, 일반 적·파츠는 좌측 기준이므로 각각 명시합니다.
+   주인공 콕핏 반지름4px와 겹치면10×난이도 피해, 기존 피격 무적시간을 적용합니다.
+   damageable은 탄환/레이저에 대한 설정이며 살아 있는 기체 접촉은 별도입니다. 단 role=supply 보급기는 접촉 피해가 없습니다.
+   ID5의 attack은 spiral 설정입니다. interval_seconds=0.1, speed=7(기존 메타 px/틱),
+   step_degrees=15, initial_degrees=-90(위쪽), projectile_kind=6입니다.
+   각 개체가 독립된 발사시계·각도를 가지며 기체 중심X<=200이면 시계방향입니다.
+
+v24.1: cross_fighter_b는 수평 속도가0일 때만0.1초마다15도씩 회전 발사합니다.
+수직 이동 중에는 발사하며, 수평 이동 중에는 각도를 유지하고 발사 대기시간을 초기화합니다.
+
+7.1071 패턴의 상승 고도(v24.6)
+   scripts/enemy_depth.gd에서SURFACE_Y=250, BLEND_DISTANCE=60, LOWER_SCALE=0.8, LOWER_BRIGHTNESS=0.65를 조정합니다.
+   이동 감속 경계·접촉 예외·크기/밝기·뒤쪽 그리기 순서가 같은 규칙을 공유합니다. 탄환/레이저 피격은 별도입니다.
+
+8.보스 본체 공격(v24.8)
+   ID91 attack.type=alternating: interval_seconds=0.3,
+   enraged_interval_seconds=0.15, ports=[[-40,50],[40,50]],
+   horizontal_base=1,speed_y=9,projectile_kind=1.
+   살아 있는 주먹이 없으면 간격이 절반으로 바뀝니다.기존 좌우 교대·속도식은 유지합니다.
+   ID94 attack.type=spiral: interval_seconds=0.1,step_degrees=10,
+   initial_degrees=90(아래쪽),speed=7,projectile_kind=6,
+   ports=[[-25,50],[25,50]],rotation_directions=[-1,1],min_y=49.
+   방향값-1은 화면상 반시계,+1은 시계입니다.본체Y>49이며 살아 있는 파츠가 있을 때 동작합니다.
+   두 본체 모두 전역 발사 위상이 아닌 독립된 초 단위 시계를 사용합니다.

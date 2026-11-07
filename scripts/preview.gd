@@ -1,4 +1,6 @@
 extends RefCounted
+const Clock = preload("res://scripts/timing.gd")
+const Rng = preload("res://scripts/random.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 ## Development-only deterministic screenshots. Excluded from normal game flow.
 static func run(g: Node) -> void:
@@ -14,8 +16,8 @@ static func run(g: Node) -> void:
 				g.title.phase = 24 if g.preview_mode=="weapons2" else (25 if g.preview_mode=="weapons3" else 23)
 				g.title.preview_clock = 12
 	elif g.preview_mode!="menu":
-		g._load_stage(g.preview_stage)
-		var stills: Dictionary = {"stage-start":0,"stage-start-late":600,"region1":0,"region2":0,"region3":0,"region4":0,"earth-horizon":0,"lunar-entry":0,"connector12":0,"connector23":0,"turn-up":0,"turn-finished":0}
+		g._load_stage(4 if g.preview_mode in ["boss4-final","boss4-sweep"] else g.preview_stage)
+		var stills: Dictionary = {"boss4-final":0,"boss4-sweep":0,"stage-start":0,"stage-start-late":600,"region1":0,"region2":0,"region3":0,"region4":0,"earth-horizon":0,"lunar-entry":0,"connector12":0,"connector23":0,"turn-up":0,"turn-finished":0}
 		var preview_ticks: int = stills.get(g.preview_mode,1100)
 		if g.preview_mode == "boss":
 			for row in g.events:
@@ -23,6 +25,26 @@ static func run(g: Node) -> void:
 		for i in range(preview_ticks):
 			g.invulnerable = 100
 			g._tick(Vector2.ZERO if g.preview_mode=="boss" else Vector2(sin(i * 0.013),0),g.preview_mode!="boss",false,false)
+		if g.preview_mode in ["boss4-final","boss4-sweep"]:
+			g.events = []
+			g.enemies.clear()
+			g.boss = Catalog.create(94,Vector2(200,100 if g.preview_mode=="boss4-sweep" else 30))
+			if g.preview_mode=="boss4-sweep":
+				for kind in [131,132,133]: g.enemies.append(Catalog.create(kind,Vector2.ZERO))
+			g.player = Vector2(175,390)
+			g.power = 7
+			g.weapon = 1
+			g.invulnerable = 1000000
+			g.clock = Clock.new()
+			g.scroll_speed = 0
+			g.scroll_target = 0
+			g.background_y = 480
+			g.map_mode = 3
+			Rng.state = 0x50000
+			for i in range(600):
+				g.boss.hp = 1500 if g.preview_mode=="boss4-sweep" else 300
+				g.energy = 100
+				g._tick(Vector2.ZERO,g.preview_mode!="boss4-sweep",false,false,Clock.units_per_tick())
 		if g.preview_mode in ["region1","region2","region3","region4","earth-horizon","lunar-entry","connector12","connector23"]:
 			g.background_y = {"region1":3360,"region2":1920,"region3":960 if g.stage==4 else 480,"region4":480,"earth-horizon":2880,"lunar-entry":800,"connector12":2640,"connector23":1200}[g.preview_mode]
 			g.events = []

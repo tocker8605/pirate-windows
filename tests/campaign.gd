@@ -91,7 +91,7 @@ func run() -> void:
 	check(shots.size()==2 and shots[0].velocity==Vector2(3,7) and shots[1].velocity==Vector2(-3,7),"stage 3 exposed body preserves timer-driven mirrored spread")
 	b = body(4)
 	shots = Boss.fire(b,[part(131),part(132)],3,0)
-	check(shots.size()==2 and shots[0].kind==6 and shots[0].velocity==Vector2(5,0),"stage 4 body uses pixel-modulo side attacks")
+	check(shots.is_empty(),"stage4 pixel-modulo body attack is replaced by the independent100ms sweep")
 	check(Boss.fire(b,[part(131),part(132)],2,0).is_empty(),"stage 4 intact side weapons suppress replacement cannons")
 	shots = Boss.fire(b,[part(132)],2,0)
 	check(shots.size()==1 and shots[0].pos==Vector2(165,155),"stage 4 destroyed left weapon activates left replacement cannon")

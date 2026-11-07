@@ -40,7 +40,10 @@ func run() -> void:
 	game._tick(Vector2(-1,-1),false,false,false)
 	check(game.player == Vector2(164,294), "movement follows original six-pixel tick")
 	for i in range(100): game._tick(Vector2(-1,-1),false,false,false)
-	check(game.player == Vector2(10,0), "player remains inside playfield")
+	check(game.player == Vector2(-5,0), "40px player drawing reaches the left edge with zero margin")
+	game.player.x = 1000
+	game._tick(Vector2.ZERO,false,false,false)
+	check(game.player.x==355, "40px player drawing reaches the right edge with zero margin")
 	game.start_game()
 	game._tick(Vector2.ZERO,true,false,false)
 	check(game.stats.shots == 1 and game.energy < 100, "firing consumes energy")

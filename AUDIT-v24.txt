@@ -1,0 +1,100 @@
+Pirate II v24 / 2026-11-07
+
+Damage smoke:
+  Draw smoke once after all actor hulls, boss parts, player and supply mounts.
+  Existing emission thresholds, density and scroll-relative advection are retained.
+  HUD remains above smoke.
+
+ring_rotor:
+  Uses the v22 habitat/truss atlas region30,27,829,832 alone.
+  Separate axial spindle is not drawn. The complete ring rotates once per7.2s.
+  Existing50px frame, attack, HP and collision remain except newly added contact.
+  Reuses existing PNG bytes; no new generated image or pixel editing.
+
+cross_fighter_b / ID5:
+  Removed global-phase/Y-modulo attack. Fires only when horizontal velocity is zero.
+  Per-actor elapsed clock emits one projectile every100ms (six native60Hz ticks).
+  Starts upward; emission angle advances15degrees per shot; speed7 authored px/tick.
+  Screen-space positive angle is clockwise. Muzzle centreX<=200 sweeps clockwise,
+  centreX>200 counterclockwise; crossing centre reverses direction without resetting angle.
+  Each projectile travels straight; consecutive angles create an expanding spiral.
+  Cadence, speed, angular step, initial angle and projectile kind live in enemies.json.
+
+Body contact:
+  Player cockpit circle(radius4) against per-kind contact_bounds rectangles.
+  Bounds use central70percent of current drawn frame, accounting for offsets and
+  centred boss torso anchors. Transparent outer margins do not form a full50px box.
+  Living normal enemies, supply craft, boss bodies and boss parts participate.
+  Damage10*difficulty =10/20/30/40/50. No reciprocal damage is applied to enemies.
+  Shares bullet hit flash/audio and50-authored-unit invulnerability(1.5seconds).
+  Simultaneous overlapping actors do not stack damage; shield does not block hull contact.
+  Shared damage helper keeps bullet and contact responses consistent.
+
+Validation: see VALIDATION.txt. No commit or push. Original VB6 directory untouched.
+
+Windows compatibility packaging correction:
+  Prior single-file export used an unsigned release template with embedded PCK.
+  New portable runtime copies the official signed Godot GUI executable unchanged;
+  Pirate-II.pck contains the game and must remain alongside Pirate-II.exe.
+  No security settings, allowlists, certificates or downloaded-file markers changed.
+  Signer: Prehensile Tales B.V. (engine publisher, not a signature on game content).
+  The inspection sandbox could not build the root certificate chain; therefore
+  certificate trust is not independently asserted. Actual Windows process launches
+  of the copied runtime succeeded with exit0, producing menu and combat captures.
+  This is a standard external-game-data deployment, not a newly signed game EXE.
+  The exact Windows reason for previously allowing an older EXE is still unknown;
+  CodeIntegrity event log access was denied in this session.
+
+v24.1:15degree steps, stationary-X-only firing; sweep angle held and cadence reset during horizontal travel.
+
+v24.2 follow-up:
+  All black smoke linear dimensions are80percent of v24.1; opacity, lifetime,
+  emission timing, scroll advection and explosion flame sizes are unchanged.
+  Back-to-front order: hulls/mounts, black smoke, player weapons, enemy bullets, HUD.
+  Exact overlapping-projectile pixel tests prove enemy bullets cover allied shots,
+  and allied shots cover smoke while smoke remains over actor hulls.
+  Supply-role craft are exempt from body-contact damage, including approach,
+  open/carrying and rescued escape states. Other enemies/bosses still use10*difficulty.
+  Supply exemption does not trigger hit flash/immunity or block hostile overlap checks.
+  Current affected suites146checks passed; actual portable EXE launch checked separately.
+v24.3: restored smoke ABOVE both allied and enemy projectiles as explicitly selected by user; size0.8, supply contact exemption and all gameplay retained. HUD remains above smoke.
+
+v24.4: player horizontal clamp derives from pilot geometry (40px drawing centred at logical25px). Anchor limits changed from10..340 to-5..355, removing both15px visual-frame margins. Vertical limit, movement speed and cockpit geometry retained.84affected checks passed.
+
+v24.5: swapped only black smoke and enemy bullet draw order. Enemy bullets now overlay smoke; allied shots remain behind smoke. Size0.8 and gameplay unchanged.8affected pixel checks passed.
+
+v24.6 / lower-plane1071 ascent:
+  Shared rule in scripts/enemy_depth.gd supplies movement threshold, contact
+  exclusion, sprite scale/tint and renderer grouping. No duplicateY250 checks.
+  Y>250: no player body-contact damage; drawing initially0.8scale/0.65brightness.
+  Smoothstep blend duringY310..250 restores full scale/brightness at the boundary.
+  Y<=250: normal contact damage10*difficulty resumes. Shot/laser vulnerability,
+  movement velocities, bullets, HP and enemy firing rules are unchanged.
+  Lower-plane sprites draw before boss/player/ordinary enemies, with one draw per
+  actor and existing effects/projectile/HUD ordering maintained.
+  Both renewed and original-sprite render paths use the depth scale/tint.
+  Other movement patterns and supply-role contact exemption remain unchanged.
+  Affected suites157checks passed. No commit/push; original VB6 untouched.
+v24.7: complete VFX performance audit and optimization. Projectile quad atlas, reduced trail cadence/quantity, grouped particle commands, removal of redundant renewed-cloud copies and eager shot visual recalculation. Gameplay hashes unchanged; full933checks passed. See PERFORMANCE-v24.7.txt and performance-v24.7.json.
+
+v24.8 boss body attacks:
+  Stage1 body now always fires, independent of HP and fist survival.300ms when
+  at least one fist survives;150ms once both are gone.Only body cadence changes;
+  original alternating ports and velocity formula remain.Fresh interval on enrage.
+  Stage4 replaced Y-modulo symmetric body fire with paired independent100ms sweeps:
+  leftCCW/rightCW,10degrees per volley,downward initial angle,kind6,speed7.
+  Existing body ports(-25,50)/(25,50) and entryY>49 guard retained.
+  Sweep remains active while any living part survives and stops for final rage.
+  Arm/claw/core/replacement cannon/final fireball patterns remain intact.
+  Timing/ports/rotation metadata live in data/enemies.json,validated on load.
+  Full969checks passed including both new body-clock cases and real60FPS tests.
+  No commit/push; original VB6 source untouched.
+v24.9 / boss4 core visual alignment:
+  Definition133 draw_offsetY:-15 ->-8 (+7logical px,14px at normal2x window).
+  Existing atlas hole centre measured at(68.105,66.362) in the138x269crop;
+  the80px-tall core previously placed its opening around bodyY54.735, versus
+  the body chest centre aroundY62. New centre is aroundY61.735 (<0.5px mismatch).
+  X alignment,source sprite bytes,logical attachment,collision,attack and detached
+  motion are unchanged. The same visual offset follows the detached core.
+  Visual original/body-only/updated comparison reviewed;108affected checks passed.
+  No commit/push; original VB6 source untouched.

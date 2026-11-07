@@ -1,5 +1,6 @@
 extends Node2D
 ## Rendering consumes game state; input, simulation and audio live elsewhere.
+const Depth = preload("res://scripts/enemy_depth.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Weapons = preload("res://scripts/player_weapons.gd")
 const HUD = preload("res://scripts/hud.gd")
@@ -20,6 +21,7 @@ var new_cloud_shader = preload("res://scripts/renewed_cloud.gdshader")
 var g: Node
 var foreground_only: bool = false
 var cloud_nodes: Array = []
+var cloud_copies: Array = []
 var foreground: Node2D
 
 func _ready() -> void:
@@ -45,6 +47,7 @@ func _ready() -> void:
 		var copy := BackBufferCopy.new()
 		copy.copy_mode = BackBufferCopy.COPY_MODE_VIEWPORT
 		add_child(copy)
+		cloud_copies.append(copy)
 		var cloud := Sprite2D.new()
 		cloud.centered = false
 		cloud.region_enabled = true
@@ -78,15 +81,19 @@ func refresh() -> void:
 			background.material.set_shader_parameter("boss_rush",false if title_earth else g.boss_rush)
 			background.material.set_shader_parameter("source_top",3360.0-g.title.scroll if title_earth else g.presentation.background(g))
 		for i in range(cloud_nodes.size()):
-			cloud_nodes[i].visible = in_game
-			if in_game:
-				var cloud: Sprite2D = cloud_nodes[i]
-				cloud.material.shader = new_cloud_shader if g.renewed_art else old_cloud_shader
-				cloud.region_enabled = not g.renewed_art
-				cloud.texture = vfx.glow if g.renewed_art else g.art.texture(["","cl03","cl02","cl01","cl01"][g.stage])
-				cloud.scale = Vector2.ONE*(300.0/vfx.glow.get_width()) if g.renewed_art else Vector2.ONE
-				if g.renewed_art: cloud.material.set_shader_parameter("phase",g.presentation.phase(g))
-				cloud_nodes[i].position = g.presentation.cloud(g,i)
+			var cloud: Sprite2D = cloud_nodes[i]
+			cloud.position = g.presentation.cloud(g,i)
+			var on_screen: bool = Rect2(Vector2.ZERO,Vector2(400,480)).intersects(Rect2(cloud.position,Vector2(300,300)))
+			cloud.visible = in_game and on_screen
+			# Only the original bitwise GDI shader reads SCREEN_TEXTURE. Renewed
+			# alpha clouds never need these two full-viewport framebuffer copies.
+			cloud_copies[i].visible = cloud.visible and not g.renewed_art
+			if not cloud.visible: continue
+			cloud.material.shader = new_cloud_shader if g.renewed_art else old_cloud_shader
+			cloud.region_enabled = not g.renewed_art
+			cloud.texture = vfx.glow if g.renewed_art else g.art.texture(["","cl03","cl02","cl01","cl01"][g.stage])
+			cloud.scale = Vector2.ONE*(300.0/vfx.glow.get_width()) if g.renewed_art else Vector2.ONE
+			if g.renewed_art: cloud.material.set_shader_parameter("phase",g.presentation.phase(g))
 		foreground.queue_redraw()
 	queue_redraw()
 func _text(pos: Vector2, text: String, size: int = 14, color: Color = Color.WHITE) -> void:
@@ -107,15 +114,15 @@ func _draw() -> void:
 		return
 	if g.state in ["menu","loading"]: return
 	var fraction: float = g.presentation.alpha
-	vfx.draw_particles(self,clampf(fraction,0,1),1) # Dense smoke stays behind actors and bullets.
 	for item in g.items:
 		if item.get("born_frame",-1)==g.frame: continue
 		if item.kind==1:
 			Supply.draw_item(self,g.art,g.presentation.position(item),g.animation,g.presentation.phase(g),Supply.released_scale(item))
 		else:
 			draw_texture(g.art.sprite("eweapons",Rect2i(g.animation*20,320,20,30),Vector2i(g.animation*20,350)),g.presentation.position(item)-Vector2(10,15))
-	for bullet in g.bullets:
-		_draw_bullet(bullet)
+	# Lower-plane1071 arrivals pass behind all same-plane ships until Y250.
+	for e in g.enemies:
+		if Depth.is_below(e): _draw_enemy_actor(e)
 	if not g.boss.is_empty():
 		if g.renewed_art:
 			renewal.draw_boss_links(self,g.presentation.position(g.boss),g.enemies,g.presentation)
@@ -126,23 +133,22 @@ func _draw() -> void:
 		else: draw_texture(g.art.sprite("picair",Rect2i(g.player_bank*50,0,50,50),Vector2i(g.player_bank*50,50)),g.presentation.player(g))
 
 	for e in g.enemies:
-		var offset: Vector2 = Catalog.definition(int(e.kind)).get("draw_offset",Vector2.ZERO)
-		if g.renewed_art: renewal.draw_enemy(self,e,g.presentation.position(e)+offset,g.frame)
-		else: draw_texture(g.art.enemy(int(e.get("render_kind",e.kind)),e.velocity,g.animation,g.stage,e.pos.y),e.pos+offset)
-		var preparation: Dictionary = Scenery.preparation(e,g.boss)
-		if not preparation.is_empty():
-			vfx.draw_charge(self,preparation.pos+g.presentation.position(e)-e.pos+Vector2(25,25),g.presentation.phase(g))
-
+		if not Depth.is_below(e): _draw_enemy_actor(e)
 
 	for blast in g.explosions: vfx.draw_explosion(self,blast,g.presentation.position(blast))
 	vfx.draw_particles(self,clampf(fraction,0,1),2)
-	for shot in (g.shot_visuals if not g.shot_visuals.is_empty() else g.shots):
-		_draw_shot(shot)
-	vfx.draw_special(self,g,g.presentation.player(g),g.presentation.shield(g),g.presentation.phase(g))
 	for e in g.enemies:
 		if int(e.kind) in [19,201]:
 			if g.renewed_art: Supply.draw_mount(self,g.art,e,g.presentation.position(e),g.animation,g.presentation.phase(g))
 			else: draw_texture(g.art.sprite("enemy_sm",Rect2i(2550,0,50,50),Vector2i(2550,50)),g.presentation.position(e))
+	# Player weapons and enemy bullets remain above actor hulls.
+	for shot in (g.shot_visuals if not g.shot_visuals.is_empty() else g.shots):
+		_draw_shot(shot)
+	vfx.draw_special(self,g,g.presentation.player(g),g.presentation.shield(g),g.presentation.phase(g))
+	# Back to front: player weapons -> black smoke -> enemy bullets. HUD stays above.
+	vfx.draw_particles(self,clampf(fraction,0,1),1)
+	for bullet in g.bullets:
+		_draw_bullet(bullet)
 	if g.death_ticks>0:
 		draw_texture(g.art.sprite("picgov",Rect2i(0,0,200,30),Vector2i(0,30)),Vector2(100,230))
 
@@ -157,6 +163,19 @@ func _draw() -> void:
 		_center(202,"PAUSED",28,Color(0.7,0.92,1))
 		_center(278,"P: RESUME",14)
 		_center(307,"ESC: TITLE",12,Color(0.65,0.75,0.85))
+func _draw_enemy_actor(e: Dictionary) -> void:
+	var offset: Vector2 = Catalog.definition(int(e.kind)).get("draw_offset",Vector2.ZERO)
+	var pos: Vector2 = g.presentation.position(e)+offset
+	if g.renewed_art: renewal.draw_enemy(self,e,pos,g.frame)
+	else:
+		var size: Vector2 = Catalog.definition(int(e.kind)).get("draw_size",Vector2(50,50))
+		draw_set_transform(pos+size/2,0,Vector2.ONE*Depth.scale_for(e))
+		draw_texture(g.art.enemy(int(e.get("render_kind",e.kind)),e.velocity,g.animation,g.stage,e.pos.y),-size/2,Depth.tint_for(e))
+		draw_set_transform(Vector2.ZERO)
+	var preparation: Dictionary = Scenery.preparation(e,g.boss)
+	if not preparation.is_empty():
+		vfx.draw_charge(self,preparation.pos+g.presentation.position(e)-e.pos+Vector2(25,25),g.presentation.phase(g))
+
 func _draw_bullet(b: Dictionary) -> void:
 	vfx.draw_bullet(self,b,g.presentation.position(b),g.presentation.phase(g))
 

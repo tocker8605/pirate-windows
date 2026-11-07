@@ -21,6 +21,7 @@ func near(a: Vector2, b: Vector2) -> bool:
 func _initialize() -> void: call_deferred("run")
 
 func run() -> void:
+	var b: Array = []
 	var player := Vector2(170,380)
 	# Golden values calculated directly from frmtmrs.frm ewcontrol, not from port helpers.
 	var a: Array = Fire.burst(enemy(1,Vector2(100,100)),player,6,0)
@@ -38,12 +39,7 @@ func run() -> void:
 	a = Fire.burst(enemy(3,Vector2(100,41)),player,2,0)
 	check(near(a[0].velocity,Vector2(-10.0/3,8)),"type 3 Y=41 wraps modulo, not a sine wave")
 	check(Fire.burst(enemy(3,Vector2(100,199)),player,2,0).is_empty(),"type 3 upper Y boundary is strict")
-	a = Fire.burst(enemy(5,Vector2(175,25)),player,2,0)
-	var b: Array = Fire.burst(enemy(5,Vector2(176,25)),player,2,0)
-	check(near(a[0].velocity,Vector2(25.0/3,0)) and near(b[0].velocity,Vector2(-25.0/3,0)),"type 5 reverses X at original 175/176 pixel boundary")
-	a = Fire.burst(enemy(5,Vector2(175,50)),player,2,0)
-	b = Fire.burst(enemy(5,Vector2(175,51)),player,2,0)
-	check(a[0].velocity==Vector2(0,-12.5) and b[0].velocity==Vector2(0,12.5),"type 5 Y modulo 51 flips vertical velocity")
+	check(Fire.burst(enemy(5,Vector2(175,25)),player,2,0).is_empty(),"type5 no longer fires via legacy phase/Y modulo rules")
 	a = Fire.burst(enemy(6,Vector2(100,100),Vector2(2,3)),player,4,0)
 	check(a.size()==2 and a[0].pos==Vector2(105,130) and a[1].pos==Vector2(135,130) and a[0].velocity==Vector2(-2,7),"type 6 two original muzzle locations and motion-linked velocity")
 	a = Fire.burst(enemy(6,Vector2(100,100),Vector2(0,-1)),player,4,0)

@@ -13,5 +13,5 @@ static func enemy(g: Node, e: Dictionary) -> void:
 static func body(g: Node) -> void:
 	if g.boss.is_empty(): return
 	if int(g.boss.stage)==4:
-		for section in [1,2,3]: group(g,Boss.fire(g.boss,g.enemies,g.clock.phase,int((g.timeline()-g.tick_units)/30),section))
+		for section in [1,3]: group(g,Boss.fire(g.boss,g.enemies,g.clock.phase,int((g.timeline()-g.tick_units)/30),section))
 	else: group(g,Boss.fire(g.boss,g.enemies,g.clock.phase,int((g.timeline()-g.tick_units)/30)))

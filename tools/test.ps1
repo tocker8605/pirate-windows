@@ -12,8 +12,8 @@ $import|Set-Content (Join-Path $logRoot 'import.log') -Encoding utf8
 if(($import-join"
 ") -match 'SCRIPT ERROR|ERROR:'){throw 'Project import contained errors'}
 if($LASTEXITCODE -ne 0){throw 'Project import failed'}
-$tests=@('smoke','combat_reference','special_effects','campaign','presentation_audio','full_audit','pool_reference','random_reference','combat_vfx','entity_store','entity_scale','renewal','regions_turning','stage4_regions','presentation','native_tick','boss_mecha','carrier_reward','cockpit_fireball','weapon_parallel','claw_smoke','supply_boss_v20','enemy_catalog','weapon_motion')
-if($Render){$tests+=@('render_rop','render_renewal','render_60fps','render_title_earth','render_combat_style','render_vfx_strength','render_catalog_hud','render_station_weapons')}
+$tests=@('smoke','combat_reference','special_effects','campaign','presentation_audio','full_audit','pool_reference','random_reference','combat_vfx','entity_store','entity_scale','renewal','regions_turning','stage4_regions','presentation','native_tick','boss_mecha','carrier_reward','cockpit_fireball','weapon_parallel','claw_smoke','supply_boss_v20','enemy_catalog','weapon_motion','spiral_contact','ascent_depth','projectile_trails','boss_body_patterns')
+if($Render){$tests+=@('render_rop','render_renewal','render_60fps','render_title_earth','render_combat_style','render_vfx_strength','render_catalog_hud','render_station_weapons','render_smoke_overlay','render_ascent_depth','render_fireball_cache','render_boss4_final','render_cloud_copies','render_streak_cache','render_boss4_sweep')}
 $total=0
 foreach($name in $tests){
  $arguments=@('--path',$projectRoot,'--script',"tests/$name.gd")

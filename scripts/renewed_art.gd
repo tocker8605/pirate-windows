@@ -1,14 +1,15 @@
 extends RefCounted
 const Catalog = preload("res://scripts/enemy_catalog.gd")
+const Depth = preload("res://scripts/enemy_depth.gd")
 const Pose = preload("res://scripts/enemy_pose.gd")
 const Boss = preload("res://scripts/boss.gd")
 var poses: Dictionary = {}
 var last_frame: int = -1
 var render_fraction: float = 1.0
 ## Generated alpha atlases are consumed non-destructively at the original game anchors.
-var station_atlas: Texture2D = preload("res://assets/renewed/ring-quarter-v23.png")
+var station_atlas: Texture2D = preload("res://assets/renewed/ring-station-v22.png")
 var station_frame: AtlasTexture
-const STATION_RECT = Rect2i(207,187,837,799)
+const STATION_RECT = Rect2i(30,27,829,832)
 var carrier: Texture2D = preload("res://assets/renewed/carrier-v20.png")
 var enemies: Texture2D = preload("res://assets/renewed/enemies-v18.png")
 var bosses: Texture2D = preload("res://assets/renewed/bosses-v15.png")
@@ -77,15 +78,9 @@ func station_texture() -> Texture2D:
 		station_frame.filter_clip = true
 	return station_frame
 func draw_station(c: Node2D, center: Vector2, scale: Vector2, phase: float, tint: Color = Color.WHITE) -> void:
-	# Perspective and occlusion are painted together; never rotate a quarter-view card flat.
-	c.draw_set_transform(center,0,scale)
-	var texture: Texture2D = station_texture()
-	var native := Vector2(texture.get_width(),texture.get_height())
-	var size: Vector2 = native*minf(50/native.x,50/native.y)
-	c.draw_texture_rect(texture,Rect2(-size/2,size),false,tint)
-	for side in [-1,1]:
-		var pulse: float = 0.25+0.2*sin(phase*2+side*PI/2)
-		c.draw_circle(Vector2(side*23,0.2),0.5,Color(1,0.38,0.08,pulse),true,-1,true)
+	# v22 habitat/truss only. The separate axial spindle is intentionally omitted.
+	c.draw_set_transform(center,phase,scale)
+	c.draw_texture_rect(station_texture(),Rect2(-25,-25,50,50),false,tint)
 	c.draw_set_transform(Vector2.ZERO)
 static func dimensions(kind: int) -> Vector2:
 	return Catalog.definition(kind).get("draw_size",Vector2(50,50))
@@ -113,10 +108,10 @@ func draw_enemy(c: Node2D, e: Dictionary, pos: Vector2, _frame: int) -> void:
 	var bank: float = lerpf(pose.previous_bank,pose.bank,render_fraction)
 	var pulse: float = lerpf(pose.previous_pulse,pose.pulse,render_fraction)
 	var spin: float = lerpf(pose.get("previous_spin",0.0),pose.get("spin",0.0),render_fraction)
-	var projected: Vector2 = Pose.project(pitch,bank,int(e.kind))
+	var projected: Vector2 = Pose.project(pitch,bank,int(e.kind))*Depth.scale_for(e)
 	if e.kind in [4,5]: projected *= Vector2(1-pulse*0.18,1-pulse*0.06)
 	var shade: float = 0.76+0.24*absf(projected.y)
-	var tint := Color(shade,shade,shade)
+	var tint: Color = Color(shade,shade,shade)*Depth.tint_for(e)
 	if pitch>PI/2: tint *= Color(0.78,0.86,0.96)
 	if Boss.part_side(int(e.kind))>0 or e.kind in [101,124]: projected.x *= -1
 	if e.kind==133: center.x += 1
@@ -134,7 +129,7 @@ func draw_enemy(c: Node2D, e: Dictionary, pos: Vector2, _frame: int) -> void:
 	else: c.draw_texture_rect(sprite,Rect2(-painted_size/2,painted_size),false,tint)
 	if e.kind in [4,5,9]:
 		# Keep the generated metal/lens shading; only modulate its emissive centre.
-		c.draw_circle(Vector2.ZERO,3+pulse,Color(1,0.45,0.12,pulse*0.18),true,-1,true)
+		c.draw_circle(Vector2.ZERO,3+pulse,Color(1,0.45,0.12,pulse*0.18)*Depth.tint_for(e),true,-1,true)
 	c.draw_set_transform(Vector2.ZERO)
 
 func draw_hinged_wings(c: Node2D, center: Vector2, yaw: float, scale: Vector2, fold: float, tint: Color) -> void:

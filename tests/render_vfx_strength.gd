@@ -24,7 +24,7 @@ class Board extends Node2D:
 		draw_string(font,Vector2(255,25),"STRONGER",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color.WHITE)
 		draw_string(font,Vector2(12,65),"DAMAGE SMOKE",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color.WHITE)
 		var age: float = 6.0/28.0
-		fx.halo(self,Vector2(100,110),15*(1+age*1.6),Color("414b5c"),(1-age)*0.65)
+		fx.halo(self,Vector2(100,110),15*FX.SMOKE_SIZE_SCALE*(1+age*1.6),Color("414b5c"),(1-age)*0.65)
 		fx.particles = [{"p":Vector2(300,110),"v":Vector2.ZERO,"age":6.0,"life":28.0,"size":15.0,"color":FX.SMOKE_COLOR,"smoke":true}]
 		fx.draw_particles(self,1,1)
 		draw_string(font,Vector2(12,185),"SMALL EXPLOSION",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color.WHITE)

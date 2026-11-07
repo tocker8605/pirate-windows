@@ -31,6 +31,7 @@ func recover(alive: bool, units: float = 1.0) -> bool:
 
 # Native60Hz gameplay. Metadata integration preserves the v10 tuned wall-clock speed.
 # Menu artwork retains its original independent animation cadence.
+const AUTHORED_TICK_SECONDS: float = 0.03
 const PLAYBACK_TIME_SCALE: float = 1.2
 static func interval(speed: int, gameplay: bool = true) -> float:
 	var original: float = (30.0-5.0*clampi(speed,1,5))/1000.0

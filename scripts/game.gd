@@ -9,6 +9,7 @@ const Effects = preload("res://scripts/special_effects.gd")
 const Boss = preload("res://scripts/boss.gd")
 const Title = preload("res://scripts/title.gd")
 const Combat = preload("res://scripts/combat.gd")
+const PilotGeometry = preload("res://scripts/pilot_geometry.gd")
 const Clock = preload("res://scripts/timing.gd")
 const EnemyRules = preload("res://scripts/enemy_rules.gd")
 const WorldEffects = preload("res://scripts/world_effects.gd")
@@ -295,7 +296,7 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 		player += direction*6*units
 		player_bank = 1 if direction.x<0 else (2 if direction.x>0 else 0)
 		if automatic and Input.is_physical_key_pressed(KEY_RIGHT): player_bank = 2
-	player.x = clampf(player.x,10,340)
+	player.x = PilotGeometry.clamp_horizontal(player.x)
 	player.y = clampf(player.y,0,430)
 	hp = minf(100,hp)
 	energy = clampf(energy,0,100)
@@ -329,6 +330,9 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 			clock.phase = phase
 			BulletPool.body(self)
 			for e in enemies: _enemy_fire(e)
+	if boss_death_ticks==0:
+		BulletPool.group(self,Boss.advance(boss,enemies,units*Clock.AUTHORED_TICK_SECONDS,int((timeline()-units)/30)))
+		for e in enemies: BulletPool.group(self,EnemyFire.advance(e,units*Clock.AUTHORED_TICK_SECONDS))
 	_update_scenery()
 	for blast in explosions:
 		if blast.get("pending_sound",false):
@@ -366,6 +370,7 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 	_resolve_shots()
 	_update_items()
 	_update_bullets()
+	_resolve_body_contacts()
 	if clock.finish(death_ticks==0,units): energy = minf(100,energy+1)
 	if view!=null:
 		view.vfx.observe(self)
@@ -489,13 +494,27 @@ func _update_bullets() -> void:
 			shield = maxf(0,shield-4)
 			score += 25*title.difficulty
 		elif hp>0 and invulnerable==0 and Combat.hurts_player(player,bullet.pos):
-			hp -= Combat.DAMAGE[int(bullet.kind)]*title.difficulty
-			invulnerable = 50
-			hit_flash_ticks = 19
+			_hurt_player(Combat.DAMAGE[int(bullet.kind)])
 			bullet.alive = false
-			_sound("damage")
 	for bullet in bullets:
 		if not bullet.alive: bullets.remove(bullet.entity_id)
+
+func _hurt_player(base_damage: float) -> void:
+	if hp<=0 or invulnerable>0 or death_ticks>0: return
+	hp -= base_damage*title.difficulty
+	invulnerable = 50
+	hit_flash_ticks = 19
+	_sound("damage")
+
+func _resolve_body_contacts() -> void:
+	if hp<=0 or invulnerable>0 or death_ticks>0: return
+	if Combat.touches_player(player,boss):
+		_hurt_player(Combat.CONTACT_DAMAGE)
+		return
+	for e in enemies:
+		if Combat.touches_player(player,e):
+			_hurt_player(Combat.CONTACT_DAMAGE)
+			return
 
 func _destroy_enemy(e: Dictionary) -> void:
 	var kind: int = int(e.kind)

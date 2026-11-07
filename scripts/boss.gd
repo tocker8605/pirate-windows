@@ -77,10 +77,7 @@ static func fire(b: Dictionary, enemies: Variant, phase: int, timer: int, sectio
 	var v: Vector2 = b.velocity
 	var parts: bool = parts_alive(enemies)
 	match int(b.stage):
-		1:
-			if not parts and phase%5==0:
-				var side: float = 1 if timer%4>1 else -1
-				_add(result,p+Vector2(40*side,50),Vector2(side*(1+v.y),9),1)
+		1: pass # Independent300/150ms body clock is advanced every native tick.
 		2:
 			if not parts and phase%2==0:
 				_add(result,p+Vector2(15,60),Vector2(3-Rng.between(0,6),3-Rng.between(0,6)),6)
@@ -102,14 +99,52 @@ static func fire(b: Dictionary, enemies: Variant, phase: int, timer: int, sectio
 				if not has_part(enemies,132):
 					var vx: int = 3-Rng.between(0,8)
 					_add(result,p+Vector2(35,55),Vector2(vx,11-absi(vx)),5)
-			if section in [0,2] and phase%3==0 and p.y>49 and parts:
-				var mod_y: int = int(p.y)%50
-				_add(result,p+Vector2(-25,50),Vector2(5-mod_y/5.0,(100-p.y)/5.0),6)
-				_add(result,p+Vector2(25,50),Vector2(mod_y/5.0-5,(100-p.y)/5.0),6)
 			if section in [0,3] and not parts:
 				var x: int = 10-Rng.between(0,20)
 				var vx: int = 3-Rng.between(0,6)
 				_add(result,p+Vector2(x,35),Vector2(vx,-5+absi(vx)),8)
+	return result
+
+# The paired sweep has an independent100ms clock, not the legacy60ms phase clock.
+# Both ports start downward and share sweep progress with opposite rotation signs.
+static func advance(b: Dictionary,enemies: Variant,seconds: float,timer: int = 0) -> Array:
+	var result: Array = []
+	if b.is_empty() or b.hp<=0: return result
+	if int(b.stage)==1: return _advance_first(b,enemies,seconds,timer)
+	if int(b.stage)!=4: return result
+	var attack: Dictionary = Catalog.boss_definition(4).get("attack",{})
+	if attack.is_empty() or not attack.has("ports"): return result
+	if not parts_alive(enemies) or b.pos.y<=float(attack.get("min_y",-INF)):
+		b.body_attack_elapsed = 0.0
+		return result
+	var elapsed: float = float(b.get("body_attack_elapsed",0.0))+seconds
+	var sweep: float = float(b.get("body_sweep",0.0))
+	while elapsed>=float(attack.interval_seconds)-0.0000001:
+		elapsed = maxf(0,elapsed-float(attack.interval_seconds))
+		for i in range(attack.ports.size()):
+			var port: Array = attack.ports[i]
+			var angle: float = deg_to_rad(attack.initial_degrees)+sweep*float(attack.rotation_directions[i])
+			_add(result,b.pos+Vector2(port[0],port[1]),Vector2.from_angle(angle)*float(attack.speed),int(attack.projectile_kind))
+		sweep = fposmod(sweep+deg_to_rad(attack.step_degrees),TAU)
+	b.body_attack_elapsed = elapsed
+	b.body_sweep = sweep
+	return result
+
+static func _advance_first(b: Dictionary,enemies: Variant,seconds: float,timer: int) -> Array:
+	var attack: Dictionary = Catalog.boss_definition(1).get("attack",{})
+	var result: Array = []
+	if attack.is_empty(): return result
+	var interval: float = attack.interval_seconds if parts_alive(enemies) else attack.enraged_interval_seconds
+	# Start a fresh half-length interval when the final fist goes away; no backlog burst.
+	if not is_equal_approx(float(b.get("body_attack_period",interval)),interval): b.body_attack_elapsed = 0.0
+	b.body_attack_period = interval
+	var elapsed: float = float(b.get("body_attack_elapsed",0.0))+seconds
+	while elapsed>=interval-0.0000001:
+		elapsed = maxf(0,elapsed-interval)
+		var side: float = 1 if timer%4>1 else -1
+		var port: Array = attack.ports[1 if side>0 else 0]
+		_add(result,b.pos+Vector2(port[0],port[1]),Vector2(side*(float(attack.horizontal_base)+b.velocity.y),float(attack.speed_y)),int(attack.projectile_kind))
+	b.body_attack_elapsed = elapsed
 	return result
 
 static func _add(result: Array, pos: Vector2, velocity: Vector2, kind: int) -> void:

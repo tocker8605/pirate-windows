@@ -3,7 +3,8 @@ $ErrorActionPreference='Stop'
 $projectRoot=Split-Path $PSScriptRoot -Parent
 $outputRoot=if($OutputDirectory){(Resolve-Path -LiteralPath $OutputDirectory).Path}else{Split-Path $projectRoot -Parent}
 $exe=Join-Path $projectRoot 'build\Pirate-II.exe'
-if(-not(Test-Path -LiteralPath $exe)){throw 'Build the Windows executable first'}
+$pack=Join-Path $projectRoot 'build\Pirate-II.pck'
+if(-not(Test-Path -LiteralPath $exe) -or -not(Test-Path -LiteralPath $pack)){throw 'Run tools/build.ps1 first; both Pirate-II.exe and Pirate-II.pck are required'}
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 foreach($type in @('source','windows')){
  $name = if($type -eq 'source'){"Pirate-II-Godot-source-$Version.zip"}else{"Pirate-II-Windows-$Version.zip"}
@@ -19,7 +20,8 @@ foreach($type in @('source','windows')){
    }
   }else{
    [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive,$exe,'Pirate-II.exe',[System.IO.Compression.CompressionLevel]::Optimal)|Out-Null
-   foreach($name in @('README-ko.txt','AUDIT-v6.txt','AUDIT-v7.txt','AUDIT-v8.txt','AUDIT-v9.txt','AUDIT-v10.txt','AUDIT-v11.txt','AUDIT-v12.txt','AUDIT-v13.txt','AUDIT-v14.txt','AUDIT-v15.txt','AUDIT-v16.txt','AUDIT-v17.txt','AUDIT-v18.txt','AUDIT-v19.txt','AUDIT-v20.txt','AUDIT-v21.txt','AUDIT-v22.txt','AUDIT-v23.txt','VALIDATION.txt')){
+   [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive,$pack,'Pirate-II.pck',[System.IO.Compression.CompressionLevel]::Optimal)|Out-Null
+   foreach($name in @('README-ko.txt','AUDIT-v6.txt','AUDIT-v7.txt','AUDIT-v8.txt','AUDIT-v9.txt','AUDIT-v10.txt','AUDIT-v11.txt','AUDIT-v12.txt','AUDIT-v13.txt','AUDIT-v14.txt','AUDIT-v15.txt','AUDIT-v16.txt','AUDIT-v17.txt','AUDIT-v18.txt','AUDIT-v19.txt','AUDIT-v20.txt','AUDIT-v21.txt','AUDIT-v22.txt','AUDIT-v23.txt','AUDIT-v24.txt','PERFORMANCE-v24.7.txt','VALIDATION.txt')){
     $path=Join-Path $projectRoot $name
     if(Test-Path -LiteralPath $path){[System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive,$path,$name,[System.IO.Compression.CompressionLevel]::Optimal)|Out-Null}
    }

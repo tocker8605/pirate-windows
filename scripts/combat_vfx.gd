@@ -1,10 +1,13 @@
 extends RefCounted
 ## Presentation-only CPU particles. Never consumes the original game's VB random stream.
+const ProjectileFrames = preload("res://scripts/projectile_frames.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Rules = preload("res://scripts/enemy_rules.gd")
 const Weapons = preload("res://scripts/player_weapons.gd")
 const Pilot = preload("res://scripts/pilot_geometry.gd")
 const LIMIT: int = 1500
+const PROJECTILE_TRAIL_PERIOD: float = 4.0
+const SMOKE_SIZE_SCALE: float = 0.8
 const SMOKE_SCROLL_FACTOR: float = 1.0
 const SMOKE_COLOR = Color("101216")
 const CYAN = Color("61e7ff")
@@ -21,11 +24,13 @@ var last_frame: int = -1
 var last_stage: int = -1
 var last_hit: float = 0
 var trail_clock: float = 0
+var projectile_trail_clock: float = 0
 var smoke_puff: Texture2D
 var fire_puff: Texture2D
 var glow: Texture2D
 
 func _init() -> void:
+	ProjectileFrames.warm()
 	rng.seed = 863502
 	var image := Image.create(64,64,false,Image.FORMAT_RGBA8)
 	var smoke_image := Image.create(64,64,false,Image.FORMAT_RGBA8)
@@ -52,6 +57,7 @@ func reset() -> void:
 	last_stage = -1
 	last_hit = 0
 	trail_clock = 0
+	projectile_trail_clock = 0
 
 func emit(p: Vector2, v: Vector2, life: float, size: float, color: Color, smoke: bool = false) -> void:
 	if particles.size()>=LIMIT: return
@@ -101,18 +107,25 @@ func observe(g: Node) -> void:
 			burst(Rules.cargo_position(e),24,Color("b6ff66"),2.8)
 	for p in g.shield_contacts: burst(p,9,CYAN,2.8)
 	for p in g.laser_contacts: burst(p+Vector2(15,15),3,MINT,3)
+	# Projectile tails have their own reduced cadence. Damage smoke and engines
+	# keep the original60ms emission rhythm independently.
+	projectile_trail_clock += g.tick_units
+	if (g.tick_units==1 and g.frame%int(PROJECTILE_TRAIL_PERIOD)==0) or (g.tick_units!=1 and projectile_trail_clock>=PROJECTILE_TRAIL_PERIOD):
+		projectile_trail_clock = fposmod(projectile_trail_clock,PROJECTILE_TRAIL_PERIOD)
+		for b in g.bullets:
+			var direction: Vector2 = b.velocity.normalized()
+			var kind: int = int(b.kind)
+			if kind==8:
+				# One ember instead of two flame particles PLUS the generic third trail.
+				emit(b.pos-direction*4,-direction*0.6+direction.orthogonal()*rng.randf_range(-0.5,0.5),12,2.7,HOT)
+			else:
+				emit(b.get("render_pos",b.pos)-direction*5,-direction*0.7,9,2.5 if kind==2 else 1.4,enemy_color(kind))
+		for shot in g.shots:
+			if int(shot.get("impact_ticks",-1))>=0: continue
+			emit(shot.pos+Vector2(15,20),Vector2(rng.randf_range(-0.2,0.2),2),8,1.8,player_color(g.weapon))
 	trail_clock += g.tick_units
 	if (g.tick_units==1 and g.frame%2==0) or (g.tick_units!=1 and trail_clock>=2):
 		trail_clock = fposmod(trail_clock,2)
-		for b in g.bullets:
-			var direction: Vector2 = b.velocity.normalized()
-			var missile: bool = int(b.kind)==2
-			if int(b.kind)==8:
-				for i in range(2): emit(b.pos-direction*4, -direction*0.6+direction.orthogonal()*rng.randf_range(-0.5,0.5),12,2.7,HOT)
-			emit(b.get("render_pos",b.pos)-direction*5,-direction*0.7,9,2.5 if missile else 1.4,enemy_color(int(b.kind)))
-		for s in g.shots:
-			if int(s.get("impact_ticks",-1))>=0: continue
-			emit(s.pos+Vector2(15,20),Vector2(rng.randf_range(-0.2,0.2),2),8,1.8,player_color(g.weapon))
 		# Emit at the damaged hull; particle advection now creates the history trail.
 		if g.render_hp<40: emit_smoke(g.player+Pilot.visual_point(Vector2(25,40)),13)
 		for e in g.enemies:
@@ -148,17 +161,26 @@ func streak(c: Node2D, p: Vector2, direction: Vector2, length: float, width: flo
 	c.draw_line(p-direction*length*0.7,p,Color("fff6ec"),maxf(0.7,width*0.36),true)
 
 func draw_particles(c: Node2D, fraction: float = 0, layer: int = 0) -> void:
+	if layer!=2:
+		for part in particles:
+			if not part.smoke: continue
+			var t: float = part.age/part.life
+			var p: Vector2 = part.get("previous_pos",part.p).lerp(part.p,fraction)
+			var radius: float = part.size*SMOKE_SIZE_SCALE*(1+t*1.1)
+			c.draw_texture_rect(smoke_puff,Rect2(p-Vector2.ONE*radius,Vector2.ONE*radius*2),false,Color(part.color,pow(1-t,0.7)*0.92))
+	if layer==1: return
+	# Keep all textured glows together, then all line geometry together. Alternating
+	# a glow texture with a line per particle broke the CanvasItem batching each time.
 	for part in particles:
-		if (layer==1 and not part.smoke) or (layer==2 and part.smoke): continue
+		if part.smoke: continue
 		var t: float = part.age/part.life
-		var opacity: float = pow(1-t,0.7)*0.92 if part.smoke else (1-t)*0.85
 		var p: Vector2 = part.get("previous_pos",part.p).lerp(part.p,fraction)
-		if part.smoke:
-			var radius: float = part.size*(1+t*1.1)
-			c.draw_texture_rect(smoke_puff,Rect2(p-Vector2.ONE*radius,Vector2.ONE*radius*2),false,Color(part.color,opacity))
-		else:
-			halo(c,p,part.size*3,part.color,opacity*0.65)
-			c.draw_line(p-part.v*1.7,p,Color(part.color,opacity),maxf(0.6,part.size*(1-t)),true)
+		halo(c,p,part.size*3,part.color,(1-t)*0.85*0.65)
+	for part in particles:
+		if part.smoke: continue
+		var t: float = part.age/part.life
+		var p: Vector2 = part.get("previous_pos",part.p).lerp(part.p,fraction)
+		c.draw_line(p-part.v*1.7,p,Color(part.color,(1-t)*0.85),maxf(0.6,part.size*(1-t)),true)
 
 func draw_bullet(c: Node2D, b: Dictionary, position: Variant = null, phase: float = 0) -> void:
 	var p: Vector2 = position if position!=null else b.get("render_pos",b.pos)
@@ -166,40 +188,16 @@ func draw_bullet(c: Node2D, b: Dictionary, position: Variant = null, phase: floa
 	var kind: int = int(b.kind)
 	if kind==3 and v.y<=0: return
 	var direction: Vector2 = v.normalized() if v.length_squared()>0 else Vector2.DOWN
-	var color: Color = enemy_color(kind)
 	if kind==8:
 		draw_fireball(c,p,direction,phase+p.x*0.17)
-	elif kind==2:
-		streak(c,p-direction*5,-direction,12,3,HOT)
-		c.draw_line(p-direction*5,p+direction*5,Color("e1e5ee"),3,true)
-		c.draw_line(p-direction.rotated(PI/2)*3,p+direction.rotated(PI/2)*3,color,1,true)
-	elif kind==3:
-		streak(c,p,direction,19,3,color)
-	elif kind in [4,5]:
-		var radius: float = 4.5 if kind==4 else 3.2
-		halo(c,p,radius*3,color,0.85)
-		c.draw_circle(p,radius,color,true,-1,true)
-		c.draw_circle(p,radius*0.5,Color("fff4e6"),true,-1,true)
-	else: streak(c,p,direction,6 if kind==1 else 10,2.2,color)
+	elif kind in [4,5]: ProjectileFrames.draw_plasma(c,p,kind)
+	else: ProjectileFrames.draw_streak(c,p,direction,kind)
 
-func draw_fireball(c: Node2D, p: Vector2, direction: Vector2, phase: float) -> void:
-	var tail: Vector2 = -direction
-	var side: Vector2 = direction.orthogonal()
-	var flicker: float = sin(phase*0.9)
-	halo(c,p,18,HOT,0.65)
-	# Three animated tongues follow the instantaneous parabolic velocity, not a metal missile body.
-	for i in range(3):
-		var offset: float = (i-1)*3.0
-		var length: float = 16+sin(phase*0.7+i*2)*5
-		var base: Vector2 = p+side*offset
-		var tip: Vector2 = base+tail*length+side*sin(phase+i)*3
-		c.draw_colored_polygon(PackedVector2Array([base+side*3,tip,base-side*3]),Color(1,0.22+0.1*i,0.02,0.75))
-	c.draw_circle(p,5.5,Color("ff571c"),true,-1,true)
-	c.draw_colored_polygon(PackedVector2Array([p+direction*4,p+side*3,p+tail*(12+flicker*2),p-side*3]),Color("ffc13b"))
-	c.draw_circle(p+tail,2.8,Color("fff2ad"),true,-1,true)
+func draw_fireball(c: Node2D,p: Vector2,direction: Vector2,phase: float) -> void:
+	ProjectileFrames.draw(c,p,direction,phase)
 
 func draw_shot(c: Node2D, shot: Dictionary, player: Vector2, weapon: int, position: Variant = null) -> void:
-	var visual: Dictionary = shot.get("visual",Weapons.visual(shot,player))
+	var visual: Dictionary = shot.visual if shot.has("visual") else Weapons.visual(shot,player)
 	var p: Vector2 = (position if position!=null else shot.pos)+Vector2(15,12)
 	var color: Color = player_color(weapon)
 	if visual.phase=="impact":
