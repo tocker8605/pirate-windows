@@ -23,7 +23,7 @@ func run() -> void:
 	e.velocity.y = (2/0.03)
 	check(twins(e,0.119).filter(func(s): return s.kind==1).is_empty(),"descent twins wait120ms")
 	var shots: Array = twins(e,0.001)
-	check(shots.size()==2 and shots[0].pos==Vector2(130,125) and shots[1].pos==Vector2(110,125),"120ms twin volley retains both original muzzle positions")
+	check(shots.size()==2 and shots[0].pos==Vector2(135,125) and shots[1].pos==Vector2(115,125),"120ms twin volley uses centred symmetric muzzle positions")
 	check(shots[0].velocity.distance_to((Vector2(0,9))/0.03)<0.001 and shots[1].velocity.distance_to((Vector2(0,9))/0.03)<0.001,"first descending volley points straight down")
 	e.velocity.y = (6/0.03)
 	shots = twins(e,0.12)

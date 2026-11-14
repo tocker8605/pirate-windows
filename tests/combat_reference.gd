@@ -45,7 +45,7 @@ func run() -> void:
 	check(Fire.burst(enemy(3,Vector2(100,199)),player,2,0).is_empty(),"type 3 upper Y boundary is strict")
 	check(Fire.burst(enemy(5,Vector2(175,25)),player,2,0).is_empty(),"type5 no longer fires via legacy phase/Y modulo rules")
 	a = Fire.burst(enemy(6,Vector2(100,100),Vector2(2,3)),player,4,0)
-	check(a.size()==2 and a[0].pos==Vector2(105,130) and a[1].pos==Vector2(135,130) and a[0].velocity.distance_to((Vector2(-2,7))/0.03)<0.001,"type 6 two original muzzle locations and motion-linked velocity")
+	check(a.size()==2 and a[0].pos==Vector2(110,130) and a[1].pos==Vector2(140,130) and a[0].velocity.distance_to((Vector2(-2,7))/0.03)<0.001,"type6 centred symmetric muzzles retain motion-linked velocity")
 	a = Fire.burst(enemy(6,Vector2(100,100),Vector2(0,-1)),player,4,0)
 	check(a.size()==2 and near(a[0].velocity,(Vector2(630.0/308,2520.0/308))/0.03),"type 6 rising aircraft switches to aimed fire")
 	check(Fire.burst(enemy(6,Vector2(100,100),Vector2(1,-1)),player,4,0).is_empty(),"type 6 rising horizontal motion suppresses firing")

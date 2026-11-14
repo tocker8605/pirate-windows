@@ -56,8 +56,8 @@ static func emit(e: Dictionary, player: Vector2, attack: String, boss: Dictionar
 		4: _add(result,single_muzzle(e),(target*9)*33.333333333333336,4)
 		6:
 			var velocity: Vector2 = Vector2(-v.x,7) if v.y>0 else target*9
-			_add(result,p+Vector2(5,30),(velocity)*33.333333333333336,7)
-			_add(result,p+Vector2(35,30),(velocity)*33.333333333333336,7)
+			_add(result,p+Vector2(10,30),(velocity)*33.333333333333336,7)
+			_add(result,p+Vector2(40,30),(velocity)*33.333333333333336,7)
 		7:
 			_add(result,single_muzzle(e),(target*9)*33.333333333333336,5)
 			_add(result,single_muzzle(e),(target*7+Vector2(-2,0))*33.333333333333336,5)

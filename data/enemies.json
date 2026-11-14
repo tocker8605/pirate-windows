@@ -261,8 +261,8 @@
         "max_spread_degrees": 90,
         "projectile_kind": 1,
         "ports": [
-          [30, 25],
-          [10, 25]
+          [35, 25],
+          [15, 25]
         ],
         "spread_directions": [-1, 1]
       },

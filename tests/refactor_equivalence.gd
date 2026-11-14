@@ -61,7 +61,13 @@ func run() -> void:
 				if tick%60==59:
 					records.append([rush,stage,tick,g.player.x,g.player.y,g.energy,g.score,g.stats.duplicate(),g.background_y,g.scroll_speed,summary(g.enemies),summary(g.bullets),summary(g.shots),g.boss.get("hp",0),Rng.state])
 	var reference: Array = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/refactor_v24_28.json"))
+	# The authorized v24.31 muzzle correction changes enemy projectile positions,
+	# boundary exits and one shield-interception score. Rebaseline only those fields;
+	# all other gameplay state still compares against the original v24.28 trace.
+	var muzzle_reference: Array = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/twin_muzzle_replay_v24_31.json"))
 	for i in range(reference.size()):
+		reference[i][6] = muzzle_reference[i].score
+		reference[i][11] = muzzle_reference[i].enemy_projectiles
 		checks += 1
 		if not equivalent(reference[i],records[i]):
 			failures += 1
