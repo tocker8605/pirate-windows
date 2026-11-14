@@ -48,10 +48,12 @@ func run() -> void:
 	g._load_stage(4)
 	g.events = g.events.filter(func(row): return row.action=="scroll")
 	g.frame = 2730
+	g.stage_elapsed_seconds = g.frame*0.03
 	g._read_events()
 	check(g.map_mode==2 and g.scroll_target==25,"surface approach remains gated by the original t91 event")
 	g.background_y = 1920
 	g.frame = 2731
+	g.stage_elapsed_seconds = g.frame*0.03
 	g._read_events()
 	check(g.map_mode==3 and g.scroll_target==2 and g.background_y==1920,"t91 releases space and decelerates without teleporting the viewport")
 	print("RESULT: %d checks, %d failures"%[checks,failures])

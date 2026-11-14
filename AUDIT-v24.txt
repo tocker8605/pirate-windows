@@ -98,3 +98,174 @@ v24.9 / boss4 core visual alignment:
   motion are unchanged. The same visual offset follows the detached core.
   Visual original/body-only/updated comparison reviewed;108affected checks passed.
   No commit/push; original VB6 source untouched.
+v24.10 /2026-11-08 /variable_wing_fighter stationary aim:
+  ID2 withvx=0,vy>-1 on phase%6 now uses the existing shared aim vector*9
+  instead of fixed(0,9).Same muzzle(25,20),kind3 and cadence retained.
+  Horizontal-motion reverse-X attack unchanged.No homing after firing.
+  Removed obsolete kind3 renderer rejection forvy<=0 so upward/horizontal
+  aimed shots are visible rather than becoming invisible damaging bullets.
+  Affected70checks passed,including upward aim,gates,cadence,storage,and actual
+  upward/right/down kind3 pixels.folding_wing_fighter was inspected only.
+  No commit/push; original VB6 untouched.
+v24.10 continued steering:
+  ID8 descent twins move from legacy phase3 to independent120ms cadence.
+  First positive descent velocity is recorded; spread linearly increases from
+  downward to90degrees per side as velocity reaches authored maximum10.
+  Constant projectile speed9,kind1 and both original ports retained.
+  Descent stop resets clock/start speed; restart points down.Central missile unchanged.
+  ID41 phase3 aimed volley now emits from both(-20,40)/(70,40) ports together;
+  timer-based side alternation removed.Cadence,aim formula and central missile retained.
+  ID11,21,42 inspected for requested descriptions; no attack changes to those IDs.
+  Full993checks passed,including16folding speed-spread and all campaign/render suites.
+
+v24.11 /2026-11-08:
+  ID42 adds independent200ms player-aimed seven-way180degree fan,30degree spacing,
+  kind6 speed10 from actual sprite centre.Local(25,25),aiming at cockpit.
+  Original random twin missiles and RNG sequence preserved.No homing.
+  ID5 spiral now emits opposed180degree pairs from the same centre.
+  Existing100ms cadence,15degree step,stationary-X gate and side rotation retained.
+  Attack settings are catalog data; aimed fan validation and tests added.
+  Full1017checks across46suites passed.Four simultaneous heavy fans sustained60FPS.
+  No commit/push; original VB6 source untouched.
+
+v24.12 /2026-11-08 /stage3 body enrage:
+  Replaces all-parts-destroyed symmetric two-shot sweep with two aimed4way fans.
+  Original body ports(-30,70)/(30,70),kind6; speed9; eight rays per volley.
+  Each port independently targets player cockpit,with offsets-22.5,-7.5,7.5,22.5degrees.
+  Total45degree arc and uniform15degree spacing.No homing after emission.
+  Existing phase5/300ms cadence,part-destruction gate and random missiles retained.
+  Fan parameters live in ID93 attack metadata; live emitter passes player position.
+  Player energy cost unified:90ms volleys cost1.0,60ms cost0.67 across all weapons.
+  Fire cadence is shared by cost and firing cooldown; laser/shield/recovery unchanged.
+  No commit/push; original VB6 untouched.
+
+v24.13 /2026-11-08 /stage4 detached centre core:
+  HP<100 trigger retained.Attached chest offset and visual offset unchanged.
+  Replace upward kick/downward acceleration with direct travel to screen centre.
+  Native60Hz bounded movement at5pixels per authored30ms unit.
+  Visible50x80sprite centre,including draw_offset(0,-8),lands at(200,240).
+  Logical anchor target(175,208).Arrival clamps exactly and velocity stays zero.
+  Boss body movement cannot drag the detached core;fireball attack remains active.
+  Shared boss_core_motion helper owns detachment threshold,target and movement.
+  No commit/push; original VB6 untouched.
+
+v24.14 /2026-11-08:
+  Stage3 body ID93 HP1000->1200.
+  Stage2 all-parts-destroyed volley changes both projectiles to fireball kind8.
+  Both ports,initial random velocities,RNG draws and phase2 cadence retained.
+  Normal120ms gap/phase-wrap180ms gap retained.Standard fireball acceleration applies.
+  No commit/push; original VB6 untouched.
+
+v24.15 /2026-11-08 /independent attack scheduling:
+  Remove shared firing/phase counters and global60ms dispatch path entirely.
+  Migrate39ordinary enemy/boss/part attack channels to per-owner/per-channel seconds.
+  Configurable native intervals/gates/intentional rest windows live in enemies.json.
+  Existing5special attack clocks remain independent; no wrap boundary jitter.
+  Stage2 enrage now90ms paired fireballs; original muzzle/random launch formulas retained.
+  Stage3 missiles480ms/fan300ms;stage4 replacement120ms/final flames60ms.
+  Boss1 intentional1.8second side alternation now uses its own age and metadata.
+  Boss2/3 arm rest/alternation windows use local actor age,with no banking while inactive.
+  Disabled movement/position/part gates reset only the affected channel clock.
+  Catchup handles all due volleys and orders simultaneous channel events deterministically.
+  Historical trajectory probes exist only in tests/fixtures,never runtime/export.
+  Retain stage3HP1200,player energy rebalance and detached centre-fixed stage4core.
+  No commit/push; original VB6 untouched.
+
+v24.16 /2026-11-08 /seconds timeline:
+  Migrate all8stage JSONs/683events to schema2,time_unit=seconds.
+  Convert every at value by exact decimal*0.9 to preserve scheduled physical times.
+  Add stage_elapsed_seconds,advanced by simulation delta and reset on stage load.
+  Event consumer compares at seconds directly;remove30unit multiplier/frame-derived schedule.
+  Preserve strict-after boundary semantics,event order and all existing positions/patterns/actions.
+  Legacy time metadata rejected explicitly;fractional seconds accepted.
+  Preview seeks/tests/guides updated for seconds;historicalv20fixture kept unchanged.
+  20new checks cover all8migrations,fractional timing,pause/reset,frame independence,
+  and1001events including1000simultaneous spawns without a cap or duplicate consumption.
+  Includes completedv24.15 independent fire refactor and90ms stage2 enrage.
+  No commit/push;original VB6 untouched.
+
+v24.17 /2026-11-08:
+  Stage2 enrage changes paired fireballs to pink spherical plasma(kind5).
+  Channel projectile_kind is editable in enemies.json and validated by catalog.
+  Keep90ms independent cadence,two ports and original random launch velocities.
+  Standard sphere motion has no fireball gravity.
+  Shield interception awards25*difficulty only when boss dictionary is empty.
+  Boss appearance through destruction sequence blocks interception score farming.
+  Bullet removal,shield lifetime cost and hit effects retained;normal waves retain reward.
+  Stage transition clears boss state and restores normal interception scoring.
+  No commit/push;original VB6 untouched.
+
+v24.18 /2026-11-08:
+  Stage4 core detach threshold100->200,strictly below as before.
+  HP200 remains attached;HP199 detaches and travels to fixed screen centre.
+  Movement,arrival clamp,fireballs and body attachment geometry retained.
+  No commit/push;original VB6 untouched.
+
+v24.19 /2026-11-08 /bounded upward core ejection:
+  Retain HP<200 trigger;replace direct centre travel with launch/transfer/settled phases.
+  Initial upward impulse up to5pixels/authored30ms unit,deceleration corresponding
+  to old+1vertical velocity per9authored units,integrated analytically in seconds.
+  Adapt impulse to available vertical distance so apex keeps full50x80sprite
+  within8pixel screen margin,including draw_offset(0,-8).LogicalY range16..400.
+  At apex move toward visible centre(200,240) at original transfer speed,then stop.
+  Large time steps carry remaining time across phase transitions without overshoot.
+  Attached offset,detachment HP,fireballs,damage and boss-part state unchanged.
+  No commit/push;original VB6 untouched.
+
+v24.20 /2026-11-08:
+  Detached stage4core target moves from visible(200,240) to(200,160).
+  Horizontal centre retained;vertical top:bottom distances1:2.
+  Logical target(175,128),including50x80sprite and draw_offset(0,-8).
+  Upward impulse,screen bounds,HP trigger,attacks and stopping retained.
+  No commit/push;original VB6 untouched.
+
+v24.21 /2026-11-08 /settled centre-core radial attack:
+  Restore detached core target visible(200,240),logical(175,208).
+  Keep bounded upward launch andHP<200 trigger.
+  Travel phase retains old60ms fireballs;settled phase disables flame channel.
+  On arrival start fresh250ms radial channel:30pink orbs(kind5),12degree spacing,
+  speed7,initial downward angle,rotate entire next volley clockwise1degree.
+  Count/spacing/speed/angle/cadence/projectile kind live in ID133.fire_channels.
+  Ring shares original core muzzle(25,20);straight-flight spheres have no gravity.
+  Rotation is per volley and actor-local,no RNG use or player aim dependence.
+  All40ordinary attack channels audited;radial only enabled for settled detachedcore.
+  No commit/push;original VB6 untouched.
+
+v24.22 /2026-11-14 /stage3 boss rework:
+  BodyID93 HP1200->1500.Normal/Boss Rush share canonical HP.
+  Replace all-parts-gated paired enrage with two independent300ms shoulder channels.
+  Left gate references arm121,right gate arm122;floating orbs no longer suppress them.
+  Each destroyed shoulder emits existing4way aimed45degree fan(kind6,speed9).
+  Ports moved to visible coupling holes at body-relative(-43,46)/(43,46).
+  ID123/124 emit four long orange streaks(kind3,speed9) every300ms from centre.
+  Initial cross is cardinal90degree spacing;each subsequent volley rotates3degrees,
+  ID123clockwise,ID124counterclockwise.No vertical-position firing gate.
+  Existing orb motion/arm attacks/body twin missiles retained.
+  Reuse rotating-volley geometry with per-actor angle;core ring regressions passed.
+  No commit/push;original VB6 untouched.
+
+v24.23 /2026-11-14 /stage3 orb stations:
+  ID123/124 HP200->400;rotation step3->10degrees per volley,opposite directions retained.
+  Replace old2203/2204 pursuit/orbit steering with native fixed-station movement.
+  Sprite centres enter at(100,100)/(300,100),then remain fixed independently of body.
+  On bodyHP<50percent of actual maxHP,latch lower targets(100,240)/(300,240).
+  Centres/threshold/speed are editable motion metadata;current1500HP body threshold750.
+  Prepare motion before attack scheduling so movement closes firing gate on the same tick.
+  Moving orbs emit nothing and discard partial cadence;arrival waits fresh300ms interval.
+  Four long orange streaks(kind3,speed9) and opposite per-owner rotation remain.
+  Rotation angle is retained while travelling.Lower phase remains latched.
+  Stage03/13 spawn motion patterns become0;runtime2203/2204 steering deleted.
+  Historicalv20fixtures retained;comparison expectations explicitly account for orb updates.
+  Full1375checks passed.No commit/push;original VB6 untouched.
+
+v24.24 /2026-11-14 /stage3 lower-row slow follow:
+  Lower phase now triggers inclusively at bodyHP<=50percent (<=750/1500).
+  Upper visible centres remain(100,100)/(300,100).
+  Lower Y remains240;X targets actual body.pos.x-35/+35,including sprite-centre offset.
+  Axis-separated movement keeps Yspeed5 and adds slow Xspeed1authored unit
+  (33.33pixels/second);target refreshes each tick without teleporting.
+  Per user clarification,fire gate depends only on Y:horizontal following may fire.
+  Vertical travel clears cadence;Yarrival waits fresh300ms,then Xtracking never
+  interrupts cadence or10degree opposite rotation.OtherHP400/cross settings retained.
+  lower_follow offsets/speed editable in motion metadata;lower phase stays latched.
+  No commit/push;original VB6 untouched.

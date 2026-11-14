@@ -1,7 +1,7 @@
 extends RefCounted
 ## Shared, immutable entity defaults. Runtime HP lives only on created actors.
 const PATH = "res://data/enemies.json"
-const FIELDS: Array = ["name","role","hp","score","score_scales_with_difficulty","damageable","explosion_ticks","death_sound","draw_size","draw_offset","part_side","collision","damage_smoke","boss_rush_drop","drop","stage","music","open_at_y","open_kind","on_defeat","attack"]
+const FIELDS: Array = ["name","role","hp","score","score_scales_with_difficulty","damageable","explosion_ticks","death_sound","draw_size","draw_offset","part_side","collision","damage_smoke","boss_rush_drop","drop","stage","music","open_at_y","open_kind","on_defeat","attack","fire_channels","motion"]
 static var _entities: Dictionary = _load_definitions()
 static func _number(value: Variant) -> bool:
 	return (value is int or value is float) and is_finite(float(value))
@@ -38,13 +38,58 @@ static func validate_document(document: Variant) -> PackedStringArray:
 		if _vector(collision.get("beam_bounds"),2) and collision.beam_bounds[0]>=collision.beam_bounds[1]: errors.append(prefix+"beam bounds must have increasing edges")
 		if not _vector(collision.get("contact_bounds"),4): errors.append(prefix+"invalid contact bounds")
 		elif collision.contact_bounds[0]>=collision.contact_bounds[2] or collision.contact_bounds[1]>=collision.contact_bounds[3]: errors.append(prefix+"contact bounds must have increasing edges")
+		if d.has("motion"):
+			var motion: Variant = d.motion
+			if not motion is Dictionary:
+				errors.append(prefix+"motion must be an object")
+			else:
+				if motion.get("type","")!="boss_health_stations": errors.append(prefix+"unknown motion type")
+				for field in ["upper_center","lower_center"]:
+					if not _vector(motion.get(field),2): errors.append(prefix+"invalid station "+field)
+				if not _number(motion.get("speed")) or float(motion.speed)<=0: errors.append(prefix+"invalid station speed")
+				if motion.has("lower_follow"):
+					var follow: Variant = motion.lower_follow
+					if not follow is Dictionary: errors.append(prefix+"lower_follow must be an object")
+					else:
+						if not _number(follow.get("x_offset")): errors.append(prefix+"invalid follow X offset")
+						if not _number(follow.get("speed")) or float(follow.speed)<=0: errors.append(prefix+"invalid follow speed")
+				if not _number(motion.get("lower_below_ratio")) or float(motion.lower_below_ratio)<=0 or float(motion.lower_below_ratio)>=1: errors.append(prefix+"invalid station health threshold")
+		if d.has("fire_channels"):
+			if not d.fire_channels is Array: errors.append(prefix+"fire_channels must be an array")
+			else:
+				var names: Array = []
+				for channel in d.fire_channels:
+					if not channel is Dictionary:
+						errors.append(prefix+"invalid fire channel")
+						continue
+					if not channel.get("name") is String or channel.get("name","").is_empty() or channel.get("name") in names: errors.append(prefix+"invalid/duplicate fire channel name")
+					names.append(channel.get("name"))
+					if not _number(channel.get("interval_seconds")) or float(channel.interval_seconds)<=0: errors.append(prefix+"invalid fire channel interval")
+					if channel.has("projectile_kind") and (not _number(channel.projectile_kind) or float(channel.projectile_kind)!=int(channel.projectile_kind) or int(channel.projectile_kind) not in range(1,9)): errors.append(prefix+"invalid channel projectile kind")
+					if channel.get("gate","") not in ["always","aim_window","moving","stationary_aim","sweep_y","descent_or_stationary","descending","flame_y","charge_y","fist_y","pod_y","orb_y","orb_y_stationary","orb_stationary","left_claw_y","right_claw_y","detached","core_settled","no_parts","part_missing","left_missing","right_missing"]: errors.append(prefix+"unknown fire gate")
+					if channel.get("gate")=="part_missing":
+						if not _number(channel.get("part_id")) or float(channel.part_id)!=int(channel.part_id): errors.append(prefix+"invalid missing-part ID")
+						else:
+							var part_definition: Variant = document.entities.get(str(int(channel.part_id)),{})
+							if not part_definition is Dictionary or part_definition.get("role","")!="part": errors.append(prefix+"missing-part gate must reference a part")
+					if channel.has("rotation_direction") and (not _number(channel.rotation_direction) or absf(float(channel.rotation_direction))!=1.0): errors.append(prefix+"invalid rotation direction")
+					if channel.get("name") in ["radial","rotating_cross"]:
+						for field in ["speed","spacing_degrees","rotation_step_degrees","projectile_kind"]:
+							if not _number(channel.get(field)) or float(channel[field])<=0: errors.append(prefix+"invalid radial "+field)
+						if not _number(channel.get("initial_degrees")): errors.append(prefix+"invalid radial initial angle")
+						if not _number(channel.get("count")) or float(channel.count)!=int(channel.count) or int(channel.count)<2: errors.append(prefix+"invalid radial count")
+						elif _number(channel.get("spacing_degrees")) and not is_equal_approx(float(channel.count)*float(channel.spacing_degrees),360.0): errors.append(prefix+"radial spacing must cover360degrees")
+					if channel.has("window_seconds"):
+						if not _vector(channel.window_seconds,3): errors.append(prefix+"invalid attack window")
+						elif channel.window_seconds[0]<=0 or channel.window_seconds[1]<0 or channel.window_seconds[2]<=channel.window_seconds[1] or channel.window_seconds[2]>channel.window_seconds[0]: errors.append(prefix+"invalid attack window bounds")
 		if d.has("attack") and not d.attack is Dictionary: errors.append(prefix+"attack must be an object")
 		if d.get("attack") is Dictionary:
 			var attack: Dictionary = d.attack
 			var attack_type: String = str(attack.get("type",""))
-			if attack_type not in ["spiral","alternating"]: errors.append(prefix+"unknown attack type")
-			if not _number(attack.get("interval_seconds")) or float(attack.interval_seconds)<=0: errors.append(prefix+"invalid attack interval")
+			if attack_type not in ["spiral","alternating","speed_spread","aimed_fan","paired_aimed_fan"]: errors.append(prefix+"unknown attack type")
+			if attack_type!="paired_aimed_fan" and (not _number(attack.get("interval_seconds")) or float(attack.interval_seconds)<=0): errors.append(prefix+"invalid attack interval")
 			if not _number(attack.get("projectile_kind")) or int(attack.projectile_kind) not in range(1,9): errors.append(prefix+"invalid attack projectile")
+			if attack.has("opposed") and not attack.opposed is bool: errors.append(prefix+"invalid opposed-shot flag")
 			if attack.has("requires_stationary_x") and not attack.requires_stationary_x is bool: errors.append(prefix+"invalid stationary-X attack flag")
 			if attack.has("min_y") and not _number(attack.min_y): errors.append(prefix+"invalid attack minimumY")
 			if attack.has("ports"):
@@ -56,8 +101,19 @@ static func validate_document(document: Variant) -> PackedStringArray:
 				if attack.has("ports"):
 					if not attack.get("rotation_directions") is Array or not attack.ports is Array: errors.append(prefix+"attack port directions missing")
 					elif attack.rotation_directions.size()!=attack.ports.size() or not attack.rotation_directions.all(func(v): return _number(v) and absf(float(v))==1.0): errors.append(prefix+"invalid attack rotation directions")
+			elif attack_type in ["aimed_fan","paired_aimed_fan"]:
+				for field in ["speed","spread_degrees"]:
+					if not _number(attack.get(field)) or float(attack[field])<=0: errors.append(prefix+"invalid aimed fan "+field)
+				if not _number(attack.get("count")): errors.append(prefix+"aimed fan count missing")
+				elif float(attack.count)!=int(attack.count) or int(attack.count)<1 or (attack_type=="aimed_fan" and int(attack.count)%2!=1): errors.append(prefix+"aimed fan needs positive odd count")
+				if attack_type=="paired_aimed_fan" and (not attack.get("ports") is Array or attack.ports.size()!=2): errors.append(prefix+"paired fan needs two ports")
+			elif attack_type=="speed_spread":
+				for field in ["speed","max_vertical_speed","max_spread_degrees"]:
+					if not _number(attack.get(field)) or float(attack[field])<=0: errors.append(prefix+"invalid speed spread "+field)
+				if not attack.get("ports") is Array or not attack.get("spread_directions") is Array: errors.append(prefix+"speed spread ports/directions missing")
+				elif attack.ports.size()!=attack.spread_directions.size() or not attack.spread_directions.all(func(v): return _number(v) and absf(float(v))==1.0): errors.append(prefix+"invalid spread directions")
 			elif attack_type=="alternating":
-				for field in ["enraged_interval_seconds","speed_y"]:
+				for field in ["enraged_interval_seconds","speed_y","side_hold_seconds"]:
 					if not _number(attack.get(field)) or float(attack[field])<=0: errors.append(prefix+"invalid alternating attack "+field)
 				if not _number(attack.get("horizontal_base")): errors.append(prefix+"invalid alternating horizontal base")
 				if not attack.get("ports") is Array or attack.ports.size()!=2: errors.append(prefix+"alternating attack needs two ports")
@@ -113,6 +169,11 @@ static func cargo_drop() -> Dictionary:
 	return {}
 static func ids() -> Array: return _entities.keys()
 static func definition(kind: int) -> Dictionary: return _entities.get(kind,{})
+static func fire_channel(kind: int, name: String) -> Dictionary:
+	for channel in definition(kind).get("fire_channels",[]):
+		if channel.name==name: return channel
+	return {}
+
 static func boss_definition(stage: int) -> Dictionary:
 	for d in _entities.values():
 		if d.role=="boss" and int(d.stage)==stage: return d

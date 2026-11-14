@@ -22,24 +22,21 @@ func run() -> void:
 	for i in range(1000): g._bullet(Vector2(100,100),Vector2.DOWN)
 	check(g.bullets.size()==1000 and g.bullets.valid(),"all 1000 enemy bullets survive admission without a 200-slot cap")
 	var oldest: int = g.bullets.at(0).entity_id
-	g.clock.phase = 9
-	g._enemy_fire(enemy(7))
+	g._enemy_fire(enemy(7),0.54)
 	check(g.bullets.size()==1003 and g.bullets.contains(oldest),"complete spread burst appends without overwriting old bullets")
-	g.clock.phase = 6
-	g._enemy_fire(enemy(2))
+	g._enemy_fire(enemy(2),0.36)
 	check(g.bullets.size()==1004 and g.bullets.at(1003).kind==3,"type2 retains its authored stationary projectile without empty-slot gating")
-	g.clock.phase = 1
-	g._enemy_fire(enemy(2))
-	check(g.bullets.size()==1004,"a non-firing phase does not allocate a dummy projectile")
+	g._enemy_fire(enemy(2),0.01)
+	check(g.bullets.size()==1004,"an incomplete per-actor interval does not allocate a dummy projectile")
 	for i in range(20): g._drop_item({"pos":Vector2(120,120),"kind":1})
 	check(g.items.size()==20 and g.bullets.size()==1004,"items are independent and neither replace nor block enemy bullets")
-	g.clock.phase = 6
-	g._enemy_fire(enemy(1))
+	g._enemy_fire(enemy(1),0.36)
 	check(g.bullets.size()==1005,"items cannot suppress authored enemy fire")
 	g.start_game()
 	g.events = []
 	for i in range(150): g.events.append({"at":0,"action":"spawn","definition_id":1,"position":[100,-50],"pattern":1011})
 	g.frame = 1
+	g.stage_elapsed_seconds = g.frame*0.03
 	g._read_events()
 	check(g.event_cursor==150 and g.enemies.size()==150,"all simultaneous spawns are admitted on schedule without a legacy five-record quota")
 	while g.event_cursor<g.events.size(): g._read_events()
@@ -52,10 +49,9 @@ func run() -> void:
 	g.bullets.clear()
 	g.enemies.clear()
 	g.boss = {"stage":4,"pos":Vector2(200,100),"velocity":Vector2.ZERO,"hp":1500.0,"age":0}
-	g.clock.phase = 6
 	for i in range(300): g._bullet(Vector2(50,50),Vector2.DOWN)
-	g.BulletPool.body(g)
-	check(g.bullets.size()==303,"all final-boss cannon and missile groups fire above the old bullet limit")
+	g.BulletPool.body(g,0.12)
+	check(g.bullets.size()==304,"all final-boss cannon and missile groups fire above the old bullet limit")
 	g.start_game()
 	g.events = []
 	g.hp = 1

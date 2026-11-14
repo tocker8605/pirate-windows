@@ -12,13 +12,13 @@ func check(ok: bool, message: String) -> void:
 		failures += 1
 		push_error("FAIL: "+message)
 func document(events: Array) -> Dictionary:
-	return {"schema_version":1,"time_unit":"authored_30_ticks","events":events}
+	return {"schema_version":2,"time_unit":"seconds","events":events}
 func spawn(at: float, kind: int = 1) -> Dictionary:
 	return {"at":at,"action":"spawn","definition_id":kind,"position":[100,100],"pattern":0}
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var original: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/timeline_v20.json"))
-	var expected_hp: Dictionary = {19:1,91:1000,92:1000,93:1000,94:1500}
+	var expected_hp: Dictionary = {19:1,91:1000,92:1000,93:1500,94:1500,123:400,124:400}
 	var total := 0
 	for filename in original:
 		var stage: int = int(filename.trim_prefix("stage"))
@@ -29,23 +29,23 @@ func run() -> void:
 		for i in range(events.size()):
 			var old: Array = original[filename][i]
 			var e: Dictionary = events[i]
-			same = same and e.at==old[0] and not e.has("hp")
+			same = same and is_equal_approx(float(e.at),float(old[0])*0.9) and not e.has("hp")
 			match int(old[1]):
 				61,62: same = same and e.action=="banner" and e.name==("warning" if old[1]==61 else "mission")
 				71: same = same and e.action=="scroll" and e.mode==old[2] and e.speed==old[3]
 				_:
 					var id: int = int(old[1])
-					same = same and e.action=="spawn" and e.definition_id==id and e.position==[old[2],old[3]] and e.pattern==old[4]
+					same = same and e.action=="spawn" and e.definition_id==id and e.position==[old[2],old[3]] and e.pattern==(0 if id in [123,124] else old[4])
 					if not expected_hp.has(id): expected_hp[id] = int(old[5])
 					var actor: Dictionary = Catalog.create(id,Vector2(e.position[0],e.position[1]),int(e.pattern))
 					hp_same = hp_same and actor.hp==expected_hp[id] and actor.max_hp==expected_hp[id]
 			total += 1
 		check(same,"%s named events retain time/order/position/pattern/control semantics"%filename)
-		check(hp_same,"%s defaults reproduce all v20 enemy and boss HP"%filename)
+		check(hp_same,"%s defaults retain legacy HP with stage3 balance update"%filename)
 	check(total==683,"all683 normal and Boss Rush events were migrated")
 	check(Catalog.ids().size()==33,"catalog defines all33 entity kinds including supply state")
 	for id in expected_hp:
-		check(Catalog.definition(id).hp==expected_hp[id],"entity%d retains v20 base HP"%id)
+		check(Catalog.definition(id).hp==expected_hp[id],"entity%d matches configured base HP"%id)
 	var a: Dictionary = Catalog.create(21,Vector2.ZERO)
 	a.hp = 1
 	var b: Dictionary = Catalog.create(21,Vector2.ZERO)
@@ -106,6 +106,7 @@ func run() -> void:
 	g.events.append({"at":0,"action":"scroll","mode":2,"speed":7})
 	g.events.append(spawn(0,91))
 	g.frame = 1
+	g.stage_elapsed_seconds = g.frame*0.03
 	g._read_events()
 	check(g.enemies.size()==300 and g.event_cursor==302,"one timeline update consumes all300 simultaneous spawns without a five-actor quota")
 	check(g.enemies.at(0).pos.x==0 and g.enemies.at(299).pos.x==299 and g.enemies.valid(),"large simultaneous wave keeps stable authored order and valid storage")

@@ -24,9 +24,9 @@ func run() -> void:
 	check(Boss.advance(first,[],0.15).size()==1,"stage1 body fires every150ms after both fists are gone")
 	var normal: Dictionary = Catalog.create(91,Vector2(200,100))
 	check(Boss.advance(normal,fists,0.15).is_empty(),"stage1 with fists waits the normal300ms interval")
-	var left: Array = Boss.advance(normal,fists,0.15,0)
-	var right: Array = Boss.advance(normal,fists,0.3,2)
-	check(left[0].pos.x==160 and right[0].pos.x==240 and left[0].velocity==Vector2(-1,9) and right[0].velocity==Vector2(1,9),"stage1 alternating muzzle positions and trajectories are retained")
+	var left: Array = Boss.advance(normal,fists,0.15)
+	var right: Array = Boss.advance(normal,fists,1.5)
+	check(left[0].pos.x==160 and right[-1].pos.x==240 and left[0].velocity==Vector2(-1,9) and right[-1].velocity==Vector2(1,9),"stage1 alternating muzzle positions and trajectories are retained")
 	var slow: Dictionary = Catalog.create(91,Vector2(200,100))
 	var fast: Dictionary = Catalog.create(91,Vector2(200,100))
 	var slow_count := 0
@@ -58,11 +58,11 @@ func run() -> void:
 	check(count==200,"ten seconds emits exactly100shots per port without global-phase jitter")
 	var fresh: Dictionary = Catalog.create(94,Vector2(200,100))
 	check(not fresh.has("body_sweep") and Boss.advance(fresh,all_parts,0.3).size()==6,"fresh boss has independent sweep state and large steps preserve due volleys")
-	check(Boss.advance(b,[],1).is_empty(),"sweep stops when all living parts are gone")
+	check(Boss.advance(b,[],1).filter(func(s): return s.kind==6).is_empty(),"sweep stops when all living parts are gone")
 	var dead: Array = parts()
 	for p in dead: p.hp = 0
-	check(Boss.advance(b,dead,1).is_empty(),"dead parts cannot keep the paired sweep active")
-	check(Boss.advance(b,[all_parts[2]],0.1).size()==2,"surviving centre core keeps the paired sweep active after both arms are destroyed")
+	check(Boss.advance(b,dead,1).filter(func(s): return s.kind==6).is_empty(),"dead parts cannot keep the paired sweep active")
+	check(Boss.advance(b,[all_parts[2]],0.1).filter(func(s): return s.kind==6).size()==2,"surviving centre core keeps the paired sweep active after both arms are destroyed")
 	b.pos.y = 49
 	check(Boss.advance(b,all_parts,1).is_empty(),"original body entryY gate remains")
 	b.pos.y = 50
@@ -71,12 +71,12 @@ func run() -> void:
 	check(Boss.advance(b,all_parts,1).is_empty(),"destroyed body cannot fire a sweep")
 	check(Boss.advance(Catalog.create(92,Vector2.ZERO),all_parts,1).is_empty(),"other bosses do not acquire the stage4 sweep")
 	b = Catalog.create(94,Vector2(200,100))
-	check(Boss.fire(b,all_parts,3,0).is_empty(),"old Y-modulo body attack is removed")
+	check(Boss.advance(b,all_parts,0.01).is_empty(),"old Y-modulo body attack is removed")
 	Rng.state = 0x50000
 	var random_before: int = Rng.state
 	Boss.advance(b,all_parts,0.1)
 	check(Rng.state==random_before,"paired sweep does not disturb gameplay RNG")
-	check(Boss.fire(b,[],1,0).size()==1 and Boss.fire(b,[],2,0).size()==3,"existing all-parts-destroyed fireball and replacement cannons remain active")
+	check(Boss.advance(Catalog.create(94,Vector2(200,100)),[],0.12).size()==4,"independent final fireballs and replacement cannons remain active")
 	var g = Game.new()
 	g.automatic = false
 	g.mute = true

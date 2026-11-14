@@ -1,12 +1,12 @@
 {
-  "schema_version": 1,
-  "time_unit": "authored_30_ticks",
+  "schema_version": 2,
+  "time_unit": "seconds",
   "events": [
     {"at": 0, "action": "scroll", "mode": 3, "speed": 2},
-    {"at": 1, "action": "banner", "name": "warning"},
-    {"at": 6, "action": "spawn", "definition_id": 91, "position": [200, -100], "pattern": 0},
-    {"at": 6, "action": "spawn", "definition_id": 101, "position": [75, -50], "pattern": 2101},
-    {"at": 6, "action": "spawn", "definition_id": 102, "position": [275, -50], "pattern": 2102},
-    {"at": 7, "action": "banner", "name": "mission"}
+    {"at": 0.9, "action": "banner", "name": "warning"},
+    {"at": 5.4, "action": "spawn", "definition_id": 91, "position": [200, -100], "pattern": 0},
+    {"at": 5.4, "action": "spawn", "definition_id": 101, "position": [75, -50], "pattern": 2101},
+    {"at": 5.4, "action": "spawn", "definition_id": 102, "position": [275, -50], "pattern": 2102},
+    {"at": 6.3, "action": "banner", "name": "mission"}
   ]
 }

@@ -1,6 +1,7 @@
 extends SceneTree
 const Game = preload("res://scripts/game.gd")
 const Boss = preload("res://scripts/boss.gd")
+const OrbMotion = preload("res://scripts/boss_orb_motion.gd")
 const Movement = preload("res://scripts/movement.gd")
 var checks: int = 0
 var failed: int = 0
@@ -13,7 +14,7 @@ func check(ok: bool, text: String) -> void:
 func part(kind: int, pos: Vector2 = Vector2.ZERO, pattern: int = 0) -> Dictionary:
 	return {"kind":kind,"pos":pos,"pattern":pattern,"velocity":Vector2.ZERO,"hp":200.0}
 func body(stage: int) -> Dictionary:
-	return {"stage":stage,"pos":Vector2(200,100),"velocity":Vector2.ZERO,"hp":1500.0 if stage==4 else 1000.0,"max_hp":1500.0 if stage==4 else 1000.0,"age":0}
+	return {"stage":stage,"pos":Vector2(200,100),"velocity":Vector2.ZERO,"hp":1500.0 if stage==4 else (1500.0 if stage==3 else 1000.0),"max_hp":1500.0 if stage==4 else (1500.0 if stage==3 else 1000.0),"age":0}
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var game = Game.new()
@@ -38,10 +39,11 @@ func run() -> void:
 			check(game.stats.killed>0 and game.stats.hits>0,"stage %d weapon %d combat remains active"%[stage,weapon])
 			check(game.bullets.valid() and game.shots.size()<=50 and game.enemies.valid(),"stage %d weapon %d dynamic entity lifecycle remains consistent"%[stage,weapon])
 		game._load_stage(stage)
-		game.events = game.events.filter(func(row): return int(row.at)==times[stage])
+		game.events = game.events.filter(func(row): return is_equal_approx(float(row.at),times[stage]*0.9))
 		game.frame = times[stage]*30+1
+		game.stage_elapsed_seconds = game.frame*0.03
 		game._read_events()
-		check(game.boss.max_hp==(1500 if stage==4 else 1000),"stage %d original boss HP"%stage)
+		check(game.boss.max_hp==([0,1000,1000,1500,1500][stage]),"stage %d configured boss HP"%stage)
 		var found: Array = []
 		for e in game.enemies:
 			if e.kind>=100 and e.kind<200:
@@ -57,23 +59,22 @@ func run() -> void:
 	e.pos.y = 149
 	Movement.steer(e,Vector2(170,380),b.pos)
 	check(e.pattern==2201 and e.velocity.y==8,"stage 2 diving unit returns at boss-relative Y")
-	e = part(123,Vector2(200,150),2203)
-	Movement.steer(e,Vector2.ZERO,Vector2(200,100))
-	check(e.velocity==Vector2(-2,3),"stage 3 orbit A original acceleration")
-	e = part(124,Vector2(200,150),2204)
-	Movement.steer(e,Vector2.ZERO,Vector2(200,100))
-	check(e.velocity==Vector2(-3,2),"stage 3 orbit B original acceleration")
+	for id in [123,124]:
+		e = part(id,Vector2(100,50))
+		OrbMotion.prepare(e,body(3))
+		OrbMotion.advance(e,1000)
+		check(e.pos==Vector2(75 if id==123 else 275,75) and e.velocity==Vector2.ZERO,"stage3 orb%d reaches fixed upper station"%id)
 	e = part(111)
 	b.velocity.y = 3
 	Boss.attach(e,b)
 	check(e.pos==Vector2(226,160),"stage 2 side weapon follows body and vertical speed")
 	e = part(133)
-	e.hp = 99
+	e.hp = 199
 	b = body(4)
 	Boss.attach(e,b)
-	check(e.pos==Vector2(174,150) and e.pattern==2401 and e.velocity.y== -5,"final boss centre weapon detaches below 100 HP")
+	check(e.pos==Vector2(174,150) and e.pattern==2401 and e.velocity.x==0 and e.velocity.y<0 and e.velocity.length()<=5,"final boss centre weapon launches upward below200HP")
 	Movement.steer(e,Vector2.ZERO,b.pos)
-	check(e.velocity.y== -4,"detached centre weapon uses original acceleration")
+	check(e.velocity.x==0 and e.velocity.y<0 and e.velocity.length()<=5,"legacy steering leaves bounded core launch to native integration")
 	b.pos.y = 31
 	Boss.steer(b,Vector2(170,380),[])
 	check(b.velocity.y== -1,"final body rises after all attachments are gone")
@@ -81,21 +82,21 @@ func run() -> void:
 	Boss.steer(b,Vector2(170,380),[])
 	check(b.velocity.y==0,"final body stops at original Y=30")
 	b = body(2)
-	check(Boss.fire(b,[part(111)],2,0).is_empty(),"stage 2 body attack waits for attachment destruction")
-	var shots: Array = Boss.fire(b,[],2,0)
-	check(shots.size()==2 and shots[0].kind==6 and shots[1].kind==7,"stage 2 exposed body launches both energy shot types")
+	check(Boss.advance(b,[part(111)],0.09).is_empty(),"stage 2 body attack waits for attachment destruction")
+	var shots: Array = Boss.emit(b,"enrage")
+	check(shots.size()==2 and shots[0].kind==5 and shots[1].kind==5,"stage 2 exposed body launches paired pink orbs")
 	b = body(3)
-	shots = Boss.fire(b,[part(121)],8,0)
+	shots = Boss.emit(b,"missiles")
 	check(shots.size()==2 and shots[0].kind==2 and shots[1].kind==2,"stage 3 body launches dual missiles with wings alive")
-	shots = Boss.fire(b,[],5,2)
-	check(shots.size()==2 and shots[0].velocity==Vector2(3,7) and shots[1].velocity==Vector2(-3,7),"stage 3 exposed body preserves timer-driven mirrored spread")
+	shots = Boss.emit(b,"left_enrage")+Boss.emit(b,"right_enrage")
+	check(shots.size()==8 and shots.all(func(s): return s.kind==6 and is_equal_approx(s.velocity.length(),9)),"stage 3 exposed body emits two aimed four-way fans")
 	b = body(4)
-	shots = Boss.fire(b,[part(131),part(132)],3,0)
+	shots = Boss.advance(b,[part(131),part(132)],0.01)
 	check(shots.is_empty(),"stage4 pixel-modulo body attack is replaced by the independent100ms sweep")
-	check(Boss.fire(b,[part(131),part(132)],2,0).is_empty(),"stage 4 intact side weapons suppress replacement cannons")
-	shots = Boss.fire(b,[part(132)],2,0)
+	check(Boss.advance(b,[part(131),part(132)],0.01).is_empty(),"stage 4 intact side weapons suppress replacement cannons")
+	shots = Boss.emit(b,"left_replacement")
 	check(shots.size()==1 and shots[0].pos==Vector2(165,155),"stage 4 destroyed left weapon activates left replacement cannon")
-	shots = Boss.fire(b,[],2,0)
+	shots = Boss.emit(b,"left_replacement")+Boss.emit(b,"right_replacement")+Boss.emit(b,"enrage")
 	check(shots.size()==3 and shots[2].kind==8,"stage 4 final phase adds accelerating centre missile")
 	# Complete the campaign through the same projectile hit and clear/transition paths used in play.
 	game._load_stage(1)
@@ -108,6 +109,7 @@ func run() -> void:
 		game.boss.hp = 3
 		game.enemies.clear()
 		game.frame = 0
+		game.stage_elapsed_seconds = game.frame*0.03
 		game.events = []
 		game.shots = [{"pos":Vector2(200,145),"kind":1,"alive":true,"impact_ticks":-1}]
 		game._tick(Vector2.ZERO,false,false,false)

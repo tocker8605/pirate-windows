@@ -91,8 +91,9 @@ func run() -> void:
 		check(game.bullets.valid() and game.enemies.valid(), "weapon %d: dynamic entity stores remain consistent" % w)
 	# Exercise the real hit path against the boss body and wing protection.
 	game.start_game()
-	game.events = game.events.filter(func(row): return int(row.at)==116)
+	game.events = game.events.filter(func(row): return is_equal_approx(float(row.at),104.4))
 	game.frame = 3481
+	game.stage_elapsed_seconds = game.frame*0.03
 	game._read_events()
 	check(game.Boss.parts_alive(game.enemies) and not game.boss.is_empty(), "boss body remains hittable while weapon attachments fire")
 	for e in game.enemies: e.hp = 0

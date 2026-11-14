@@ -72,9 +72,9 @@ func run() -> void:
 	ticks(180)
 	check(g.energy==25,"energy recovery retains25 points over3seconds without fractional duplicate recoveries")
 	reset()
-	g.events = [{"at":1,"action":"banner","name":"mission"}]
+	g.events = [{"at":0.9,"action":"banner","name":"mission"}]
 	ticks(54)
-	check(g.event_cursor==0,"event at30 authored units does not trigger early")
+	check(g.event_cursor==0,"event at0.9seconds does not trigger early")
 	ticks(1)
 	check(g.event_cursor==1,"event triggers at the first60Hz tick after900ms")
 	reset()
@@ -87,11 +87,12 @@ func run() -> void:
 	for speed in range(1,6):
 		var clock = Clock.new()
 		var fires: int = 0
+		var actor: Dictionary = {"kind":4,"hp":20,"pos":Vector2(100,100),"velocity":Vector2.ZERO,"pattern":0}
 		var scale: float = Clock.units_per_tick(speed)
 		for i in range(600):
-			fires += clock.begin().phases.size()
+			fires += g.EnemyFire.advance(actor,scale*Clock.AUTHORED_TICK_SECONDS,Vector2(175,380)).size()
 			clock.finish(true,scale)
-		check(fires==int(floor((600-1)*scale/2+0.000001)),"speed%d preserves enemy fire cadence including multiple phases per tick"%speed)
+		check(fires==int(floor(600*scale*Clock.AUTHORED_TICK_SECONDS/0.3+0.000001)),"speed%d preserves independent300ms enemy cadence without phase wrap"%speed)
 
 	for stage in range(1,5):
 		g._load_stage(stage)

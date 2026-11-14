@@ -186,7 +186,6 @@ func draw_bullet(c: Node2D, b: Dictionary, position: Variant = null, phase: floa
 	var p: Vector2 = position if position!=null else b.get("render_pos",b.pos)
 	var v: Vector2 = b.get("render_velocity",b.velocity)
 	var kind: int = int(b.kind)
-	if kind==3 and v.y<=0: return
 	var direction: Vector2 = v.normalized() if v.length_squared()>0 else Vector2.DOWN
 	if kind==8:
 		draw_fireball(c,p,direction,phase+p.x*0.17)

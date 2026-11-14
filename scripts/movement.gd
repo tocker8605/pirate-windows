@@ -91,13 +91,6 @@ static func steer(e: Dictionary, player: Vector2, boss: Vector2) -> void:
 			if p.y<boss.y+50:
 				v.y = 8
 				e.pattern = 2201
-		2203,2204:
-			if p.y<boss.y or p.y>boss.y+100: v.y = 0
-			if p.x<boss.x-80 or p.x>boss.x+80: v.x = 0
-			var ay: float = 3 if e.pattern==2203 else 2
-			var ax: float = 2 if e.pattern==2203 else 3
-			v.y += -ay if p.y>boss.y+50 else ay
-			v.x += -ax if p.x>boss.x-10 else ax
-		2401: v.y += 1
+		2401: pass # Detached core uses native-tick boss_core_motion integration.
 		_: push_error("Unknown enemy movement pattern: %s"%e.pattern)
 	e.velocity = v.clamp(Vector2(-10, -10), Vector2(10, 10))

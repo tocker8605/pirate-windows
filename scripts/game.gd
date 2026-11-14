@@ -6,6 +6,8 @@ const EnemyFire = preload("res://scripts/enemy_fire.gd")
 const Weapons = preload("res://scripts/player_weapons.gd")
 const HUD = preload("res://scripts/hud.gd")
 const Effects = preload("res://scripts/special_effects.gd")
+const OrbMotion = preload("res://scripts/boss_orb_motion.gd")
+const CoreMotion = preload("res://scripts/boss_core_motion.gd")
 const Boss = preload("res://scripts/boss.gd")
 const Title = preload("res://scripts/title.gd")
 const Combat = preload("res://scripts/combat.gd")
@@ -67,6 +69,7 @@ var energy: float = 100
 var power: int = 1
 var score: int = 0
 var frame: int = 0
+var stage_elapsed_seconds: float = 0
 var elapsed_units: float = 0
 var tick_units: float = 1.0
 var accumulator: float = 0
@@ -143,6 +146,7 @@ func _load_stage(number: int, preserve_run: bool = false) -> void:
 	score = 0
 	frame = 0
 	elapsed_units = 0
+	stage_elapsed_seconds = 0
 	tick_units = 1.0
 	event_cursor = 0
 	invulnerable = 0
@@ -283,6 +287,8 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 	if state not in ["playing","dying","boss_dying"]: return
 	presentation.capture(self)
 	frame += 1
+	var delta_seconds: float = units*Clock.AUTHORED_TICK_SECONDS
+	stage_elapsed_seconds += delta_seconds
 	elapsed_units += units
 	var due: Dictionary = clock.begin()
 	animation = clock.animation-1
@@ -325,14 +331,11 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 	if due.move:
 		for e in enemies: Movement.steer(e,player,boss.get("pos",Vector2(200,-100)))
 		_boss_steer()
-	if due.fire and boss_death_ticks==0:
-		for phase in due.phases:
-			clock.phase = phase
-			BulletPool.body(self)
-			for e in enemies: _enemy_fire(e)
+	for e in enemies:
+		if OrbMotion.active(e): OrbMotion.prepare(e,boss)
 	if boss_death_ticks==0:
-		BulletPool.group(self,Boss.advance(boss,enemies,units*Clock.AUTHORED_TICK_SECONDS,int((timeline()-units)/30)))
-		for e in enemies: BulletPool.group(self,EnemyFire.advance(e,units*Clock.AUTHORED_TICK_SECONDS))
+		BulletPool.body(self,delta_seconds)
+		for e in enemies: _enemy_fire(e,delta_seconds)
 	_update_scenery()
 	for blast in explosions:
 		if blast.get("pending_sound",false):
@@ -343,7 +346,9 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 	_update_boss()
 	for e in enemies:
 		var previous_y: float = e.pos.y
-		e.pos += e.velocity*units
+		if CoreMotion.active(e): CoreMotion.advance(e,units)
+		elif OrbMotion.active(e): OrbMotion.advance(e,units)
+		else: e.pos += e.velocity*units
 		Boss.attach(e,boss)
 		e.render_kind = e.kind
 		e.render_hp = e.hp
@@ -420,7 +425,7 @@ func _fire() -> void:
 		shots.append(shot)
 		stats.shots += 1
 	energy -= Weapons.cost(power)
-	fire_cooldown += 2 if power%2==0 else 3
+	fire_cooldown += Weapons.cadence_units(power)
 
 func _update_shots() -> void:
 	_advance_shots()
@@ -463,8 +468,8 @@ func _resolve_shots() -> void:
 func _bullet(pos: Vector2, velocity: Vector2, kind: int = 1) -> void:
 	BulletPool.single(self,pos,velocity,kind)
 
-func _enemy_fire(e: Dictionary) -> void:
-	BulletPool.enemy(self,e)
+func _enemy_fire(e: Dictionary, seconds: float) -> void:
+	BulletPool.enemy(self,e,seconds)
 
 func _boss_steer() -> void:
 	if not boss.is_empty(): Boss.steer(boss,player,enemies)
@@ -492,7 +497,7 @@ func _update_bullets() -> void:
 			bullet.alive = false
 			shield_contacts.append(bullet.pos)
 			shield = maxf(0,shield-4)
-			score += 25*title.difficulty
+			if boss.is_empty(): score += 25*title.difficulty
 		elif hp>0 and invulnerable==0 and Combat.hurts_player(player,bullet.pos):
 			_hurt_player(Combat.DAMAGE[int(bullet.kind)])
 			bullet.alive = false

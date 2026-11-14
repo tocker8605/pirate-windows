@@ -1,26 +1,17 @@
 class_name PirateClock
 extends RefCounted
-## Global fm_a/fm_b/fm_ki counters survive stage loading, as in the VB6 module.
+## Movement animation and energy recovery clocks; attacks own their timers.
 var movement: float = 0
-var firing: float = 0
 var recovery: float = 0
-var phase: int = 1
 var animation: int = 0
 func begin() -> Dictionary:
 	var move: bool = movement>=9-0.000001
-	var fire: bool = firing>=2-0.000001
 	if move:
 		movement = maxf(0,movement-9)
 		animation = animation%4+1
-	var phases: Array = []
-	while firing>=2-0.000001:
-		firing = maxf(0,firing-2)
-		phase = phase%25+1
-		phases.append(phase)
-	return {"move":move,"fire":fire,"phases":phases}
+	return {"move":move}
 func finish(alive: bool, units: float = 1.0) -> bool:
 	movement += units
-	firing += units
 	return recover(alive,units)
 func recover(alive: bool, units: float = 1.0) -> bool:
 	recovery += units

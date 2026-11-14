@@ -21,7 +21,7 @@ static func run(g: Node) -> void:
 		var preview_ticks: int = stills.get(g.preview_mode,1100)
 		if g.preview_mode == "boss":
 			for row in g.events:
-				if Catalog.definition(int(row.get("definition_id",0))).get("role","")=="boss": preview_ticks = int(row.at)*30+180
+				if Catalog.definition(int(row.get("definition_id",0))).get("role","")=="boss": preview_ticks = roundi(float(row.at)/Clock.AUTHORED_TICK_SECONDS)+180
 		for i in range(preview_ticks):
 			g.invulnerable = 100
 			g._tick(Vector2.ZERO if g.preview_mode=="boss" else Vector2(sin(i * 0.013),0),g.preview_mode!="boss",false,false)

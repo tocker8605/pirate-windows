@@ -45,8 +45,11 @@ static func volley(player: Vector2, weapon: int, power: int, random_source: Vari
 static func _add(plan: Array, player: Vector2, x: float, y: float, kind: int) -> void:
 	plan.append({"pos":player+Vector2(x,y),"kind":kind,"alive":true,"impact_ticks":-1})
 
+static func cadence_units(power: int) -> float:
+	return 2.0 if power%2==0 else 3.0
+
 static func cost(power: int) -> float:
-	return [0.0,0.8,0.6,1.0,0.8,1.2,1.0,1.3][power]
+	return 0.67 if cadence_units(power)==2 else 1.0
 
 static func advance(shot: Dictionary, player: Vector2, units: float = 1.0) -> void:
 	var p: Vector2 = shot.pos

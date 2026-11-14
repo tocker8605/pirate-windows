@@ -1,0 +1,76 @@
+전체 공격 주기 /v24.22 /2026-11-14
+타임라인schema2/seconds,공격은 개체별·채널별 독립 타이머.
+
+ID1 /crescent_scout
+  {"name": "aim", "interval_seconds": 0.36, "gate": "aim_window"}
+ID2 /variable_wing_fighter
+  {"name": "moving", "interval_seconds": 0.18, "gate": "moving"}
+  {"name": "aim", "interval_seconds": 0.36, "gate": "stationary_aim"}
+ID3 /ring_rotor
+  {"name": "sweep", "interval_seconds": 0.12, "gate": "sweep_y"}
+ID4 /cross_fighter_a
+  {"name": "aim", "interval_seconds": 0.3, "gate": "always"}
+ID6 /swept_wing_fighter
+  {"name": "twin", "interval_seconds": 0.24, "gate": "descent_or_stationary"}
+ID7 /delta_fighter
+  {"name": "triple", "interval_seconds": 0.54, "gate": "always"}
+ID8 /folding_wing_fighter
+  {"name": "missile", "interval_seconds": 0.6, "gate": "always"}
+ID9 /fireball_disc
+  {"name": "flame", "interval_seconds": 0.18, "gate": "flame_y"}
+ID10 /crescent_fighter
+  {"name": "twin", "interval_seconds": 0.36, "gate": "descending"}
+  {"name": "aim", "interval_seconds": 0.3, "gate": "aim_window"}
+ID11 /twin_pod_fighter
+  {"name": "twin", "interval_seconds": 0.42, "gate": "always"}
+ID21 /medium_fighter
+  {"name": "missiles", "interval_seconds": 0.72, "gate": "always"}
+  {"name": "aim", "interval_seconds": 0.24, "gate": "always"}
+ID22 /charge_fighter
+  {"name": "plasma", "interval_seconds": 0.06, "gate": "charge_y"}
+  {"name": "streak", "interval_seconds": 0.12, "gate": "charge_y"}
+ID41 /heavy_fighter_a
+  {"name": "aim", "interval_seconds": 0.18, "gate": "always"}
+  {"name": "missile", "interval_seconds": 0.72, "gate": "always"}
+ID42 /heavy_fighter_b
+  {"name": "missiles", "interval_seconds": 0.48, "gate": "always"}
+ID92 /boss_stage2
+  {"name": "enrage", "interval_seconds": 0.09, "projectile_kind": 5, "gate": "no_parts"}
+ID93 /boss_stage3
+  {"name": "missiles", "interval_seconds": 0.48, "gate": "always"}
+  {"name": "left_enrage", "interval_seconds": 0.3, "gate": "part_missing", "part_id": 121}
+  {"name": "right_enrage", "interval_seconds": 0.3, "gate": "part_missing", "part_id": 122}
+ID94 /boss_stage4
+  {"name": "left_replacement", "interval_seconds": 0.12, "gate": "left_missing"}
+  {"name": "right_replacement", "interval_seconds": 0.12, "gate": "right_missing"}
+  {"name": "enrage", "interval_seconds": 0.06, "gate": "no_parts"}
+ID101 /boss1_left_fist
+  {"name": "plasma", "interval_seconds": 0.06, "gate": "fist_y"}
+ID102 /boss1_right_fist
+  {"name": "plasma", "interval_seconds": 0.06, "gate": "fist_y"}
+ID111 /boss2_right_arm
+  {"name": "streak", "interval_seconds": 0.12, "gate": "always", "window_seconds": [2.7, 0, 1.8]}
+ID112 /boss2_left_arm
+  {"name": "triple", "interval_seconds": 0.36, "gate": "always", "window_seconds": [3.6, 1.8, 3.6]}
+ID113 /boss2_centre_module
+  {"name": "flames", "interval_seconds": 0.12, "gate": "pod_y"}
+ID121 /boss3_left_arm
+  {"name": "triple", "interval_seconds": 0.48, "gate": "always", "window_seconds": [3.6, 1.8, 3.6]}
+ID122 /boss3_right_arm
+  {"name": "triple", "interval_seconds": 0.48, "gate": "always", "window_seconds": [3.6, 0, 1.8]}
+ID123 /boss3_orb_a
+  {"name": "rotating_cross", "interval_seconds": 0.3, "gate": "always", "projectile_kind": 3, "count": 4, "spacing_degrees": 90, "rotation_step_degrees": 3, "rotation_direction": 1, "initial_degrees": 90, "speed": 9}
+ID124 /boss3_orb_b
+  {"name": "rotating_cross", "interval_seconds": 0.3, "gate": "always", "projectile_kind": 3, "count": 4, "spacing_degrees": 90, "rotation_step_degrees": 3, "rotation_direction": -1, "initial_degrees": 90, "speed": 9}
+ID131 /boss4_left_claw
+  {"name": "plasma", "interval_seconds": 0.06, "gate": "left_claw_y"}
+  {"name": "streak", "interval_seconds": 0.12, "gate": "left_claw_y"}
+ID132 /boss4_right_claw
+  {"name": "plasma", "interval_seconds": 0.06, "gate": "right_claw_y"}
+  {"name": "streak", "interval_seconds": 0.12, "gate": "right_claw_y"}
+ID133 /boss4_centre_core
+  {"name": "flame", "interval_seconds": 0.06, "gate": "detached"}
+  {"name": "radial", "interval_seconds": 0.25, "gate": "core_settled", "projectile_kind": 5, "count": 30, "spacing_degrees": 12, "rotation_step_degrees": 1, "initial_degrees": 90, "speed": 7}
+
+특수 독립공격:ID5나선0.1초/ID8가속확산0.12초/ID42중앙7way0.2초/
+ID91본체0.3초(주먹전멸0.15초)/ID94양방향나선0.1초.

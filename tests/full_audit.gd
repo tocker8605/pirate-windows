@@ -19,15 +19,13 @@ func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var clock = Clock.new()
 	var moves: Array = []
-	var fires: Array = []
 	var recoveries: Array = []
 	for n in range(1,76):
 		var due: Dictionary = clock.begin()
 		if due.move: moves.append(n)
-		if due.fire: fires.append(n)
 		if clock.finish(true): recoveries.append(n)
 	check(moves.slice(0,4)==[10,19,28,37],"original first movement update at tick 10, then every 9")
-	check(fires.slice(0,4)==[3,5,7,9] and clock.phase==13,"original firing phase increments and wraps at 25")
+	check(clock.begin().keys()==["move"],"shared clock no longer owns an enemy firing phase")
 	check(recoveries.slice(0,4)==[4,8,12,16],"energy recovery is one whole unit every four ticks")
 	clock.recovery = 8
 	check(not clock.finish(false) and clock.finish(true),"death suspends recovery without losing its counter")
@@ -86,11 +84,13 @@ func run() -> void:
 	game._tick(Vector2.ZERO,false,true,false)
 	check(game.laser_render_ticks==15 and game.energy<0,"original X threshold is energy>7, not energy>=8")
 	game.start_game()
-	game.events = [{"at":1,"action":"banner","name":"warning"}]
+	game.events = [{"at":0.9,"action":"banner","name":"warning"}]
 	game.frame = 30
+	game.stage_elapsed_seconds = game.frame*0.03
 	game._read_events()
 	check(game.event_cursor==0,"event t=1 does not fire at tick 30")
 	game.frame = 31
+	game.stage_elapsed_seconds = game.frame*0.03
 	game._read_events()
 	check(game.event_cursor==1 and game.banner_ticks==80,"event t=1 fires at tick 31 and warning lasts 80 ticks")
 	game.enemies.replace_all([enemy(1,Vector2(100,100),10),enemy(1,Vector2(100,100),10)])
@@ -124,10 +124,9 @@ func run() -> void:
 	game._debug_controls([KEY_C,KEY_R,KEY_U])
 	game._debug_controls([KEY_F6,KEY_F8])
 	check(game.debug_enabled and game.hp==100 and game.power==2,"original C+R+U and F6/F8 developer inputs")
-	game.clock.phase = 17
 	game.clock.movement = 4
 	game._load_stage(2,true)
-	check(game.clock.phase==17 and game.clock.movement==4,"global original movement/fire counters survive stage loading")
+	check(game.clock.movement==4,"movement clock survives stage loading independently of per-actor attacks")
 	for sheet in ["enemy_sm","picsmo"]:
 		var clipped: Image = game.art.sprite(sheet,Rect2i(-50,0,50,50),Vector2i(-50,50)).get_image()
 		check(clipped.get_pixel(0,0).a==0,"GDI out-of-sheet region clips transparently for "+sheet)

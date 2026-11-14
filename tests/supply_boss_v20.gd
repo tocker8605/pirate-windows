@@ -1,7 +1,7 @@
 extends SceneTree
 const Game = preload("res://scripts/game.gd")
 const Title = preload("res://scripts/title.gd")
-const Fire = preload("res://scripts/enemy_fire.gd")
+const Fire = preload("res://tests/fixtures/fire_probe.gd")
 const Scenery = preload("res://scripts/scenery.gd")
 const Rules = preload("res://scripts/enemy_rules.gd")
 const FX = preload("res://scripts/combat_vfx.gd")

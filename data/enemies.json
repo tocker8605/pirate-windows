@@ -2,6 +2,13 @@
   "schema_version": 1,
   "entities": {
     "1": {
+      "fire_channels": [
+        {
+          "name": "aim",
+          "interval_seconds": 0.36,
+          "gate": "aim_window"
+        }
+      ],
       "name": "crescent_scout",
       "role": "enemy",
       "hp": 5,
@@ -27,6 +34,18 @@
       }
     },
     "2": {
+      "fire_channels": [
+        {
+          "name": "moving",
+          "interval_seconds": 0.18,
+          "gate": "moving"
+        },
+        {
+          "name": "aim",
+          "interval_seconds": 0.36,
+          "gate": "stationary_aim"
+        }
+      ],
       "name": "variable_wing_fighter",
       "role": "enemy",
       "hp": 8,
@@ -52,6 +71,13 @@
       }
     },
     "3": {
+      "fire_channels": [
+        {
+          "name": "sweep",
+          "interval_seconds": 0.12,
+          "gate": "sweep_y"
+        }
+      ],
       "name": "ring_rotor",
       "role": "enemy",
       "hp": 15,
@@ -77,6 +103,13 @@
       }
     },
     "4": {
+      "fire_channels": [
+        {
+          "name": "aim",
+          "interval_seconds": 0.3,
+          "gate": "always"
+        }
+      ],
       "name": "cross_fighter_a",
       "role": "enemy",
       "hp": 20,
@@ -131,11 +164,19 @@
         "speed": 7,
         "step_degrees": 15,
         "requires_stationary_x": true,
+        "opposed": true,
         "initial_degrees": -90,
         "projectile_kind": 6
       }
     },
     "6": {
+      "fire_channels": [
+        {
+          "name": "twin",
+          "interval_seconds": 0.24,
+          "gate": "descent_or_stationary"
+        }
+      ],
       "name": "swept_wing_fighter",
       "role": "enemy",
       "hp": 30,
@@ -161,6 +202,13 @@
       }
     },
     "7": {
+      "fire_channels": [
+        {
+          "name": "triple",
+          "interval_seconds": 0.54,
+          "gate": "always"
+        }
+      ],
       "name": "delta_fighter",
       "role": "enemy",
       "hp": 10,
@@ -186,6 +234,13 @@
       }
     },
     "8": {
+      "fire_channels": [
+        {
+          "name": "missile",
+          "interval_seconds": 0.6,
+          "gate": "always"
+        }
+      ],
       "name": "folding_wing_fighter",
       "role": "enemy",
       "hp": 35,
@@ -197,6 +252,16 @@
       "draw_size": [50, 50],
       "draw_offset": [0, 0],
       "part_side": 0,
+      "attack": {
+        "type": "speed_spread",
+        "interval_seconds": 0.12,
+        "speed": 9,
+        "max_vertical_speed": 10,
+        "max_spread_degrees": 90,
+        "projectile_kind": 1,
+        "ports": [[30, 25], [10, 25]],
+        "spread_directions": [-1, 1]
+      },
       "collision": {
         "shot_bounds": [-15, -25, 35, 30],
         "beam_bounds": [-15, 15],
@@ -211,6 +276,13 @@
       }
     },
     "9": {
+      "fire_channels": [
+        {
+          "name": "flame",
+          "interval_seconds": 0.18,
+          "gate": "flame_y"
+        }
+      ],
       "name": "fireball_disc",
       "role": "enemy",
       "hp": 25,
@@ -236,6 +308,18 @@
       }
     },
     "10": {
+      "fire_channels": [
+        {
+          "name": "twin",
+          "interval_seconds": 0.36,
+          "gate": "descending"
+        },
+        {
+          "name": "aim",
+          "interval_seconds": 0.3,
+          "gate": "aim_window"
+        }
+      ],
       "name": "crescent_fighter",
       "role": "enemy",
       "hp": 10,
@@ -261,6 +345,13 @@
       }
     },
     "11": {
+      "fire_channels": [
+        {
+          "name": "twin",
+          "interval_seconds": 0.42,
+          "gate": "always"
+        }
+      ],
       "name": "twin_pod_fighter",
       "role": "enemy",
       "hp": 10,
@@ -314,6 +405,18 @@
       }
     },
     "21": {
+      "fire_channels": [
+        {
+          "name": "missiles",
+          "interval_seconds": 0.72,
+          "gate": "always"
+        },
+        {
+          "name": "aim",
+          "interval_seconds": 0.24,
+          "gate": "always"
+        }
+      ],
       "name": "medium_fighter",
       "role": "enemy",
       "hp": 100,
@@ -344,6 +447,18 @@
       }
     },
     "22": {
+      "fire_channels": [
+        {
+          "name": "plasma",
+          "interval_seconds": 0.06,
+          "gate": "charge_y"
+        },
+        {
+          "name": "streak",
+          "interval_seconds": 0.12,
+          "gate": "charge_y"
+        }
+      ],
       "name": "charge_fighter",
       "role": "enemy",
       "hp": 120,
@@ -370,6 +485,18 @@
       }
     },
     "41": {
+      "fire_channels": [
+        {
+          "name": "aim",
+          "interval_seconds": 0.18,
+          "gate": "always"
+        },
+        {
+          "name": "missile",
+          "interval_seconds": 0.72,
+          "gate": "always"
+        }
+      ],
       "name": "heavy_fighter_a",
       "role": "enemy",
       "hp": 225,
@@ -401,6 +528,13 @@
       }
     },
     "42": {
+      "fire_channels": [
+        {
+          "name": "missiles",
+          "interval_seconds": 0.48,
+          "gate": "always"
+        }
+      ],
       "name": "heavy_fighter_b",
       "role": "enemy",
       "hp": 250,
@@ -412,6 +546,14 @@
       "draw_size": [150, 100],
       "draw_offset": [-50, -25],
       "part_side": 0,
+      "attack": {
+        "type": "aimed_fan",
+        "interval_seconds": 0.2,
+        "speed": 10,
+        "count": 7,
+        "spread_degrees": 180,
+        "projectile_kind": 6
+      },
       "collision": {
         "shot_bounds": [-65, -25, 85, 30],
         "beam_bounds": [-55, 55],
@@ -454,6 +596,7 @@
         "type": "alternating",
         "interval_seconds": 0.3,
         "enraged_interval_seconds": 0.15,
+        "side_hold_seconds": 1.8,
         "ports": [[-40, 50], [40, 50]],
         "horizontal_base": 1,
         "speed_y": 9,
@@ -470,6 +613,14 @@
       }
     },
     "92": {
+      "fire_channels": [
+        {
+          "name": "enrage",
+          "interval_seconds": 0.09,
+          "projectile_kind": 5,
+          "gate": "no_parts"
+        }
+      ],
       "name": "boss_stage2",
       "role": "boss",
       "hp": 1000,
@@ -499,21 +650,76 @@
       }
     },
     "93": {
+      "fire_channels": [
+        {
+          "name": "missiles",
+          "interval_seconds": 0.48,
+          "gate": "always"
+        },
+        {
+          "name": "left_enrage",
+          "interval_seconds": 0.3,
+          "gate": "part_missing",
+          "part_id": 121
+        },
+        {
+          "name": "right_enrage",
+          "interval_seconds": 0.3,
+          "gate": "part_missing",
+          "part_id": 122
+        }
+      ],
+      "attack": {
+        "type": "paired_aimed_fan",
+        "speed": 9,
+        "count": 4,
+        "spread_degrees": 45,
+        "projectile_kind": 6,
+        "ports": [
+          [
+            -43,
+            46
+          ],
+          [
+            43,
+            46
+          ]
+        ]
+      },
       "name": "boss_stage3",
       "role": "boss",
-      "hp": 1000,
+      "hp": 1500,
       "score": 0,
       "score_scales_with_difficulty": true,
       "damageable": true,
       "explosion_ticks": 20,
       "death_sound": "bang-e",
-      "draw_size": [100, 100],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        100,
+        100
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-90, -25, 60, 60],
-        "beam_bounds": [-25, 75],
-        "contact_bounds": [-35.0, 15.0, 35.0, 85.0]
+        "shot_bounds": [
+          -90,
+          -25,
+          60,
+          60
+        ],
+        "beam_bounds": [
+          -25,
+          75
+        ],
+        "contact_bounds": [
+          -35.0,
+          15.0,
+          35.0,
+          85.0
+        ]
       },
       "stage": 3,
       "music": "boss01",
@@ -521,13 +727,39 @@
         "below_ratio": 0.4,
         "size": 16,
         "ports": [
-          [-35, 55],
-          [0, 45],
-          [35, 55]
+          [
+            -35,
+            55
+          ],
+          [
+            0,
+            45
+          ],
+          [
+            35,
+            55
+          ]
         ]
       }
     },
     "94": {
+      "fire_channels": [
+        {
+          "name": "left_replacement",
+          "interval_seconds": 0.12,
+          "gate": "left_missing"
+        },
+        {
+          "name": "right_replacement",
+          "interval_seconds": 0.12,
+          "gate": "right_missing"
+        },
+        {
+          "name": "enrage",
+          "interval_seconds": 0.06,
+          "gate": "no_parts"
+        }
+      ],
       "name": "boss_stage4",
       "role": "boss",
       "hp": 1500,
@@ -568,6 +800,13 @@
       }
     },
     "101": {
+      "fire_channels": [
+        {
+          "name": "plasma",
+          "interval_seconds": 0.06,
+          "gate": "fist_y"
+        }
+      ],
       "name": "boss1_left_fist",
       "role": "part",
       "hp": 200,
@@ -597,6 +836,13 @@
       }
     },
     "102": {
+      "fire_channels": [
+        {
+          "name": "plasma",
+          "interval_seconds": 0.06,
+          "gate": "fist_y"
+        }
+      ],
       "name": "boss1_right_fist",
       "role": "part",
       "hp": 200,
@@ -626,6 +872,18 @@
       }
     },
     "111": {
+      "fire_channels": [
+        {
+          "name": "streak",
+          "interval_seconds": 0.12,
+          "gate": "always",
+          "window_seconds": [
+            2.7,
+            0,
+            1.8
+          ]
+        }
+      ],
       "name": "boss2_right_arm",
       "role": "part",
       "hp": 200,
@@ -655,6 +913,18 @@
       }
     },
     "112": {
+      "fire_channels": [
+        {
+          "name": "triple",
+          "interval_seconds": 0.36,
+          "gate": "always",
+          "window_seconds": [
+            3.6,
+            1.8,
+            3.6
+          ]
+        }
+      ],
       "name": "boss2_left_arm",
       "role": "part",
       "hp": 200,
@@ -684,6 +954,13 @@
       }
     },
     "113": {
+      "fire_channels": [
+        {
+          "name": "flames",
+          "interval_seconds": 0.12,
+          "gate": "pod_y"
+        }
+      ],
       "name": "boss2_centre_module",
       "role": "part",
       "hp": 300,
@@ -713,6 +990,18 @@
       }
     },
     "121": {
+      "fire_channels": [
+        {
+          "name": "triple",
+          "interval_seconds": 0.48,
+          "gate": "always",
+          "window_seconds": [
+            3.6,
+            1.8,
+            3.6
+          ]
+        }
+      ],
       "name": "boss3_left_arm",
       "role": "part",
       "hp": 400,
@@ -742,6 +1031,18 @@
       }
     },
     "122": {
+      "fire_channels": [
+        {
+          "name": "triple",
+          "interval_seconds": 0.48,
+          "gate": "always",
+          "window_seconds": [
+            3.6,
+            0,
+            1.8
+          ]
+        }
+      ],
       "name": "boss3_right_arm",
       "role": "part",
       "hp": 400,
@@ -771,64 +1072,188 @@
       }
     },
     "123": {
+      "fire_channels": [
+        {
+          "name": "rotating_cross",
+          "interval_seconds": 0.3,
+          "gate": "orb_y_stationary",
+          "projectile_kind": 3,
+          "count": 4,
+          "spacing_degrees": 90,
+          "rotation_step_degrees": 10,
+          "rotation_direction": 1,
+          "initial_degrees": 90,
+          "speed": 9
+        }
+      ],
       "name": "boss3_orb_a",
       "role": "part",
-      "hp": 200,
+      "hp": 400,
       "score": 350,
       "score_scales_with_difficulty": true,
       "damageable": true,
       "explosion_ticks": 30,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 80,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
       "boss_rush_drop": {
         "item": 1,
-        "offset": [25, 40]
+        "offset": [
+          25,
+          40
+        ]
+      },
+      "motion": {
+        "type": "boss_health_stations",
+        "upper_center": [
+          100,
+          100
+        ],
+        "lower_center": [
+          100,
+          240
+        ],
+        "lower_below_ratio": 0.5,
+        "speed": 5,
+        "lower_follow": {
+          "x_offset": -35,
+          "speed": 1
+        }
       }
     },
     "124": {
+      "fire_channels": [
+        {
+          "name": "rotating_cross",
+          "interval_seconds": 0.3,
+          "gate": "orb_y_stationary",
+          "projectile_kind": 3,
+          "count": 4,
+          "spacing_degrees": 90,
+          "rotation_step_degrees": 10,
+          "rotation_direction": -1,
+          "initial_degrees": 90,
+          "speed": 9
+        }
+      ],
       "name": "boss3_orb_b",
       "role": "part",
-      "hp": 200,
+      "hp": 400,
       "score": 350,
       "score_scales_with_difficulty": true,
       "damageable": true,
       "explosion_ticks": 30,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 80,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
       "boss_rush_drop": {
         "item": 1,
-        "offset": [25, 40]
+        "offset": [
+          25,
+          40
+        ]
+      },
+      "motion": {
+        "type": "boss_health_stations",
+        "upper_center": [
+          300,
+          100
+        ],
+        "lower_center": [
+          300,
+          240
+        ],
+        "lower_below_ratio": 0.5,
+        "speed": 5,
+        "lower_follow": {
+          "x_offset": 35,
+          "speed": 1
+        }
       }
     },
     "131": {
+      "fire_channels": [
+        {
+          "name": "plasma",
+          "interval_seconds": 0.06,
+          "gate": "left_claw_y"
+        },
+        {
+          "name": "streak",
+          "interval_seconds": 0.12,
+          "gate": "left_claw_y"
+        }
+      ],
       "name": "boss4_left_claw",
       "role": "part",
       "hp": 600,
@@ -858,6 +1283,18 @@
       }
     },
     "132": {
+      "fire_channels": [
+        {
+          "name": "plasma",
+          "interval_seconds": 0.06,
+          "gate": "right_claw_y"
+        },
+        {
+          "name": "streak",
+          "interval_seconds": 0.12,
+          "gate": "right_claw_y"
+        }
+      ],
       "name": "boss4_right_claw",
       "role": "part",
       "hp": 600,
@@ -887,6 +1324,24 @@
       }
     },
     "133": {
+      "fire_channels": [
+        {
+          "name": "flame",
+          "interval_seconds": 0.06,
+          "gate": "detached"
+        },
+        {
+          "name": "radial",
+          "interval_seconds": 0.25,
+          "gate": "core_settled",
+          "projectile_kind": 5,
+          "count": 30,
+          "spacing_degrees": 12,
+          "rotation_step_degrees": 1,
+          "initial_degrees": 90,
+          "speed": 7
+        }
+      ],
       "name": "boss4_centre_core",
       "role": "part",
       "hp": 800,

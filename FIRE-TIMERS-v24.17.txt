@@ -1,0 +1,121 @@
+Pirate II 전체 공격 독립 타이머 목록 /v24.17 /2026-11-08
+
+전역 발사 위상 삭제.기체/공격마다 독립된 초 단위 시계.
+gate가 꺼지면 해당 공격의 잔여 시간 초기화.재활성화 후 한 주기 기다림.
+window는 개체 생성 후 경과 시간 기준의 의도된 발사/휴지 구간.
+새 주기는 예전의 통상 주기이며,1~25카운터 순환 때 생기던 추가 지연을 제거함.
+60Hz에서는 실제 화면상 발사가 인접 프레임에 분배되지만 소수 잔여 시간을 보존해 평균 주기는 일정함.
+
+ID1 /crescent_scout
+  aim: 0.36초 /gate=aim_window
+
+ID2 /variable_wing_fighter
+  moving: 0.18초 /gate=moving
+  aim: 0.36초 /gate=stationary_aim
+
+ID3 /ring_rotor
+  sweep: 0.12초 /gate=sweep_y
+
+ID4 /cross_fighter_a
+  aim: 0.30초 /gate=always
+
+ID6 /swept_wing_fighter
+  twin: 0.24초 /gate=descent_or_stationary
+
+ID7 /delta_fighter
+  triple: 0.54초 /gate=always
+
+ID8 /folding_wing_fighter
+  missile: 0.60초 /gate=always
+
+ID9 /fireball_disc
+  flame: 0.18초 /gate=flame_y
+
+ID10 /crescent_fighter
+  twin: 0.36초 /gate=descending
+  aim: 0.30초 /gate=aim_window
+
+ID11 /twin_pod_fighter
+  twin: 0.42초 /gate=always
+
+ID21 /medium_fighter
+  missiles: 0.72초 /gate=always
+  aim: 0.24초 /gate=always
+
+ID22 /charge_fighter
+  plasma: 0.06초 /gate=charge_y
+  streak: 0.12초 /gate=charge_y
+
+ID41 /heavy_fighter_a
+  aim: 0.18초 /gate=always
+  missile: 0.72초 /gate=always
+
+ID42 /heavy_fighter_b
+  missiles: 0.48초 /gate=always
+
+ID92 /boss_stage2
+  enrage: 0.09초 /gate=no_parts /projectile_kind=5(분홍색 구체)
+
+ID93 /boss_stage3
+  missiles: 0.48초 /gate=always
+  enrage: 0.30초 /gate=no_parts
+
+ID94 /boss_stage4
+  left_replacement: 0.12초 /gate=left_missing
+  right_replacement: 0.12초 /gate=right_missing
+  enrage: 0.06초 /gate=no_parts
+
+ID101 /boss1_left_fist
+  plasma: 0.06초 /gate=fist_y
+
+ID102 /boss1_right_fist
+  plasma: 0.06초 /gate=fist_y
+
+ID111 /boss2_right_arm
+  streak: 0.12초 /gate=always /2.7초마다0~1.8초 발사구간
+
+ID112 /boss2_left_arm
+  triple: 0.36초 /gate=always /3.6초마다1.8~3.6초 발사구간
+
+ID113 /boss2_centre_module
+  flames: 0.12초 /gate=pod_y
+
+ID121 /boss3_left_arm
+  triple: 0.48초 /gate=always /3.6초마다1.8~3.6초 발사구간
+
+ID122 /boss3_right_arm
+  triple: 0.48초 /gate=always /3.6초마다0~1.8초 발사구간
+
+ID123 /boss3_orb_a
+  streak: 0.30초 /gate=orb_y
+
+ID124 /boss3_orb_b
+  streak: 0.30초 /gate=orb_y
+
+ID131 /boss4_left_claw
+  plasma: 0.06초 /gate=left_claw_y
+  streak: 0.12초 /gate=left_claw_y
+
+ID132 /boss4_right_claw
+  plasma: 0.06초 /gate=right_claw_y
+  streak: 0.12초 /gate=right_claw_y
+
+ID133 /boss4_centre_core
+  flame: 0.06초 /gate=detached
+
+이미 독립 타이머였던 공격:
+ID5 cross_fighter_b:0.10초,15도 회전/정반대2발/수평 정지 조건.
+ID8 folding_wing_fighter 가속확산:0.12초,하강 조건.
+ID42 heavy_fighter_b 중앙7way:0.20초.
+ID91 1면 본체:0.30초,주먹 전멸 시0.15초.좌우 교대1.8초.
+ID94 4면 본체 양방향 나선:0.10초,파츠 생존 및진입Y조건.
+
+다른 현재 설정:3면 본체HP1200;주인공 일반탄90ms당1.0/60ms당0.67;
+4면 코어HP100미만 사출 후 화면중앙 고정.
+
+커밋/푸시하지 않음.원본VB6폴더 변경 없음.
+
+타임라인은v24.17에서schema2/time_unit=seconds로 전환했습니다.
+  at1=1초,at2.75=2.75초.기존 값은0.9배로 변환해 등장 시점 보존.
+  동적배열+커서로 소비.1000동시기체/1001이벤트 처리 검사 통과.
+  TIMELINE-v24.17.txt참조.

@@ -1,10 +1,9 @@
 extends RefCounted
 ## Named timeline events, validated before play. No per-frame legacy actor quota.
 const Catalog = preload("res://scripts/enemy_catalog.gd")
-const TIME_UNIT: float = 30.0
 static func validate_document(document: Variant) -> PackedStringArray:
-	if not document is Dictionary or document.get("schema_version",0)!=1 or document.get("time_unit","")!="authored_30_ticks" or not document.get("events") is Array:
-		return PackedStringArray(["Expected version1 timeline with authored_30_ticks time unit"])
+	if not document is Dictionary or document.get("schema_version",0)!=2 or document.get("time_unit","")!="seconds" or not document.get("events") is Array:
+		return PackedStringArray(["Expected version2 timeline with seconds time unit"])
 	var errors := PackedStringArray()
 	var previous: float = -1
 	for i in range(document.events.size()):
@@ -54,7 +53,7 @@ static func consume(g: Node) -> void:
 			g.event_cursor = g.events.size()
 			return
 		var event: Dictionary = raw
-		if float(event.at)*TIME_UNIT+0.0000001>=g.timeline(): break
+		if float(event.at)+0.000000003>=g.stage_elapsed_seconds: break
 		g.event_cursor += 1
 		match event.action:
 			"banner":

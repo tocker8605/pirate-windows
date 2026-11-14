@@ -1,17 +1,34 @@
-Pirate II v24.9 — Validation / 2026-11-07
+Pirate II v24.24 — Validation /2026-11-14
+Godot4.7.2 /Windows x64 /OpenGL Compatibility /RTX4080
 
-Visual-only core alignment: definition133 draw_offsetY:-15 ->-8.
-The opening moves7logical pixels down onto boss4's chest circle. Original atlas,
-logical attachment/movement,projectile muzzles,collision metadata and attacks unchanged.
+Stage3 lower phase triggers at bodyHP<=50percent (current<=750/1500).
+Upper centres remain(100,100)/(300,100).Lower Y remains240.
+Lower Xtargets body.pos.x-35/+35 using sprite centres,slow speed1authored unit
+(33.33pixels/second).Yspeed5retained;separate-axis bounded movement.
+Per explicit user clarification,firing eligibility depends only on vertical motion.
+Ytravel emits nothing/clears cadence;Yarrival starts fresh300ms interval.
+Xfollowing may continue while firing and never resets cadence/10degree rotation.
+PartHP400,orange4way cross/opposite rotation and lower-phase latch retained.
+Offsets/speed in motion.lower_follow;gate=orb_y_stationary.
 
-Affected108checks passed,0 failures:
-boss_mecha15; enemy_catalog87; render_boss4_sweep6 (including actual60FPS).
-Full969-check suite last passed at v24.8; not rerun for this position-only change.
-Reviewed preview-core-alignment-v24.9.png: body alone,previous overlay,aligned overlay.
+Affected292checks across5suites passed,0failures:
+boss3_orb_stations63,boss3_orb_cross21,enemy_catalog87,campaign115,
+render_boss3_rework6.
+Added cases cover inclusive threshold,body-relative offsets,target refresh,
+33.33px/s bound,catchup/reversal,noYdrift,Xmoving firing,uninterrupted cadence,
+upper-row horizontal alignment and invalid follow settings.
+Native integration verifies both lower orbs emit full crosses whileXmoves at fixedY.
+Performance60.00FPS/60.00ticks/s,p9516.667ms,median95drawcalls,
+max70bullets/593particles with body attacks/smoke/power7fire.
+Most recent full1375check suite passed atv24.23;focused suites used here.
 
-Portable export completed without errors. Final copied EXE rendered boss4-sweep
-outside the source tree and exited0 (outputs/Pirate-II-v24.9/verified-boss4.png).
-Official Godot GUI runtime unchanged; keep EXE and PCK together.
-EXE SHA256: AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424
-PCK SHA256: 831888E95060DF8F7FF0D05CC06358AEEE9FDE8F90BDB7F7F2460A36391951B9
-No commit or push. Original VB6 folder untouched. No full human campaign playthrough.
+Export succeeded.Portable EXE/PCK outside source loaded actual bundled Game through
+external preview script.Upper positions,exactHP750transition,silentYtravel,
+lowerY240,Xmovement while firing and resumed opposite10degree rotations verified.
+Exit0.Frames:verified-orbs-upper.png,verified-orbs-transfer.png,verified-orbs-lower.png.
+Official signed Godot GUI EXE copied unchanged with external same-folder PCK.
+No full manual campaign playthrough.No commit/push.Original VB6 untouched.
+
+SHA256:
+Pirate-II.exe AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424
+Pirate-II.pck E9D76FDEAFC0F9D44C814367EB4083AFB9D27CBA7161C66BDD91CA17D6ABC73B

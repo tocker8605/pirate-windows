@@ -19,8 +19,7 @@ func run() -> void:
 	game.events = []
 	for i in range(256):
 		game.enemies.append({"kind":1,"pos":Vector2(40+i%16*18,40+int(i/16)*9),"velocity":Vector2.ZERO,"pattern":0,"hp":100})
-	game.clock.phase = 6
-	for e in game.enemies: game._enemy_fire(e)
+	for e in game.enemies: game._enemy_fire(e,0.36)
 	check(game.enemies.size()==256 and game.bullets.size()==256,"all 256 simultaneously active enemies can fire")
 	game.bullets.clear()
 	var insert_begin: int = Time.get_ticks_usec()
@@ -37,7 +36,6 @@ func run() -> void:
 	game._update_bullets()
 	check(game.bullets.is_empty() and game.bullets.valid(),"6000 out-of-field projectiles are removed without skipped links")
 	for e in game.enemies: e.pos.x = 500
-	game.clock.phase = 0
 	game._tick(Vector2.ZERO,false,false,false)
 	check(game.enemies.is_empty() and game.enemies.valid(),"all 256 off-field enemies despawn without a slot leak")
 	game._load_stage(4)

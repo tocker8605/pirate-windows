@@ -55,6 +55,7 @@ func run() -> void:
 		var path: Array = []
 		for tick in range(1,4200):
 			game.frame = tick
+			game.stage_elapsed_seconds = game.frame*0.03
 			game._read_events()
 			game._update_scenery()
 			var region: Dictionary = Regions.sample(game.background_y+240,stage)
@@ -67,6 +68,7 @@ func run() -> void:
 	game.scroll_target = 2
 	game.events = [{"at":0,"action":"scroll","mode":2,"speed":2}]
 	game.frame = 1
+	game.stage_elapsed_seconds = game.frame*0.03
 	game._read_events()
 	check(Regions.sample(game.background_y).near==1,"region2 command releases the old loop without immediately replacing the viewport")
 	for i in range(61): game._update_scenery()
@@ -83,11 +85,13 @@ func run() -> void:
 	var actor := {"kind":1,"pos":Vector2(100,100),"velocity":Vector2(0,5),"pattern":0,"hp":10}
 	game.enemies.append(actor)
 	game.frame = 1
+	game.stage_elapsed_seconds = game.frame*0.03
 	game.view.renewal.observe(game)
 	var id: int = actor.entity_id
 	actor.velocity.y = -5
 	for frame in range(2,12):
 		game.frame = frame
+		game.stage_elapsed_seconds = game.frame*0.03
 		game.view.renewal.observe(game)
 	check(is_equal_approx(game.view.renewal.poses[id].pitch,PI) and actor.velocity==Vector2(0,-5),"per-entity visual attitude follows velocity without changing its movement")
 	game.view.renewal.forget(id)
