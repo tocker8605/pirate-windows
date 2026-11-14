@@ -1,25 +1,62 @@
-Pirate II v24.31 — Validation /2026-11-15
+Pirate II v24.34 — Validation / 2026-11-15
 
-Audited all6non-boss dual-origin enemies6,8,10,21,41,42 against actual draw centre.
-ID6 origins changed(5,30)/(35,30) to(10,30)/(40,30).
-ID8 spread ports changed(30,25)/(10,25) to(35,25)/(15,25).
-Both pairs moved5pixels right; pair spacing,Y,type,velocity,cadence/gates retained.
-IDs10/21/41/42 already symmetric including their wide-craft draw offsets; unchanged.
+Z: no energy cost, fires at zero energy; holding Z suppresses recovery.
+Z released: existing recovery rate1/0.12seconds, capped100.
+X laser8 and C shield40 costs and activation thresholds unchanged.
+Fire cadence, shot count limit and gameplay tick rate unchanged.
 
-Affected733checks across6suites passed:
-twin_muzzle_symmetry: 57 passed
+All2263 checks across46 suites passed:
+smoke: 39 passed
 combat_reference: 47 passed
+special_effects: 28 passed
+campaign: 119 passed
+presentation_audio: 63 passed
+full_audit: 72 passed
+pool_reference: 14 passed
+random_reference: 9 passed
+combat_vfx: 14 passed
+entity_store: 15 passed
+entity_scale: 6 passed
+renewal: 43 passed
+regions_turning: 35 passed
+stage4_regions: 21 passed
+presentation: 26 passed
+native_tick: 34 passed
+boss_mecha: 15 passed
+carrier_reward: 28 passed
+cockpit_fireball: 9 passed
+weapon_parallel: 13 passed
+claw_smoke: 17 passed
+supply_boss_v20: 27 passed
+enemy_catalog: 86 passed
+weapon_motion: 26 passed
+spiral_contact: 38 passed
+ascent_depth: 18 passed
+projectile_trails: 5 passed
+boss_body_patterns: 30 passed
 folding_speed_spread: 16 passed
-enemy_catalog: 87 passed
+heavy_aimed_fan: 18 passed
+boss3_aimed_fan: 29 passed
+player_energy: 31 passed
+boss4_core_centre: 28 passed
+independent_fire: 142 passed
+timeline_seconds: 20 passed
+boss_shield_score: 30 passed
+core_radial: 21 passed
+boss3_orb_cross: 21 passed
+boss3_orb_stations: 82 passed
+rewards_damage: 201 passed
+refactor_contracts: 21 passed
 refactor_equivalence: 520 passed
-render_twin_muzzles:6passed; six sprites+green origin markers visually inspected.
+twin_muzzle_symmetry: 57 passed
+health_supply: 108 passed
+damage_supply: 15 passed
+render_60fps: 6 passed
 
-Replay keeps oldv24.28 state except authorized enemy-projectile placement/boundary exits
-and shield-interception score, which have an explicit v24.31 golden overlay.
+Actual portable EXE/PCK: player_energy31 passed (all21weapon/power configurations plus10input/regen checks).
+Render60FPS:60.00 process FPS,60.00 drawn FPS,60.00 gameplay ticks/s.
+Official signed executable unchanged; external PCK updated.
+No commit or push performed.
 
-Actual portable EXE+PCK: twin_muzzle_symmetry57 and render_twin_muzzles6 passed (63checks),exit0.
-Import/export and git diff --check passed. Official signed Godot GUI EXE unchanged,externalPCK.
-Most recent full2175checks/61suites atv24.29; affected63checks atv24.30.
-No commit/push.
-Pirate-II.exe SHA256 ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424
-Pirate-II.pck SHA256 e5b5a2e25ff4b0a665648c8efd3cb5cdbd11e158429c0c12695786eddbda436c
+Pirate-II.exe SHA256 AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424
+Pirate-II.pck SHA256 5379AC8C62D033349EF58F98A5E4B607A557533B9BF799935DA2041510AC8CF5

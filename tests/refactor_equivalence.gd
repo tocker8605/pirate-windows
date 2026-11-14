@@ -50,6 +50,7 @@ func run() -> void:
 	for rush in [false,true]:
 		for stage in range(1,5):
 			g.boss_rush = rush
+			g.supply_director.rng.seed = 243200+stage
 			g._load_stage(stage)
 			g.weapon = 2
 			g.power = 7
@@ -60,14 +61,9 @@ func run() -> void:
 				g._tick(Vector2(sin(tick*0.012),0),true,tick%300==0,tick%500==0,Clock.FIXED_STEP_SECONDS)
 				if tick%60==59:
 					records.append([rush,stage,tick,g.player.x,g.player.y,g.energy,g.score,g.stats.duplicate(),g.background_y,g.scroll_speed,summary(g.enemies),summary(g.bullets),summary(g.shots),g.boss.get("hp",0),Rng.state])
-	var reference: Array = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/refactor_v24_28.json"))
-	# The authorized v24.31 muzzle correction changes enemy projectile positions,
-	# boundary exits and one shield-interception score. Rebaseline only those fields;
-	# all other gameplay state still compares against the original v24.28 trace.
-	var muzzle_reference: Array = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/twin_muzzle_replay_v24_31.json"))
+	var reference: Array = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/energy_replay_v24_34.json"))
+	# v24.34 energy rules; supply RNG remains seeded for reproducible balance replay.
 	for i in range(reference.size()):
-		reference[i][6] = muzzle_reference[i].score
-		reference[i][11] = muzzle_reference[i].enemy_projectiles
 		checks += 1
 		if not equivalent(reference[i],records[i]):
 			failures += 1

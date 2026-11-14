@@ -2,6 +2,7 @@ extends RefCounted
 ## Presentation-only CPU particles. Never consumes the original game's VB random stream.
 const ProjectileFrames = preload("res://scripts/projectile_frames.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
+const Supply = preload("res://scripts/supply_visual.gd")
 const Rules = preload("res://scripts/enemy_rules.gd")
 const Weapons = preload("res://scripts/player_weapons.gd")
 const Pilot = preload("res://scripts/pilot_geometry.gd")
@@ -106,7 +107,7 @@ func observe(g: Node) -> void:
 		var id: int = e.get("entity_id",-1)
 		if not carrier_releases.has(id):
 			carrier_releases[id] = true
-			burst(Rules.cargo_position(e),24,Color("b6ff66"),2.8)
+			burst(Rules.cargo_position(e),24,Supply.cargo_color(Rules.cargo_item(e)),2.8)
 	for p in g.shield_contacts: burst(p,9,CYAN,2.8)
 	for p in g.laser_contacts: burst(p+Vector2(15,15),3,MINT,3)
 	# Projectile tails have their own reduced cadence. Damage smoke and engines

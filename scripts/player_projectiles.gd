@@ -7,7 +7,6 @@ static func fire(g: Node) -> void:
 	for shot in volley:
 		g.shots.append(shot)
 		g.stats.shots += 1
-	g.energy -= Weapons.cost(g.power)
 	g.fire_cooldown_seconds += Weapons.cadence_seconds(g.power)
 
 static func advance_shots(g: Node) -> void:

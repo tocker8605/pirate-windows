@@ -14,10 +14,11 @@ func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var original: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/timeline_v20.json"))
 	for name in original:
+		var legacy_events: Array = original[name].filter(func(row): return int(row[1]) not in [19,201])
 		var source: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/"+name+".json"))
-		var same: bool = source.schema_version==2 and source.time_unit=="seconds" and source.events.size()==original[name].size()
-		for i in range(source.events.size()): same = same and is_equal_approx(float(source.events[i].at),float(original[name][i][0])*0.9)
-		check(same,"%s converts every scheduled time to seconds while retaining count and order"%name)
+		var same: bool = source.schema_version==2 and source.time_unit=="seconds" and source.events.size()==legacy_events.size()
+		for i in range(source.events.size()): same = same and is_equal_approx(float(source.events[i].at),float(legacy_events[i][0])*0.9)
+		check(same,"%s retains every non-supply event time and order in seconds"%name)
 	var fractional: Dictionary = {"schema_version":2,"time_unit":"seconds","events":[{"at":0.025,"action":"banner","name":"mission"}]}
 	check(Timeline.validate_document(fractional).is_empty(),"millisecond-precision decimal seconds are accepted")
 	var legacy: Dictionary = fractional.duplicate(true)

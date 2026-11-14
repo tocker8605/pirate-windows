@@ -51,13 +51,14 @@ static func load_stage(g: Node, number: int, preserve_run: bool = false) -> void
 	g.explosions.clear()
 	g.boss.clear()
 	g.accumulator = 0
-	g.stats = {"spawned":0,"killed":0,"shots":0,"hits":0,"boss_spawned":false}
+	g.stats = {"spawned":0,"killed":0,"shots":0,"hits":0,"boss_spawned":false,"supply_spawned":0}
 	if g.boss_rush: g._stop_music()
 	else: g._play_music("bgm%02d"%g.stage)
 	if preserve_run:
 		g.hp = saved_hp
 		g.power = saved_power
 		g.score = saved_score
+	g.supply_director.plan(g.stage,g.power,g.events,g.boss_rush)
 	g.presentation.reset(g)
 	g.view.vfx.reset()
 	g.view.renewal.reset_motion()

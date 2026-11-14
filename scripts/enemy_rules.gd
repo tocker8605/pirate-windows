@@ -1,10 +1,17 @@
 class_name PirateEnemyRules
 extends RefCounted
 const Catalog = preload("res://scripts/enemy_catalog.gd")
-# One cargo anchor comes from the same definition as the spawned reward.
+# Approach and open states resolve the same payload definition.
+static func cargo_settings(e: Dictionary) -> Dictionary:
+	var definition: Dictionary = Catalog.definition(int(e.kind))
+	if definition.has("open_kind"): definition = Catalog.definition(int(definition.open_kind))
+	return definition.get("drop",{})
+static func cargo_item(e: Dictionary) -> int:
+	return int(cargo_settings(e).get("item",1))
 static func cargo_position(e: Dictionary) -> Vector2:
-	return e.pos+Catalog.definition(int(e.kind)).get("drop",Catalog.cargo_drop()).offset
-static func cargo_offset() -> Vector2: return Catalog.cargo_drop().offset
+	return e.pos+cargo_offset(e)
+static func cargo_offset(e: Dictionary = {}) -> Vector2:
+	return Catalog.cargo_drop().offset if e.is_empty() else cargo_settings(e).get("offset",Vector2(25,40))
 static func has_cargo(e: Dictionary) -> bool:
 	return Catalog.definition(int(e.kind)).get("role","")=="supply" and not e.get("rescued",false)
 static func carrier(e: Dictionary, previous_y: float = NAN) -> void:

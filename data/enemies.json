@@ -445,10 +445,6 @@
           [60, 35]
         ]
       },
-      "drop": {
-        "item": 2,
-        "offset": [25, 25]
-      },
       "explosion_seconds": 1.05
     },
     "22": {
@@ -526,10 +522,6 @@
           [-25, 35]
         ]
       },
-      "drop": {
-        "item": 2,
-        "offset": [25, 40]
-      },
       "explosion_seconds": 1.05
     },
     "42": {
@@ -571,10 +563,6 @@
           [60, 35],
           [-25, 35]
         ]
-      },
-      "drop": {
-        "item": 2,
-        "offset": [25, 40]
       },
       "explosion_seconds": 1.05
     },
@@ -1349,6 +1337,54 @@
       },
       "open_at_y": 291,
       "open_kind": 19,
+      "explosion_seconds": 0.6
+    },
+    "20": {
+      "name": "health_supply_open",
+      "role": "supply",
+      "hp": 1,
+      "score": 500,
+      "score_scales_with_difficulty": false,
+      "damageable": true,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+      },
+      "drop": {
+        "item": 2,
+        "offset": [25, 40],
+        "cargo_release": true
+      },
+      "on_defeat": {
+        "action": "release_and_escape",
+        "definition_id": 202,
+        "pattern": 1091
+      },
+      "explosion_seconds": 0.6
+    },
+    "202": {
+      "name": "health_supply_approach",
+      "role": "supply",
+      "hp": 1,
+      "score": 0,
+      "score_scales_with_difficulty": true,
+      "damageable": false,
+      "death_sound": "bang-e",
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+      },
+      "open_at_y": 291,
+      "open_kind": 20,
       "explosion_seconds": 0.6
     }
   }

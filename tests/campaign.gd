@@ -18,12 +18,13 @@ func body(stage: int) -> Dictionary:
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var game = Game.new()
+	game.supply_director.rng.seed = 2432
 	game.automatic = false
 	game.mute = true
 	root.add_child(game)
 	await process_frame
-	var totals: Array = [0,133,155,178,189]
-	var spawn_totals: Array = [0,125,145,169,184]
+	var totals: Array = [0,130,150,172,183]
+	var spawn_totals: Array = [0,122,140,163,178]
 	var times: Array = [0,116,113,125,121]
 	for stage in range(1,5):
 		for weapon in range(1,4):
@@ -35,7 +36,7 @@ func run() -> void:
 				game.invulnerability_seconds = 3.0
 				game.hp = 100
 				game._tick(Vector2(sin(i*0.012),0),true,i%300==0,i%500==0,0.03)
-			check(game.event_cursor==totals[stage] and game.stats.spawned==spawn_totals[stage],"stage %d weapon %d consumes all enemy and control events"%[stage,weapon])
+			check(game.event_cursor==totals[stage] and game.stats.spawned==spawn_totals[stage]+game.stats.supply_spawned,"stage %d weapon %d consumes all enemy and control events"%[stage,weapon])
 			check(game.stats.boss_spawned and game.boss.get("stage",0)==stage,"stage %d weapon %d creates matching boss body"%[stage,weapon])
 			check(game.stats.killed>0 and game.stats.hits>0,"stage %d weapon %d combat remains active"%[stage,weapon])
 			check(game.bullets.valid() and game.shots.size()<=50 and game.enemies.valid(),"stage %d weapon %d dynamic entity lifecycle remains consistent"%[stage,weapon])

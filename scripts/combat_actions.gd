@@ -62,6 +62,7 @@ static func hurt_player(g: Node, damage: float) -> void:
 	g.invulnerability_seconds = 1.5
 	g.hit_flash_remaining_seconds = 0.57
 	g._sound("damage")
+	if damage>0: g.supply_director.on_player_hit(g)
 
 static func resolve_body_contacts(g: Node) -> void:
 	if g.hp<=0 or g.invulnerability_seconds>0 or g.death_remaining_seconds>0: return

@@ -33,7 +33,9 @@ func run() -> void:
 		g._load_stage(1)
 		g.delta_seconds = 0.03
 		g.clock = Clock.new()
-		g.events = g.events.filter(func(row): return int(row.get("definition_id",0))==201).slice(0,1)
+		g.events = []
+		g.supply_director.schedule = [{"at":0,"kind":201,"pos":Vector2(75,480),"pattern":1074}]
+		g.supply_director.cursor = 0
 		var units: float = Clock.FIXED_STEP_SECONDS
 		var found: Dictionary = {}
 		for i in range(2000):

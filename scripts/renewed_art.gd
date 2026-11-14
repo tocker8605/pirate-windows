@@ -46,7 +46,7 @@ const BOSS_RECTS: Array = [
 	Rect2i(81,375,260,415),Rect2i(455,376,241,412),Rect2i(794,370,268,423),Rect2i(1149,482,228,230),
 	Rect2i(53,810,279,259),Rect2i(435,811,252,239),Rect2i(844,802,138,269),Rect2i(1173,840,202,203)]
 const BOSS_PARTS: Dictionary = {101:7,102:7,111:4,112:4,113:8,121:5,122:5,123:9,124:9,131:6,132:6,133:10}
-const SMALL: Dictionary = {1:0,2:1,3:2,4:3,5:4,6:5,7:6,8:7,9:8,10:9,11:10,19:11,201:11,21:12,22:13,41:14,42:15}
+const SMALL: Dictionary = {1:0,2:1,3:2,4:3,5:4,6:5,7:6,8:7,9:8,10:9,11:10,19:11,20:11,201:11,202:11,21:12,22:13,41:14,42:15}
 func cell(atlas: Texture2D, index: int, columns: int, rows: int) -> AtlasTexture:
 	var key: String = "%s:%d"%[atlas.resource_path,index]
 	if not cells.has(key):
@@ -67,7 +67,7 @@ func cell(atlas: Texture2D, index: int, columns: int, rows: int) -> AtlasTexture
 	return cells[key]
 func enemy_texture(kind: int) -> Texture2D:
 	if kind==3: return station_texture()
-	if kind in [19,201]: return carrier
+	if Catalog.definition(kind).get("role","")=="supply": return carrier
 	if SMALL.has(kind): return cell(enemies,int(SMALL[kind]),4,4)
 	return cell(bosses,int(BOSS_PARTS.get(kind,11)),4,3)
 func station_texture() -> Texture2D:

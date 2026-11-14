@@ -29,6 +29,8 @@ const StageSession = preload("res://scripts/stage_session.gd")
 const PlayerProjectiles = preload("res://scripts/player_projectiles.gd")
 const CombatActions = preload("res://scripts/combat_actions.gd")
 const ItemSystem = preload("res://scripts/item_system.gd")
+const SupplyDirector = preload("res://scripts/supply_director.gd")
+var supply_director = SupplyDirector.new()
 var presentation = Presentation.new()
 var art = Art.new()
 var title = Title.new()
@@ -103,7 +105,7 @@ var automatic: bool = true
 var preview_path: String = ""
 var preview_mode: String = "stage"
 var font: Font = ThemeDB.fallback_font
-var stats: Dictionary = {"spawned":0,"killed":0,"shots":0,"hits":0,"boss_spawned":false}
+var stats: Dictionary = {"spawned":0,"killed":0,"shots":0,"hits":0,"boss_spawned":false,"supply_spawned":0}
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -249,7 +251,7 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 	banner_remaining_seconds = Clock.countdown(banner_remaining_seconds,seconds)
 	hit_flash_render_seconds = hit_flash_remaining_seconds
 	hit_flash_remaining_seconds = Clock.countdown(hit_flash_remaining_seconds,seconds)
-	while firing and alive and fire_cooldown_seconds<=0.000001 and energy>1:
+	while firing and alive and fire_cooldown_seconds<=0.000001:
 		var before: float = fire_cooldown_seconds
 		_fire()
 		if fire_cooldown_seconds<=before: break
@@ -265,6 +267,7 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 		_sound("shi")
 	render_hp = hp
 	_read_events()
+	supply_director.advance(self)
 	if due.move:
 		for e in enemies: Movement.steer(e,player,boss.get("pos",Vector2(200,-100)))
 		_boss_steer()
@@ -307,13 +310,13 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 	_apply_beam()
 	_update_lifecycle()
 	if state in ["menu","loading"]:
-		if clock.recover(death_remaining_seconds==0,seconds): energy = minf(100,energy+1)
+		if clock.recover(death_remaining_seconds==0,seconds) and not firing: energy = minf(100,energy+1)
 		return
 	_resolve_shots()
 	_update_items()
 	_update_bullets()
 	_resolve_body_contacts()
-	if clock.finish(death_remaining_seconds==0,seconds): energy = minf(100,energy+1)
+	if clock.finish(death_remaining_seconds==0,seconds) and not firing: energy = minf(100,energy+1)
 	if view!=null:
 		view.vfx.observe(self)
 		view.renewal.observe(self)

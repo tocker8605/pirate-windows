@@ -113,10 +113,7 @@ func _draw() -> void:
 	var fraction: float = g.presentation.alpha
 	for item in g.items:
 		if item.get("born_frame",-1)==g.frame: continue
-		if item.kind==1:
-			Supply.draw_item(self,g.art,g.presentation.position(item),g.animation,g.presentation.phase(g),Supply.released_scale(item))
-		else:
-			draw_texture(g.art.sprite("eweapons",Rect2i(g.animation*20,320,20,30),Vector2i(g.animation*20,350)),g.presentation.position(item)-Vector2(10,15))
+		Supply.draw_item(self,g.art,g.presentation.position(item),g.animation,g.presentation.phase(g),Supply.released_scale(item),int(item.kind))
 	# Lower-plane1071 arrivals pass behind all same-plane ships until Y250.
 	for e in g.enemies:
 		if Depth.is_below(e): _draw_enemy_actor(e)
@@ -135,9 +132,8 @@ func _draw() -> void:
 	for blast in g.explosions: vfx.draw_explosion(self,blast,g.presentation.position(blast))
 	vfx.draw_particles(self,clampf(fraction,0,1),2)
 	for e in g.enemies:
-		if int(e.kind) in [19,201]:
-			if g.renewed_art: Supply.draw_mount(self,g.art,e,g.presentation.position(e),g.animation,g.presentation.phase(g))
-			else: draw_texture(g.art.sprite("enemy_sm",Rect2i(2550,0,50,50),Vector2i(2550,50)),g.presentation.position(e))
+		if Catalog.definition(int(e.kind)).get("role","")=="supply":
+			Supply.draw_mount(self,g.art,e,g.presentation.position(e),g.animation,g.presentation.phase(g))
 	# Player weapons and enemy bullets remain above actor hulls.
 	for shot in (g.shot_visuals if not g.shot_visuals.is_empty() else g.shots):
 		_draw_shot(shot)

@@ -67,9 +67,6 @@ static func _add(plan: Array, player: Vector2, x: float, y: float, kind: int) ->
 static func cadence_seconds(power: int) -> float:
 	return 0.06 if power%2==0 else 0.09
 
-static func cost(power: int) -> float:
-	return 0.67 if cadence_seconds(power)==0.06 else 1.0
-
 static func advance(shot: Dictionary, player: Vector2, seconds: float = 1.0/60.0) -> void:
 	var p: Vector2 = shot.pos
 	match int(shot.get("kind",1)):

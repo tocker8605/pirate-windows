@@ -56,7 +56,7 @@ func run() -> void:
 		check(FX.explosion({"pos":Vector2.ZERO,"render_remaining_seconds":pair[0]*0.03},2/0.03).size()==pair[1],"original explosion composition at remaining tick %d"%pair[0])
 	check(is_equal_approx(Rules.explosion_seconds(1),0.6) and is_equal_approx(Rules.explosion_seconds(21),1.05) and is_equal_approx(Rules.explosion_seconds(111),0.9),"small/medium/boss-part destruction lifetimes")
 	check(Rules.drop(enemy(19),false).pos==Vector2(125,140),"carrier drops its payload at the visible grabber anchor")
-	check(Rules.drop(enemy(41),false).pos==Vector2(125,140),"large enemy repair drop original Y+40")
+	check(Rules.drop(enemy(41),false).is_empty(),"large enemy no longer drops a repair item")
 	check(Rules.drop(enemy(22),false).is_empty(),"type 22 does not drop a repair item")
 	check(Rules.drop(enemy(111),true).pos==Vector2(125,140),"Boss Rush attachment drops original power item")
 	var e: Dictionary = enemy(201,Vector2(100,292),1)

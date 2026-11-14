@@ -15,8 +15,8 @@ static func sprite_x(kind: int, v: Vector2, cycle: int, y: float = 0) -> int:
 		9: return 1850+cycle*50
 		10: return 2050+sprite_x(1,v,cycle)
 		11: return 2250+(100 if v.x>(66.66666666666667 + 0.0001) else (50 if v.x< (-66.66666666666667 - 0.0001) else 0))
-		19: return 2400
-		201: return 2500 if y>290 else 2450
+		19,20: return 2400
+		201,202: return 2500 if y>290 else 2450
 	return 0
 static func pitch_target(kind: int, velocity: Vector2) -> float:
 	if kind==1 or kind==10:

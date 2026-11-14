@@ -22,12 +22,13 @@ func _initialize() -> void:
 
 func run() -> void:
 	var game = Game.new()
+	game.supply_director.rng.seed = 2432
 	game.automatic = false
 	game.mute = true
 	root.add_child(game)
 	await process_frame
 	check(game.state == "menu", "title screen loads")
-	check(game.events.size() == 133, "all 133 stage-one events imported")
+	check(game.events.size() == 130, "all 130 non-supply stage-one events imported")
 	key(game,KEY_SPACE)
 	for i in range(94): game.title.tick()
 	key(game,KEY_SPACE)
@@ -47,7 +48,7 @@ func run() -> void:
 	game.start_game()
 	game.delta_seconds = 0.03
 	game._tick(Vector2.ZERO,true,false,false,0.03)
-	check(game.stats.shots == 1 and game.energy < 100, "firing consumes energy")
+	check(game.stats.shots == 1 and game.energy == 100, "firing preserves energy")
 	game._tick(Vector2.ZERO,false,true,false,0.03)
 	check(game.beam_remaining_seconds > 0, "beam activates")
 	game.energy = 100
@@ -86,10 +87,10 @@ func run() -> void:
 			game.hp = 100
 			game.invulnerability_seconds = 3.0
 			game._tick(Vector2(sin(i*0.017),0),true,i%300==0,i%500==0,0.03)
-		check(game.stats.spawned == 125, "weapon %d: every enemy event consumed" % w)
+		check(game.stats.spawned == 122+game.stats.supply_spawned, "weapon %d: every enemy event consumed" % w)
 		check(game.stats.boss_spawned and not game.boss.is_empty(), "weapon %d: boss appears" % w)
 		check(game.stats.killed > 0 and game.stats.hits > 0, "weapon %d: shots destroy enemies" % w)
-		check(game.event_cursor == 133, "weapon %d: event stream completes" % w)
+		check(game.event_cursor == 130, "weapon %d: event stream completes" % w)
 		check(game.bullets.valid() and game.enemies.valid(), "weapon %d: dynamic entity stores remain consistent" % w)
 	# Exercise the real hit path against the boss body and wing protection.
 	game.start_game()

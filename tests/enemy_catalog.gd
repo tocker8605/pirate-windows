@@ -22,12 +22,13 @@ func run() -> void:
 	var total := 0
 	for filename in original:
 		var stage: int = int(filename.trim_prefix("stage"))
+		var legacy_events: Array = original[filename].filter(func(row): return int(row[1]) not in [19,201])
 		var events: Array = Timeline.load_stage(stage-10 if stage>10 else stage,stage>10)
-		check(events.size()==original[filename].size(),"%s retains every original event"%filename)
+		check(events.size()==legacy_events.size(),"%s retains every original event"%filename)
 		var same: bool = true
 		var hp_same: bool = true
 		for i in range(events.size()):
-			var old: Array = original[filename][i]
+			var old: Array = legacy_events[i]
 			var e: Dictionary = events[i]
 			same = same and is_equal_approx(float(e.at),float(old[0])*0.9) and not e.has("hp")
 			match int(old[1]):
@@ -42,8 +43,8 @@ func run() -> void:
 			total += 1
 		check(same,"%s named events retain time/order/position/pattern/control semantics"%filename)
 		check(hp_same,"%s defaults retain HP with authored boss balance updates"%filename)
-	check(total==683,"all683 normal and Boss Rush events were migrated")
-	check(Catalog.ids().size()==33,"catalog defines all33 entity kinds including supply state")
+	check(total==663,"all663 non-supply normal and Boss Rush events retained")
+	check(Catalog.ids().size()==35,"catalog defines all35 entity kinds including supply state")
 	for id in expected_hp:
 		check(Catalog.definition(id).hp==expected_hp[id],"entity%d matches configured base HP"%id)
 	var a: Dictionary = Catalog.create(21,Vector2.ZERO)

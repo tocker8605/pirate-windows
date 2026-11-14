@@ -21,6 +21,7 @@ static func validate_document(document: Variant) -> PackedStringArray:
 			"spawn":
 				allowed += ["definition_id","position","pattern","overrides"]
 				if not Check.number(e.get("definition_id")) or float(e.get("definition_id",0))!=int(e.get("definition_id",0)) or Catalog.definition(int(e.get("definition_id",0))).is_empty(): errors.append(prefix+"unknown definition_id")
+				if Check.number(e.get("definition_id")) and Catalog.definition(int(e.definition_id)).get("role","")=="supply": errors.append(prefix+"supply carriers belong to SupplyDirector, not timelines")
 				if not Check.vector(e.get("position"),2): errors.append(prefix+"position must contain X,Y")
 				if not Check.number(e.get("pattern",0)): errors.append(prefix+"invalid pattern")
 				if e.has("overrides"):
@@ -65,6 +66,7 @@ static func consume(g: Node) -> void:
 				g.scroll_target = float(event.speed)
 			"spawn":
 				var kind: int = int(event.definition_id)
+				if Catalog.definition(kind).get("role","")=="supply": continue
 				var actor: Dictionary = Catalog.create(kind,Vector2(event.position[0],event.position[1]),int(event.get("pattern",0)),event.get("overrides",{}))
 				if Catalog.definition(kind).role=="boss":
 					g.boss = actor

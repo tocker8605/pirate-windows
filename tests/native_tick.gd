@@ -23,6 +23,7 @@ func ticks(count: int, firing: bool = false) -> void:
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	g = Game.new()
+	g.supply_director.rng.seed = 2432
 	g.automatic = false
 	g.mute = true
 	root.add_child(g)
@@ -106,7 +107,7 @@ func run() -> void:
 			g.invulnerability_seconds = 3.0
 			g.hp = 100
 			g._tick(Vector2(sin(i*0.012*units/0.03),0),true,i%540==0,i%900==0,units)
-		check(g.event_cursor==[0,133,155,178,189][stage] and g.stats.spawned==[0,125,145,169,184][stage],"native60Hz stage%d consumes all authored events"%stage)
+		check(g.event_cursor==[0,130,150,172,183][stage] and g.stats.spawned==[0,122,140,163,178][stage]+g.stats.supply_spawned,"native60Hz stage%d consumes all authored events"%stage)
 		check(g.stats.boss_spawned and g.boss.get("stage",0)==stage and g.stats.killed>0 and g.stats.hits>0,"native60Hz stage%d enemies, boss and combat stay active"%stage)
 		check(g.bullets.valid() and g.enemies.valid() and g.shots.size()<=50,"native60Hz stage%d entity lifecycle remains valid"%stage)
 	print("RESULT: %d checks, %d failures"%[checks,failures])
