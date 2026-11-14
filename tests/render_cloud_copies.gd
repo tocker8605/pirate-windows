@@ -17,6 +17,7 @@ func run() -> void:
 	await process_frame
 	g.set_process(false)
 	g._load_stage(1)
+	g.delta_seconds = 0.03
 	g.events = []
 	g.clouds = [Vector2(10,100),Vector2(100,230)]
 	g._redraw()

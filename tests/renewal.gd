@@ -15,8 +15,8 @@ func check(ok: bool, message: String) -> void:
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	for speed in range(1,6):
-		check(is_equal_approx(Clock.interval(speed),1.0/60.0),"speed %d uses native60Hz gameplay interval"%speed)
-		check(is_equal_approx(Clock.interval(speed,false),(30.0-speed*5)/1000),"speed %d keeps original menu-animation interval"%speed)
+		check(is_equal_approx(Clock.FIXED_STEP_SECONDS,1.0/60.0),"speed %d uses native60Hz gameplay interval"%speed)
+		check(is_equal_approx(Clock.MENU_STEP_SECONDS,0.025),"speed %d keeps original menu-animation interval"%speed)
 	var preview = Preview.new()
 	for weapon in range(1,4):
 		Rng.state = 0x50000
@@ -25,7 +25,7 @@ func run() -> void:
 		check(Rng.state==0x50000,"weapon %d preview never consumes gameplay random values"%weapon)
 		var reference: Array = Weapons.volley(Vector2(100,300),weapon,7,Preview.DemoRandom.new())
 		for shot in reference:
-			for i in range(3): Weapons.advance(shot,Vector2(100,300))
+			for i in range(3): Weapons.advance(shot,Vector2(100,300),0.03)
 		check(shots[0].pos==reference[0].pos and shots[3].pos==reference[3].pos,"weapon %d preview follows the actual trajectory algorithm"%weapon)
 	var game = Game.new()
 	game.automatic = false
@@ -35,6 +35,7 @@ func run() -> void:
 	game.set_process(false)
 	for render_rate in [30,60,144]:
 		game._load_stage(1)
+		game.delta_seconds = 0.03
 		game.events = []
 		game.automatic = true
 		for i in range(render_rate): game._process(1.0/render_rate)
@@ -47,9 +48,10 @@ func run() -> void:
 	game.automatic = false
 	check(game.frame==60 and game.scenery_distance==distance,"pause freezes gameplay and renewed scenery")
 	game._load_stage(4)
+	game.delta_seconds = 0.03
 	game.events = []
-	for i in range(600): game._tick(Vector2.ZERO,false,false,false)
-	check(game.background_y==2160 and game.scenery_distance==1200 and game.scroll_speed==2,"slow stage4 intro keeps the original two-pixel movement for all 600 ticks")
+	for i in range(600): game._tick(Vector2.ZERO,false,false,false,0.03)
+	check(game.background_y==2160 and game.scenery_distance==1200 and game.scroll_speed==(2/0.03),"slow stage4 intro keeps the original two-pixel movement for all 600 ticks")
 	for kind in game.view.renewal.SMALL:
 		var texture: Texture2D = game.view.renewal.enemy_texture(kind)
 		check(texture.get_width()>0 and texture.get_height()>0,"renewed enemy kind %d resolves a nonempty atlas cell"%kind)

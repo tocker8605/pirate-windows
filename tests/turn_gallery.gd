@@ -19,16 +19,16 @@ class Gallery:
 			var y: float = 77+row*155
 			draw_rect(Rect2(12,y,976,153),Color("172538") if row%2==0 else Color("122030"))
 			draw_string(font,Vector2(20,y+20),"TYPE %d / %s"%[kind,"VX BANK" if kind==8 else "VY PULL-UP"],HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("8deaff"))
-			var pose: Dictionary = Pose.target(kind,Vector2(horizontal[0],1) if kind==8 else Vector2(0,vertical[0]),0)
+			var pose: Dictionary = Pose.target(kind,(Vector2(horizontal[0],1) if kind==8 else Vector2(0,vertical[0]))/0.03,0)
 			for col in range(12):
 				var v := Vector2(horizontal[col],1) if kind==8 else Vector2(0,vertical[col])
-				for i in range(3): Pose.advance(pose,kind,v,0)
+				for i in range(3): Pose.advance(pose,kind,(v)/0.03,0,0.03)
 				var x: float = 76+col*76
 				draw_string(font,Vector2(x+15,y+32),str(v.x if kind==8 else v.y),HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color("899bb2"))
 				draw_texture(original.enemy(kind,v,0),Vector2(x,y+37))
 				var id: int = row*100+col
 				renewal.poses[id] = pose.duplicate(true)
-				renewal.draw_enemy(self,{"kind":kind,"velocity":v,"entity_id":id},Vector2(x,y+96),0)
+				renewal.draw_enemy(self,{"kind":kind,"velocity":v/0.03,"entity_id":id},Vector2(x,y+96),0)
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	root.content_scale_size = Vector2i(1000,700)

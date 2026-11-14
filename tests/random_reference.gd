@@ -29,6 +29,7 @@ func run() -> void:
 	root.add_child(g)
 	await process_frame
 	g.start_game()
+	g.delta_seconds = 0.03
 	g.bullets.replace_all([{"slot":3,"kind":1,"pos":Vector2(100,100),"velocity":Vector2.DOWN,"alive":true}])
 	Rng.state = 0x50000
 	g._enemy_fire({"kind":9,"pos":Vector2(100,100),"velocity":Vector2.ZERO,"hp":10,"pattern":0},0.18)
@@ -39,7 +40,7 @@ func run() -> void:
 	g.boss = {"stage":4,"pos":Vector2(200,100),"velocity":Vector2.ZERO,"hp":1500.0,"age":0}
 	Rng.state = 0x50000
 	g.BulletPool.body(g,0.06)
-	check(g.bullets.size()==1 and g.bullets.at(0).pos==Vector2(196,135) and g.bullets.at(0).velocity==Vector2(0,-5),"final missile consumes random muzzle X before horizontal velocity")
+	check(g.bullets.size()==1 and g.bullets.at(0).pos==Vector2(196,135) and g.bullets.at(0).velocity.distance_to(Vector2(0,-5)/0.03)<0.001,"final missile consumes random muzzle X before horizontal velocity")
 	check(Rng.state==8949370,"one final missile consumes exactly two random values")
 	g.bullets.replace_all([{"slot":5,"kind":1,"pos":Vector2(100,100),"velocity":Vector2.DOWN,"alive":true}])
 	Rng.state = 0x50000
@@ -49,6 +50,7 @@ func run() -> void:
 	check(g.bullets.size()==5 and Rng.state==12997982,"complete boss volley consumes all six per-volley random values without slot gating")
 	var before: int = Rng.state
 	g._load_stage(2)
+	g.delta_seconds = 0.03
 	check(Rng.state==before,"stage loading does not reseed or consume original Rnd state")
 	g.stage = 4
 	Rng.state = 0x50000

@@ -16,9 +16,9 @@ static func shield_frame(ticks: int) -> int:
 	if ticks>50: return 2 if ticks%2==0 else 3
 	return 2 if ticks%2==0 else -1
 
-static func shield_contains(center: Vector2, point: Vector2, ticks: int) -> bool:
-	# Original shield has two ticks of deployment before it can intercept.
-	return ticks>0 and ticks<198 and point.x>center.x-42 and point.x<center.x+38 and point.y>center.y-40 and point.y<center.y+40
+static func shield_contains(center: Vector2, point: Vector2, remaining_seconds: float) -> bool:
+	# Shield deployment lasts60ms before interception becomes active.
+	return remaining_seconds>0 and remaining_seconds<5.94-0.00000003 and point.x>center.x-42 and point.x<center.x+38 and point.y>center.y-40 and point.y<center.y+40
 
 static func render(canvas: Node2D, art: RefCounted, player: Vector2, beam_ticks: int, shield_center: Vector2, shield_ticks: int, beam_contacts: Array, shield_contacts: Array) -> void:
 	var shield_index: int = shield_frame(shield_ticks)

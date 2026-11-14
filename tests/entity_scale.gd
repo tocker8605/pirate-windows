@@ -16,6 +16,7 @@ func run() -> void:
 	root.add_child(game)
 	await process_frame
 	game.start_game()
+	game.delta_seconds = 0.03
 	game.events = []
 	for i in range(256):
 		game.enemies.append({"kind":1,"pos":Vector2(40+i%16*18,40+int(i/16)*9),"velocity":Vector2.ZERO,"pattern":0,"hp":100})
@@ -23,7 +24,7 @@ func run() -> void:
 	check(game.enemies.size()==256 and game.bullets.size()==256,"all 256 simultaneously active enemies can fire")
 	game.bullets.clear()
 	var insert_begin: int = Time.get_ticks_usec()
-	for i in range(6000): game._bullet(Vector2(10+i%380,100),Vector2.DOWN)
+	for i in range(6000): game._bullet(Vector2(10+i%380,100),(Vector2.DOWN)/0.03)
 	var insert_us: int = Time.get_ticks_usec()-insert_begin
 	check(game.bullets.size()==6000,"6000 live projectiles are admitted without wrapping or overwrite")
 	var begin: int = Time.get_ticks_usec()
@@ -32,13 +33,14 @@ func run() -> void:
 	check(game.bullets.size()==6000 and game.bullets.all(func(b): return b.pos.y==105),"every projectile receives exactly one integration per update at high counts")
 	for bullet in game.bullets:
 		bullet.pos.y = 480
-		bullet.velocity = Vector2(0,2)
+		bullet.velocity = (Vector2(0,2))/0.03
 	game._update_bullets()
 	check(game.bullets.is_empty() and game.bullets.valid(),"6000 out-of-field projectiles are removed without skipped links")
 	for e in game.enemies: e.pos.x = 500
-	game._tick(Vector2.ZERO,false,false,false)
+	game._tick(Vector2.ZERO,false,false,false,0.03)
 	check(game.enemies.is_empty() and game.enemies.valid(),"all 256 off-field enemies despawn without a slot leak")
 	game._load_stage(4)
+	game.delta_seconds = 0.03
 	check(game.enemies.is_empty() and game.bullets.is_empty() and game.items.is_empty(),"high-count stage reset releases all active state")
 	print("GAME SCALE BENCH: 6000 bullets insert=%dus, 5 integrations=%dus, average=%dus"%[insert_us,update_us,int(update_us/5)])
 	print("RESULT: %d checks, %d failures"%[checks,failures])

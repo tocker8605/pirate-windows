@@ -29,10 +29,10 @@ class Board extends Node2D:
 		fx.draw_particles(self,1,1)
 		draw_string(font,Vector2(12,185),"SMALL EXPLOSION",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color.WHITE)
 		previous_explosion(Vector2(100,250),20,14)
-		fx.draw_explosion(self,{"pos":Vector2(275,225),"render_ticks":14,"ticks":14})
+		fx.draw_explosion(self,{"pos":Vector2(275,225),"render_remaining_seconds":0.42,"remaining_seconds":0.42})
 		draw_string(font,Vector2(12,325),"LARGE EXPLOSION",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color.WHITE)
 		previous_explosion(Vector2(100,390),35,28)
-		fx.draw_explosion(self,{"pos":Vector2(275,365),"render_ticks":28,"ticks":28})
+		fx.draw_explosion(self,{"pos":Vector2(275,365),"render_remaining_seconds":0.84,"remaining_seconds":0.84})
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	root.add_child(Board.new())

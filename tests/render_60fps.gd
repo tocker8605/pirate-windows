@@ -51,8 +51,9 @@ func run() -> void:
 	root.add_child(g)
 	g.set_process(false)
 	g._load_stage(1)
+	g.delta_seconds = 0.03
 	g.events = []
-	g.invulnerable = 10000
+	g.invulnerability_seconds = 300.0
 	var driver = Driver.new()
 	driver.game = g
 	root.add_child(driver)

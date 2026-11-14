@@ -2,7 +2,6 @@ shader_type canvas_item;
 uniform sampler2D atlas_texture : filter_linear, repeat_disable;
 uniform float source_top = 3360.0;
 uniform int stage = 1;
-uniform bool boss_rush = false;
 uniform sampler2D earth_texture : filter_linear, repeat_disable;
 uniform sampler2D cavern_texture : filter_linear, repeat_disable;
 uniform float earth_uv_width = 0.625;
@@ -58,7 +57,7 @@ vec3 stage_four(vec2 uv,float y) {
 void fragment() {
  float y=source_top+UV.y*screen_height;
  vec3 land;
- if(stage==4 && !boss_rush) land=stage_four(UV,y);
+ if(stage==4) land=stage_four(UV,y);
  else if(y>=region_edges.w) land=terrain(UV,y,0);
  else if(y>=region_edges.z) land=mix(terrain(UV,y,1),terrain(UV,y,0),smoothstep(region_edges.z,region_edges.w,y));
  else if(y>=region_edges.y) land=terrain(UV,y,1);

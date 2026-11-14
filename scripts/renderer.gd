@@ -78,7 +78,6 @@ func refresh() -> void:
 		background.visible = (in_game or title_earth) and g.renewed_art
 		if background.visible:
 			background.material.set_shader_parameter("stage",4 if title_earth else g.stage)
-			background.material.set_shader_parameter("boss_rush",false if title_earth else g.boss_rush)
 			background.material.set_shader_parameter("source_top",3360.0-g.title.scroll if title_earth else g.presentation.background(g))
 		for i in range(cloud_nodes.size()):
 			var cloud: Sprite2D = cloud_nodes[i]
@@ -99,10 +98,8 @@ func refresh() -> void:
 func _text(pos: Vector2, text: String, size: int = 14, color: Color = Color.WHITE) -> void:
 	draw_string(g.font,pos,text,HORIZONTAL_ALIGNMENT_LEFT,-1,size,color)
 
-
 func _center(y: float, text: String, size: int = 16, color: Color = Color.WHITE) -> void:
 	_text(Vector2((400-g.font.get_string_size(text,HORIZONTAL_ALIGNMENT_LEFT,-1,size).x)/2,y),text,size,color)
-
 
 func _draw() -> void:
 	if not foreground_only:
@@ -128,7 +125,7 @@ func _draw() -> void:
 			renewal.draw_boss_links(self,g.presentation.position(g.boss),g.enemies,g.presentation)
 			renewal.draw_boss(self,g.stage,g.presentation.position(g.boss))
 		else: draw_texture(g.art.sprite("boss%02d"%g.stage,Rect2i(0,0,150,100),Vector2i(0,100)),g.boss.pos+Vector2(-75,0))
-	if g.state != "dead" and (int(ceil(g.invulnerable_render_ticks))%2==0):
+	if g.state != "dead" and (int(ceil(g.invulnerability_render_seconds*33.333333333333336-0.000001))%2==0):
 		if g.renewed_art: pilot.draw(self,g.presentation.player(g),g.player_bank)
 		else: draw_texture(g.art.sprite("picair",Rect2i(g.player_bank*50,0,50,50),Vector2i(g.player_bank*50,50)),g.presentation.player(g))
 
@@ -144,16 +141,16 @@ func _draw() -> void:
 	# Player weapons and enemy bullets remain above actor hulls.
 	for shot in (g.shot_visuals if not g.shot_visuals.is_empty() else g.shots):
 		_draw_shot(shot)
-	vfx.draw_special(self,g,g.presentation.player(g),g.presentation.shield(g),g.presentation.phase(g))
+	vfx.draw_special(self,g,g.presentation.player(g),g.presentation.shield_position(g),g.presentation.phase(g))
 	# Back to front: player weapons -> black smoke -> enemy bullets. HUD stays above.
 	vfx.draw_particles(self,clampf(fraction,0,1),1)
 	for bullet in g.bullets:
 		_draw_bullet(bullet)
-	if g.death_ticks>0:
+	if g.death_remaining_seconds>0:
 		draw_texture(g.art.sprite("picgov",Rect2i(0,0,200,30),Vector2i(0,30)),Vector2(100,230))
 
 	_draw_hud()
-	if g.banner_ticks > 0:
+	if g.banner_remaining_seconds > 0:
 		if g.banner.begins_with("WARNING"):
 			draw_texture(g.art.sprite("picwarn",Rect2i(0,0,250,60),Vector2i(0,60)),Vector2(75,200))
 		elif not g.banner.is_empty():
@@ -186,7 +183,6 @@ func _draw_shot(shot: Dictionary) -> void:
 
 func _draw_hud() -> void:
 	HUD.render(self,g.art,clampi(Weapons.vb_integer(g.hp),0,100),clampf(g.energy,0,100),g.weapon,g.power,g.score,int(g.boss.hp) if not g.boss.is_empty() else -1,int(g.boss.get("max_hp",0)))
-
 
 func _draw_menu() -> void:
 	g.title.render(self,g.art,g.last_score,g.renewed_art and g.title.phase>0 and g.title.loading_ticks==0)

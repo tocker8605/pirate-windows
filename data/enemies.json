@@ -1,5 +1,7 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
+  "time_unit": "seconds",
+  "speed_unit": "pixels_per_second",
   "entities": {
     "1": {
       "fire_channels": [
@@ -15,7 +17,6 @@
       "score": 15,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 20,
       "death_sound": "bang-e",
       "draw_size": [50, 50],
       "draw_offset": [0, 0],
@@ -31,7 +32,8 @@
         "ports": [
           [25, 25]
         ]
-      }
+      },
+      "explosion_seconds": 0.6
     },
     "2": {
       "fire_channels": [
@@ -52,7 +54,6 @@
       "score": 25,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 20,
       "death_sound": "bang-e",
       "draw_size": [50, 50],
       "draw_offset": [0, 0],
@@ -68,7 +69,8 @@
         "ports": [
           [25, 25]
         ]
-      }
+      },
+      "explosion_seconds": 0.6
     },
     "3": {
       "fire_channels": [
@@ -84,7 +86,6 @@
       "score": 40,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 20,
       "death_sound": "bang-e",
       "draw_size": [50, 50],
       "draw_offset": [0, 0],
@@ -100,7 +101,8 @@
         "ports": [
           [25, 25]
         ]
-      }
+      },
+      "explosion_seconds": 0.6
     },
     "4": {
       "fire_channels": [
@@ -116,7 +118,6 @@
       "score": 55,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 20,
       "death_sound": "bang-e",
       "draw_size": [50, 50],
       "draw_offset": [0, 0],
@@ -132,7 +133,8 @@
         "ports": [
           [25, 25]
         ]
-      }
+      },
+      "explosion_seconds": 0.6
     },
     "5": {
       "name": "cross_fighter_b",
@@ -141,7 +143,6 @@
       "score": 50,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 20,
       "death_sound": "bang-e",
       "draw_size": [50, 50],
       "draw_offset": [0, 0],
@@ -161,13 +162,14 @@
       "attack": {
         "type": "spiral",
         "interval_seconds": 0.1,
-        "speed": 7,
+        "speed": 233.33333333333334,
         "step_degrees": 15,
         "requires_stationary_x": true,
         "opposed": true,
         "initial_degrees": -90,
         "projectile_kind": 6
-      }
+      },
+      "explosion_seconds": 0.6
     },
     "6": {
       "fire_channels": [
@@ -183,7 +185,6 @@
       "score": 65,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 20,
       "death_sound": "bang-e",
       "draw_size": [50, 50],
       "draw_offset": [0, 0],
@@ -199,7 +200,8 @@
         "ports": [
           [25, 25]
         ]
-      }
+      },
+      "explosion_seconds": 0.6
     },
     "7": {
       "fire_channels": [
@@ -215,7 +217,6 @@
       "score": 35,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 20,
       "death_sound": "bang-e",
       "draw_size": [50, 50],
       "draw_offset": [0, 0],
@@ -231,7 +232,8 @@
         "ports": [
           [25, 25]
         ]
-      }
+      },
+      "explosion_seconds": 0.6
     },
     "8": {
       "fire_channels": [
@@ -247,7 +249,6 @@
       "score": 70,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 20,
       "death_sound": "bang-e",
       "draw_size": [50, 50],
       "draw_offset": [0, 0],
@@ -255,11 +256,14 @@
       "attack": {
         "type": "speed_spread",
         "interval_seconds": 0.12,
-        "speed": 9,
-        "max_vertical_speed": 10,
+        "speed": 300.0,
+        "max_vertical_speed": 333.33333333333337,
         "max_spread_degrees": 90,
         "projectile_kind": 1,
-        "ports": [[30, 25], [10, 25]],
+        "ports": [
+          [30, 25],
+          [10, 25]
+        ],
         "spread_directions": [-1, 1]
       },
       "collision": {
@@ -273,7 +277,8 @@
         "ports": [
           [25, 25]
         ]
-      }
+      },
+      "explosion_seconds": 0.6
     },
     "9": {
       "fire_channels": [
@@ -289,7 +294,6 @@
       "score": 60,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 20,
       "death_sound": "bang-e",
       "draw_size": [50, 50],
       "draw_offset": [0, 0],
@@ -305,7 +309,8 @@
         "ports": [
           [25, 25]
         ]
-      }
+      },
+      "explosion_seconds": 0.6
     },
     "10": {
       "fire_channels": [
@@ -326,7 +331,6 @@
       "score": 45,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 20,
       "death_sound": "bang-e",
       "draw_size": [50, 50],
       "draw_offset": [0, 0],
@@ -342,7 +346,8 @@
         "ports": [
           [25, 25]
         ]
-      }
+      },
+      "explosion_seconds": 0.6
     },
     "11": {
       "fire_channels": [
@@ -358,7 +363,6 @@
       "score": 30,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 20,
       "death_sound": "bang-e",
       "draw_size": [50, 50],
       "draw_offset": [0, 0],
@@ -374,7 +378,8 @@
         "ports": [
           [25, 25]
         ]
-      }
+      },
+      "explosion_seconds": 0.6
     },
     "19": {
       "name": "supply_open",
@@ -383,7 +388,6 @@
       "score": 500,
       "score_scales_with_difficulty": false,
       "damageable": true,
-      "explosion_ticks": 20,
       "death_sound": "bang-e",
       "draw_size": [50, 50],
       "draw_offset": [0, 0],
@@ -402,7 +406,8 @@
         "action": "release_and_escape",
         "definition_id": 201,
         "pattern": 1091
-      }
+      },
+      "explosion_seconds": 0.6
     },
     "21": {
       "fire_channels": [
@@ -423,7 +428,6 @@
       "score": 115,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 35,
       "death_sound": "bang-be",
       "draw_size": [100, 100],
       "draw_offset": [-25, -25],
@@ -444,7 +448,8 @@
       "drop": {
         "item": 2,
         "offset": [25, 25]
-      }
+      },
+      "explosion_seconds": 1.05
     },
     "22": {
       "fire_channels": [
@@ -465,7 +470,6 @@
       "score": 145,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 35,
       "death_sound": "bang-be",
       "draw_size": [100, 100],
       "draw_offset": [-25, -45],
@@ -482,7 +486,8 @@
           [25, 25],
           [60, 35]
         ]
-      }
+      },
+      "explosion_seconds": 1.05
     },
     "41": {
       "fire_channels": [
@@ -503,7 +508,6 @@
       "score": 185,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 35,
       "death_sound": "bang-be",
       "draw_size": [150, 100],
       "draw_offset": [-50, -25],
@@ -525,7 +529,8 @@
       "drop": {
         "item": 2,
         "offset": [25, 40]
-      }
+      },
+      "explosion_seconds": 1.05
     },
     "42": {
       "fire_channels": [
@@ -541,7 +546,6 @@
       "score": 205,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 35,
       "death_sound": "bang-be",
       "draw_size": [150, 100],
       "draw_offset": [-50, -25],
@@ -549,7 +553,7 @@
       "attack": {
         "type": "aimed_fan",
         "interval_seconds": 0.2,
-        "speed": 10,
+        "speed": 333.33333333333337,
         "count": 7,
         "spread_degrees": 180,
         "projectile_kind": 6
@@ -571,16 +575,16 @@
       "drop": {
         "item": 2,
         "offset": [25, 40]
-      }
+      },
+      "explosion_seconds": 1.05
     },
     "91": {
       "name": "boss_stage1",
       "role": "boss",
       "hp": 1000,
-      "score": 0,
-      "score_scales_with_difficulty": true,
+      "score": 5000,
+      "score_scales_with_difficulty": false,
       "damageable": true,
-      "explosion_ticks": 20,
       "death_sound": "bang-e",
       "draw_size": [115, 100],
       "draw_offset": [0, 0],
@@ -597,9 +601,12 @@
         "interval_seconds": 0.3,
         "enraged_interval_seconds": 0.15,
         "side_hold_seconds": 1.8,
-        "ports": [[-40, 50], [40, 50]],
-        "horizontal_base": 1,
-        "speed_y": 9,
+        "ports": [
+          [-40, 50],
+          [40, 50]
+        ],
+        "horizontal_base": 33.333333333333336,
+        "speed_y": 300.0,
         "projectile_kind": 1
       },
       "damage_smoke": {
@@ -610,7 +617,8 @@
           [0, 45],
           [35, 55]
         ]
-      }
+      },
+      "explosion_seconds": 0.6
     },
     "92": {
       "fire_channels": [
@@ -618,16 +626,16 @@
           "name": "enrage",
           "interval_seconds": 0.09,
           "projectile_kind": 5,
-          "gate": "no_parts"
+          "gate": "part_missing",
+          "part_id": 113
         }
       ],
       "name": "boss_stage2",
       "role": "boss",
-      "hp": 1000,
-      "score": 0,
-      "score_scales_with_difficulty": true,
+      "hp": 1250,
+      "score": 10000,
+      "score_scales_with_difficulty": false,
       "damageable": true,
-      "explosion_ticks": 20,
       "death_sound": "bang-e",
       "draw_size": [100, 100],
       "draw_offset": [0, 0],
@@ -647,7 +655,8 @@
           [0, 45],
           [35, 55]
         ]
-      }
+      },
+      "explosion_seconds": 0.6
     },
     "93": {
       "fire_channels": [
@@ -659,67 +668,41 @@
         {
           "name": "left_enrage",
           "interval_seconds": 0.3,
-          "gate": "part_missing",
-          "part_id": 121
+          "gate": "parts_missing",
+          "part_ids": [121, 122]
         },
         {
           "name": "right_enrage",
           "interval_seconds": 0.3,
-          "gate": "part_missing",
-          "part_id": 122
+          "gate": "parts_missing",
+          "part_ids": [121, 122]
         }
       ],
       "attack": {
         "type": "paired_aimed_fan",
-        "speed": 9,
+        "speed": 300.0,
         "count": 4,
         "spread_degrees": 45,
         "projectile_kind": 6,
         "ports": [
-          [
-            -43,
-            46
-          ],
-          [
-            43,
-            46
-          ]
+          [-43, 46],
+          [43, 46]
         ]
       },
       "name": "boss_stage3",
       "role": "boss",
       "hp": 1500,
-      "score": 0,
-      "score_scales_with_difficulty": true,
+      "score": 20000,
+      "score_scales_with_difficulty": false,
       "damageable": true,
-      "explosion_ticks": 20,
       "death_sound": "bang-e",
-      "draw_size": [
-        100,
-        100
-      ],
-      "draw_offset": [
-        0,
-        0
-      ],
+      "draw_size": [100, 100],
+      "draw_offset": [0, 0],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [
-          -90,
-          -25,
-          60,
-          60
-        ],
-        "beam_bounds": [
-          -25,
-          75
-        ],
-        "contact_bounds": [
-          -35.0,
-          15.0,
-          35.0,
-          85.0
-        ]
+        "shot_bounds": [-90, -25, 60, 60],
+        "beam_bounds": [-25, 75],
+        "contact_bounds": [-35.0, 15.0, 35.0, 85.0]
       },
       "stage": 3,
       "music": "boss01",
@@ -727,20 +710,12 @@
         "below_ratio": 0.4,
         "size": 16,
         "ports": [
-          [
-            -35,
-            55
-          ],
-          [
-            0,
-            45
-          ],
-          [
-            35,
-            55
-          ]
+          [-35, 55],
+          [0, 45],
+          [35, 55]
         ]
-      }
+      },
+      "explosion_seconds": 0.6
     },
     "94": {
       "fire_channels": [
@@ -763,10 +738,9 @@
       "name": "boss_stage4",
       "role": "boss",
       "hp": 1500,
-      "score": 0,
-      "score_scales_with_difficulty": true,
+      "score": 30000,
+      "score_scales_with_difficulty": false,
       "damageable": true,
-      "explosion_ticks": 20,
       "death_sound": "bang-e",
       "draw_size": [100, 100],
       "draw_offset": [0, 0],
@@ -781,12 +755,15 @@
       "attack": {
         "type": "spiral",
         "interval_seconds": 0.1,
-        "speed": 7,
+        "speed": 233.33333333333334,
         "step_degrees": 10,
         "initial_degrees": 90,
         "projectile_kind": 6,
         "min_y": 49,
-        "ports": [[-25, 50], [25, 50]],
+        "ports": [
+          [-25, 50],
+          [25, 50]
+        ],
         "rotation_directions": [-1, 1]
       },
       "damage_smoke": {
@@ -797,7 +774,8 @@
           [0, 45],
           [35, 55]
         ]
-      }
+      },
+      "explosion_seconds": 0.6
     },
     "101": {
       "fire_channels": [
@@ -813,7 +791,6 @@
       "score": 350,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 30,
       "death_sound": "bang-e",
       "draw_size": [50, 50],
       "draw_offset": [0, 0],
@@ -833,7 +810,13 @@
       "boss_rush_drop": {
         "item": 1,
         "offset": [25, 40]
-      }
+      },
+      "attachment": {
+        "offset": [-65, 0],
+        "follow_y": false,
+        "velocity_y_offset_seconds": 0.0
+      },
+      "explosion_seconds": 0.8999999999999999
     },
     "102": {
       "fire_channels": [
@@ -849,7 +832,6 @@
       "score": 350,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 30,
       "death_sound": "bang-e",
       "draw_size": [50, 50],
       "draw_offset": [0, 0],
@@ -869,7 +851,13 @@
       "boss_rush_drop": {
         "item": 1,
         "offset": [25, 40]
-      }
+      },
+      "attachment": {
+        "offset": [15, 0],
+        "follow_y": false,
+        "velocity_y_offset_seconds": 0.0
+      },
+      "explosion_seconds": 0.8999999999999999
     },
     "111": {
       "fire_channels": [
@@ -877,20 +865,15 @@
           "name": "streak",
           "interval_seconds": 0.12,
           "gate": "always",
-          "window_seconds": [
-            2.7,
-            0,
-            1.8
-          ]
+          "window_seconds": [2.7, 0, 1.8]
         }
       ],
       "name": "boss2_right_arm",
       "role": "part",
-      "hp": 200,
+      "hp": 250,
       "score": 350,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 30,
       "death_sound": "bang-e",
       "draw_size": [50, 100],
       "draw_offset": [0, -50],
@@ -910,7 +893,13 @@
       "boss_rush_drop": {
         "item": 1,
         "offset": [25, 40]
-      }
+      },
+      "attachment": {
+        "offset": [20, 60],
+        "follow_y": true,
+        "velocity_y_offset_seconds": 0.06
+      },
+      "explosion_seconds": 0.8999999999999999
     },
     "112": {
       "fire_channels": [
@@ -918,20 +907,15 @@
           "name": "triple",
           "interval_seconds": 0.36,
           "gate": "always",
-          "window_seconds": [
-            3.6,
-            1.8,
-            3.6
-          ]
+          "window_seconds": [3.6, 1.8, 3.6]
         }
       ],
       "name": "boss2_left_arm",
       "role": "part",
-      "hp": 200,
+      "hp": 250,
       "score": 350,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 30,
       "death_sound": "bang-e",
       "draw_size": [50, 100],
       "draw_offset": [0, -50],
@@ -951,7 +935,13 @@
       "boss_rush_drop": {
         "item": 1,
         "offset": [25, 40]
-      }
+      },
+      "attachment": {
+        "offset": [-70, 60],
+        "follow_y": true,
+        "velocity_y_offset_seconds": -0.06
+      },
+      "explosion_seconds": 0.8999999999999999
     },
     "113": {
       "fire_channels": [
@@ -967,7 +957,6 @@
       "score": 350,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 30,
       "death_sound": "bang-e",
       "draw_size": [50, 50],
       "draw_offset": [0, 0],
@@ -987,7 +976,13 @@
       "boss_rush_drop": {
         "item": 1,
         "offset": [25, 40]
-      }
+      },
+      "attachment": {
+        "offset": [-25, 0],
+        "follow_y": false,
+        "velocity_y_offset_seconds": 0.0
+      },
+      "explosion_seconds": 0.8999999999999999
     },
     "121": {
       "fire_channels": [
@@ -995,11 +990,7 @@
           "name": "triple",
           "interval_seconds": 0.48,
           "gate": "always",
-          "window_seconds": [
-            3.6,
-            1.8,
-            3.6
-          ]
+          "window_seconds": [3.6, 1.8, 3.6]
         }
       ],
       "name": "boss3_left_arm",
@@ -1008,7 +999,6 @@
       "score": 350,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 30,
       "death_sound": "bang-e",
       "draw_size": [50, 100],
       "draw_offset": [0, -50],
@@ -1028,7 +1018,13 @@
       "boss_rush_drop": {
         "item": 1,
         "offset": [25, 40]
-      }
+      },
+      "attachment": {
+        "offset": [-75, 65],
+        "follow_y": true,
+        "velocity_y_offset_seconds": 0.0
+      },
+      "explosion_seconds": 0.8999999999999999
     },
     "122": {
       "fire_channels": [
@@ -1036,11 +1032,7 @@
           "name": "triple",
           "interval_seconds": 0.48,
           "gate": "always",
-          "window_seconds": [
-            3.6,
-            0,
-            1.8
-          ]
+          "window_seconds": [3.6, 0, 1.8]
         }
       ],
       "name": "boss3_right_arm",
@@ -1049,7 +1041,6 @@
       "score": 350,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 30,
       "death_sound": "bang-e",
       "draw_size": [50, 100],
       "draw_offset": [0, -50],
@@ -1069,7 +1060,13 @@
       "boss_rush_drop": {
         "item": 1,
         "offset": [25, 40]
-      }
+      },
+      "attachment": {
+        "offset": [25, 65],
+        "follow_y": true,
+        "velocity_y_offset_seconds": 0.0
+      },
+      "explosion_seconds": 0.8999999999999999
     },
     "123": {
       "fire_channels": [
@@ -1083,7 +1080,7 @@
           "rotation_step_degrees": 10,
           "rotation_direction": 1,
           "initial_degrees": 90,
-          "speed": 9
+          "speed": 300.0
         }
       ],
       "name": "boss3_orb_a",
@@ -1092,69 +1089,39 @@
       "score": 350,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 30,
       "death_sound": "bang-e",
-      "draw_size": [
-        50,
-        50
-      ],
-      "draw_offset": [
-        0,
-        0
-      ],
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [
-          -15,
-          -25,
-          35,
-          30
-        ],
-        "beam_bounds": [
-          -15,
-          15
-        ],
-        "contact_bounds": [
-          7.5,
-          7.5,
-          42.5,
-          42.5
-        ]
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 80,
         "size": 12,
         "ports": [
-          [
-            25,
-            25
-          ]
+          [25, 25]
         ]
       },
       "boss_rush_drop": {
         "item": 1,
-        "offset": [
-          25,
-          40
-        ]
+        "offset": [25, 40]
       },
       "motion": {
         "type": "boss_health_stations",
-        "upper_center": [
-          100,
-          100
-        ],
-        "lower_center": [
-          100,
-          240
-        ],
+        "upper_center": [100, 100],
+        "lower_center": [100, 240],
         "lower_below_ratio": 0.5,
-        "speed": 5,
+        "speed": 166.66666666666669,
         "lower_follow": {
           "x_offset": -35,
-          "speed": 1
+          "speed": 33.333333333333336,
+          "acceleration_seconds": 0.4
         }
-      }
+      },
+      "explosion_seconds": 0.8999999999999999
     },
     "124": {
       "fire_channels": [
@@ -1168,7 +1135,7 @@
           "rotation_step_degrees": 10,
           "rotation_direction": -1,
           "initial_degrees": 90,
-          "speed": 9
+          "speed": 300.0
         }
       ],
       "name": "boss3_orb_b",
@@ -1177,69 +1144,39 @@
       "score": 350,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 30,
       "death_sound": "bang-e",
-      "draw_size": [
-        50,
-        50
-      ],
-      "draw_offset": [
-        0,
-        0
-      ],
+      "draw_size": [50, 50],
+      "draw_offset": [0, 0],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [
-          -15,
-          -25,
-          35,
-          30
-        ],
-        "beam_bounds": [
-          -15,
-          15
-        ],
-        "contact_bounds": [
-          7.5,
-          7.5,
-          42.5,
-          42.5
-        ]
+        "shot_bounds": [-15, -25, 35, 30],
+        "beam_bounds": [-15, 15],
+        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "damage_smoke": {
         "below_hp": 80,
         "size": 12,
         "ports": [
-          [
-            25,
-            25
-          ]
+          [25, 25]
         ]
       },
       "boss_rush_drop": {
         "item": 1,
-        "offset": [
-          25,
-          40
-        ]
+        "offset": [25, 40]
       },
       "motion": {
         "type": "boss_health_stations",
-        "upper_center": [
-          300,
-          100
-        ],
-        "lower_center": [
-          300,
-          240
-        ],
+        "upper_center": [300, 100],
+        "lower_center": [300, 240],
         "lower_below_ratio": 0.5,
-        "speed": 5,
+        "speed": 166.66666666666669,
         "lower_follow": {
           "x_offset": 35,
-          "speed": 1
+          "speed": 33.333333333333336,
+          "acceleration_seconds": 0.4
         }
-      }
+      },
+      "explosion_seconds": 0.8999999999999999
     },
     "131": {
       "fire_channels": [
@@ -1260,7 +1197,6 @@
       "score": 350,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 30,
       "death_sound": "bang-e",
       "draw_size": [50, 100],
       "draw_offset": [0, -50],
@@ -1280,7 +1216,13 @@
       "boss_rush_drop": {
         "item": 1,
         "offset": [25, 40]
-      }
+      },
+      "attachment": {
+        "offset": [-80, 65],
+        "follow_y": true,
+        "velocity_y_offset_seconds": 0.0
+      },
+      "explosion_seconds": 0.8999999999999999
     },
     "132": {
       "fire_channels": [
@@ -1301,7 +1243,6 @@
       "score": 350,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 30,
       "death_sound": "bang-e",
       "draw_size": [50, 100],
       "draw_offset": [0, -50],
@@ -1321,7 +1262,13 @@
       "boss_rush_drop": {
         "item": 1,
         "offset": [25, 40]
-      }
+      },
+      "attachment": {
+        "offset": [30, 65],
+        "follow_y": true,
+        "velocity_y_offset_seconds": 0.0
+      },
+      "explosion_seconds": 0.8999999999999999
     },
     "133": {
       "fire_channels": [
@@ -1339,7 +1286,7 @@
           "spacing_degrees": 12,
           "rotation_step_degrees": 1,
           "initial_degrees": 90,
-          "speed": 7
+          "speed": 233.33333333333334
         }
       ],
       "name": "boss4_centre_core",
@@ -1348,7 +1295,6 @@
       "score": 350,
       "score_scales_with_difficulty": true,
       "damageable": true,
-      "explosion_ticks": 30,
       "death_sound": "bang-e",
       "draw_size": [50, 80],
       "draw_offset": [0, -8],
@@ -1368,7 +1314,22 @@
       "boss_rush_drop": {
         "item": 1,
         "offset": [25, 40]
-      }
+      },
+      "attachment": {
+        "offset": [-26, 50],
+        "follow_y": true,
+        "velocity_y_offset_seconds": 0.0
+      },
+      "core_motion": {
+        "detach_hp": 200,
+        "speed": 166.66666666666669,
+        "launch_speed": 166.66666666666669,
+        "launch_deceleration": 123.4567901234568,
+        "target_center": [200, 240],
+        "vertical_margin": 8,
+        "pattern": 2401
+      },
+      "explosion_seconds": 0.8999999999999999
     },
     "201": {
       "name": "supply_approach",
@@ -1377,7 +1338,6 @@
       "score": 0,
       "score_scales_with_difficulty": true,
       "damageable": false,
-      "explosion_ticks": 20,
       "death_sound": "bang-e",
       "draw_size": [50, 50],
       "draw_offset": [0, 0],
@@ -1388,7 +1348,8 @@
         "contact_bounds": [7.5, 7.5, 42.5, 42.5]
       },
       "open_at_y": 291,
-      "open_kind": 19
+      "open_kind": 19,
+      "explosion_seconds": 0.6
     }
   }
 }

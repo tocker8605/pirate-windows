@@ -16,13 +16,13 @@ func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var left: Dictionary = Catalog.create(5,Vector2(175,100))
 	var right: Dictionary = Catalog.create(5,Vector2(176,100))
-	left.velocity = Vector2(0,3)
+	left.velocity = (Vector2(0,3))/0.03
 	var a: Array = []
 	for i in range(5): a.append_array(Fire.advance(left,1.0/60))
 	check(a.is_empty(),"spiral waits for100ms instead of legacy phase cadence")
 	a.append_array(Fire.advance(left,1.0/60))
-	check(a.size()==2 and a[0].pos==Vector2(200,125) and a[0].velocity.is_equal_approx(Vector2(0,-7)),"sixth native tick fires centrally while moving vertically with zero horizontal speed")
-	check(a[0].velocity.is_equal_approx(-a[1].velocity) and a[0].pos==a[1].pos,"paired spiral rays share the centre and point exactly180degrees apart")
+	check(a.size()==2 and a[0].pos==Vector2(200,125) and a[0].velocity.distance_to((Vector2(0,-7))/0.03)<0.001,"sixth native tick fires centrally while moving vertically with zero horizontal speed")
+	check(a[0].velocity.distance_to(-a[1].velocity)<0.001 and a[0].pos==a[1].pos,"paired spiral rays share the centre and point exactly180degrees apart")
 	var b: Array = Fire.advance(left,0.1)
 	check(b.size()==2 and is_equal_approx(b[0].velocity.angle(),deg_to_rad(-75)),"centre-line belongs to the left half: clockwise from upward")
 	Fire.advance(right,0.1)
@@ -37,10 +37,10 @@ func run() -> void:
 	for vx in [-3.0,3.0,0.0001]:
 		moving.velocity.x = vx
 		check(Fire.advance(moving,1.0).is_empty(),"nonzero horizontal speed%s blocks firing"%vx)
-	moving.velocity.x = 0
+	moving.velocity.x = (0/0.03)
 	check(Fire.advance(moving,0.05).is_empty(),"stopping does not release queued or partially accumulated shots")
 	var resumed: Array = Fire.advance(moving,0.05)
-	check(resumed.size()==2 and resumed[0].velocity.is_equal_approx(Vector2(0,-7)),"stopped actor fires after100ms and moving did not advance sweep angle")
+	check(resumed.size()==2 and resumed[0].velocity.distance_to((Vector2(0,-7))/0.03)<0.001,"stopped actor fires after100ms and moving did not advance sweep angle")
 	var fresh: Dictionary = Catalog.create(5,Vector2(100,100))
 	var emitted := 0
 	var all_angles := []
@@ -52,7 +52,7 @@ func run() -> void:
 	check(absf(angle_difference(all_angles[0],all_angles[12]))>3,"spiral sweeps both upper and lower hemispheres")
 	var pairs: Array = Fire.advance(Catalog.create(5,Vector2(100,100)),0.5)
 	var opposite: bool = true
-	for i in range(0,pairs.size(),2): opposite = opposite and pairs[i].velocity.is_equal_approx(-pairs[i+1].velocity)
+	for i in range(0,pairs.size(),2): opposite = opposite and pairs[i].velocity.distance_to(-pairs[i+1].velocity)<0.001
 	check(opposite and pairs.size()==10,"all rotated volleys keep two opposed rays while stepping15degrees per pair")
 	check(Fire.advance(Catalog.create(5,Vector2.ZERO),0.3).size()==6,"large integration steps preserve all due shots")
 	check(Fire.advance(Catalog.create(4,Vector2.ZERO),1).size()==3,"ordinary aimed attack now uses its own300ms timer")
@@ -70,52 +70,53 @@ func run() -> void:
 	root.add_child(g)
 	await process_frame
 	g._load_stage(1)
+	g.delta_seconds = 0.03
 	g.events = []
 	g.player = p
 	g.enemies.replace_all([Catalog.create(1,p),Catalog.create(2,p)])
 	for difficulty in range(1,6):
 		g.hp = 100
-		g.invulnerable = 0
+		g.invulnerability_seconds = 0
 		g.title.difficulty = difficulty
 		g._resolve_body_contacts()
-		check(g.hp==100-10*difficulty and g.invulnerable==50 and g.hit_flash_ticks==19,"difficulty%d applies one10x-scale contact hit with normal feedback"%difficulty)
+		check(g.hp==100-(10+5*difficulty) and is_equal_approx(g.invulnerability_seconds,1.5) and is_equal_approx(g.hit_flash_remaining_seconds,0.57),"difficulty%d applies one uniform contact hit with normal feedback"%difficulty)
 		g._resolve_body_contacts()
-		check(g.hp==100-10*difficulty,"difficulty%d overlapping enemies cannot bypass hit immunity"%difficulty)
+		check(g.hp==100-(10+5*difficulty),"difficulty%d overlapping enemies cannot bypass hit immunity"%difficulty)
 	g.enemies.clear()
 	g.boss = Catalog.create(91,p+Vector2(25,0))
 	g.hp = 100
-	g.invulnerable = 0
+	g.invulnerability_seconds = 0
 	g._resolve_body_contacts()
-	check(g.hp==50,"boss torso contact uses explicit hull bounds and maximum50 damage")
+	check(g.hp==65,"boss torso contact uses explicit hull bounds and maximum35 damage")
 	g.boss = {}
 	g.enemies.append(Catalog.create(131,p))
 	g.hp = 100
-	g.invulnerable = 0
+	g.invulnerability_seconds = 0
 	g._resolve_body_contacts()
-	check(g.hp==50,"boss arm contact damages the cockpit")
+	check(g.hp==65,"boss arm contact damages the cockpit")
 	for state in [{"kind":201,"rescued":false},{"kind":19,"rescued":false},{"kind":201,"rescued":true}]:
 		var supply: Dictionary = Catalog.create(state.kind,p)
 		supply.rescued = state.rescued
 		g.enemies.replace_all([supply])
 		g.hp = 100
-		g.invulnerable = 0
-		g.hit_flash_ticks = 0
+		g.invulnerability_seconds = 0
+		g.hit_flash_remaining_seconds = 0
 		g._resolve_body_contacts()
-		check(g.hp==100 and g.invulnerable==0 and g.hit_flash_ticks==0,"supply kind%d rescued%s never inflicts contact damage or feedback"%[state.kind,state.rescued])
+		check(g.hp==100 and g.invulnerability_seconds==0 and g.hit_flash_remaining_seconds==0,"supply kind%d rescued%s never inflicts contact damage or feedback"%[state.kind,state.rescued])
 	g.enemies.append(Catalog.create(1,p))
 	g._resolve_body_contacts()
-	check(g.hp==50,"overlapping exempt supply does not hide contact with a hostile enemy")
+	check(g.hp==65,"overlapping exempt supply does not hide contact with a hostile enemy")
 	g.hp = 100
-	g.invulnerable = 0
-	g.death_ticks = 1
+	g.invulnerability_seconds = 0
+	g.death_remaining_seconds = 0.03
 	g._resolve_body_contacts()
 	check(g.hp==100,"dying player receives no repeated contact damage")
-	g.death_ticks = 0
+	g.death_remaining_seconds = 0
 	g.hp = 100
-	g.invulnerable = 0
+	g.invulnerability_seconds = 0
 	g.enemies.replace_all([Catalog.create(5,p+Vector2(0,-100))])
 	g.bullets.clear()
-	for i in range(12): g._tick(Vector2.ZERO,false,false,false,g.Clock.units_per_tick())
+	for i in range(12): g._tick(Vector2.ZERO,false,false,false,g.Clock.FIXED_STEP_SECONDS)
 	check(g.bullets.size()==4,"actual game loop emits opposed spiral at100ms independent of global phases")
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	g.audio.stop_all()

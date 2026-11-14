@@ -1,0 +1,82 @@
+전체 공격/이동 설정 /v24.29 /2026-11-14
+시간=초, 속도=픽셀/초. 엔티티 스키마2.
+
+ID1 /crescent_scout
+  fire_channels=[{"name": "aim", "interval_seconds": 0.36, "gate": "aim_window"}]
+ID2 /variable_wing_fighter
+  fire_channels=[{"name": "moving", "interval_seconds": 0.18, "gate": "moving"}, {"name": "aim", "interval_seconds": 0.36, "gate": "stationary_aim"}]
+ID3 /ring_rotor
+  fire_channels=[{"name": "sweep", "interval_seconds": 0.12, "gate": "sweep_y"}]
+ID4 /cross_fighter_a
+  fire_channels=[{"name": "aim", "interval_seconds": 0.3, "gate": "always"}]
+ID5 /cross_fighter_b
+  attack={"type": "spiral", "interval_seconds": 0.1, "speed": 233.33333333333334, "step_degrees": 15, "requires_stationary_x": true, "opposed": true, "initial_degrees": -90, "projectile_kind": 6}
+ID6 /swept_wing_fighter
+  fire_channels=[{"name": "twin", "interval_seconds": 0.24, "gate": "descent_or_stationary"}]
+ID7 /delta_fighter
+  fire_channels=[{"name": "triple", "interval_seconds": 0.54, "gate": "always"}]
+ID8 /folding_wing_fighter
+  fire_channels=[{"name": "missile", "interval_seconds": 0.6, "gate": "always"}]
+  attack={"type": "speed_spread", "interval_seconds": 0.12, "speed": 300.0, "max_vertical_speed": 333.33333333333337, "max_spread_degrees": 90, "projectile_kind": 1, "ports": [[30, 25], [10, 25]], "spread_directions": [-1, 1]}
+ID9 /fireball_disc
+  fire_channels=[{"name": "flame", "interval_seconds": 0.18, "gate": "flame_y"}]
+ID10 /crescent_fighter
+  fire_channels=[{"name": "twin", "interval_seconds": 0.36, "gate": "descending"}, {"name": "aim", "interval_seconds": 0.3, "gate": "aim_window"}]
+ID11 /twin_pod_fighter
+  fire_channels=[{"name": "twin", "interval_seconds": 0.42, "gate": "always"}]
+ID21 /medium_fighter
+  fire_channels=[{"name": "missiles", "interval_seconds": 0.72, "gate": "always"}, {"name": "aim", "interval_seconds": 0.24, "gate": "always"}]
+ID22 /charge_fighter
+  fire_channels=[{"name": "plasma", "interval_seconds": 0.06, "gate": "charge_y"}, {"name": "streak", "interval_seconds": 0.12, "gate": "charge_y"}]
+ID41 /heavy_fighter_a
+  fire_channels=[{"name": "aim", "interval_seconds": 0.18, "gate": "always"}, {"name": "missile", "interval_seconds": 0.72, "gate": "always"}]
+ID42 /heavy_fighter_b
+  fire_channels=[{"name": "missiles", "interval_seconds": 0.48, "gate": "always"}]
+  attack={"type": "aimed_fan", "interval_seconds": 0.2, "speed": 333.33333333333337, "count": 7, "spread_degrees": 180, "projectile_kind": 6}
+ID91 /boss_stage1
+  attack={"type": "alternating", "interval_seconds": 0.3, "enraged_interval_seconds": 0.15, "side_hold_seconds": 1.8, "ports": [[-40, 50], [40, 50]], "horizontal_base": 33.333333333333336, "speed_y": 300.0, "projectile_kind": 1}
+ID92 /boss_stage2
+  fire_channels=[{"name": "enrage", "interval_seconds": 0.09, "projectile_kind": 5, "gate": "part_missing", "part_id": 113}]
+ID93 /boss_stage3
+  fire_channels=[{"name": "missiles", "interval_seconds": 0.48, "gate": "always"}, {"name": "left_enrage", "interval_seconds": 0.3, "gate": "parts_missing", "part_ids": [121, 122]}, {"name": "right_enrage", "interval_seconds": 0.3, "gate": "parts_missing", "part_ids": [121, 122]}]
+  attack={"type": "paired_aimed_fan", "speed": 300.0, "count": 4, "spread_degrees": 45, "projectile_kind": 6, "ports": [[-43, 46], [43, 46]]}
+ID94 /boss_stage4
+  fire_channels=[{"name": "left_replacement", "interval_seconds": 0.12, "gate": "left_missing"}, {"name": "right_replacement", "interval_seconds": 0.12, "gate": "right_missing"}, {"name": "enrage", "interval_seconds": 0.06, "gate": "no_parts"}]
+  attack={"type": "spiral", "interval_seconds": 0.1, "speed": 233.33333333333334, "step_degrees": 10, "initial_degrees": 90, "projectile_kind": 6, "min_y": 49, "ports": [[-25, 50], [25, 50]], "rotation_directions": [-1, 1]}
+ID101 /boss1_left_fist
+  fire_channels=[{"name": "plasma", "interval_seconds": 0.06, "gate": "fist_y"}]
+  attachment={"offset": [-65, 0], "follow_y": false, "velocity_y_offset_seconds": 0.0}
+ID102 /boss1_right_fist
+  fire_channels=[{"name": "plasma", "interval_seconds": 0.06, "gate": "fist_y"}]
+  attachment={"offset": [15, 0], "follow_y": false, "velocity_y_offset_seconds": 0.0}
+ID111 /boss2_right_arm
+  fire_channels=[{"name": "streak", "interval_seconds": 0.12, "gate": "always", "window_seconds": [2.7, 0, 1.8]}]
+  attachment={"offset": [20, 60], "follow_y": true, "velocity_y_offset_seconds": 0.06}
+ID112 /boss2_left_arm
+  fire_channels=[{"name": "triple", "interval_seconds": 0.36, "gate": "always", "window_seconds": [3.6, 1.8, 3.6]}]
+  attachment={"offset": [-70, 60], "follow_y": true, "velocity_y_offset_seconds": -0.06}
+ID113 /boss2_centre_module
+  fire_channels=[{"name": "flames", "interval_seconds": 0.12, "gate": "pod_y"}]
+  attachment={"offset": [-25, 0], "follow_y": false, "velocity_y_offset_seconds": 0.0}
+ID121 /boss3_left_arm
+  fire_channels=[{"name": "triple", "interval_seconds": 0.48, "gate": "always", "window_seconds": [3.6, 1.8, 3.6]}]
+  attachment={"offset": [-75, 65], "follow_y": true, "velocity_y_offset_seconds": 0.0}
+ID122 /boss3_right_arm
+  fire_channels=[{"name": "triple", "interval_seconds": 0.48, "gate": "always", "window_seconds": [3.6, 0, 1.8]}]
+  attachment={"offset": [25, 65], "follow_y": true, "velocity_y_offset_seconds": 0.0}
+ID123 /boss3_orb_a
+  fire_channels=[{"name": "rotating_cross", "interval_seconds": 0.3, "gate": "orb_y_stationary", "projectile_kind": 3, "count": 4, "spacing_degrees": 90, "rotation_step_degrees": 10, "rotation_direction": 1, "initial_degrees": 90, "speed": 300.0}]
+  motion={"type": "boss_health_stations", "upper_center": [100, 100], "lower_center": [100, 240], "lower_below_ratio": 0.5, "speed": 166.66666666666669, "lower_follow": {"x_offset": -35, "speed": 33.333333333333336, "acceleration_seconds": 0.4}}
+ID124 /boss3_orb_b
+  fire_channels=[{"name": "rotating_cross", "interval_seconds": 0.3, "gate": "orb_y_stationary", "projectile_kind": 3, "count": 4, "spacing_degrees": 90, "rotation_step_degrees": 10, "rotation_direction": -1, "initial_degrees": 90, "speed": 300.0}]
+  motion={"type": "boss_health_stations", "upper_center": [300, 100], "lower_center": [300, 240], "lower_below_ratio": 0.5, "speed": 166.66666666666669, "lower_follow": {"x_offset": 35, "speed": 33.333333333333336, "acceleration_seconds": 0.4}}
+ID131 /boss4_left_claw
+  fire_channels=[{"name": "plasma", "interval_seconds": 0.06, "gate": "left_claw_y"}, {"name": "streak", "interval_seconds": 0.12, "gate": "left_claw_y"}]
+  attachment={"offset": [-80, 65], "follow_y": true, "velocity_y_offset_seconds": 0.0}
+ID132 /boss4_right_claw
+  fire_channels=[{"name": "plasma", "interval_seconds": 0.06, "gate": "right_claw_y"}, {"name": "streak", "interval_seconds": 0.12, "gate": "right_claw_y"}]
+  attachment={"offset": [30, 65], "follow_y": true, "velocity_y_offset_seconds": 0.0}
+ID133 /boss4_centre_core
+  fire_channels=[{"name": "flame", "interval_seconds": 0.06, "gate": "detached"}, {"name": "radial", "interval_seconds": 0.25, "gate": "core_settled", "projectile_kind": 5, "count": 30, "spacing_degrees": 12, "rotation_step_degrees": 1, "initial_degrees": 90, "speed": 233.33333333333334}]
+  core_motion={"detach_hp": 200, "speed": 166.66666666666669, "launch_speed": 166.66666666666669, "launch_deceleration": 123.4567901234568, "target_center": [200, 240], "vertical_margin": 8, "pattern": 2401}
+  attachment={"offset": [-26, 50], "follow_y": true, "velocity_y_offset_seconds": 0.0}

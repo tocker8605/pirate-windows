@@ -16,7 +16,7 @@ class DemoRandom:
 func samples(weapon: int, player: Vector2, age: int) -> Array:
 	var shots: Array = Weapons.volley(player,weapon,7,DemoRandom.new())
 	for shot in shots:
-		for i in range(age): Weapons.advance(shot,player)
+		for i in range(age): Weapons.advance(shot,player,0.03)
 		shot.visual = Weapons.visual(shot,player)
 	return shots
 func trajectory_paths(weapon: int, power: int = 7) -> Array:
@@ -26,7 +26,7 @@ func trajectory_paths(weapon: int, power: int = 7) -> Array:
 		for shot in Weapons.volley(Vector2.ZERO,weapon,power,DemoRandom.new()):
 			var points := PackedVector2Array([shot.pos+Vector2(15,12)])
 			for i in range(TRACE_TICKS):
-				Weapons.advance(shot,Vector2.ZERO,Clock.units_per_tick())
+				Weapons.advance(shot,Vector2.ZERO,Clock.FIXED_STEP_SECONDS)
 				points.append(shot.pos+Vector2(15,12))
 			result.append({"kind":int(shot.kind),"points":points})
 		path_cache[key] = result

@@ -23,12 +23,12 @@ func run() -> void:
 	for n in range(1,76):
 		var due: Dictionary = clock.begin()
 		if due.move: moves.append(n)
-		if clock.finish(true): recoveries.append(n)
+		if clock.finish(true,0.03): recoveries.append(n)
 	check(moves.slice(0,4)==[10,19,28,37],"original first movement update at tick 10, then every 9")
 	check(clock.begin().keys()==["move"],"shared clock no longer owns an enemy firing phase")
 	check(recoveries.slice(0,4)==[4,8,12,16],"energy recovery is one whole unit every four ticks")
 	clock.recovery = 8
-	check(not clock.finish(false) and clock.finish(true),"death suspends recovery without losing its counter")
+	check(not clock.finish(false) and clock.finish(true,0.03),"death suspends recovery without losing its counter")
 	for kind in [1,21,41,111]:
 		var e: Dictionary = enemy(kind)
 		var low: int = 85 if kind in [1,111] else (60 if kind==21 else 35)
@@ -42,7 +42,7 @@ func run() -> void:
 	check(not Combat.shot_hits_boss(Vector2(110,100),boss) and Combat.shot_hits_boss(Vector2(111,100),boss),"boss original asymmetric left point boundary")
 	check(not Combat.shot_hits_boss(Vector2(260,100),boss) and Combat.shot_hits_boss(Vector2(259,100),boss),"boss original asymmetric right point boundary")
 	for pair in [[1,15],[21,35],[41,55],[131,15]]:
-		check(not Combat.beam_hits(Vector2(100,300),enemy(pair[0],Vector2(100+pair[1],100))) and Combat.beam_hits(Vector2(100,300),enemy(pair[0],Vector2(99+pair[1],100))),"kind %d laser uses original top-left X threshold"%pair[0])
+		check(not Combat.beam_hits(Vector2(100,300),enemy(pair[0],Vector2(100+pair[1],100))) and Combat.beam_hits(Vector2(100,300),enemy(pair[0],Vector2(99+pair[1],100))),"kind %d beam_remaining_seconds uses original top-left X threshold"%pair[0])
 	check(not Combat.beam_hits(Vector2(100,300),enemy(201)),"beam cannot destroy an unopened carrier")
 	check(not Combat.hurts_player(Vector2(100,100),Vector2(121,118)) and Combat.hurts_player(Vector2(100,100),Vector2(125,118)),"player damage is confined to the cockpit circle with strict edges")
 	check(not Combat.collects_item(Vector2(100,100),Vector2(95,120)) and Combat.collects_item(Vector2(100,100),Vector2(96,120)),"pickup rectangle has strict pixel edges")
@@ -51,10 +51,10 @@ func run() -> void:
 	check(FX.enemy_smoke(enemy(1,Vector2.ZERO,2),0,2).size()==3,"small damaged enemy has three smoke trails")
 	check(FX.enemy_smoke(enemy(21,Vector2.ZERO,39),0,2).size()==6,"medium damaged enemy has six smoke trails")
 	check(FX.enemy_smoke(enemy(41,Vector2.ZERO,89),0,2).size()==9,"large damaged enemy has nine smoke trails")
-	check(FX.player_smoke(Vector2.ZERO,0,2).map(func(x): return x.pos)==[Vector2(0,10),Vector2(0,29),Vector2(0,48)],"player smoke preserves scroll-dependent offsets")
+	check(FX.player_smoke(Vector2.ZERO,0,2/0.03).map(func(x): return x.pos)==[Vector2(0,10),Vector2(0,29),Vector2(0,48)],"player smoke preserves scroll-dependent offsets")
 	for pair in [[35,0],[34,3],[20,0],[19,1],[14,2],[8,1],[0,0]]:
-		check(FX.explosion({"pos":Vector2.ZERO,"render_ticks":pair[0]},2).size()==pair[1],"original explosion composition at remaining tick %d"%pair[0])
-	check(Rules.explosion_ticks(1)==20 and Rules.explosion_ticks(21)==35 and Rules.explosion_ticks(111)==30,"small/medium/boss-part destruction lifetimes")
+		check(FX.explosion({"pos":Vector2.ZERO,"render_remaining_seconds":pair[0]*0.03},2/0.03).size()==pair[1],"original explosion composition at remaining tick %d"%pair[0])
+	check(is_equal_approx(Rules.explosion_seconds(1),0.6) and is_equal_approx(Rules.explosion_seconds(21),1.05) and is_equal_approx(Rules.explosion_seconds(111),0.9),"small/medium/boss-part destruction lifetimes")
 	check(Rules.drop(enemy(19),false).pos==Vector2(125,140),"carrier drops its payload at the visible grabber anchor")
 	check(Rules.drop(enemy(41),false).pos==Vector2(125,140),"large enemy repair drop original Y+40")
 	check(Rules.drop(enemy(22),false).is_empty(),"type 22 does not drop a repair item")
@@ -71,19 +71,21 @@ func run() -> void:
 	root.add_child(game)
 	await process_frame
 	game.start_game()
-	check(game.player==Vector2(170,300) and game.invulnerable==0,"stage starts at original coordinates without invented invulnerability")
+	game.delta_seconds = 0.03
+	check(game.player==Vector2(170,300) and game.invulnerability_seconds==0,"stage starts at original coordinates without invented invulnerability")
 	game.events = []
 	game.clock.recovery = 0
 	game.energy = 50
-	for i in range(3): game._tick(Vector2.ZERO,false,false,false)
+	for i in range(3): game._tick(Vector2.ZERO,false,false,false,0.03)
 	check(game.energy==50,"energy does not recover fractionally between ticks")
-	game._tick(Vector2.ZERO,false,false,false)
+	game._tick(Vector2.ZERO,false,false,false,0.03)
 	check(game.energy==51,"energy recovers exactly on the fourth tick")
 	game.energy = 7.1
 	game.clock.recovery = 0
-	game._tick(Vector2.ZERO,false,true,false)
-	check(game.laser_render_ticks==15 and game.energy<0,"original X threshold is energy>7, not energy>=8")
+	game._tick(Vector2.ZERO,false,true,false,0.03)
+	check(is_equal_approx(game.beam_render_seconds,0.45) and game.energy<0,"original X threshold is energy>7, not energy>=8")
 	game.start_game()
+	game.delta_seconds = 0.03
 	game.events = [{"at":0.9,"action":"banner","name":"warning"}]
 	game.frame = 30
 	game.stage_elapsed_seconds = game.frame*0.03
@@ -92,14 +94,15 @@ func run() -> void:
 	game.frame = 31
 	game.stage_elapsed_seconds = game.frame*0.03
 	game._read_events()
-	check(game.event_cursor==1 and game.banner_ticks==80,"event t=1 fires at tick 31 and warning lasts 80 ticks")
+	check(game.event_cursor==1 and game.banner_remaining_seconds==2.4,"event t=1 fires at tick 31 and warning lasts 80 ticks")
 	game.enemies.replace_all([enemy(1,Vector2(100,100),10),enemy(1,Vector2(100,100),10)])
 	game.boss = {"pos":Vector2(100,100),"hp":10.0}
-	game.shots = [{"pos":Vector2(110,121),"kind":1,"alive":true,"impact_ticks":-1}]
+	game.shots.replace_all([{"pos":Vector2(110,121),"kind":1,"alive":true,"impact_remaining_seconds":-1}])
 	game._update_shots()
 	check(game.enemies.at(0).hp==7 and game.enemies.at(1).hp==7 and game.boss.hp==7,"one original shot can hit overlapping enemies and boss body")
-	check(game.shots[0].impact_ticks==9,"overlap still produces one impact lifecycle")
+	check(game.shots.at(0).impact_remaining_seconds==0.27,"overlap still produces one impact lifecycle")
 	game.start_game()
+	game.delta_seconds = 0.03
 	var carrier: Dictionary = enemy(19,Vector2(100,291),0)
 	game.enemies.replace_all([carrier])
 	game._destroy_enemy(carrier)
@@ -108,17 +111,19 @@ func run() -> void:
 	for i in range(4): game._drop_item({"pos":Vector2(i,0),"kind":1})
 	check(game.items.size()==5,"independent pickups retain every drop instead of a three-slot overwrite")
 	game.start_game()
+	game.delta_seconds = 0.03
 	game.events = []
 	game.hp = 0
 	game.score = 1234
-	game._tick(Vector2.ZERO,false,false,false)
-	check(game.state=="dying" and game.death_ticks==239,"death enters original 240-tick sequence")
+	game._tick(Vector2.ZERO,false,false,false,0.03)
+	check(game.state=="dying" and is_equal_approx(game.death_remaining_seconds,7.17),"death enters original 240-tick sequence")
 	var position: Vector2 = game.player
-	game._tick(Vector2.ONE,true,true,true)
-	check(game.player==position and game.laser==0,"exploding player cannot move/fire/use beam")
-	for i in range(238): game._tick(Vector2.ZERO,false,false,false)
+	game._tick(Vector2.ONE,true,true,true,0.03)
+	check(game.player==position and game.beam_remaining_seconds==0,"exploding player cannot move/fire/use beam")
+	for i in range(238): game._tick(Vector2.ZERO,false,false,false,0.03)
 	check(game.state=="menu" and game.last_score==1234 and game.score==0,"death returns to original title with last-run score")
 	game.start_game()
+	game.delta_seconds = 0.03
 	game.events = []
 	game.hp = 25
 	game._debug_controls([KEY_C,KEY_R,KEY_U])
@@ -126,11 +131,12 @@ func run() -> void:
 	check(game.debug_enabled and game.hp==100 and game.power==2,"original C+R+U and F6/F8 developer inputs")
 	game.clock.movement = 4
 	game._load_stage(2,true)
+	game.delta_seconds = 0.03
 	check(game.clock.movement==4,"movement clock survives stage loading independently of per-actor attacks")
 	for sheet in ["enemy_sm","picsmo"]:
 		var clipped: Image = game.art.sprite(sheet,Rect2i(-50,0,50,50),Vector2i(-50,50)).get_image()
 		check(clipped.get_pixel(0,0).a==0,"GDI out-of-sheet region clips transparently for "+sheet)
-	var right: Image = game.art.enemy(8,Vector2(2,0),0).get_image()
+	var right: Image = game.art.enemy(8,Vector2(2,0)/0.03,0).get_image()
 	var expected: Image = game.art.sprite("enemy_sm",Rect2i(1800,0,50,50),Vector2i(1800,50)).get_image()
 	check(right.get_data()==expected.get_data(),"type 8 right-bank sprite restored to sheet X=1800")
 	right = game.art.enemy(7,Vector2(0,1),0).get_image()
@@ -145,10 +151,10 @@ func run() -> void:
 	game.clouds = old_clouds.duplicate()
 	game.selected_stage = 2
 	game._begin_run()
-	check(game.state=="loading" and game.loading_image=="loading1" and game.loading_ticks==1,"New Game and Continue use original loading1 artwork before stage entry")
-	game._tick(Vector2.ZERO,false,false,false)
+	check(game.state=="loading" and game.loading_image=="loading1" and is_equal_approx(game.loading_remaining_seconds,0.03),"New Game and Continue use original loading1 artwork before stage entry")
+	game._tick(Vector2.ZERO,false,false,false,0.03)
 	check(game.state=="loading","initial loading picture lasts for a presented simulation frame")
-	game._tick(Vector2.ZERO,false,false,false)
+	game._tick(Vector2.ZERO,false,false,false,0.03)
 	check(game.state=="playing" and game.stage==2 and game.clouds==old_clouds,"original cloud state also survives New Game and Continue loads")
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	game.audio.stop_all()

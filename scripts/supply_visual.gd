@@ -3,7 +3,7 @@ extends RefCounted
 const Rules = preload("res://scripts/enemy_rules.gd")
 const GREEN = Color("b6ff66")
 static func released_scale(item: Dictionary) -> float:
-	return lerpf(0.6,1.0,clampf(item.get("age",0.0)/12.0,0,1)) if item.get("cargo_release",false) else 1.0
+	return lerpf(0.6,1.0,clampf(item.get("age",0.0)/0.36,0,1)) if item.get("cargo_release",false) else 1.0
 static func draw_item(c: Node2D, art: RefCounted, center: Vector2, cycle: int, phase: float, scale: float = 1.0) -> void:
 	var size := Vector2(20,30)*scale
 	var pulse: float = 0.5+0.5*sin(phase*0.2)

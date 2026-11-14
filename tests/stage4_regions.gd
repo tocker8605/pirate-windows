@@ -22,7 +22,8 @@ func run() -> void:
 	root.add_child(g)
 	await process_frame
 	g._load_stage(4)
-	check(g.map_mode==2 and g.scroll_speed==2,"normal stage4 starts in map2 at the original slow speed")
+	g.delta_seconds = 0.03
+	check(g.map_mode==2 and g.scroll_speed==(2/0.03),"normal stage4 starts in map2 at the original slow speed")
 	var monotonic: bool = true
 	for i in range(480):
 		var before: float = g.background_y
@@ -46,16 +47,17 @@ func run() -> void:
 	check(path==[2,3,4],"released space loop traverses the Moon surface once before the cavern loop")
 	check(g.background_y>=0 and g.background_y<=480 and Regions.sample(g.background_y+479,4).near==4,"map3's final loop stays entirely underground and never repeats the surface")
 	g._load_stage(4)
+	g.delta_seconds = 0.03
 	g.events = g.events.filter(func(row): return row.action=="scroll")
 	g.frame = 2730
 	g.stage_elapsed_seconds = g.frame*0.03
 	g._read_events()
-	check(g.map_mode==2 and g.scroll_target==25,"surface approach remains gated by the original t91 event")
+	check(g.map_mode==2 and g.scroll_target==(25/0.03),"surface approach remains gated by the original t91 event")
 	g.background_y = 1920
 	g.frame = 2731
 	g.stage_elapsed_seconds = g.frame*0.03
 	g._read_events()
-	check(g.map_mode==3 and g.scroll_target==2 and g.background_y==1920,"t91 releases space and decelerates without teleporting the viewport")
+	check(g.map_mode==3 and g.scroll_target==(2/0.03) and g.background_y==1920,"t91 releases space and decelerates without teleporting the viewport")
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	g.audio.stop_all()
 	await create_timer(0.15).timeout

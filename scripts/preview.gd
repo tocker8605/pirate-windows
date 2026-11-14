@@ -21,9 +21,9 @@ static func run(g: Node) -> void:
 		var preview_ticks: int = stills.get(g.preview_mode,1100)
 		if g.preview_mode == "boss":
 			for row in g.events:
-				if Catalog.definition(int(row.get("definition_id",0))).get("role","")=="boss": preview_ticks = roundi(float(row.at)/Clock.AUTHORED_TICK_SECONDS)+180
+				if Catalog.definition(int(row.get("definition_id",0))).get("role","")=="boss": preview_ticks = roundi(float(row.at)/Clock.FIXED_STEP_SECONDS)+180
 		for i in range(preview_ticks):
-			g.invulnerable = 100
+			g.invulnerability_seconds = 100
 			g._tick(Vector2.ZERO if g.preview_mode=="boss" else Vector2(sin(i * 0.013),0),g.preview_mode!="boss",false,false)
 		if g.preview_mode in ["boss4-final","boss4-sweep"]:
 			g.events = []
@@ -34,7 +34,7 @@ static func run(g: Node) -> void:
 			g.player = Vector2(175,390)
 			g.power = 7
 			g.weapon = 1
-			g.invulnerable = 1000000
+			g.invulnerability_seconds = 1000000
 			g.clock = Clock.new()
 			g.scroll_speed = 0
 			g.scroll_target = 0
@@ -44,7 +44,7 @@ static func run(g: Node) -> void:
 			for i in range(600):
 				g.boss.hp = 1500 if g.preview_mode=="boss4-sweep" else 300
 				g.energy = 100
-				g._tick(Vector2.ZERO,g.preview_mode!="boss4-sweep",false,false,Clock.units_per_tick())
+				g._tick(Vector2.ZERO,g.preview_mode!="boss4-sweep",false,false,Clock.FIXED_STEP_SECONDS)
 		if g.preview_mode in ["region1","region2","region3","region4","earth-horizon","lunar-entry","connector12","connector23"]:
 			g.background_y = {"region1":3360,"region2":1920,"region3":960 if g.stage==4 else 480,"region4":480,"earth-horizon":2880,"lunar-entry":800,"connector12":2640,"connector23":1200}[g.preview_mode]
 			g.events = []
@@ -54,7 +54,7 @@ static func run(g: Node) -> void:
 			g.enemies.append({"kind":1,"pos":Vector2(80,0),"velocity":Vector2.ZERO,"pattern":1011,"hp":1000.0})
 			g.enemies.append({"kind":10,"pos":Vector2(250,0),"velocity":Vector2.ZERO,"pattern":1011,"hp":1000.0})
 			for i in range(125 if g.preview_mode=="turn-up" else 150):
-				g.invulnerable = 100
+				g.invulnerability_seconds = 100
 				g._tick(Vector2.ZERO,false,false,false)
 			for actor in g.enemies:
 				print("TURN CHECK: kind=%d vy=%.1f pitch=%.4f"%[actor.kind,actor.velocity.y,g.view.renewal.poses[actor.entity_id].pitch])
@@ -93,10 +93,10 @@ static func run(g: Node) -> void:
 				g._tick(Vector2.ZERO,true,false,false)
 				for k in range(1,9):
 					g._bullet(Vector2(35+k*39,130+k*10),Vector2(sin(k),2+k*0.25),k)
-			g.shots.append({"pos":Vector2(195,200),"kind":1,"impact_ticks":7,"alive":true})
+			g.shots.append({"pos":Vector2(195,200),"kind":1,"impact_remaining_seconds":0.21,"alive":true})
 			g.shield_center = g.player+Vector2(25,3)
-			g.shield_render_ticks = 150
-			g.shield = 150
+			g.shield_render_seconds = 150
+			g.shield_remaining_seconds = 150
 			g.view.vfx.burst(Vector2(210,213),18,g.view.vfx.CYAN,3.5)
 		if g.preview_mode=="preparation":
 			g._load_stage(4)
@@ -110,7 +110,7 @@ static func run(g: Node) -> void:
 			g.scroll_speed = 2
 			g.clouds = [Vector2(-500,-500),Vector2(-500,-500)]
 			g.enemies.replace_all([{"kind":1,"pos":Vector2(70,100),"velocity":Vector2(2,1),"pattern":0,"hp":2},{"kind":21,"pos":Vector2(250,170),"velocity":Vector2(-1,0),"pattern":0,"hp":20}])
-			g.explosions = [{"pos":Vector2(70,250),"render_pos":Vector2(70,250),"ticks":19,"render_ticks":19},{"pos":Vector2(250,250),"render_pos":Vector2(250,250),"ticks":34,"render_ticks":34}]
+			g.explosions = [{"pos":Vector2(70,250),"render_pos":Vector2(70,250),"remaining_seconds":0.57,"render_remaining_seconds":0.57},{"pos":Vector2(250,250),"render_pos":Vector2(250,250),"remaining_seconds":1.02,"render_remaining_seconds":1.02}]
 		if g.preview_mode=="damage":
 			g.events = []
 			for i in range(24): g._tick(Vector2.ZERO,false,false,false)
@@ -126,7 +126,7 @@ static func run(g: Node) -> void:
 			if g.preview_mode=="loading":
 				g.state = "loading"
 				g.loading_image = "loading2"
-		g.invulnerable = 0
+		g.invulnerability_seconds = 0
 		if g.preview_mode not in ["boss-death","gameover","loading"]: g.state = "playing"
 	g._redraw()
 	await RenderingServer.frame_post_draw

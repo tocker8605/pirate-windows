@@ -22,29 +22,29 @@ var wing_textures: Array = []
 const ENEMY_ROW_EDGES: Array = [0, 333, 631, 922, 1254]
 const ENEMY_COLUMN_EDGES: Array = [[0, 324, 641, 924, 1254], [0, 320, 634, 930, 1254], [0, 321, 639, 929, 1254], [0, 317, 618, 939, 1254]]
 const ENEMY_RECTS: Array = [
- Rect2i(24,86,269,227),
- Rect2i(357,25,251,292),
- Rect2i(675,45,218,275),
- Rect2i(957,25,290,294),
- Rect2i(18,355,279,262),
- Rect2i(344,347,267,270),
- Rect2i(659,361,251,253),
- Rect2i(952,349,291,271),
- Rect2i(10,652,291,240),
- Rect2i(342,690,271,220),
- Rect2i(666,644,237,266),
- Rect2i(956,644,290,266),
- Rect2i(9,950,297,209),
- Rect2i(329,936,280,246),
- Rect2i(628,962,306,203),
- Rect2i(945,962,305,203)]
+	Rect2i(24,86,269,227),
+	Rect2i(357,25,251,292),
+	Rect2i(675,45,218,275),
+	Rect2i(957,25,290,294),
+	Rect2i(18,355,279,262),
+	Rect2i(344,347,267,270),
+	Rect2i(659,361,251,253),
+	Rect2i(952,349,291,271),
+	Rect2i(10,652,291,240),
+	Rect2i(342,690,271,220),
+	Rect2i(666,644,237,266),
+	Rect2i(956,644,290,266),
+	Rect2i(9,950,297,209),
+	Rect2i(329,936,280,246),
+	Rect2i(628,962,306,203),
+	Rect2i(945,962,305,203)]
 const BOSS_COLUMN_EDGES: Array = [[0,384,714,1090,1448],[0,362,724,1086,1448],[0,362,724,1086,1448]]
 const BOSS_ROW_EDGES: Array = [0,369,800,1086] # Native1448x1086 sheet has unequal row heights.
 # Measured once from alpha>5percent; avoid scanning the atlas when a boss first appears.
 const BOSS_RECTS: Array = [
- Rect2i(20,14,361,352),Rect2i(387,10,314,356),Rect2i(727,14,360,352),Rect2i(1093,10,339,358),
- Rect2i(81,375,260,415),Rect2i(455,376,241,412),Rect2i(794,370,268,423),Rect2i(1149,482,228,230),
- Rect2i(53,810,279,259),Rect2i(435,811,252,239),Rect2i(844,802,138,269),Rect2i(1173,840,202,203)]
+	Rect2i(20,14,361,352),Rect2i(387,10,314,356),Rect2i(727,14,360,352),Rect2i(1093,10,339,358),
+	Rect2i(81,375,260,415),Rect2i(455,376,241,412),Rect2i(794,370,268,423),Rect2i(1149,482,228,230),
+	Rect2i(53,810,279,259),Rect2i(435,811,252,239),Rect2i(844,802,138,269),Rect2i(1173,840,202,203)]
 const BOSS_PARTS: Dictionary = {101:7,102:7,111:4,112:4,113:8,121:5,122:5,123:9,124:9,131:6,132:6,133:10}
 const SMALL: Dictionary = {1:0,2:1,3:2,4:3,5:4,6:5,7:6,8:7,9:8,10:9,11:10,19:11,201:11,21:12,22:13,41:14,42:15}
 func cell(atlas: Texture2D, index: int, columns: int, rows: int) -> AtlasTexture:
@@ -98,7 +98,7 @@ func observe(g: Node) -> void:
 	for e in g.enemies:
 		var id: int = e.entity_id
 		if not poses.has(id): poses[id] = Pose.target(int(e.kind),e.velocity,g.animation)
-		else: Pose.advance(poses[id],int(e.kind),e.velocity,g.animation,g.tick_units)
+		else: Pose.advance(poses[id],int(e.kind),e.velocity,g.animation,g.delta_seconds)
 func draw_enemy(c: Node2D, e: Dictionary, pos: Vector2, _frame: int) -> void:
 	var size: Vector2 = dimensions(int(e.kind))
 	var center: Vector2 = pos+size/2

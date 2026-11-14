@@ -13,7 +13,7 @@ func check(ok: bool, message: String) -> void:
 		push_error("FAIL: "+message)
 func _initialize() -> void:
 	var player := Vector2(100,400)
-	var units: float = Clock.units_per_tick()
+	var units: float = Clock.FIXED_STEP_SECONDS
 	for power in [3,4]:
 		var spread: Array = Weapons.volley(player,1,power)
 		var straight: Array = Weapons.volley(player,2,power)
@@ -55,7 +55,7 @@ func _initialize() -> void:
 			for i in range(actual.size()):
 				matches = matches and paths[i].points.size()==Preview.TRACE_TICKS+1
 				for tick in range(Preview.TRACE_TICKS): Weapons.advance(actual[i],Vector2.ZERO,units)
-				matches = matches and paths[i].points[-1].is_equal_approx(actual[i].pos+Vector2(15,12))
+				matches = matches and paths[i].points[-1].distance_to(actual[i].pos+Vector2(15,12))<0.001
 			check(matches,"type%d power%d legend uses the real native-tick trajectory"%[weapon,power])
 	check(Rng.state==0x50000,"all trajectory legends preserve gameplay RNG state")
 	for i in range(20): preview.trajectory_paths(3,7)

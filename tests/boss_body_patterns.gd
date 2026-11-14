@@ -26,7 +26,7 @@ func run() -> void:
 	check(Boss.advance(normal,fists,0.15).is_empty(),"stage1 with fists waits the normal300ms interval")
 	var left: Array = Boss.advance(normal,fists,0.15)
 	var right: Array = Boss.advance(normal,fists,1.5)
-	check(left[0].pos.x==160 and right[-1].pos.x==240 and left[0].velocity==Vector2(-1,9) and right[-1].velocity==Vector2(1,9),"stage1 alternating muzzle positions and trajectories are retained")
+	check(left[0].pos.x==160 and right[-1].pos.x==240 and left[0].velocity.distance_to((Vector2(-1,9))/0.03)<0.001 and right[-1].velocity.distance_to((Vector2(1,9))/0.03)<0.001,"stage1 alternating muzzle positions and trajectories are retained")
 	var slow: Dictionary = Catalog.create(91,Vector2(200,100))
 	var fast: Dictionary = Catalog.create(91,Vector2(200,100))
 	var slow_count := 0
@@ -47,7 +47,7 @@ func run() -> void:
 	check(shots.is_empty(),"paired sweep waits100ms")
 	shots = Boss.advance(b,all_parts,1.0/60)
 	check(shots.size()==2 and shots[0].pos==Vector2(175,150) and shots[1].pos==Vector2(225,150),"sixth native tick emits one shot from each original body port")
-	check(shots[0].velocity.is_equal_approx(Vector2(0,7)) and shots[1].velocity.is_equal_approx(Vector2(0,7)) and shots[0].kind==6,"paired sweep starts downward using original energy projectile kind")
+	check(shots[0].velocity.distance_to((Vector2(0,7))/0.03)<0.001 and shots[1].velocity.distance_to((Vector2(0,7))/0.03)<0.001 and shots[0].kind==6,"paired sweep starts downward using original energy projectile kind")
 	shots = Boss.advance(b,all_parts,0.1)
 	check(is_equal_approx(shots[0].velocity.angle(),deg_to_rad(80)),"left port rotates counterclockwise by10degrees")
 	check(is_equal_approx(shots[1].velocity.angle(),deg_to_rad(100)),"right port rotates clockwise by10degrees")
@@ -69,7 +69,7 @@ func run() -> void:
 	check(Boss.advance(b,all_parts,0.05).is_empty(),"entry gate does not accumulate a delayed burst")
 	b.hp = 0
 	check(Boss.advance(b,all_parts,1).is_empty(),"destroyed body cannot fire a sweep")
-	check(Boss.advance(Catalog.create(92,Vector2.ZERO),all_parts,1).is_empty(),"other bosses do not acquire the stage4 sweep")
+	check(Boss.advance(Catalog.create(92,Vector2.ZERO),all_parts,1).all(func(shot): return shot.kind==5),"stage2 without its centre emits only its pink enrage orbs, never the stage4 sweep")
 	b = Catalog.create(94,Vector2(200,100))
 	check(Boss.advance(b,all_parts,0.01).is_empty(),"old Y-modulo body attack is removed")
 	Rng.state = 0x50000
@@ -84,24 +84,26 @@ func run() -> void:
 	await process_frame
 	g.set_process(false)
 	g._load_stage(4)
+	g.delta_seconds = 0.03
 	g.events = []
 	g.boss = Catalog.create(94,Vector2(200,100))
 	g.enemies.replace_all(parts())
 	g.bullets.clear()
 	g.clock = Clock.new()
-	g.invulnerable = 10000
-	for i in range(12): g._tick(Vector2.ZERO,false,false,false,Clock.units_per_tick())
+	g.invulnerability_seconds = 300.0
+	for i in range(12): g._tick(Vector2.ZERO,false,false,false,Clock.FIXED_STEP_SECONDS)
 	check(g.bullets.size()==4 and g.bullets.all(func(p): return p.kind==6),"actual game integrates paired sweep every native tick instead of60ms global firing phases")
 	g._load_stage(1)
+	g.delta_seconds = 0.03
 	g.events = []
 	g.boss = Catalog.create(91,Vector2(200,100))
 	g.enemies.replace_all(fists)
 	g.clock = Clock.new()
-	for i in range(18): g._tick(Vector2.ZERO,false,false,false,Clock.units_per_tick())
+	for i in range(18): g._tick(Vector2.ZERO,false,false,false,Clock.FIXED_STEP_SECONDS)
 	check(g.bullets.size()==1 and g.bullets.at(0).kind==1,"actual stage1 loop fires at300ms with both fists alive")
 	g.enemies.clear()
 	g.bullets.clear()
-	for i in range(9): g._tick(Vector2.ZERO,false,false,false,Clock.units_per_tick())
+	for i in range(9): g._tick(Vector2.ZERO,false,false,false,Clock.FIXED_STEP_SECONDS)
 	check(g.bullets.size()==1 and g.bullets.at(0).kind==1,"actual stage1 loop switches to150ms once both fists are gone")
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	g.audio.stop_all()

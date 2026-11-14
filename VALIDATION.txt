@@ -1,34 +1,28 @@
-Pirate II v24.24 — Validation /2026-11-14
-Godot4.7.2 /Windows x64 /OpenGL Compatibility /RTX4080
+Pirate II v24.30 — Validation /2026-11-14
 
-Stage3 lower phase triggers at bodyHP<=50percent (current<=750/1500).
-Upper centres remain(100,100)/(300,100).Lower Y remains240.
-Lower Xtargets body.pos.x-35/+35 using sprite centres,slow speed1authored unit
-(33.33pixels/second).Yspeed5retained;separate-axis bounded movement.
-Per explicit user clarification,firing eligibility depends only on vertical motion.
-Ytravel emits nothing/clears cadence;Yarrival starts fresh300ms interval.
-Xfollowing may continue while firing and never resets cadence/10degree rotation.
-PartHP400,orange4way cross/opposite rotation and lower-phase latch retained.
-Offsets/speed in motion.lower_follow;gate=orb_y_stationary.
+Fixed particle streak length after velocity conversion to pixels/second.
+Previous1.7 coefficient stretched all non-smoke particle lines by33.333x.
+Now velocity(px/s)*0.051seconds gives the original v24.28 footprint.
+Particle size, movement, lifetime, smoke, explosion strength, count and gameplay unchanged.
 
-Affected292checks across5suites passed,0failures:
-boss3_orb_stations63,boss3_orb_cross21,enemy_catalog87,campaign115,
-render_boss3_rework6.
-Added cases cover inclusive threshold,body-relative offsets,target refresh,
-33.33px/s bound,catchup/reversal,noYdrift,Xmoving firing,uninterrupted cadence,
-upper-row horizontal alignment and invalid follow settings.
-Native integration verifies both lower orbs emit full crosses whileXmoves at fixedY.
-Performance60.00FPS/60.00ticks/s,p9516.667ms,median95drawcalls,
-max70bullets/593particles with body attacks/smoke/power7fire.
-Most recent full1375check suite passed atv24.23;focused suites used here.
+Before-fix sample differed from baseline in 197205 pixels.
+After-fix sample matches v24.28 golden render: changed0pixels, escaped30px bounds0pixels.
 
-Export succeeded.Portable EXE/PCK outside source loaded actual bundled Game through
-external preview script.Upper positions,exactHP750transition,silentYtravel,
-lowerY240,Xmovement while firing and resumed opposite10degree rotations verified.
-Exit0.Frames:verified-orbs-upper.png,verified-orbs-transfer.png,verified-orbs-lower.png.
-Official signed Godot GUI EXE copied unchanged with external same-folder PCK.
-No full manual campaign playthrough.No commit/push.Original VB6 untouched.
+Affected63checks across9suites passed:
+combat_vfx: 14 passed
+projectile_trails: 5 passed
+claw_smoke: 17 passed
+render_particle_extent: 2 passed
+render_combat_style: 2 passed
+render_vfx_strength: 3 passed
+render_smoke_overlay: 8 passed
+render_boss3_rework: 6 passed
+render_boss4_final: 6 passed
 
-SHA256:
-Pirate-II.exe AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424
-Pirate-II.pck E9D76FDEAFC0F9D44C814367EB4083AFB9D27CBA7161C66BDD91CA17D6ABC73B
+Actual portable EXE+PCK golden render:2checks passed,changed0/escaped0,exit0.
+Boss3/4 heavy scenes visually inspected; approximately60FPS/60ticks/s,p9516.667ms.
+Previous full2175checks/61suites passed atv24.29; only affected suites rerun here.
+Import/export passed. Official signed Godot GUI EXE copied unchanged; externalPCK.
+git diff --check passed. No commit/push.
+Pirate-II.exe SHA256 ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424
+Pirate-II.pck SHA256 d6eda8704074a25132c5c540e733d9a9d96e7d3466de16ea8471fd4fb957abd3

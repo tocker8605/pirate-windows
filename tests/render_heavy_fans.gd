@@ -11,7 +11,7 @@ class Driver extends Node:
 	var max_bullets := 0
 	var max_particles := 0
 	func _process(_delta: float) -> void:
-		g._tick(Vector2.ZERO,false,false,false,Clock.units_per_tick())
+		g._tick(Vector2.ZERO,false,false,false,Clock.FIXED_STEP_SECONDS)
 		g._redraw()
 		count += 1
 		calls.append(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME))
@@ -32,11 +32,12 @@ func run() -> void:
 	await process_frame
 	g.set_process(false)
 	g._load_stage(3)
+	g.delta_seconds = 0.03
 	g.events = []
 	g.player = Vector2(175,390)
-	g.invulnerable = 1000000
+	g.invulnerability_seconds = 30000.0
 	for i in range(4): g.enemies.append(Catalog.create(42,Vector2(50+i%2*200,60+int(i/2)*140)))
-	for i in range(600): g._tick(Vector2.ZERO,false,false,false,Clock.units_per_tick())
+	for i in range(600): g._tick(Vector2.ZERO,false,false,false,Clock.FIXED_STEP_SECONDS)
 	var driver = Driver.new()
 	driver.g = g
 	root.add_child(driver)

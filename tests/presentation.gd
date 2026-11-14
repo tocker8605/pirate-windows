@@ -18,6 +18,7 @@ func run() -> void:
 	root.add_child(g)
 	await process_frame
 	g._load_stage(1)
+	g.delta_seconds = 0.03
 	var p = g.presentation
 	g.player = Vector2(100,300)
 	g.background_y = 2881
@@ -38,20 +39,20 @@ func run() -> void:
 	check(p.position({"previous_pos":Vector2(4,8),"pos":Vector2(8,12)})==Vector2(6,10),"entity motion interpolates")
 	check(p.position({"pos":Vector2(20,40)})==Vector2(20,40),"new entity has no stale interpolation")
 	g.shield_center = Vector2(150,350)
-	check(p.shield(g)==g.shield_center,"new shield starts at the current anchor")
+	check(p.shield_position(g)==g.shield_center,"new shield_remaining_seconds starts at the current anchor")
 	g.state = "paused"
 	p.refresh(g)
 	check(p.alpha==0.5,"pause freezes presentation")
 	p.reset(g)
 	check(p.alpha==1 and p.sample_frame==-1 and p.player(g)==g.player,"stage reset clears stale presentation")
-	check(is_equal_approx(Clock.interval(1),1.0/60.0),"default simulation runs one tick per16.667ms")
+	check(is_equal_approx(Clock.FIXED_STEP_SECONDS,1.0/60.0),"default simulation runs one tick per16.667ms")
 	check(Engine.max_fps==60,"render frame cap is60")
 	var pilot = g.view.pilot
 	check(pilot.frames.size()==3 and pilot.texture(0)==pilot.frames[0] and pilot.texture(1)==pilot.frames[1] and pilot.texture(2)==pilot.frames[1],"hero neutral/left/right frames use observed bank direction")
 	check(pilot.frames[0].region.size==pilot.frames[1].region.size and pilot.frames[1].region.size==pilot.frames[2].region.size,"hero frames share crop size and pivot")
 	for pair in [[112,111],[121,122],[131,132]]:
 		for vy in [-7,0,3]:
-			var b = {"pos":Vector2(200,50),"velocity":Vector2(0,vy)}
+			var b = {"pos":Vector2(200,50),"velocity":(Vector2(0,vy))/0.03}
 			var left = {"kind":pair[0],"pos":Vector2.ZERO}
 			var right = {"kind":pair[1],"pos":Vector2.ZERO}
 			Boss.attach(left,b)

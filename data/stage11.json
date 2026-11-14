@@ -2,7 +2,7 @@
   "schema_version": 2,
   "time_unit": "seconds",
   "events": [
-    {"at": 0, "action": "scroll", "mode": 3, "speed": 2},
+    {"at": 0, "action": "scroll", "mode": 3, "speed": 66.66666666666667},
     {"at": 0.9, "action": "banner", "name": "warning"},
     {"at": 5.4, "action": "spawn", "definition_id": 91, "position": [200, -100], "pattern": 0},
     {"at": 5.4, "action": "spawn", "definition_id": 101, "position": [75, -50], "pattern": 2101},

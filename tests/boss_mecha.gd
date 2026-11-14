@@ -37,7 +37,7 @@ func _initialize() -> void:
 	for pair in [[112,111],[121,122],[131,132]]:
 		var symmetric: bool = true
 		for vy in [-7,0,3]:
-			var b = {"pos":Vector2(200,100),"velocity":Vector2(0,vy)}
+			var b = {"pos":Vector2(200,100),"velocity":(Vector2(0,vy))/0.03}
 			var left = {"kind":pair[0],"pos":Vector2.ZERO}
 			var right = {"kind":pair[1],"pos":Vector2.ZERO}
 			Boss.attach(left,b)

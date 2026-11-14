@@ -22,6 +22,7 @@ func run() -> void:
 	root.add_child(g)
 	await process_frame
 	g._load_stage(1)
+	g.delta_seconds = 0.03
 	g.clouds = [Vector2(-500,-500),Vector2(-500,-500)]
 	g.player = Vector2(-500,-500)
 	g.view.vfx.reset()
@@ -54,6 +55,7 @@ func run() -> void:
 	for stage in range(1,5):
 		for region in range(Regions.count(stage)):
 			g._load_stage(stage)
+			g.delta_seconds = 0.03
 			g.background_y = ([3360,1920,960,480] if stage==4 else [3360,1920,480])[region]
 			g.player = Vector2(-500,-500)
 			g.clouds = [Vector2(-500,-500),Vector2(-500,-500)]
@@ -68,6 +70,7 @@ func run() -> void:
 	gallery.save_png("res://preview-regions-v12.png")
 	# Earth is one-shot; space and cave retain exact 480px phase-compatible loops.
 	g._load_stage(4)
+	g.delta_seconds = 0.03
 	g.player = Vector2(-500,-500)
 	g.clouds = [Vector2(-500,-500),Vector2(-500,-500)]
 	g.view.vfx.reset()

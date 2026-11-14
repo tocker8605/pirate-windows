@@ -1,5 +1,6 @@
 class_name PirateBoss
 extends RefCounted
+const Movement = preload("res://scripts/movement.gd")
 const AttackTimer = preload("res://scripts/attack_timer.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const CoreMotion = preload("res://scripts/boss_core_motion.gd")
@@ -18,65 +19,64 @@ static func has_part(enemies: Variant, kind: int) -> bool:
 
 static func steer(b: Dictionary, player: Vector2, enemies: Variant) -> void:
 	var p: Vector2 = b.pos
-	var v: Vector2 = b.velocity
+	var v: Vector2 = Movement.quantize_velocity(b.velocity)
 	match int(b.stage):
 		1:
 			if p.y>120:
-				v.x += 1 if p.x<player.x+25 else -1
-				v.y -= 1
+				v.x += 33.333333333333336 if p.x<player.x+25 else -33.333333333333336
+				v.y -= 33.333333333333336
 			if p.y<80:
-				v.x += 1 if p.x<player.x+25 else -1
-				v.y += 1
-			if p.x<100: v.x += 2
-			if p.x>300: v.x -= 2
-			v = v.clamp(Vector2(-5,-5),Vector2(5,3))
+				v.x += 33.333333333333336 if p.x<player.x+25 else -33.333333333333336
+				v.y += 33.333333333333336
+			if p.x<100: v.x += 66.66666666666667
+			if p.x>300: v.x -= 66.66666666666667
+			v = v.clamp(Vector2(-166.66666666666669,-166.66666666666669),Vector2(166.66666666666669,100))
 		2:
-			v.x += 1 if p.x<player.x+25 else -1
-			if p.y<0: v.y += 3
-			elif p.y>player.y-80: v.y -= 2
-			if p.x<150: v.x += 2
-			if p.x>250: v.x -= 2
-			v = v.clamp(Vector2(-3,-7),Vector2(3,3))
+			v.x += 33.333333333333336 if p.x<player.x+25 else -33.333333333333336
+			if p.y<0: v.y += 100
+			elif p.y>player.y-80: v.y -= 66.66666666666667
+			if p.x<150: v.x += 66.66666666666667
+			if p.x>250: v.x -= 66.66666666666667
+			v = v.clamp(Vector2(-100,-233.33333333333334),Vector2(100,100))
 		3:
-			v.x += 1 if p.x<player.x+25 else -1
-			if p.y< -10: v.y += 1
-			elif p.y>100: v.y -= 1
-			if p.x<150: v.x += 2
-			if p.x>250: v.x -= 2
-			v = v.clamp(Vector2(-3,-3),Vector2(3,3))
+			v.x += 33.333333333333336 if p.x<player.x+25 else -33.333333333333336
+			if p.y< -10: v.y += 33.333333333333336
+			elif p.y>100: v.y -= 33.333333333333336
+			if p.x<150: v.x += 66.66666666666667
+			if p.x>250: v.x -= 66.66666666666667
+			v = v.clamp(Vector2(-100,-100),Vector2(100,100))
 		4:
-			v.x += 1 if p.x<player.x+25 else -1
+			v.x += 33.333333333333336 if p.x<player.x+25 else -33.333333333333336
 			if parts_alive(enemies):
-				if p.y<51: v.y = 1
-				elif p.y>149: v.y = -1
-			else: v.y = -1 if p.y>30 else 0
-			if p.x<100: v.x += 2
-			if p.x>300: v.x -= 2
-			v.x = clampf(v.x,-3,3)
-	b.velocity = v
+				if p.y<51: v.y = 33.333333333333336
+				elif p.y>149: v.y = -33.333333333333336
+			else: v.y = -33.333333333333336 if p.y>30 else 0
+			if p.x<100: v.x += 66.66666666666667
+			if p.x>300: v.x -= 66.66666666666667
+			v.x = clampf(v.x,-100,100)
+	b.velocity = Movement.quantize_velocity(v)
 
 static func attach(e: Dictionary, b: Dictionary) -> void:
 	if b.is_empty(): return
 	var p: Vector2 = b.pos
-	match int(e.kind):
-		101: e.pos.x = p.x-65
-		102: e.pos.x = p.x+15
-		111: e.pos = p+Vector2(20+b.velocity.y*2,60)
-		112: e.pos = p+Vector2(-70-b.velocity.y*2,60)
-		113: e.pos.x = p.x-25
-		121: e.pos = p+Vector2(-75,65)
-		122: e.pos = p+Vector2(25,65)
-		131: e.pos = p+Vector2(-80,65)
-		132: e.pos = p+Vector2(30,65)
-		133:
-			if e.pattern==0: e.pos = p+Vector2(-26,50)
-			if e.hp<CoreMotion.DETACH_HP and e.pattern==0:
-				CoreMotion.detach(e)
+	var attachment: Dictionary = Catalog.definition(int(e.kind)).get("attachment",{})
+	if attachment.is_empty(): return
+	if int(e.kind)==CoreMotion.KIND and e.pattern!=0: return
+	var offset := Vector2(attachment.offset[0],attachment.offset[1])
+	e.pos.x = p.x+offset.x
+	if attachment.follow_y: e.pos.y = p.y+offset.y
+	e.pos.x += b.velocity.y*float(attachment.velocity_y_offset_seconds)
+	if int(e.kind)==CoreMotion.KIND and e.hp<CoreMotion.settings().detach_hp:
+		CoreMotion.detach(e)
 
 static func enabled(enemies: Variant, channel: Dictionary) -> bool:
 	match str(channel.gate):
 		"no_parts": return not parts_alive(enemies)
 		"part_missing": return not has_part(enemies,int(channel.part_id))
+		"parts_missing":
+			for part_id in channel.part_ids:
+				if has_part(enemies,int(part_id)): return false
+			return true
 		"left_missing": return not has_part(enemies,131)
 		"right_missing": return not has_part(enemies,132)
 	return true
@@ -87,25 +87,25 @@ static func emit(b: Dictionary, attack: String, player: Vector2 = Vector2.ZERO) 
 	match int(b.stage):
 		2:
 			var projectile_kind: int = int(Catalog.fire_channel(92,attack).projectile_kind)
-			_add(result,p+Vector2(15,60),Vector2(3-Rng.between(0,6),3-Rng.between(0,6)),projectile_kind)
-			_add(result,p+Vector2(-15,60),Vector2(3-Rng.between(0,6),3-Rng.between(0,6)),projectile_kind)
+			_add(result,p+Vector2(15,60),(Vector2(3-Rng.between(0,6),3-Rng.between(0,6)))*33.333333333333336,projectile_kind)
+			_add(result,p+Vector2(-15,60),(Vector2(3-Rng.between(0,6),3-Rng.between(0,6)))*33.333333333333336,projectile_kind)
 		3:
 			if attack=="missiles":
-				_add(result,p+Vector2(40,40),Vector2(2-Rng.between(0,4),-1-Rng.between(0,2)),2)
-				_add(result,p+Vector2(-40,40),Vector2(2-Rng.between(0,4),-1-Rng.between(0,2)),2)
+				_add(result,p+Vector2(40,40),(Vector2(2-Rng.between(0,4),-1-Rng.between(0,2)))*33.333333333333336,2)
+				_add(result,p+Vector2(-40,40),(Vector2(2-Rng.between(0,4),-1-Rng.between(0,2)))*33.333333333333336,2)
 			elif attack in ["left_enrage","right_enrage"]:
 				result.append_array(_shoulder_aimed_fan(p,player,Catalog.boss_definition(3).attack,0 if attack=="left_enrage" else 1))
 		4:
 			if attack=="left_replacement":
 				var vx: int = 5-Rng.between(0,8)
-				_add(result,p+Vector2(-35,55),Vector2(vx,11-absi(vx)),5)
+				_add(result,p+Vector2(-35,55),(Vector2(vx,11-absi(vx)))*33.333333333333336,5)
 			elif attack=="right_replacement":
 				var vx: int = 3-Rng.between(0,8)
-				_add(result,p+Vector2(35,55),Vector2(vx,11-absi(vx)),5)
+				_add(result,p+Vector2(35,55),(Vector2(vx,11-absi(vx)))*33.333333333333336,5)
 			else:
 				var x: int = 10-Rng.between(0,20)
 				var vx: int = 3-Rng.between(0,6)
-				_add(result,p+Vector2(x,35),Vector2(vx,-5+absi(vx)),8)
+				_add(result,p+Vector2(x,35),(Vector2(vx,-5+absi(vx)))*33.333333333333336,8)
 	return result
 
 # The paired sweep has an independent100ms clock, not the legacy60ms phase clock.

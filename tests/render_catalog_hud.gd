@@ -28,6 +28,7 @@ func run() -> void:
 	await process_frame
 	g.set_process(false)
 	g._load_stage(4)
+	g.delta_seconds = 0.03
 	g.events = []
 	g.clouds = [Vector2(-500,-500),Vector2(-500,-500)]
 	g.player = Vector2(-500,-500)

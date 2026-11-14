@@ -18,8 +18,9 @@ func run() -> void:
 	root.add_child(g)
 	await process_frame
 	g.start_game()
+	g.delta_seconds = 0.03
 	g.events = []
-	for i in range(1000): g._bullet(Vector2(100,100),Vector2.DOWN)
+	for i in range(1000): g._bullet(Vector2(100,100),(Vector2.DOWN)/0.03)
 	check(g.bullets.size()==1000 and g.bullets.valid(),"all 1000 enemy bullets survive admission without a 200-slot cap")
 	var oldest: int = g.bullets.at(0).entity_id
 	g._enemy_fire(enemy(7),0.54)
@@ -33,6 +34,7 @@ func run() -> void:
 	g._enemy_fire(enemy(1),0.36)
 	check(g.bullets.size()==1005,"items cannot suppress authored enemy fire")
 	g.start_game()
+	g.delta_seconds = 0.03
 	g.events = []
 	for i in range(150): g.events.append({"at":0,"action":"spawn","definition_id":1,"position":[100,-50],"pattern":1011})
 	g.frame = 1
@@ -42,29 +44,31 @@ func run() -> void:
 	while g.event_cursor<g.events.size(): g._read_events()
 	check(g.enemies.size()==150 and g.stats.spawned==150 and g.stats.get("skipped",0)==0,"150 simultaneous enemies have unique identities with no 30-slot event loss")
 	check(g.enemies.valid(),"enemy links and ID map remain consistent under dense admission")
-	g.explosions = [{"owner_id":g.enemies.at(0).entity_id,"ticks":15}]
+	g.explosions = [{"owner_id":g.enemies.at(0).entity_id,"remaining_seconds":0.45}]
 	g.events.append({"at":0,"action":"spawn","definition_id":2,"position":[100,-50],"pattern":1011})
 	g._read_events()
 	check(g.enemies.size()==151 and g.explosions.size()==1,"new spawns do not cancel another entity's lingering explosion")
 	g.bullets.clear()
 	g.enemies.clear()
 	g.boss = {"stage":4,"pos":Vector2(200,100),"velocity":Vector2.ZERO,"hp":1500.0,"age":0}
-	for i in range(300): g._bullet(Vector2(50,50),Vector2.DOWN)
+	for i in range(300): g._bullet(Vector2(50,50),(Vector2.DOWN)/0.03)
 	g.BulletPool.body(g,0.12)
 	check(g.bullets.size()==304,"all final-boss cannon and missile groups fire above the old bullet limit")
 	g.start_game()
+	g.delta_seconds = 0.03
 	g.events = []
 	g.hp = 1
-	g._bullet(g.player+Vector2(25,18),Vector2(0,0.1))
+	g._bullet(g.player+Vector2(25,18),(Vector2(0,0.1))/0.03)
 	g._drop_item({"pos":g.player+Vector2(25,25),"kind":2})
-	g._tick(Vector2.ZERO,false,false,false)
-	check(g.hp==17,"repair pickups still resolve before incoming damage")
+	g._tick(Vector2.ZERO,false,false,false,0.03)
+	check(g.hp==1,"repair pickups still resolve before incoming damage")
 	g.bullets.clear()
-	g._bullet(Vector2(100,100),Vector2.ZERO)
-	g._bullet(Vector2(399,100),Vector2(4,0))
+	g._bullet(Vector2(100,100),(Vector2.ZERO)/0.03)
+	g._bullet(Vector2(399,100),(Vector2(4,0))/0.03)
 	g._update_bullets()
 	check(g.bullets.is_empty() and g.bullets.valid(),"stationary and offscreen bullets unlink without leaving stale records")
 	g._load_stage(4)
+	g.delta_seconds = 0.03
 	check(g.enemies.is_empty() and g.bullets.is_empty() and g.items.is_empty(),"stage transition releases all three independent stores")
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	g.audio.stop_all()

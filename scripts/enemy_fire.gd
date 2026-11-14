@@ -1,5 +1,6 @@
 class_name PirateEnemyFire
 extends RefCounted
+const CoreMotion = preload("res://scripts/boss_core_motion.gd")
 const AttackTimer = preload("res://scripts/attack_timer.gd")
 const Boss = preload("res://scripts/boss.gd")
 const Rng = preload("res://scripts/random.gd")
@@ -21,12 +22,12 @@ static func enabled(e: Dictionary, channel: Dictionary, boss: Dictionary = {}) -
 	var y: float = e.pos.y
 	var by: float = boss.get("pos",Vector2.ZERO).y
 	match str(channel.gate):
-		"aim_window": return v.y<4 and v.y> -5
+		"aim_window": return v.y<(133.33333333333334 - 0.0001) and v.y> (-166.66666666666669 + 0.0001)
 		"moving": return v.x!=0
-		"stationary_aim": return v.x==0 and v.y> -1
+		"stationary_aim": return v.x==0 and v.y> (-33.333333333333336 + 0.0001)
 		"sweep_y": return y>20 and y<199
-		"descent_or_stationary": return v.y>0 or v.x==0
-		"descending": return v.y>1
+		"descent_or_stationary": return v.y>(0 + 0.0001) or v.x==0
+		"descending": return v.y>(33.333333333333336 + 0.0001)
 		"flame_y": return y<220
 		"charge_y": return y>100 and y<150
 		"fist_y": return y>390
@@ -36,86 +37,86 @@ static func enabled(e: Dictionary, channel: Dictionary, boss: Dictionary = {}) -
 		"orb_y": return y>by+30
 		"left_claw_y": return by>40 and by<80
 		"right_claw_y": return by>120
-		"detached": return e.pattern==2401 and e.get("core_phase","")!="settled"
-		"core_settled": return e.pattern==2401 and e.get("core_phase","")=="settled"
+		"detached": return CoreMotion.active(e) and e.get("core_phase","")!="settled"
+		"core_settled": return CoreMotion.active(e) and e.get("core_phase","")=="settled"
 	return true
 
 static func emit(e: Dictionary, player: Vector2, attack: String, boss: Dictionary = {}) -> Array:
 	var result: Array = []
 	var p: Vector2 = e.pos
-	var v: Vector2 = e.velocity
+	var v: Vector2 = e.velocity*0.03
 	var kind: int = int(e.kind)
 	var target: Vector2 = aim(p,player,1)
 	match kind:
-		1: _add(result,p+Vector2(25,20),target*7)
+		1: _add(result,p+Vector2(25,20),(target*7)*33.333333333333336)
 		2:
-			if attack=="moving": _add(result,p+Vector2(25,20),Vector2(-v.x,11-absf(v.x)))
-			else: _add(result,p+Vector2(25,20),target*9,3)
-		3: _add(result,single_muzzle(e,30),Vector2((10-absf(20-int(p.y)%41))/3.0,8),5)
-		4: _add(result,single_muzzle(e),target*9,4)
+			if attack=="moving": _add(result,p+Vector2(25,20),(Vector2(-v.x,11-absf(v.x)))*33.333333333333336)
+			else: _add(result,p+Vector2(25,20),(target*9)*33.333333333333336,3)
+		3: _add(result,single_muzzle(e,30),(Vector2((10-absf(20-int(p.y)%41))/3.0,8))*33.333333333333336,5)
+		4: _add(result,single_muzzle(e),(target*9)*33.333333333333336,4)
 		6:
 			var velocity: Vector2 = Vector2(-v.x,7) if v.y>0 else target*9
-			_add(result,p+Vector2(5,30),velocity,7)
-			_add(result,p+Vector2(35,30),velocity,7)
+			_add(result,p+Vector2(5,30),(velocity)*33.333333333333336,7)
+			_add(result,p+Vector2(35,30),(velocity)*33.333333333333336,7)
 		7:
-			_add(result,single_muzzle(e),target*9,5)
-			_add(result,single_muzzle(e),target*7+Vector2(-2,0),5)
-			_add(result,single_muzzle(e),target*7+Vector2(2,0),5)
-		8: _add(result,p+Vector2(25,30),Vector2(0,-1),2)
-		9: _add(result,single_muzzle(e),Vector2(3-Rng.between(0,6),-1-Rng.between(0,2)),8)
+			_add(result,single_muzzle(e),(target*9)*33.333333333333336,5)
+			_add(result,single_muzzle(e),(target*7+Vector2(-2,0))*33.333333333333336,5)
+			_add(result,single_muzzle(e),(target*7+Vector2(2,0))*33.333333333333336,5)
+		8: _add(result,p+Vector2(25,30),(Vector2(0,-1))*33.333333333333336,2)
+		9: _add(result,single_muzzle(e),(Vector2(3-Rng.between(0,6),-1-Rng.between(0,2)))*33.333333333333336,8)
 		10:
 			if attack=="twin":
-				_add(result,p+Vector2(10,40),Vector2(0,8))
-				_add(result,p+Vector2(40,40),Vector2(0,8))
-			else: _add(result,p+Vector2(25,20),target*7)
+				_add(result,p+Vector2(10,40),(Vector2(0,8))*33.333333333333336)
+				_add(result,p+Vector2(40,40),(Vector2(0,8))*33.333333333333336)
+			else: _add(result,p+Vector2(25,20),(target*7)*33.333333333333336)
 		11:
-			_add(result,single_muzzle(e),Vector2(-v.x/2,9),7)
-			_add(result,single_muzzle(e),Vector2(-v.x/3,6),5)
+			_add(result,single_muzzle(e),(Vector2(-v.x/2,9))*33.333333333333336,7)
+			_add(result,single_muzzle(e),(Vector2(-v.x/3,6))*33.333333333333336,5)
 		21:
 			if attack=="missiles":
-				_add(result,p+Vector2(0,40),Vector2(-1,-1),2)
-				_add(result,p+Vector2(50,40),Vector2(1,-1),2)
-			else: _add(result,p+Vector2(25,40),target*10)
+				_add(result,p+Vector2(0,40),(Vector2(-1,-1))*33.333333333333336,2)
+				_add(result,p+Vector2(50,40),(Vector2(1,-1))*33.333333333333336,2)
+			else: _add(result,p+Vector2(25,40),(target*10)*33.333333333333336)
 		22:
-			if attack=="plasma": _add(result,single_muzzle(e),target*9+Vector2(3-int(p.y)%7,0),5)
-			else: _add(result,single_muzzle(e),target*10,7)
+			if attack=="plasma": _add(result,single_muzzle(e),(target*9+Vector2(3-int(p.y)%7,0))*33.333333333333336,5)
+			else: _add(result,single_muzzle(e),(target*10)*33.333333333333336,7)
 		41:
 			if attack=="aim":
-				_add(result,p+Vector2(-20,40),target*10,6)
-				_add(result,p+Vector2(70,40),target*10,6)
-			else: _add(result,p+Vector2(25,40),Vector2(0,-1),2)
+				_add(result,p+Vector2(-20,40),(target*10)*33.333333333333336,6)
+				_add(result,p+Vector2(70,40),(target*10)*33.333333333333336,6)
+			else: _add(result,p+Vector2(25,40),(Vector2(0,-1))*33.333333333333336,2)
 		42:
-			_add(result,p+Vector2(-10,40),Vector2(2-Rng.between(0,4),-1-Rng.between(0,2)),2)
-			_add(result,p+Vector2(60,40),Vector2(2-Rng.between(0,4),-1-Rng.between(0,2)),2)
+			_add(result,p+Vector2(-10,40),(Vector2(2-Rng.between(0,4),-1-Rng.between(0,2)))*33.333333333333336,2)
+			_add(result,p+Vector2(60,40),(Vector2(2-Rng.between(0,4),-1-Rng.between(0,2)))*33.333333333333336,2)
 		101,102:
 			var vx: int = 3-Rng.between(0,6)
-			_add(result,p+Vector2(25,20),Vector2(vx,-10+absi(vx)),5)
-		111: _add(result,p+Vector2(30,55),Vector2(-boss.get("velocity",Vector2.ZERO).x,8))
+			_add(result,p+Vector2(25,20),(Vector2(vx,-10+absi(vx)))*33.333333333333336,5)
+		111: _add(result,p+Vector2(30,55),(Vector2(-boss.get("velocity",Vector2.ZERO).x*0.03,8))*33.333333333333336)
 		112:
-			var vx: float = -boss.get("velocity",Vector2.ZERO).x
-			_add(result,p+Vector2(20,55),Vector2(vx,8),7)
-			_add(result,p+Vector2(20,55),Vector2(vx-2,7),7)
-			_add(result,p+Vector2(20,55),Vector2(vx+2,7),7)
+			var vx: float = -boss.get("velocity",Vector2.ZERO).x*0.03
+			_add(result,p+Vector2(20,55),(Vector2(vx,8))*33.333333333333336,7)
+			_add(result,p+Vector2(20,55),(Vector2(vx-2,7))*33.333333333333336,7)
+			_add(result,p+Vector2(20,55),(Vector2(vx+2,7))*33.333333333333336,7)
 		113:
 			var vx: float = 2-floorf((p.y-280)/20)
 			var vy: float = -floorf((500-p.y)/12)
-			_add(result,single_muzzle(e),Vector2(vx,vy),8)
-			_add(result,single_muzzle(e),Vector2(-vx,vy),8)
+			_add(result,single_muzzle(e),(Vector2(vx,vy))*33.333333333333336,8)
+			_add(result,single_muzzle(e),(Vector2(-vx,vy))*33.333333333333336,8)
 		121,122:
 			var muzzle: Vector2 = p+Vector2(5 if kind==121 else 45,50)
-			_add(result,muzzle,target*8+Vector2(-1,0),5)
-			_add(result,muzzle,target*9,5)
-			_add(result,muzzle,target*8+Vector2(1,0),5)
+			_add(result,muzzle,(target*8+Vector2(-1,0))*33.333333333333336,5)
+			_add(result,muzzle,(target*9)*33.333333333333336,5)
+			_add(result,muzzle,(target*8+Vector2(1,0))*33.333333333333336,5)
 		123,124: result.append_array(_rotating_volley(e,Catalog.fire_channel(kind,attack),single_muzzle(e)))
 		131,132:
-			if attack=="plasma": _add(result,Boss.claw_muzzle(e),target*9+Vector2(3-int(p.y)%7,0),5)
-			else: _add(result,Boss.claw_muzzle(e),target*10,7)
+			if attack=="plasma": _add(result,Boss.claw_muzzle(e),(target*9+Vector2(3-int(p.y)%7,0))*33.333333333333336,5)
+			else: _add(result,Boss.claw_muzzle(e),(target*10)*33.333333333333336,7)
 		133:
 			if attack=="radial":
 				result.append_array(_rotating_volley(e,Catalog.fire_channel(kind,attack),p+Vector2(25,20)))
 			else:
 				var vx: int = 3-Rng.between(0,6)
-				_add(result,p+Vector2(25,20),Vector2(vx,-5+absi(vx)),8)
+				_add(result,p+Vector2(25,20),(Vector2(vx,-5+absi(vx)))*33.333333333333336,8)
 	return result
 
 # Elapsed seconds avoids quantizing the 100ms cadence to the legacy 60ms fire clock.

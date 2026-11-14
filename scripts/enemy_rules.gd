@@ -18,7 +18,7 @@ static func carrier(e: Dictionary, previous_y: float = NAN) -> void:
 static func score(kind: int, difficulty: int) -> int:
 	var d: Dictionary = Catalog.definition(kind)
 	return int(d.get("score",0))*(difficulty if d.get("score_scales_with_difficulty",true) else 1)
-static func explosion_ticks(kind: int) -> int: return int(Catalog.definition(kind).get("explosion_ticks",20))
+static func explosion_seconds(kind: int) -> float: return float(Catalog.definition(kind).get("explosion_seconds",0.6))
 static func death_sound(kind: int) -> String: return Catalog.definition(kind).get("death_sound","bang-e")
 static func drop(e: Dictionary, boss_rush: bool) -> Dictionary:
 	var d: Dictionary = Catalog.definition(int(e.kind))

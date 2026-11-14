@@ -1,5 +1,24 @@
 class_name PiratePlayerWeapons
 extends RefCounted
+const Check = preload("res://scripts/data_validation.gd")
+static var _settings: Dictionary = _load_settings()
+static func validate_settings(value: Variant) -> PackedStringArray:
+	var errors := PackedStringArray()
+	if not value is Dictionary: return PackedStringArray(["player settings must be an object"])
+	Check.unknown_fields(value,["schema_version","max_active_shots"],"player.",errors)
+	if value.get("schema_version")!=1: errors.append("invalid player schema version")
+	if not Check.number(value.get("max_active_shots")) or float(value.max_active_shots)!=int(value.max_active_shots) or int(value.max_active_shots)<4: errors.append("max_active_shots must be an integer >=4")
+	return errors
+static func _load_settings() -> Dictionary:
+	var value: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/player.json"))
+	var errors := validate_settings(value)
+	if not errors.is_empty():
+		push_error("; ".join(errors))
+		return {}
+	value.make_read_only()
+	return value
+static func volley_count(power: int) -> int: return mini(4,(power+1)/2)
+static func active_limit() -> int: return int(_settings.max_active_shots)
 const Rng = preload("res://scripts/random.gd")
 ## Position is the original cwx/cwy anchor, NOT the visible sprite centre.
 static func volley(player: Vector2, weapon: int, power: int, random_source: Variant = null) -> Array:
@@ -43,24 +62,24 @@ static func volley(player: Vector2, weapon: int, power: int, random_source: Vari
 	return plan
 
 static func _add(plan: Array, player: Vector2, x: float, y: float, kind: int) -> void:
-	plan.append({"pos":player+Vector2(x,y),"kind":kind,"alive":true,"impact_ticks":-1})
+	plan.append({"pos":player+Vector2(x,y),"kind":kind,"alive":true,"impact_remaining_seconds":-1})
 
-static func cadence_units(power: int) -> float:
-	return 2.0 if power%2==0 else 3.0
+static func cadence_seconds(power: int) -> float:
+	return 0.06 if power%2==0 else 0.09
 
 static func cost(power: int) -> float:
-	return 0.67 if cadence_units(power)==2 else 1.0
+	return 0.67 if cadence_seconds(power)==0.06 else 1.0
 
-static func advance(shot: Dictionary, player: Vector2, units: float = 1.0) -> void:
+static func advance(shot: Dictionary, player: Vector2, seconds: float = 1.0/60.0) -> void:
 	var p: Vector2 = shot.pos
 	match int(shot.get("kind",1)):
-		1: p.y -= 19*units
-		2: p += Vector2(-1,-17)*units
-		3: p += Vector2(1,-17)*units
+		1: p.y -= 633.3333333333334*seconds
+		2: p += Vector2(-33.333333333333336,-566.6666666666667)*seconds
+		3: p += Vector2(33.333333333333336,-566.6666666666667)*seconds
 		4:
 			var dy: float = absf(player.y+20-p.y)
-			var next_y: float = p.y-(dy/8.0+5 if dy<120 else 20)*units
-			p.y = vb_integer(next_y) if units==1 else next_y
+			var next_y: float = p.y-(dy*4.16666666666667+166.66666666666669 if dy<120 else 666.6666666666667)*seconds
+			p.y = next_y
 	shot.pos = p
 
 static func vb_integer(value: float) -> int:
@@ -70,7 +89,7 @@ static func vb_integer(value: float) -> int:
 	return int(floorf(value+0.5))
 
 static func visual(shot: Dictionary, player: Vector2) -> Dictionary:
-	var ticks: int = int(shot.get("impact_ticks",-1))
+	var ticks: int = int(floor(float(shot.get("impact_remaining_seconds",-1))*33.333333333333336+0.000001))
 	if ticks >= 0:
 		var row: int = 60 if ticks>6 else (120 if ticks>3 else 180)
 		return {"phase":"impact","rect":Rect2i(0,row,80,30),"mask":Vector2i(0,row+30),"offset":Vector2(-25,0)}

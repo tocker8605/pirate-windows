@@ -6,7 +6,9 @@ const Rules = preload("res://scripts/enemy_rules.gd")
 const Weapons = preload("res://scripts/player_weapons.gd")
 const Pilot = preload("res://scripts/pilot_geometry.gd")
 const LIMIT: int = 1500
-const PROJECTILE_TRAIL_PERIOD: float = 4.0
+const PROJECTILE_TRAIL_PERIOD: float = 0.12
+# Tail displacement is velocity(px/s) times exposure(s), independent of FPS.
+const PARTICLE_STREAK_SECONDS: float = 0.051
 const SMOKE_SIZE_SCALE: float = 0.8
 const SMOKE_SCROLL_FACTOR: float = 1.0
 const SMOKE_COLOR = Color("101216")
@@ -61,7 +63,7 @@ func reset() -> void:
 
 func emit(p: Vector2, v: Vector2, life: float, size: float, color: Color, smoke: bool = false) -> void:
 	if particles.size()>=LIMIT: return
-	particles.append({"p":p,"v":v,"age":0.0,"life":life,"size":size,"color":color,"smoke":smoke})
+	particles.append({"p":p,"v":v*33.333333333333336,"age":0.0,"life":life*0.03,"size":size,"color":color,"smoke":smoke})
 
 func burst(p: Vector2, count: int, color: Color, force: float = 4.0) -> void:
 	for i in range(count):
@@ -78,27 +80,27 @@ func observe(g: Node) -> void:
 	last_frame = g.frame
 	for part in particles:
 		part.previous_pos = part.p
-		part.age += g.tick_units
+		part.age += g.delta_seconds
 		var flow := Vector2(0,g.scroll_speed*SMOKE_SCROLL_FACTOR) if part.smoke else Vector2.ZERO
-		part.p += (part.v+flow)*g.tick_units
-		part.v *= pow(0.96 if not part.smoke else 0.99,g.tick_units)
+		part.p += (part.v+flow)*g.delta_seconds
+		part.v *= pow(0.96 if not part.smoke else 0.99,g.delta_seconds*33.333333333333336)
 	particles = particles.filter(func(p): return p.age<p.life)
 	blasts = blasts.filter(func(b): return g.explosions.has(b.source))
 	for blast in g.explosions:
-		if blast.get("delay",0)>0 or _blast_record(blast)!={}: continue
-		blasts.append({"source":blast,"duration":35 if int(blast.ticks)>20 else 20})
+		if blast.get("delay_seconds",0)>0 or _blast_record(blast)!={}: continue
+		blasts.append({"source":blast,"duration":1.05 if blast.remaining_seconds>0.6 else 0.6})
 		var center: Vector2 = blast.get("render_pos",blast.pos)+Vector2(25,25)
-		var large: bool = int(blast.ticks)>20
+		var large: bool = blast.remaining_seconds>0.6
 		burst(center,70 if large else 40,HOT,6 if large else 4)
 		for i in range(10 if large else 6):
 			emit(center+Vector2(rng.randf_range(-10,10),rng.randf_range(-8,8)),Vector2(rng.randf_range(-0.6,0.6),0),32,18 if large else 13,SMOKE_COLOR,true)
-	impacts = impacts.filter(func(s): return g.shots.has(s))
+	impacts = impacts.filter(func(s): return g.shots.contains(s.entity_id))
 	for shot in g.shots:
-		if int(shot.get("impact_ticks",-1))<0 or impacts.has(shot): continue
+		if float(shot.get("impact_remaining_seconds",-1))<0 or impacts.has(shot): continue
 		impacts.append(shot)
 		burst(shot.pos+Vector2(15,8),12,player_color(g.weapon),3.4)
-	if g.hit_flash_ticks>last_hit: burst(g.player+Vector2(25,25),28,HOT,4.5)
-	last_hit = g.hit_flash_ticks
+	if g.hit_flash_remaining_seconds>last_hit: burst(g.player+Vector2(25,25),28,HOT,4.5)
+	last_hit = g.hit_flash_remaining_seconds
 	for e in g.enemies:
 		if not e.get("rescued",false): continue
 		var id: int = e.get("entity_id",-1)
@@ -109,8 +111,8 @@ func observe(g: Node) -> void:
 	for p in g.laser_contacts: burst(p+Vector2(15,15),3,MINT,3)
 	# Projectile tails have their own reduced cadence. Damage smoke and engines
 	# keep the original60ms emission rhythm independently.
-	projectile_trail_clock += g.tick_units
-	if (g.tick_units==1 and g.frame%int(PROJECTILE_TRAIL_PERIOD)==0) or (g.tick_units!=1 and projectile_trail_clock>=PROJECTILE_TRAIL_PERIOD):
+	projectile_trail_clock += g.delta_seconds
+	if projectile_trail_clock>=PROJECTILE_TRAIL_PERIOD-0.00000003:
 		projectile_trail_clock = fposmod(projectile_trail_clock,PROJECTILE_TRAIL_PERIOD)
 		for b in g.bullets:
 			var direction: Vector2 = b.velocity.normalized()
@@ -121,17 +123,17 @@ func observe(g: Node) -> void:
 			else:
 				emit(b.get("render_pos",b.pos)-direction*5,-direction*0.7,9,2.5 if kind==2 else 1.4,enemy_color(kind))
 		for shot in g.shots:
-			if int(shot.get("impact_ticks",-1))>=0: continue
+			if float(shot.get("impact_remaining_seconds",-1))>=0: continue
 			emit(shot.pos+Vector2(15,20),Vector2(rng.randf_range(-0.2,0.2),2),8,1.8,player_color(g.weapon))
-	trail_clock += g.tick_units
-	if (g.tick_units==1 and g.frame%2==0) or (g.tick_units!=1 and trail_clock>=2):
-		trail_clock = fposmod(trail_clock,2)
+	trail_clock += g.delta_seconds
+	if trail_clock>=0.06-0.00000003:
+		trail_clock = fposmod(trail_clock,0.06)
 		# Emit at the damaged hull; particle advection now creates the history trail.
 		if g.render_hp<40: emit_smoke(g.player+Pilot.visual_point(Vector2(25,40)),13)
 		for e in g.enemies:
 			emit_actor_smoke(e)
 		if not g.boss.is_empty(): emit_actor_smoke(g.boss)
-		if g.death_ticks==0:
+		if g.death_remaining_seconds==0:
 			for x in [17,33]: emit(g.player+Pilot.visual_point(Vector2(x,43)),Vector2(0,2.5),6,2.8,CYAN)
 
 static func boss_smoking(b: Dictionary) -> bool:
@@ -180,7 +182,7 @@ func draw_particles(c: Node2D, fraction: float = 0, layer: int = 0) -> void:
 		if part.smoke: continue
 		var t: float = part.age/part.life
 		var p: Vector2 = part.get("previous_pos",part.p).lerp(part.p,fraction)
-		c.draw_line(p-part.v*1.7,p,Color(part.color,(1-t)*0.85),maxf(0.6,part.size*(1-t)),true)
+		c.draw_line(p-part.v*PARTICLE_STREAK_SECONDS,p,Color(part.color,(1-t)*0.85),maxf(0.6,part.size*(1-t)),true)
 
 func draw_bullet(c: Node2D, b: Dictionary, position: Variant = null, phase: float = 0) -> void:
 	var p: Vector2 = position if position!=null else b.get("render_pos",b.pos)
@@ -200,7 +202,7 @@ func draw_shot(c: Node2D, shot: Dictionary, player: Vector2, weapon: int, positi
 	var p: Vector2 = (position if position!=null else shot.pos)+Vector2(15,12)
 	var color: Color = player_color(weapon)
 	if visual.phase=="impact":
-		var t: float = clampf(float(shot.get("impact_ticks",0))/9,0,1)
+		var t: float = clampf(float(shot.get("impact_remaining_seconds",0))/0.27,0,1)
 		halo(c,p,12+t*11,color,t*0.7)
 		c.draw_arc(p,3+(1-t)*17,0,TAU,32,Color(color,t*0.7),1.2,true)
 	else:
@@ -213,13 +215,13 @@ func _blast_record(blast: Dictionary) -> Dictionary:
 	return {}
 
 func draw_explosion(c: Node2D, blast: Dictionary, position: Variant = null) -> void:
-	if blast.get("delay",0)>0: return
-	var ticks: float = float(blast.get("render_ticks",0))
+	if blast.get("delay_seconds",0)>0: return
+	var ticks: float = float(blast.get("render_remaining_seconds",0))
 	if ticks<=0: return
 	var record: Dictionary = _blast_record(blast)
-	var large: bool = int(record.get("duration",35 if ticks>20 else 20))>20
-	var duration: float = 35 if large else 20
-	var age: float = duration-ticks
+	var large: bool = float(record.get("duration",1.05 if ticks>0.6 else 0.6))>0.6
+	var duration: float = 1.05 if large else 0.6
+	var age: float = (duration-ticks)*33.333333333333336
 	var p: Vector2 = (position if position!=null else blast.get("render_pos",blast.pos))+Vector2(25,25)
 	var fade: float = clampf(ticks/duration,0,1)
 	var radius: float = (30 if large else 21)+age*1.45
@@ -244,13 +246,13 @@ func draw_charge(c: Node2D, p: Vector2, frame: float) -> void:
 		halo(c,orbit,4,PINK,0.8)
 	c.draw_arc(p,7,0,TAU,32,Color("ffe5ff"),1,true)
 
-func draw_special(c: Node2D, g: Node, player: Variant = null, shield: Variant = null, phase: float = -1) -> void:
+func draw_special(c: Node2D, g: Node, player: Variant = null, shield_position: Variant = null, phase: float = -1) -> void:
 	var ship: Vector2 = g.player if player==null else player
-	var shield_pos: Vector2 = g.shield_center if shield==null else shield
-	var time: float = g.timeline() if phase<0 else phase
-	var ticks: float = g.laser_render_ticks
+	var shield_pos: Vector2 = g.shield_center if shield_position==null else shield_position
+	var time: float = g.timeline()*33.333333333333336 if phase<0 else phase
+	var ticks: float = g.beam_render_seconds
 	if ticks>0:
-		var intensity: float = minf(1,float(ticks)/4)
+		var intensity: float = minf(1,float(ticks)/0.12)
 		var base: Vector2 = ship+Vector2(25,9)
 		var top := Vector2(base.x,-10)
 		c.draw_line(base,top,Color(CYAN,0.08*intensity),28,true)
@@ -261,9 +263,9 @@ func draw_special(c: Node2D, g: Node, player: Variant = null, shield: Variant = 
 		for i in range(16):
 			var p := Vector2(base.x+sin(i*2+time)*8,fposmod(i*31-time*9,480))
 			halo(c,p,3,CYAN,intensity*0.6)
-	if g.shield_render_ticks>0:
-		var remaining: float = g.shield_render_ticks
-		var fade: float = minf(1,float(remaining)/25)*minf(1,float(201-remaining)/3)
+	if g.shield_render_seconds>0:
+		var remaining: float = g.shield_render_seconds
+		var fade: float = minf(1,float(remaining)/0.75)*minf(1,float(6.03-remaining)/0.09)
 		var p: Vector2 = shield_pos
 		halo(c,p,49,CYAN,0.15*fade)
 		c.draw_arc(p,40,0,TAU,96,Color(CYAN,fade*0.6),1.4,true)
@@ -275,6 +277,6 @@ func draw_special(c: Node2D, g: Node, player: Variant = null, shield: Variant = 
 			halo(c,p+Vector2.from_angle(angle)*40,3,CYAN,fade*0.7)
 	for point in g.laser_contacts: halo(c,point+Vector2(15+ship.x-g.player.x,15),19,MINT)
 	for point in g.shield_contacts: halo(c,point,17,CYAN)
-	if g.hit_flash_render_ticks>0:
-		var opacity: float = float(g.hit_flash_render_ticks)/19
+	if g.hit_flash_render_seconds>0:
+		var opacity: float = float(g.hit_flash_render_seconds)/0.57
 		halo(c,ship+Vector2(25,25),28,HOT,opacity*0.6)

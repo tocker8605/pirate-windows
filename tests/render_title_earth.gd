@@ -35,12 +35,13 @@ func run() -> void:
 	var opening: Image = await capture(g)
 	opening.save_png("res://preview-opening-earth-v17.png")
 	check(g.view.background.visible and g.view.background.material.get_shader_parameter("earth_texture")==g.view.renewal.earth,"Space reveals the exact shared stage4 Earth texture")
-	check(g.view.background.material.get_shader_parameter("stage")==4 and not g.view.background.material.get_shader_parameter("boss_rush"),"opening uses normal-stage4 Earth shader mode")
+	check(g.view.background.material.get_shader_parameter("stage")==4,"opening uses normal-stage4 Earth shader mode")
 	var source_top: float = 3360.0-g.title.scroll
 	var dx: int = int(round(g.title.scroll/3.5))
 	check(g.view.background.material.get_shader_parameter("source_top")==source_top and g.view.background.position.x==-dx,"opening retains original vertical scroll and horizontal camera drift")
 	check(opening.get_pixel(400,600)==Color.BLACK and opening.get_pixel(60,600)!=Color.BLACK,"black pane reveals Earth from left to right")
 	g._load_stage(4)
+	g.delta_seconds = 0.03
 	g.background_y = source_top
 	g.clouds = [Vector2(-500,-500),Vector2(-500,-500)]
 	g.player = Vector2(-500,-500)

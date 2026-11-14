@@ -20,6 +20,7 @@ func run() -> void:
 	await process_frame
 	g.set_process(false)
 	g._load_stage(2)
+	g.delta_seconds = 0.03
 	g.events = []
 	g.clouds = [Vector2(-500,-500),Vector2(-500,-500)]
 	g.player = Vector2(175,390)
@@ -48,7 +49,7 @@ func run() -> void:
 	check(is_equal_approx(g.view.vfx.SMOKE_SIZE_SCALE,0.8),"smoke linear dimensions use80percent of the previous size")
 	# Compare the same projectiles with smoke toggled, so exact overlap proves order.
 	var smoke_particles: Array = g.view.vfx.particles.duplicate(true)
-	g.shots = [{"pos":Vector2(60,113),"kind":1,"alive":true,"impact_ticks":-1,"visual":{"phase":"flight"}}]
+	g.shots.replace_all([{"pos":Vector2(60,113),"kind":1,"alive":true,"impact_remaining_seconds":-1,"visual":{"phase":"flight"}}])
 	g.view.vfx.particles.clear()
 	g.view.foreground.queue_redraw()
 	await RenderingServer.frame_post_draw
@@ -58,7 +59,7 @@ func run() -> void:
 	await RenderingServer.frame_post_draw
 	var allied_smoke: Image = root.get_texture().get_image()
 	check(allied_clear.get_pixel(150,250).get_luminance()>allied_smoke.get_pixel(150,250).get_luminance()+0.2,"black smoke is above the overlapping allied shot")
-	g._bullet(Vector2(75,125),Vector2.DOWN,4)
+	g._bullet(Vector2(75,125),(Vector2.DOWN)/0.03,4)
 	g.view.vfx.particles.clear()
 	g.view.foreground.queue_redraw()
 	await RenderingServer.frame_post_draw

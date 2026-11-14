@@ -4,11 +4,11 @@ const Boss = preload("res://scripts/boss.gd")
 const Fire = preload("res://scripts/enemy_fire.gd")
 static func initial_clouds() -> Array:
 	return [Vector2(120,400),Vector2(320,20)]
-static func advance_clouds(clouds: Array, speed: float, units: float = 1.0) -> void:
-	var dy: int = int(floorf(speed*1.5))
+static func advance_clouds(clouds: Array, speed: float, seconds: float = 1.0/60.0) -> void:
+	var dy: float = floorf(speed*0.045)*33.333333333333336
 	for i in range(2):
 		var p: Vector2 = clouds[i]
-		p.y += dy*units
+		p.y += dy*seconds
 		if p.y>480:
 			p.x += 100 if i==0 else 50
 			p.y = -300

@@ -3,10 +3,10 @@ extends RefCounted
 const SCREEN: float = 480.0
 const EDGES: Vector4 = Vector4(SCREEN*2,SCREEN*3,SCREEN*5,SCREEN*6)
 const NAMES: Array = [
- ["OCEAN","COAST","FOREST"],
- ["GREEN VALLEYS","SNOW PEAKS","FOREST RIDGES"],
- ["NIGHT SNOW","NIGHT OUTPOST","NIGHT OCEAN"],
- ["EARTH","SPACE","MOON SURFACE","LUNAR CAVERN"]]
+	["OCEAN","COAST","FOREST"],
+	["GREEN VALLEYS","SNOW PEAKS","FOREST RIDGES"],
+	["NIGHT SNOW","NIGHT OUTPOST","NIGHT OCEAN"],
+	["EARTH","SPACE","MOON SURFACE","LUNAR CAVERN"]]
 static func count(stage: int) -> int: return NAMES[clampi(stage,1,4)-1].size()
 static func earth_phase(source_y: float) -> float: return (source_y-SCREEN*6)/(SCREEN*2)
 static func sample(source_y: float, stage: int = 1) -> Dictionary:

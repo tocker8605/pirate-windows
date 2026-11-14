@@ -19,7 +19,7 @@ func _initialize() -> void:
 		check(spread[0].pos.x+spread[1].pos.x==player.x*2+20,"power%d parallel pair is symmetric about the pilot muzzle centre"%power)
 		var first: float = spread[0].pos.x
 		for i in range(60):
-			for shot in spread: Weapons.advance(shot,player,Clock.units_per_tick())
+			for shot in spread: Weapons.advance(shot,player,Clock.FIXED_STEP_SECONDS)
 		check(spread[0].pos.x==first and spread[1].pos.x-spread[0].pos.x==30,"power%d pair stays parallel across60 native ticks"%power)
 	for power in [5,6,7]:
 		var shots: Array = Weapons.volley(player,1,power)

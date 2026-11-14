@@ -46,12 +46,16 @@ func run() -> void:
 	await process_frame
 	g.set_process(false)
 	g._load_stage(4)
+	g.delta_seconds = 0.03
 	g.events = []
-	g.death_ticks = 1
-	g.tick_units = 1
+	g.death_remaining_seconds = 0.03
+	g.delta_seconds = 0.03
 	g.frame = 2
 	g.boss = {"stage":4,"pos":Vector2(200,90),"velocity":Vector2.ZERO,"hp":399.0,"max_hp":1000.0}
 	g.view.vfx.reset()
+	g.frame = 1
+	g.view.vfx.observe(g)
+	g.frame = 2
 	g.view.vfx.observe(g)
 	var smoke: Array = g.view.vfx.particles.filter(func(p): return p.smoke)
 	check(smoke.size()==6 and smoke.all(func(p): return p.size>=14.4 and p.size<=17.6),"live boss observer uses three large-enemy-size smoke ports")
@@ -75,11 +79,12 @@ func run() -> void:
 	g._update_items()
 	check(g.items.at(0).pos.y>payload.y and g.items.at(0).age>0,"released payload falls and grows smoothly from clamp size")
 	g._load_stage(1)
+	g.delta_seconds = 0.03
 	g.events = []
 	g.automatic = true
 	for i in range(60): g._process(1.0/60.0)
 	g.automatic = false
-	check(g.frame==60 and is_equal_approx(g.elapsed_units,60*Clock.units_per_tick(1)),"real one-second gameplay stays at native60Hz and fixed level1 speed")
+	check(g.frame==60 and is_equal_approx(g.stage_elapsed_seconds,60*Clock.FIXED_STEP_SECONDS),"real one-second gameplay stays at native60Hz and fixed level1 speed")
 	check(g.view.renewal.enemies.resource_path.ends_with("enemies-v18.png"),"v18 regular enemy atlas is active")
 	check(g.view.renewal.bosses.resource_path.ends_with("bosses-v15.png"),"existing mecha boss artwork is retained")
 	g.audio.stop_all()

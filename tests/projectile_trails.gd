@@ -19,17 +19,18 @@ func run() -> void:
 	await process_frame
 	g.set_process(false)
 	g._load_stage(4)
+	g.delta_seconds = 0.03
 	g.events = []
 	g.enemies.clear()
-	g.death_ticks = 1
-	g.scroll_speed = 0
+	g.death_remaining_seconds = 0.03
+	g.scroll_speed = (0/0.03)
 	g.boss = Catalog.create(94,Vector2(200,30))
 	g.boss.hp = 300
 	g.bullets.clear()
-	g._bullet(Vector2(50,100),Vector2(0,-2),8)
-	g._bullet(Vector2(150,100),Vector2.DOWN,1)
-	g.shots = [{"pos":Vector2(250,100),"kind":1,"impact_ticks":-1,"alive":true}]
-	g.tick_units = 1
+	g._bullet(Vector2(50,100),(Vector2(0,-2))/0.03,8)
+	g._bullet(Vector2(150,100),(Vector2.DOWN)/0.03,1)
+	g.shots.replace_all([{"pos":Vector2(250,100),"kind":1,"impact_remaining_seconds":-1,"alive":true}])
+	g.delta_seconds = 0.03
 	var fx = g.view.vfx
 	fx.reset()
 	var gameplay_rng: int = Rng.state

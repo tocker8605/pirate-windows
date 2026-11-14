@@ -34,44 +34,45 @@ func run() -> void:
 	for i in range(2): key(game,KEY_DOWN)
 	check(game.title.phase==24,"original title weapon selection handles input")
 	key(game,KEY_SPACE)
-	game._tick(Vector2.ZERO,false,false,false)
-	game._tick(Vector2.ZERO,false,false,false)
+	game._tick(Vector2.ZERO,false,false,false,0.03)
+	game._tick(Vector2.ZERO,false,false,false,0.03)
 	check(game.state == "playing", "space starts gameplay")
-	game._tick(Vector2(-1,-1),false,false,false)
+	game._tick(Vector2(-1,-1),false,false,false,0.03)
 	check(game.player == Vector2(164,294), "movement follows original six-pixel tick")
-	for i in range(100): game._tick(Vector2(-1,-1),false,false,false)
+	for i in range(100): game._tick(Vector2(-1,-1),false,false,false,0.03)
 	check(game.player == Vector2(-5,0), "40px player drawing reaches the left edge with zero margin")
 	game.player.x = 1000
-	game._tick(Vector2.ZERO,false,false,false)
+	game._tick(Vector2.ZERO,false,false,false,0.03)
 	check(game.player.x==355, "40px player drawing reaches the right edge with zero margin")
 	game.start_game()
-	game._tick(Vector2.ZERO,true,false,false)
+	game.delta_seconds = 0.03
+	game._tick(Vector2.ZERO,true,false,false,0.03)
 	check(game.stats.shots == 1 and game.energy < 100, "firing consumes energy")
-	game._tick(Vector2.ZERO,false,true,false)
-	check(game.laser > 0, "beam activates")
+	game._tick(Vector2.ZERO,false,true,false,0.03)
+	check(game.beam_remaining_seconds > 0, "beam activates")
 	game.energy = 100
-	game._tick(Vector2.ZERO,false,false,true)
-	check(game.shield > 0, "shield activates")
-	game._tick(Vector2.ZERO,false,false,false)
-	game._tick(Vector2.ZERO,false,false,false)
+	game._tick(Vector2.ZERO,false,false,true,0.03)
+	check(game.shield_remaining_seconds > 0, "shield_remaining_seconds activates")
+	game._tick(Vector2.ZERO,false,false,false,0.03)
+	game._tick(Vector2.ZERO,false,false,false,0.03)
 	game.bullets.clear()
-	game._bullet(game.shield_center,Vector2(0,0.1))
+	game._bullet(game.shield_center,(Vector2(0,0.1))/0.03)
 	game._update_bullets()
-	check(game.bullets.is_empty(), "shield intercepts incoming projectiles")
-	game.shield = 0
-	game.invulnerable = 0
-	game._bullet(game.player+Vector2(25,18),Vector2(0,0.1))
+	check(game.bullets.is_empty(), "shield_remaining_seconds intercepts incoming projectiles")
+	game.shield_remaining_seconds = 0
+	game.invulnerability_seconds = 0
+	game._bullet(game.player+Vector2(25,18),(Vector2(0,0.1))/0.03)
 	game._update_bullets()
-	check(game.hp == 91 and game.invulnerable == 50, "bullet damage grants temporary invulnerability")
-	game._bullet(game.player+Vector2(25,18),Vector2(0,0.1))
+	check(game.hp == 75 and game.invulnerability_seconds == 1.5, "bullet damage grants temporary invulnerability")
+	game._bullet(game.player+Vector2(25,18),(Vector2(0,0.1))/0.03)
 	game._update_bullets()
-	check(game.hp == 91, "invulnerability prevents repeated damage")
+	check(game.hp == 75, "invulnerability prevents repeated damage")
 	game.items.replace_all([{"pos":game.player+Vector2(25,20),"kind":1}])
 	game._update_items()
 	check(game.power == 2 and game.energy == 100, "power-up collection")
 	key(game,KEY_P)
 	var before: int = game.frame
-	game._tick(Vector2.ONE,true,false,false)
+	game._tick(Vector2.ONE,true,false,false,0.03)
 	check(game.state == "paused" and game.frame == before, "pause freezes simulation")
 	key(game,KEY_P)
 	check(game.state == "playing", "resume works")
@@ -79,11 +80,12 @@ func run() -> void:
 	check(game.score == 0 and game.frame == 0 and game.power == 1, "restart clears run state")
 	for w in range(1,4):
 		game.start_game()
+		game.delta_seconds = 0.03
 		game.weapon = w
 		for i in range(3550):
 			game.hp = 100
-			game.invulnerable = 100
-			game._tick(Vector2(sin(i*0.017),0),true,i%300==0,i%500==0)
+			game.invulnerability_seconds = 3.0
+			game._tick(Vector2(sin(i*0.017),0),true,i%300==0,i%500==0,0.03)
 		check(game.stats.spawned == 125, "weapon %d: every enemy event consumed" % w)
 		check(game.stats.boss_spawned and not game.boss.is_empty(), "weapon %d: boss appears" % w)
 		check(game.stats.killed > 0 and game.stats.hits > 0, "weapon %d: shots destroy enemies" % w)
@@ -91,6 +93,7 @@ func run() -> void:
 		check(game.bullets.valid() and game.enemies.valid(), "weapon %d: dynamic entity stores remain consistent" % w)
 	# Exercise the real hit path against the boss body and wing protection.
 	game.start_game()
+	game.delta_seconds = 0.03
 	game.events = game.events.filter(func(row): return is_equal_approx(float(row.at),104.4))
 	game.frame = 3481
 	game.stage_elapsed_seconds = game.frame*0.03
@@ -101,25 +104,26 @@ func run() -> void:
 	check(not game.Boss.parts_alive(game.enemies) and not game.boss.is_empty(), "destroying wing units leaves boss body hittable")
 	game.boss.pos = Vector2(200,100)
 	game.boss.hp = 3
-	game.shots = [{"pos":Vector2(200,145),"velocity":Vector2(0,-19),"alive":true}]
+	game.shots.replace_all([{"pos":Vector2(200,145),"velocity":(Vector2(0,-19))/0.03,"alive":true}])
 	game._update_shots()
-	game._tick(Vector2.ZERO,false,false,false)
-	check(game.state=="boss_dying" and game.boss_death_ticks==239, "boss destruction starts original 240-tick sequence")
+	game._tick(Vector2.ZERO,false,false,false,0.03)
+	check(game.state=="boss_dying" and is_equal_approx(game.boss_death_remaining_seconds,7.17), "boss destruction starts original 240-tick sequence")
 	game.start_game()
+	game.delta_seconds = 0.03
 	game.hp = 1
-	game.invulnerable = 0
-	game._bullet(game.player+Vector2(25,18),Vector2(0,0.1))
-	game._tick(Vector2.ZERO,false,false,false)
-	game._tick(Vector2.ZERO,false,false,false)
-	check(game.state=="dying" and game.death_ticks==239, "fatal damage starts original game-over explosion sequence")
-	for i in range(239): game._tick(Vector2.ZERO,false,false,false)
+	game.invulnerability_seconds = 0
+	game._bullet(game.player+Vector2(25,18),(Vector2(0,0.1))/0.03)
+	game._tick(Vector2.ZERO,false,false,false,0.03)
+	game._tick(Vector2.ZERO,false,false,false,0.03)
+	check(game.state=="dying" and is_equal_approx(game.death_remaining_seconds,7.17), "fatal damage starts original game-over explosion sequence")
+	for i in range(239): game._tick(Vector2.ZERO,false,false,false,0.03)
 	key(game,KEY_SPACE)
 	for i in range(94): game.title.tick()
 	key(game,KEY_DOWN)
 	key(game,KEY_DOWN)
 	key(game,KEY_SPACE)
-	game._tick(Vector2.ZERO,false,false,false)
-	game._tick(Vector2.ZERO,false,false,false)
+	game._tick(Vector2.ZERO,false,false,false,0.03)
+	game._tick(Vector2.ZERO,false,false,false,0.03)
 	check(game.state=="playing" and game.hp==100,"original Continue restarts after game-over returns to title")
 	# Check alpha extraction against an original white background and opaque centre.
 	var sprite: Image = game.art.sprite("picair",Rect2i(0,0,50,50),Vector2i(0,50)).get_image()

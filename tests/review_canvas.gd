@@ -17,7 +17,7 @@ func _draw() -> void:
 	for weapon in range(1,4):
 		var y: float = 270+(weapon-1)*57
 		for i in range(5):
-			var shot: Dictionary = {"pos":Vector2(0,100 if i==1 else 140),"impact_ticks":9-(i-2)*3 if i>=2 else -1}
+			var shot: Dictionary = {"pos":Vector2(0,100 if i==1 else 140),"impact_remaining_seconds":0.27-(i-2)*3 if i>=2 else -1}
 			var visual: Dictionary = Weapons.visual(shot,Vector2(0,140))
 			draw_texture(art.sprite("weapon%d"%weapon,visual.rect,visual.mask),Vector2(anchors[i],y)+visual.offset)
 		draw_string(font,Vector2(9,y+42),"WEAPON %d"%weapon,HORIZONTAL_ALIGNMENT_LEFT,-1,10)

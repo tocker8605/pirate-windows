@@ -31,9 +31,10 @@ func run() -> void:
 	g.set_process(false)
 	for speed in range(1,6):
 		g._load_stage(1)
+		g.delta_seconds = 0.03
 		g.clock = Clock.new()
 		g.events = g.events.filter(func(row): return int(row.get("definition_id",0))==201).slice(0,1)
-		var units: float = Clock.units_per_tick(speed)
+		var units: float = Clock.FIXED_STEP_SECONDS
 		var found: Dictionary = {}
 		for i in range(2000):
 			g._tick(Vector2.ZERO,false,false,false,units)
@@ -42,12 +43,12 @@ func run() -> void:
 				break
 		check(not found.is_empty() and found.pos.y<=291.001,"speed%d actual authored carrier becomes vulnerable at native60Hz"%speed)
 		if found.is_empty(): continue
-		g.shots = [{"pos":found.pos,"kind":1,"alive":true,"impact_ticks":-1}]
+		g.shots.replace_all([{"pos":found.pos,"kind":1,"alive":true,"impact_remaining_seconds":-1}])
 		g._resolve_shots()
 		check(found.hp<=0 and g.stats.hits==1,"speed%d player shot damages the opened supply craft"%speed)
 		g._tick(Vector2.ZERO,false,false,false,units)
 		check(found.kind==201 and found.get("rescued",false) and g.items.size()==1 and g.items.at(0).kind==1,"speed%d rescue produces exactly one power item"%speed)
-		for i in range(int(ceil(20.0/units))): g._tick(Vector2.ZERO,false,false,false,units)
+		for i in range(int(ceil(0.6/units))): g._tick(Vector2.ZERO,false,false,false,units)
 		check(found.kind==201 and g.items.size()==1 and g.score==500,"speed%d escaping carrier does not reopen or duplicate rewards"%speed)
 		g.player = g.items.at(0).pos-Vector2(25,25)
 		g._update_items()

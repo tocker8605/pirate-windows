@@ -4,8 +4,8 @@ extends RefCounted
 const Depth = preload("res://scripts/enemy_depth.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Pilot = preload("res://scripts/pilot_geometry.gd")
-const CONTACT_DAMAGE: float = 10.0
-const DAMAGE: Array = [0,3,10,4,6,5,6,7,4]
+static func incoming_damage(difficulty: int) -> float:
+	return 10.0+5.0*clampi(difficulty,1,5)
 static func between(value: float, low: float, high: float) -> bool: return value>low and value<high
 static func _shot_hits(pos: Vector2, actor: Dictionary, definition: Dictionary) -> bool:
 	if not definition.get("damageable",false): return false

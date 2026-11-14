@@ -43,36 +43,37 @@ func run() -> void:
 	root.add_child(g)
 	await process_frame
 	g._load_stage(4)
+	g.delta_seconds = 0.03
 	g.events = []
-	g.death_ticks = 1
+	g.death_remaining_seconds = 0.03
 	g.frame = 1
 	var fx = g.view.vfx
 	fx.reset()
 	fx.observe(g)
 	fx.emit(Vector2(100,100),Vector2.ZERO,30,10,FX.SMOKE_COLOR,true)
-	g.scroll_speed = 2
+	g.scroll_speed = (2/0.03)
 	g.frame += 1
 	fx.observe(g)
 	check(is_equal_approx(fx.particles[0].p.y,102),"smoke follows slow scroll2px per authored unit")
-	g.scroll_speed = 10
+	g.scroll_speed = (10/0.03)
 	g.frame += 1
 	fx.observe(g)
 	check(is_equal_approx(fx.particles[0].p.y,112),"existing smoke immediately follows changed scroll speed10")
-	g.tick_units = Clock.units_per_tick()
-	g.scroll_speed = 18
+	g.delta_seconds = Clock.FIXED_STEP_SECONDS
+	g.scroll_speed = (18/0.03)
 	g.frame += 1
 	fx.observe(g)
 	check(is_equal_approx(fx.particles[0].p.y,122),"smoke advection uses the native60Hz conversion")
-	g.scroll_speed = 0
+	g.scroll_speed = (0/0.03)
 	g.frame += 1
 	fx.observe(g)
 	check(is_equal_approx(fx.particles[0].p.y,122),"zero scroll causes no artificial downward smoke motion")
 	fx.emit_smoke(Vector2(120,150),12)
-	check(fx.particles[-1].color.r<0.1 and fx.particles[-1].v.y==0 and fx.particles[-1].life==28,"damage smoke is dark and longer-lived without baked vertical drift")
+	check(fx.particles[-1].color.r<0.1 and fx.particles[-1].v.y==0 and is_equal_approx(fx.particles[-1].life,0.84),"damage smoke is dark and longer-lived without baked vertical drift")
 	check(fx.smoke_puff.get_image().get_pixel(32,32).a>0.99,"new smoke texture has a dense opaque core")
 	fx.reset()
 	g.render_hp = 25
-	g.death_ticks = 0
+	g.death_remaining_seconds = 0
 	g.enemies.append({"kind":1,"pos":Vector2(200,100),"velocity":Vector2.ZERO,"hp":2})
 	for i in range(4):
 		g.frame += 1

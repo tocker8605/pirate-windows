@@ -8,30 +8,33 @@ static func smoke(commands: Array, pos: Vector2, frame: int) -> void:
 	commands.append(sprite("picsmo",Rect2i(frame*50,0,50,50),Vector2i(frame*50,50),pos))
 static func enemy_smoke(e: Dictionary, frame: int, speed: float) -> Array:
 	var commands: Array = []
+	speed *= 0.03
 	if not Catalog.smoking(e): return commands
 	var offsets: Array = Catalog.smoke_settings(e).ports.map(func(p): return p-Vector2(25,25))
 	for offset in offsets:
-		smoke(commands,e.pos+offset-Vector2(e.velocity.x*8,e.velocity.y*6)+Vector2(0,speed*2),frame)
-		smoke(commands,e.pos+offset-Vector2(e.velocity.x*5,e.velocity.y*4)+Vector2(0,speed),frame+1)
-		smoke(commands,e.pos+offset-e.velocity*2,frame+2)
+		smoke(commands,e.pos+offset-Vector2(e.velocity.x*0.03*8,e.velocity.y*0.03*6)+Vector2(0,speed*2),frame)
+		smoke(commands,e.pos+offset-Vector2(e.velocity.x*0.03*5,e.velocity.y*0.03*4)+Vector2(0,speed),frame+1)
+		smoke(commands,e.pos+offset-e.velocity*0.06,frame+2)
 	return commands
 static func player_smoke(player: Vector2, frame: int, speed: float) -> Array:
 	var commands: Array = []
+	speed *= 0.03
 	smoke(commands,player+Vector2(0,10),frame+2)
 	smoke(commands,player+Vector2(0,25+speed*2),frame+1)
 	smoke(commands,player+Vector2(0,40+speed*4),frame)
 	return commands
-static func advance(blasts: Array, speed: float, units: float = 1.0) -> void:
+static func advance(blasts: Array, speed: float, seconds: float = 1.0/60.0) -> void:
 	for blast in blasts:
-		if blast.get("delay",0)>0:
-			blast.delay = maxf(0,blast.delay-units)
+		if blast.get("delay_seconds",0)>0:
+			blast.delay_seconds = maxf(0,blast.delay_seconds-seconds)
 			continue
 		blast.render_pos = blast.pos
-		blast.render_ticks = blast.ticks
-		blast.pos.y += speed*units
-		blast.ticks -= units
+		blast.render_remaining_seconds = blast.remaining_seconds
+		blast.pos.y += speed*seconds
+		blast.remaining_seconds -= seconds
 static func explosion(blast: Dictionary, speed: float) -> Array:
-	var n: int = int(blast.get("render_ticks",0))
+	speed *= 0.03
+	var n: int = int(floor(float(blast.get("render_remaining_seconds",0))*33.333333333333336+0.000001))
 	var p: Vector2 = blast.get("render_pos",blast.pos)
 	var result: Array = []
 	if n>20 and n<35:

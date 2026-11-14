@@ -13,6 +13,7 @@ func run() -> void:
 	root.add_child(game)
 	await process_frame
 	game._load_stage(3)
+	game.delta_seconds = 0.03
 	game.background_y = 1800
 	game.clouds = [Vector2(10,100),Vector2(30,140)]
 	game.player = Vector2(340,430)
@@ -22,7 +23,7 @@ func run() -> void:
 	game.bullets.clear()
 	game.shots.clear()
 	game.items.clear()
-	game.banner_ticks = 0
+	game.banner_remaining_seconds = 0
 	game._redraw()
 	await RenderingServer.frame_post_draw
 	var actual: Image = root.get_texture().get_image()
@@ -66,9 +67,10 @@ func run() -> void:
 	if score_samples==0 or score_errors>0: failures += 1
 	print("TITLE SCORE PIXELS: %d opaque samples, %d mismatches"%[score_samples,score_errors])
 	game.start_game()
+	game.delta_seconds = 0.03
 	game.events = []
 	game.hp = 0
-	game._tick(Vector2.ZERO,false,false,false)
+	game._tick(Vector2.ZERO,false,false,false,0.03)
 	game._redraw()
 	await RenderingServer.frame_post_draw
 	actual = root.get_texture().get_image()

@@ -18,7 +18,7 @@ class Driver extends Node:
 		for part in g.enemies: part.hp = part.max_hp
 		g.energy = 100
 		for part in g.enemies: part.hp = part.max_hp
-		g._tick(Vector2.ZERO,true,false,false,Clock.units_per_tick())
+		g._tick(Vector2.ZERO,true,false,false,Clock.FIXED_STEP_SECONDS)
 		g._redraw()
 		count += 1
 		deltas.append(delta*1000)
@@ -40,6 +40,7 @@ func run() -> void:
 	await process_frame
 	g.set_process(false)
 	g._load_stage(4)
+	g.delta_seconds = 0.03
 	g.events = []
 	g.enemies.clear()
 	g.boss = Catalog.create(94,Vector2(200,100 if with_parts else 30))
@@ -49,10 +50,10 @@ func run() -> void:
 	g.player = Vector2(175,390)
 	g.power = 7
 	g.weapon = 1
-	g.invulnerable = 1000000
+	g.invulnerability_seconds = 30000.0
 	g.clock = Clock.new()
-	g.scroll_speed = 0
-	g.scroll_target = 0
+	g.scroll_speed = (0/0.03)
+	g.scroll_target = (0/0.03)
 	g.background_y = 480
 	g.map_mode = 3
 	Rng.state = 0x50000
@@ -60,7 +61,7 @@ func run() -> void:
 		g.boss.hp = 300
 		g.energy = 100
 		for part in g.enemies: part.hp = part.max_hp
-		g._tick(Vector2.ZERO,true,false,false,Clock.units_per_tick())
+		g._tick(Vector2.ZERO,true,false,false,Clock.FIXED_STEP_SECONDS)
 	var driver = Driver.new()
 	driver.g = g
 	root.add_child(driver)
