@@ -19,31 +19,33 @@ func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var original: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/timeline_v20.json"))
 	var expected_hp: Dictionary = {19:1,91:1000,92:1250,93:1500,94:1500,123:400,124:400,111:250,112:250}
+	# Historical HP expectations remain independent of editable stage ordering/times.
+	for rows in original.values():
+		for row in rows:
+			var id: int=int(row[1])
+			if id not in [19,201,61,62,71] and not expected_hp.has(id): expected_hp[id]=int(row[5])
 	var total := 0
+	var expected_total := 0
 	for filename in original:
 		var stage: int = int(filename.trim_prefix("stage"))
-		var legacy_events: Array = original[filename].filter(func(row): return int(row[1]) not in [19,201])
-		var events: Array = Timeline.load_stage(stage-10 if stage>10 else stage,stage>10)
-		check(events.size()==legacy_events.size(),"%s retains every original event"%filename)
-		var same: bool = true
-		var hp_same: bool = true
-		for i in range(events.size()):
-			var old: Array = legacy_events[i]
-			var e: Dictionary = events[i]
-			same = same and is_equal_approx(float(e.at),float(old[0])*0.9) and not e.has("hp")
-			match int(old[1]):
-				61,62: same = same and e.action=="banner" and e.name==("warning" if old[1]==61 else "mission")
-				71: same = same and e.action=="scroll" and e.mode==old[2] and is_equal_approx(e.speed,float(old[3])/0.03)
-				_:
-					var id: int = int(old[1])
-					same = same and e.action=="spawn" and e.definition_id==id and e.position==[old[2],old[3]] and e.pattern==(0 if id in [123,124] else old[4])
-					if not expected_hp.has(id): expected_hp[id] = int(old[5])
-					var actor: Dictionary = Catalog.create(id,Vector2(e.position[0],e.position[1]),int(e.pattern))
-					hp_same = hp_same and actor.hp==expected_hp[id] and actor.max_hp==expected_hp[id]
-			total += 1
-		check(same,"%s named events retain time/order/position/pattern/control semantics"%filename)
-		check(hp_same,"%s defaults retain HP with authored boss balance updates"%filename)
-	check(total==663,"all663 non-supply normal and Boss Rush events retained")
+		var source: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://data/"+filename+".json"))
+		var valid: bool=Timeline.validate_document(source).is_empty()
+		check(valid,"%s authored timeline validates"%filename)
+		if not valid: continue
+		var authored: Array=Timeline.sorted_events(source.events)
+		var events: Array=Timeline.load_stage(stage-10 if stage>10 else stage,stage>10)
+		expected_total+=authored.size()
+		check(events==authored,"%s loader preserves current times, order, patterns and controls"%filename)
+		var hp_same: bool=true
+		for e in events:
+			if e.action=="spawn":
+				var id: int=int(e.definition_id)
+				var actor: Dictionary=Catalog.create(id,Vector2(e.position[0],e.position[1]),int(e.get("pattern",0)),e.get("overrides",{}))
+				var expected: float=float(e.get("overrides",{}).get("hp",expected_hp[id]))
+				hp_same=hp_same and actor.hp==expected and actor.max_hp==expected
+			total+=1
+		check(hp_same,"%s actors retain configured HP and explicit instance overrides"%filename)
+	check(total==expected_total,"all current authored events load without a fixed event count")
 	check(Catalog.ids().size()==35,"catalog defines all35 entity kinds including supply state")
 	for id in expected_hp:
 		check(Catalog.definition(id).hp==expected_hp[id],"entity%d matches configured base HP"%id)

@@ -2,6 +2,15 @@ extends SceneTree
 const Game = preload("res://scripts/game.gd")
 const Clock = preload("res://scripts/timing.gd")
 const Rng = preload("res://scripts/random.gd")
+class ReplayGame extends "res://scripts/game.gd":
+	const ReplayTimeline=preload("res://scripts/stage_events.gd")
+	var timelines: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/motion_timelines_v24_43.json"))
+	func _load_stage(number: int, preserve_run: bool = false) -> void:
+		super._load_stage(number,preserve_run)
+		events=ReplayTimeline.sorted_events(timelines["stage%02d"%(stage+10 if boss_rush else stage)].events)
+		supply_director.rng.seed=243200+stage
+		supply_director.plan(stage,power,events,boss_rush)
+
 var records: Array = []
 var checks := 0
 var failures := 0
@@ -41,7 +50,7 @@ func summary(collection: Variant) -> Array:
 		hp += e.get("hp",0)
 	return [collection.size(),value.x,value.y,velocity.x,velocity.y,hp]
 func run() -> void:
-	var g = Game.new()
+	var g = ReplayGame.new()
 	g.automatic = false
 	g.mute = true
 	root.add_child(g)
@@ -61,8 +70,8 @@ func run() -> void:
 				g._tick(Vector2(sin(tick*0.012),0),true,tick%300==0,tick%500==0,Clock.FIXED_STEP_SECONDS)
 				if tick%60==59:
 					records.append([rush,stage,tick,g.player.x,g.player.y,g.energy,g.score,g.stats.duplicate(),g.background_y,g.scroll_speed,summary(g.enemies),summary(g.bullets),summary(g.shots),g.boss.get("hp",0),Rng.state])
-	var reference: Array = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/supply_energy_replay_v24_40.json"))
-	# v24.40 power pickup adds50energy; supply RNG remains seeded for balance replay.
+	var reference: Array = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/motion_replay_v24_43.json"))
+	# v24.43 continuous movement uses frozen authoring inputs and independently checked physics.
 	for i in range(reference.size()):
 		checks += 1
 		if not equivalent(reference[i],records[i]):

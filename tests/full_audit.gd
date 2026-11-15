@@ -22,10 +22,10 @@ func run() -> void:
 	var recoveries: Array = []
 	for n in range(1,76):
 		var due: Dictionary = clock.begin()
-		if due.move: moves.append(n)
+		if due.animation: moves.append(n)
 		if clock.finish(true,0.03): recoveries.append(n)
-	check(moves.slice(0,4)==[10,19,28,37],"original first movement update at tick 10, then every 9")
-	check(clock.begin().keys()==["move"],"shared clock no longer owns an enemy firing phase")
+	check(moves.slice(0,4)==[10,19,28,37],"visual animation cadence remains unchanged and independent of movement")
+	check(clock.begin().keys()==["animation"],"shared clock owns neither steering nor enemy firing")
 	check(recoveries.slice(0,4)==[4,8,12,16],"energy recovery is one whole unit every four ticks")
 	clock.recovery = 8
 	check(not clock.finish(false) and clock.finish(true,0.03),"death suspends recovery without losing its counter")
@@ -129,10 +129,10 @@ func run() -> void:
 	game._debug_controls([KEY_C,KEY_R,KEY_U])
 	game._debug_controls([KEY_F6,KEY_F8])
 	check(game.debug_enabled and game.hp==100 and game.power==2,"original C+R+U and F6/F8 developer inputs")
-	game.clock.movement = 4
+	game.clock.animation_elapsed_seconds = 4
 	game._load_stage(2,true)
 	game.delta_seconds = 0.03
-	check(game.clock.movement==4,"movement clock survives stage loading independently of per-actor attacks")
+	check(game.clock.animation_elapsed_seconds==4,"visual animation clock remains independent of stage loading and actor movement")
 	for sheet in ["enemy_sm","picsmo"]:
 		var clipped: Image = game.art.sprite(sheet,Rect2i(-50,0,50,50),Vector2i(-50,50)).get_image()
 		check(clipped.get_pixel(0,0).a==0,"GDI out-of-sheet region clips transparently for "+sheet)

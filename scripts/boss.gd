@@ -17,44 +17,46 @@ static func has_part(enemies: Variant, kind: int) -> bool:
 		if e.kind==kind and e.hp>0: return true
 	return false
 
-static func steer(b: Dictionary, player: Vector2, enemies: Variant) -> void:
+static func steer(b: Dictionary, player: Vector2, enemies: Variant, seconds: float = 1.0/60.0) -> void:
+	if seconds<=0: return
+	var acceleration: float = Movement.BASE_ACCELERATION*seconds
 	var p: Vector2 = b.pos
-	var v: Vector2 = Movement.quantize_velocity(b.velocity)
+	var v: Vector2 = b.velocity
 	match int(b.stage):
 		1:
 			if p.y>120:
-				v.x += 33.333333333333336 if p.x<player.x+25 else -33.333333333333336
-				v.y -= 33.333333333333336
+				v.x += acceleration if p.x<player.x+25 else -acceleration
+				v.y -= acceleration
 			if p.y<80:
-				v.x += 33.333333333333336 if p.x<player.x+25 else -33.333333333333336
-				v.y += 33.333333333333336
-			if p.x<100: v.x += 66.66666666666667
-			if p.x>300: v.x -= 66.66666666666667
+				v.x += acceleration if p.x<player.x+25 else -acceleration
+				v.y += acceleration
+			if p.x<100: v.x += acceleration*2
+			if p.x>300: v.x -= acceleration*2
 			v = v.clamp(Vector2(-166.66666666666669,-166.66666666666669),Vector2(166.66666666666669,100))
 		2:
-			v.x += 33.333333333333336 if p.x<player.x+25 else -33.333333333333336
-			if p.y<0: v.y += 100
-			elif p.y>player.y-80: v.y -= 66.66666666666667
-			if p.x<150: v.x += 66.66666666666667
-			if p.x>250: v.x -= 66.66666666666667
+			v.x += acceleration if p.x<player.x+25 else -acceleration
+			if p.y<0: v.y += acceleration*3
+			elif p.y>player.y-80: v.y -= acceleration*2
+			if p.x<150: v.x += acceleration*2
+			if p.x>250: v.x -= acceleration*2
 			v = v.clamp(Vector2(-100,-233.33333333333334),Vector2(100,100))
 		3:
-			v.x += 33.333333333333336 if p.x<player.x+25 else -33.333333333333336
-			if p.y< -10: v.y += 33.333333333333336
-			elif p.y>100: v.y -= 33.333333333333336
-			if p.x<150: v.x += 66.66666666666667
-			if p.x>250: v.x -= 66.66666666666667
+			v.x += acceleration if p.x<player.x+25 else -acceleration
+			if p.y< -10: v.y += acceleration
+			elif p.y>100: v.y -= acceleration
+			if p.x<150: v.x += acceleration*2
+			if p.x>250: v.x -= acceleration*2
 			v = v.clamp(Vector2(-100,-100),Vector2(100,100))
 		4:
-			v.x += 33.333333333333336 if p.x<player.x+25 else -33.333333333333336
+			v.x += acceleration if p.x<player.x+25 else -acceleration
 			if parts_alive(enemies):
 				if p.y<51: v.y = 33.333333333333336
 				elif p.y>149: v.y = -33.333333333333336
 			else: v.y = -33.333333333333336 if p.y>30 else 0
-			if p.x<100: v.x += 66.66666666666667
-			if p.x>300: v.x -= 66.66666666666667
+			if p.x<100: v.x += acceleration*2
+			if p.x>300: v.x -= acceleration*2
 			v.x = clampf(v.x,-100,100)
-	b.velocity = Movement.quantize_velocity(v)
+	b.velocity = v
 
 static func attach(e: Dictionary, b: Dictionary) -> void:
 	if b.is_empty(): return

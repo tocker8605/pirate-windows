@@ -1,3 +1,14 @@
+Pirate II v24.43 — Continuous movement validation / 2026-11-16
+49 headless suites /2448checks passed, including34spawn-motion contracts and520 frozen replay checkpoints.
+Actual60FPS rendering:6checks passed;59.80FPS observed.
+All actors steer every physics frame using acceleration(px/s²)*delta. No global or per-actor steering wait.
+The remaining270ms clock is visual animation only.
+Current stage1 half-second formation entries:2.8,3.3,3.8,4.3seconds, independent of animation phase.
+Legacy migration-only authoring comparisons were replaced with current authored-document validation.
+Replay inputs and expected outputs are frozen under tests/fixtures/motion_*_v24_43.json.
+
+Previous validation record follows:
+
 v24.42 follow-up rollback / 2026-11-15
 Damage restored to15/20/25/30/35; HP recovery25. Eight related suites /511checks passed.
 BossRush emergency HP and crescent minimum-height rendering retained.

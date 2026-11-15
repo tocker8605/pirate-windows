@@ -33,7 +33,7 @@ func run() -> void:
 	check(Depth.scale_for(e)==1 and Depth.tint_for(e)==Color.WHITE,"surface boundary restores full size and brightness")
 	e.velocity.y = (-10/0.03)
 	Movement.steer(e,Vector2.ZERO,Vector2.ZERO)
-	check(is_equal_approx(e.velocity.y,-7/0.03),"movement starts decelerating at the same sharedY250 boundary")
+	check(absf(e.velocity.y-(-10/0.03+Movement.BASE_ACCELERATION*3/60))<0.001,"movement starts decelerating at the same sharedY250 boundary")
 	e = actor(250.001)
 	Movement.steer(e,Vector2.ZERO,Vector2.ZERO)
 	check(is_equal_approx(e.velocity.y,-10/0.03),"movement retains rapid ascent below the surface boundary")

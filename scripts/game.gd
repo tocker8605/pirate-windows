@@ -229,7 +229,7 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 	presentation.capture(self)
 	frame += 1
 	stage_elapsed_seconds += delta_seconds
-	var due: Dictionary = clock.begin()
+	clock.begin()
 	animation = clock.animation-1
 	var alive: bool = death_remaining_seconds==0
 	if automatic and alive:
@@ -268,9 +268,9 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 	render_hp = hp
 	_read_events()
 	supply_director.advance(self)
-	if due.move:
-		for e in enemies: Movement.steer(e,player,boss.get("pos",Vector2(200,-100)))
-		_boss_steer()
+	for e in enemies:
+		Movement.steer(e,player,boss.get("pos",Vector2(200,-100)),delta_seconds)
+	_boss_steer()
 	for e in enemies:
 		if OrbMotion.active(e): OrbMotion.prepare(e,boss)
 	if boss_death_remaining_seconds==0:
@@ -364,7 +364,7 @@ func _enemy_fire(e: Dictionary, seconds: float) -> void:
 	BulletPool.enemy(self,e,seconds)
 
 func _boss_steer() -> void:
-	if not boss.is_empty(): Boss.steer(boss,player,enemies)
+	if not boss.is_empty(): Boss.steer(boss,player,enemies,delta_seconds)
 
 func _update_boss() -> void:
 	if boss.is_empty(): return
