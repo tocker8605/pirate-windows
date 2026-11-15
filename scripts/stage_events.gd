@@ -6,15 +6,18 @@ static func validate_document(document: Variant) -> PackedStringArray:
 	if not document is Dictionary or document.get("schema_version",0)!=2 or document.get("time_unit","")!="seconds" or not document.get("events") is Array:
 		return PackedStringArray(["Expected version2 timeline with seconds time unit"])
 	var errors := PackedStringArray()
+	if document.has("comment") and not document.comment is String: errors.append("comment must be a string")
 	for i in range(document.events.size()):
 		var e: Variant = document.events[i]
 		var prefix: String = "event %d: "%i
 		if not e is Dictionary:
 			errors.append(prefix+"expected object")
 			continue
+		if not e.has("at"): continue # Untimed objects are authoring notes, not events.
 		if not Check.number(e.get("at")) or float(e.get("at",-1))<0:
 			errors.append(prefix+"at must be a finite nonnegative number")
-		var allowed: Array = ["at","action"]
+		if e.has("comment") and not e.comment is String: errors.append(prefix+"comment must be a string")
+		var allowed: Array = ["at","action","comment"]
 		match e.get("action",""):
 			"spawn":
 				allowed += ["definition_id","position","pattern","overrides"]
@@ -37,7 +40,9 @@ static func validate_document(document: Variant) -> PackedStringArray:
 static func sorted_events(events: Array) -> Array:
 	# Input has already passed validation. Explicit source indices make ties stable
 	# even though Array.sort_custom itself does not guarantee a stable sort.
-	var indices: Array = range(events.size())
+	var indices: Array = []
+	for index in range(events.size()):
+		if events[index].has("at"): indices.append(index)
 	indices.sort_custom(func(a: int, b: int) -> bool:
 		var time_a: float = events[a].at
 		var time_b: float = events[b].at
@@ -59,6 +64,9 @@ static func load_stage(stage: int, boss_rush: bool = false) -> Array:
 static func consume(g: Node) -> void:
 	while g.event_cursor<g.events.size():
 		var raw: Variant = g.events[g.event_cursor]
+		if raw is Dictionary and not raw.has("at"):
+			g.event_cursor += 1
+			continue
 		if not raw is Dictionary or not raw.has("at") or not raw.has("action"):
 			push_error("Timeline event %d was not loaded through the validated event loader"%g.event_cursor)
 			g.event_cursor = g.events.size()
