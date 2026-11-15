@@ -73,7 +73,6 @@ func render(canvas: Node2D, art: RefCounted, last_score: int, earth_background: 
 		for i in range(3):
 			copy(canvas,art,Vector2(250,335+i*40),Rect2i(0,100+i*30,55,30))
 			weapon_preview.draw_small(canvas,Rect2(307,332+i*40,83,36),i+1,preview_clock,phase==23+i)
-		weapon_preview.draw_large(canvas,art,Rect2(16,250,210,192),clampi(phase-22,1,3),preview_clock)
 		for pair in [[difficulty,260]]:
 			canvas.draw_texture(art.sprite("pichud",Rect2i(pair[0]*10,156,10,20),Vector2i(pair[0]*10,176)),Vector2(370,pair[1]))
 		copy(canvas,art,Vector2(240,[260,340,380,420][phase-22]),Rect2i(120,0,10,20))
