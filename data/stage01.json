@@ -230,6 +230,8 @@
     {"at": 99, "action": "scroll", "mode": 3, "speed": 833.3333333333334},
     
     {"at": 99.9, "action": "banner", "name": "warning"},
+
+    {"comment": "보스"},
     {"at": 104.4, "action": "spawn", "definition_id": 91, "position": [200, -100], "pattern": 0},
     {"at": 104.4, "action": "spawn", "definition_id": 101, "position": [75, -50], "pattern": 2101},
     {"at": 104.4, "action": "spawn", "definition_id": 102, "position": [275, -50], "pattern": 2102}

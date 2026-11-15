@@ -4,150 +4,257 @@
   "events": [
     {"at": 0, "action": "scroll", "mode": 1, "speed": 833.3333333333334},
     {"at": 0.9, "action": "banner", "name": "mission"},
+
+    {"comment": "wing 우하"},
     {"at": 5.4, "action": "spawn", "definition_id": 2, "position": [400, 220], "pattern": 1054},
     {"at": 6.3, "action": "spawn", "definition_id": 2, "position": [400, 225], "pattern": 1054},
     {"at": 7.2, "action": "spawn", "definition_id": 2, "position": [400, 230], "pattern": 1054},
-    {"at": 8.1, "action": "spawn", "definition_id": 4, "position": [50, -50], "pattern": 1011},
     {"at": 8.1, "action": "spawn", "definition_id": 11, "position": [400, 235], "pattern": 1054},
-    {"at": 9, "action": "spawn", "definition_id": 4, "position": [100, -50], "pattern": 1011},
     {"at": 9, "action": "spawn", "definition_id": 11, "position": [400, 240], "pattern": 1054},
+
+    {"comment": "cross_fighter_a 좌상"},
+    {"at": 8.1, "action": "spawn", "definition_id": 4, "position": [50, -50], "pattern": 1011},
+    {"at": 9, "action": "spawn", "definition_id": 4, "position": [100, -50], "pattern": 1011},
     {"at": 9.9, "action": "spawn", "definition_id": 4, "position": [150, -50], "pattern": 1011},
     {"at": 10.8, "action": "spawn", "definition_id": 4, "position": [200, -50], "pattern": 1011},
     {"at": 11.7, "action": "spawn", "definition_id": 4, "position": [250, -50], "pattern": 1011},
+
+    {"comment": "wing 좌하"},
     {"at": 13.5, "action": "spawn", "definition_id": 2, "position": [-50, 220], "pattern": 1053},
     {"at": 14.4, "action": "spawn", "definition_id": 2, "position": [-50, 225], "pattern": 1053},
     {"at": 15.3, "action": "spawn", "definition_id": 2, "position": [-50, 230], "pattern": 1053},
-    {"at": 16.2, "action": "spawn", "definition_id": 4, "position": [300, -50], "pattern": 1011},
     {"at": 16.2, "action": "spawn", "definition_id": 11, "position": [-50, 235], "pattern": 1053},
-    {"at": 17.1, "action": "spawn", "definition_id": 4, "position": [250, -50], "pattern": 1011},
     {"at": 17.1, "action": "spawn", "definition_id": 11, "position": [-50, 240], "pattern": 1053},
+
+    {"comment": "cross_fighter_a 우상"},
+    {"at": 16.2, "action": "spawn", "definition_id": 4, "position": [300, -50], "pattern": 1011},
+    {"at": 17.1, "action": "spawn", "definition_id": 4, "position": [250, -50], "pattern": 1011},
     {"at": 18, "action": "spawn", "definition_id": 4, "position": [200, -50], "pattern": 1011},
     {"at": 18.9, "action": "spawn", "definition_id": 4, "position": [150, -50], "pattern": 1011},
     {"at": 19.8, "action": "spawn", "definition_id": 4, "position": [100, -50], "pattern": 1011},
+
     {"at": 20.7, "action": "scroll", "mode": 1, "speed": 333.33333333333337},
+
+    {"comment": "대형"},
     {"at": 20.7, "action": "spawn", "definition_id": 41, "position": [200, -99], "pattern": 1031},
+
+    {"comment": "wing 좌상"},
     {"at": 21.6, "action": "spawn", "definition_id": 2, "position": [50, -50], "pattern": 1021},
     {"at": 22.5, "action": "spawn", "definition_id": 2, "position": [150, -50], "pattern": 1021},
     {"at": 23.4, "action": "spawn", "definition_id": 2, "position": [250, -50], "pattern": 1021},
+
+    {"comment": "wing 우상"},
     {"at": 24.3, "action": "spawn", "definition_id": 2, "position": [300, -50], "pattern": 1022},
     {"at": 25.2, "action": "spawn", "definition_id": 2, "position": [200, -50], "pattern": 1022},
     {"at": 26.1, "action": "spawn", "definition_id": 2, "position": [100, -50], "pattern": 1022},
+
+    {"comment": "crescent 좌상"},
     {"at": 27, "action": "spawn", "definition_id": 1, "position": [100, -50], "pattern": 1011},
+    {"at": 27.9, "action": "spawn", "definition_id": 1, "position": [125, -50], "pattern": 1012},
+    
+    {"comment": "crescent 우상"},
     {"at": 27, "action": "spawn", "definition_id": 1, "position": [250, -50], "pattern": 1011},
+    {"at": 27.9, "action": "spawn", "definition_id": 1, "position": [225, -50], "pattern": 1012},
+
+    {"comment": "fireball_disc 하단"},
     {"at": 27, "action": "spawn", "definition_id": 9, "position": [125, 480], "pattern": 1071},
     {"at": 27, "action": "spawn", "definition_id": 9, "position": [300, 480], "pattern": 1071},
-    {"at": 27.9, "action": "spawn", "definition_id": 1, "position": [125, -50], "pattern": 1012},
-    {"at": 27.9, "action": "spawn", "definition_id": 1, "position": [225, -50], "pattern": 1012},
     {"at": 27.9, "action": "spawn", "definition_id": 9, "position": [225, 480], "pattern": 1071},
     {"at": 27.9, "action": "spawn", "definition_id": 9, "position": [50, 480], "pattern": 1071},
-    {"at": 28.8, "action": "spawn", "definition_id": 1, "position": [50, -50], "pattern": 1011},
-    {"at": 28.8, "action": "spawn", "definition_id": 1, "position": [300, -50], "pattern": 1011},
+    
     {"at": 29.7, "action": "scroll", "mode": 1, "speed": 666.6666666666667},
+
+    {"comment": "crescent 좌상"},
+    {"at": 28.8, "action": "spawn", "definition_id": 1, "position": [50, -50], "pattern": 1011},
     {"at": 29.7, "action": "spawn", "definition_id": 10, "position": [75, -50], "pattern": 1012},
-    {"at": 29.7, "action": "spawn", "definition_id": 10, "position": [275, -50], "pattern": 1012},
     {"at": 30.6, "action": "spawn", "definition_id": 1, "position": [100, -50], "pattern": 1011},
-    {"at": 30.6, "action": "spawn", "definition_id": 1, "position": [250, -50], "pattern": 1011},
     {"at": 31.5, "action": "spawn", "definition_id": 1, "position": [125, -50], "pattern": 1011},
+
+    {"comment": "crescent 우상"},
+    {"at": 28.8, "action": "spawn", "definition_id": 1, "position": [300, -50], "pattern": 1011},
+    {"at": 29.7, "action": "spawn", "definition_id": 10, "position": [275, -50], "pattern": 1012},
+    {"at": 30.6, "action": "spawn", "definition_id": 1, "position": [250, -50], "pattern": 1011},
     {"at": 31.5, "action": "spawn", "definition_id": 1, "position": [225, -50], "pattern": 1011},
+
+    {"comment": "wing 우하"},
     {"at": 32.4, "action": "spawn", "definition_id": 11, "position": [400, 220], "pattern": 1054},
     {"at": 33.3, "action": "spawn", "definition_id": 2, "position": [400, 235], "pattern": 1054},
     {"at": 34.2, "action": "spawn", "definition_id": 11, "position": [400, 240], "pattern": 1054},
+
+    {"comment": "wing 좌하"},
     {"at": 34.2, "action": "spawn", "definition_id": 11, "position": [-50, 220], "pattern": 1053},
     {"at": 35.1, "action": "spawn", "definition_id": 2, "position": [-50, 235], "pattern": 1053},
     {"at": 36, "action": "spawn", "definition_id": 11, "position": [-50, 240], "pattern": 1053},
+
     {"at": 37.8, "action": "scroll", "mode": 2, "speed": 66.66666666666667},
+
+    {"comment": "대형"},
     {"at": 38.7, "action": "spawn", "definition_id": 41, "position": [200, -99], "pattern": 1031},
+
+    {"comment": "crescent 좌상"},
     {"at": 40.5, "action": "spawn", "definition_id": 10, "position": [125, -50], "pattern": 1011},
     {"at": 41.4, "action": "spawn", "definition_id": 1, "position": [100, -50], "pattern": 1012},
     {"at": 41.4, "action": "spawn", "definition_id": 1, "position": [150, -50], "pattern": 1012},
     {"at": 42.3, "action": "spawn", "definition_id": 1, "position": [75, -50], "pattern": 1012},
     {"at": 42.3, "action": "spawn", "definition_id": 1, "position": [175, -50], "pattern": 1012},
+
+    {"comment": "crescent 우상"},
     {"at": 42.3, "action": "spawn", "definition_id": 10, "position": [225, -50], "pattern": 1011},
     {"at": 43.2, "action": "spawn", "definition_id": 1, "position": [200, -50], "pattern": 1012},
     {"at": 43.2, "action": "spawn", "definition_id": 1, "position": [250, -50], "pattern": 1012},
     {"at": 44.1, "action": "spawn", "definition_id": 1, "position": [175, -50], "pattern": 1012},
     {"at": 44.1, "action": "spawn", "definition_id": 1, "position": [275, -50], "pattern": 1012},
+
+    {"comment": "swept_wing_fighter 좌상"},
     {"at": 45, "action": "spawn", "definition_id": 6, "position": [50, -50], "pattern": 1051},
     {"at": 45.9, "action": "spawn", "definition_id": 6, "position": [75, -50], "pattern": 1051},
     {"at": 46.8, "action": "spawn", "definition_id": 6, "position": [100, -50], "pattern": 1051},
+
+    {"comment": "crescent 우상"},
     {"at": 46.8, "action": "spawn", "definition_id": 10, "position": [300, -50], "pattern": 1012},
-    {"at": 47.7, "action": "spawn", "definition_id": 5, "position": [-50, 70], "pattern": 1034},
     {"at": 47.7, "action": "spawn", "definition_id": 1, "position": [250, -50], "pattern": 1012},
-    {"at": 48.6, "action": "spawn", "definition_id": 5, "position": [-50, 60], "pattern": 1034},
     {"at": 48.6, "action": "spawn", "definition_id": 1, "position": [200, -50], "pattern": 1012},
-    {"at": 48.6, "action": "spawn", "definition_id": 5, "position": [-50, 260], "pattern": 1032},
     {"at": 49.5, "action": "spawn", "definition_id": 1, "position": [150, -50], "pattern": 1012},
-    {"at": 49.5, "action": "spawn", "definition_id": 2, "position": [75, -50], "pattern": 1021},
+    
+    {"comment": "cross_fighter_b 좌상"},
+    {"at": 47.7, "action": "spawn", "definition_id": 5, "position": [-50, 70], "pattern": 1034},
+    {"at": 48.6, "action": "spawn", "definition_id": 5, "position": [-50, 60], "pattern": 1034},
+
+    {"comment": "cross_fighter_b 좌하"},
+    {"at": 48.6, "action": "spawn", "definition_id": 5, "position": [-50, 260], "pattern": 1032},
     {"at": 49.5, "action": "spawn", "definition_id": 5, "position": [-50, 270], "pattern": 1032},
+
+    {"comment": "wing 좌상"},
+    {"at": 49.5, "action": "spawn", "definition_id": 2, "position": [75, -50], "pattern": 1021},
     {"at": 50.4, "action": "spawn", "definition_id": 2, "position": [200, -50], "pattern": 1021},
+    
+    {"comment": "cross_fighter_b 우상"},
     {"at": 50.4, "action": "spawn", "definition_id": 5, "position": [400, 60], "pattern": 1035},
+
+    {"comment": "cross_fighter_b 좌상"},
     {"at": 51.3, "action": "spawn", "definition_id": 5, "position": [-50, 50], "pattern": 1034},
+
+    {"comment": "swept_wing_fighter 우상"},
     {"at": 54, "action": "spawn", "definition_id": 6, "position": [300, -50], "pattern": 1052},
     {"at": 54.9, "action": "spawn", "definition_id": 6, "position": [275, -50], "pattern": 1052},
     {"at": 55.8, "action": "spawn", "definition_id": 6, "position": [250, -50], "pattern": 1052},
+
+    {"comment": "crescent 좌상"},
     {"at": 55.8, "action": "spawn", "definition_id": 10, "position": [50, -50], "pattern": 1012},
-    {"at": 56.7, "action": "spawn", "definition_id": 5, "position": [400, 70], "pattern": 1035},
     {"at": 56.7, "action": "spawn", "definition_id": 1, "position": [100, -50], "pattern": 1012},
-    {"at": 57.6, "action": "spawn", "definition_id": 5, "position": [400, 60], "pattern": 1035},
     {"at": 57.6, "action": "spawn", "definition_id": 1, "position": [150, -50], "pattern": 1012},
-    {"at": 57.6, "action": "spawn", "definition_id": 5, "position": [400, 260], "pattern": 1033},
     {"at": 58.5, "action": "spawn", "definition_id": 1, "position": [200, -50], "pattern": 1012},
-    {"at": 58.5, "action": "spawn", "definition_id": 2, "position": [275, -50], "pattern": 1022},
+
+    {"comment": "cross_fighter_b 우상"},
+    {"at": 56.7, "action": "spawn", "definition_id": 5, "position": [400, 70], "pattern": 1035},
+    {"at": 57.6, "action": "spawn", "definition_id": 5, "position": [400, 60], "pattern": 1035},
+
+    {"comment": "cross_fighter_b 우하"},
+    {"at": 57.6, "action": "spawn", "definition_id": 5, "position": [400, 260], "pattern": 1033},
     {"at": 58.5, "action": "spawn", "definition_id": 5, "position": [400, 270], "pattern": 1033},
+
+    {"comment": "wing 우상"},
+    {"at": 58.5, "action": "spawn", "definition_id": 2, "position": [275, -50], "pattern": 1022},
     {"at": 59.4, "action": "spawn", "definition_id": 2, "position": [150, -50], "pattern": 1022},
+
     {"at": 63, "action": "scroll", "mode": 2, "speed": 666.6666666666667},
+
+    {"comment": "ring_rotor 상단"},
     {"at": 63, "action": "spawn", "definition_id": 3, "position": [250, -50], "pattern": 1072},
     {"at": 63.9, "action": "spawn", "definition_id": 3, "position": [175, -50], "pattern": 1072},
     {"at": 64.8, "action": "spawn", "definition_id": 3, "position": [100, -50], "pattern": 1072},
+
+    {"comment": "대형"},
     {"at": 66.6, "action": "spawn", "definition_id": 41, "position": [479, 60], "pattern": 1035},
+
+    {"comment": "crescent 상단"},
     {"at": 68.4, "action": "spawn", "definition_id": 1, "position": [100, -50], "pattern": 1011},
     {"at": 68.4, "action": "spawn", "definition_id": 1, "position": [250, -50], "pattern": 1011},
     {"at": 69.3, "action": "spawn", "definition_id": 1, "position": [125, -50], "pattern": 1012},
     {"at": 69.3, "action": "spawn", "definition_id": 10, "position": [225, -50], "pattern": 1012},
+
+    {"comment": "cross_fighter_b 우상"},
     {"at": 69.3, "action": "spawn", "definition_id": 5, "position": [400, 60], "pattern": 1035},
+    {"at": 70.2, "action": "spawn", "definition_id": 5, "position": [400, 50], "pattern": 1035},
+
+    {"comment": "wing 우하"},
     {"at": 69.3, "action": "spawn", "definition_id": 11, "position": [400, 220], "pattern": 1054},
     {"at": 70.2, "action": "spawn", "definition_id": 11, "position": [400, 230], "pattern": 1054},
-    {"at": 70.2, "action": "spawn", "definition_id": 5, "position": [400, 50], "pattern": 1035},
     {"at": 71.1, "action": "spawn", "definition_id": 11, "position": [400, 240], "pattern": 1054},
+
+    {"comment": "ring_rotor 상단"},
     {"at": 72, "action": "spawn", "definition_id": 3, "position": [100, -50], "pattern": 1072},
     {"at": 72.9, "action": "spawn", "definition_id": 3, "position": [175, -50], "pattern": 1072},
     {"at": 73.8, "action": "spawn", "definition_id": 3, "position": [250, -50], "pattern": 1072},
+
+    {"comment": "대형"},
     {"at": 75.6, "action": "spawn", "definition_id": 41, "position": [-99, 60], "pattern": 1034},
+
+    {"comment": "crescent 상단"},
     {"at": 77.4, "action": "spawn", "definition_id": 1, "position": [100, -50], "pattern": 1011},
     {"at": 77.4, "action": "spawn", "definition_id": 1, "position": [250, -50], "pattern": 1011},
-    {"at": 78.3, "action": "spawn", "definition_id": 10, "position": [125, -50], "pattern": 1012},
     {"at": 78.3, "action": "spawn", "definition_id": 1, "position": [225, -50], "pattern": 1012},
-    {"at": 78.3, "action": "spawn", "definition_id": 5, "position": [-50, 60], "pattern": 1034},
-    {"at": 78.3, "action": "spawn", "definition_id": 11, "position": [-50, 220], "pattern": 1053},
+    {"at": 78.3, "action": "spawn", "definition_id": 10, "position": [125, -50], "pattern": 1012},
+
     {"at": 79.2, "action": "scroll", "mode": 3, "speed": 66.66666666666667},
-    {"at": 79.2, "action": "spawn", "definition_id": 11, "position": [-50, 230], "pattern": 1053},
+
+    {"comment": "cross_fighter_b 좌상"},
+    {"at": 78.3, "action": "spawn", "definition_id": 5, "position": [-50, 60], "pattern": 1034},
     {"at": 79.2, "action": "spawn", "definition_id": 5, "position": [-50, 50], "pattern": 1034},
+
+    {"comment": "wing 좌하"},
+    {"at": 78.3, "action": "spawn", "definition_id": 11, "position": [-50, 220], "pattern": 1053},
+    {"at": 79.2, "action": "spawn", "definition_id": 11, "position": [-50, 230], "pattern": 1053},
     {"at": 80.1, "action": "spawn", "definition_id": 11, "position": [-50, 240], "pattern": 1053},
+
+    {"comment": "중형"},
     {"at": 81.9, "action": "spawn", "definition_id": 21, "position": [100, -99], "pattern": 1031},
+
+    {"comment": "crescent 좌상"},
     {"at": 82.8, "action": "spawn", "definition_id": 10, "position": [100, -50], "pattern": 1011},
     {"at": 83.7, "action": "spawn", "definition_id": 1, "position": [125, -50], "pattern": 1012},
     {"at": 84.6, "action": "spawn", "definition_id": 1, "position": [150, -50], "pattern": 1011},
     {"at": 85.5, "action": "spawn", "definition_id": 1, "position": [175, -50], "pattern": 1012},
+
+    {"comment": "swept_wing_fighter 좌하"},
     {"at": 85.5, "action": "spawn", "definition_id": 6, "position": [-60, 260], "pattern": 1032},
     {"at": 85.5, "action": "spawn", "definition_id": 6, "position": [-60, 280], "pattern": 1032},
+
+    {"comment": "crescent 우상"},
     {"at": 85.5, "action": "spawn", "definition_id": 10, "position": [250, -50], "pattern": 1011},
     {"at": 86.4, "action": "spawn", "definition_id": 1, "position": [225, -50], "pattern": 1012},
     {"at": 87.3, "action": "spawn", "definition_id": 1, "position": [200, -50], "pattern": 1011},
-    {"at": 87.3, "action": "spawn", "definition_id": 5, "position": [400, 60], "pattern": 1035},
     {"at": 88.2, "action": "spawn", "definition_id": 1, "position": [175, -50], "pattern": 1012},
+
+    {"comment": "cross_fighter_b 우상"},
+    {"at": 87.3, "action": "spawn", "definition_id": 5, "position": [400, 60], "pattern": 1035},
+    
+    {"comment": "wing 우하"},
     {"at": 88.2, "action": "spawn", "definition_id": 2, "position": [400, 220], "pattern": 1054},
     {"at": 89.1, "action": "spawn", "definition_id": 11, "position": [400, 230], "pattern": 1054},
+
+    {"comment": "swept_wing_fighter 우하"},
     {"at": 90, "action": "spawn", "definition_id": 6, "position": [410, 260], "pattern": 1033},
     {"at": 90, "action": "spawn", "definition_id": 6, "position": [410, 280], "pattern": 1033},
+
+    {"comment": "cross_fighter_b 좌상"},
     {"at": 91.8, "action": "spawn", "definition_id": 5, "position": [-50, 60], "pattern": 1034},
+
+    {"comment": "wing 좌하"},
     {"at": 92.7, "action": "spawn", "definition_id": 2, "position": [-50, 220], "pattern": 1053},
     {"at": 93.6, "action": "spawn", "definition_id": 11, "position": [-50, 230], "pattern": 1053},
+
+    {"comment": "fireball_disc 하단"},
     {"at": 93.6, "action": "spawn", "definition_id": 9, "position": [125, 480], "pattern": 1071},
     {"at": 93.6, "action": "spawn", "definition_id": 9, "position": [225, 480], "pattern": 1071},
     {"at": 94.5, "action": "spawn", "definition_id": 9, "position": [50, 480], "pattern": 1071},
     {"at": 94.5, "action": "spawn", "definition_id": 9, "position": [300, 480], "pattern": 1071},
+
     {"at": 97.2, "action": "banner", "name": "warning"},
+
     {"at": 97.2, "action": "scroll", "mode": 3, "speed": 333.33333333333337},
+
+    {"comment": "보스"},
     {"at": 101.7, "action": "spawn", "definition_id": 92, "position": [200, -100], "pattern": 0},
     {"at": 101.7, "action": "spawn", "definition_id": 111, "position": [75, -50], "pattern": 0},
     {"at": 101.7, "action": "spawn", "definition_id": 112, "position": [275, -50], "pattern": 0},
