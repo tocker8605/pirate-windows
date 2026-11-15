@@ -57,5 +57,7 @@ static func project(pitch: float, bank: float, kind: int = 0) -> Vector2:
 	var span: float = 1.0-absf(bank)*0.08 if kind==8 else 1.0-absf(bank)*0.2
 	return Vector2(span,y)
 
-static func bank_yaw(bank: float, projected_y: float) -> float:
-	return -bank*0.1*projected_y
+static func bank_yaw(bank: float, projected_y: float, kind: int = 0) -> float:
+	# Type11 is painted nose-up; the shared projection assumes a nose-down source.
+	var facing_y: float = -projected_y if kind==11 else projected_y
+	return -bank*0.1*facing_y

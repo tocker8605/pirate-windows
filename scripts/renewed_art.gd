@@ -118,7 +118,7 @@ func draw_enemy(c: Node2D, e: Dictionary, pos: Vector2, _frame: int) -> void:
 	if e.kind==3:
 		draw_station(c,center,projected,spin,tint)
 		return
-	var yaw: float = Pose.bank_yaw(bank,projected.y)+arm_roll(int(e.kind))+(spin if e.kind==9 else 0.0)
+	var yaw: float = Pose.bank_yaw(bank,projected.y,int(e.kind))+arm_roll(int(e.kind))+(spin if e.kind==9 else 0.0)
 	c.draw_set_transform(center,yaw,projected)
 	var painted_size: Vector2 = Vector2(41,80) if e.kind==133 else size
 	var sprite: Texture2D = enemy_texture(int(e.kind))

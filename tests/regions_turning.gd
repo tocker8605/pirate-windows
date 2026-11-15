@@ -39,7 +39,9 @@ func run() -> void:
 	check(Pose.wing_fold(0)==1 and Pose.wing_fold(1)==0 and Pose.wing_fold(-1)==0,"type8 opens its wing span when banking, matching the original folded-center frames")
 	var down_right: Vector2 = Vector2.DOWN.rotated(Pose.bank_yaw(1,1))
 	var up_right: Vector2 = Vector2.UP.rotated(Pose.bank_yaw(1,-1))
-	check(down_right.x>0 and up_right.x>0 and Pose.bank_yaw(1,0)==0,"right bank leans the nose right in both down/up attitudes and stays level at the wing edge")
+	var pods_right: Vector2 = Vector2.UP.rotated(Pose.bank_yaw(1,1,11))
+	var pods_left: Vector2 = Vector2.UP.rotated(Pose.bank_yaw(-1,1,11))
+	check(down_right.x>0 and up_right.x>0 and pods_right.x>0 and pods_left.x<0 and is_equal_approx(Pose.bank_yaw(1,-1,2),Pose.bank_yaw(1,1,11)) and Pose.bank_yaw(1,0)==0,"type2 and nose-up type11 bank toward the same movement side and stay level at the wing edge")
 	for kind in [3,4,5,9]:
 		var values: Array = []
 		for cycle in range(4): values.append(Pose.target(kind,(Vector2.ZERO)/0.03,cycle).pulse)

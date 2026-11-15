@@ -17,9 +17,9 @@ func _init() -> void:
 		texture.filter_clip = true
 		frames.append(texture)
 func texture(bank: int) -> Texture2D:
-	# Use one bank pose and its mirror for consistent left/right silhouettes.
+	# Frame 1 banks right; mirror it for the left-input pose (bank 1).
 	return frames[0 if bank==0 else 1]
 func draw(c: Node2D, pos: Vector2, bank: int = 0) -> void:
-	c.draw_set_transform(pos+Vector2(25,25),0,Vector2(-1 if bank==2 else 1,1))
+	c.draw_set_transform(pos+Vector2(25,25),0,Vector2(-1 if bank==1 else 1,1))
 	c.draw_texture_rect(texture(bank),Rect2(-Geometry.DRAW_SIZE/2,Geometry.DRAW_SIZE),false)
 	c.draw_set_transform(Vector2.ZERO)
