@@ -48,7 +48,7 @@ static func update_bullets(g: Node) -> void:
 		if Effects.shield_contains(g.shield_center,bullet.pos,g.shield_remaining_seconds):
 			bullet.alive = false
 			g.shield_contacts.append(bullet.pos)
-			g.shield_remaining_seconds = maxf(0,g.shield_remaining_seconds-0.12)
+			g.shield_remaining_seconds = maxf(0,g.shield_remaining_seconds-0.06)
 			if g.boss.is_empty(): g.score += 25*g.title.difficulty
 		elif g.hp>0 and g.invulnerability_seconds==0 and Combat.hurts_player(g.player,bullet.pos):
 			g._hurt_player(Combat.incoming_damage(g.title.difficulty))

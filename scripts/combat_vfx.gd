@@ -270,6 +270,23 @@ func draw_charge(c: Node2D, p: Vector2, frame: float) -> void:
 		halo(c,orbit,4,PINK,0.8)
 	c.draw_arc(p,7,0,TAU,32,Color("ffe5ff"),1,true)
 
+func _draw_shield_lifetime(c: Node2D, center: Vector2, remaining: float, phase: float, deployment: float) -> void:
+	var ratio: float = clampf(remaining/6.0,0,1)
+	var color: Color = CYAN
+	var opacity: float = deployment
+	if remaining<=1.5: color = Color("ffd16b")
+	if remaining<=0.5:
+		color = Color("ff6978")
+		# Pulse the gauge only; the defensive field keeps its size and visibility.
+		opacity *= 0.7+0.3*sin(phase*0.03*TAU*4.0)
+	c.draw_arc(center,37,0,TAU,96,Color("132933"),1.5,true)
+	if ratio<=0: return
+	var start: float = -PI/2+(1-ratio)*TAU
+	var end: float = TAU-PI/2
+	c.draw_arc(center,37,start,end,96,Color(color,opacity*0.16),3,true)
+	c.draw_arc(center,37,start,end,96,Color(color,opacity),1.4,true)
+	c.draw_circle(center+Vector2.from_angle(start)*37,1,Color(color,opacity),true,-1,true)
+
 func draw_special(c: Node2D, g: Node, player: Variant = null, shield_position: Variant = null, phase: float = -1) -> void:
 	var ship: Vector2 = g.player if player==null else player
 	var shield_pos: Vector2 = g.shield_center if shield_position==null else shield_position
@@ -287,18 +304,18 @@ func draw_special(c: Node2D, g: Node, player: Variant = null, shield_position: V
 		for i in range(16):
 			var p := Vector2(base.x+sin(i*2+time)*8,fposmod(i*31-time*9,480))
 			halo(c,p,3,CYAN,intensity*0.6)
-	if g.shield_render_seconds>0:
-		var remaining: float = g.shield_render_seconds
-		var fade: float = minf(1,float(remaining)/0.75)*minf(1,float(6.03-remaining)/0.09)
+	if g.shield_remaining_seconds>0:
+		# Read the post-interception lifetime so blocked bullets immediately drain the rim.
+		var remaining: float = g.shield_remaining_seconds
+		var fade: float = clampf((6.03-remaining)/0.09,0,1)
+		var field_opacity: float = fade*(0.4 if remaining<=0.5 else (0.7 if remaining<=1.5 else 1.0))
 		var p: Vector2 = shield_pos
-		halo(c,p,49,CYAN,0.15*fade)
-		c.draw_arc(p,40,0,TAU,96,Color(CYAN,fade*0.6),1.4,true)
-		for i in range(6):
-			var angle: float = time*0.04+i*TAU/6
-			c.draw_arc(p,37,angle,angle+0.42,12,Color(MINT,fade),2,true)
+		halo(c,p,49,CYAN,0.15*field_opacity)
+		c.draw_arc(p,40,0,TAU,96,Color(CYAN,field_opacity*0.6),1.4,true)
 		for i in range(18):
 			var angle: float = i*TAU/18-time*0.025
-			halo(c,p+Vector2.from_angle(angle)*40,3,CYAN,fade*0.7)
+			halo(c,p+Vector2.from_angle(angle)*40,3,CYAN,field_opacity*0.7)
+		_draw_shield_lifetime(c,p,remaining,time,fade)
 	for point in g.laser_contacts: halo(c,point+Vector2(15+ship.x-g.player.x,15),19,MINT)
 	for point in g.shield_contacts: halo(c,point,17,CYAN)
 	if g.hit_flash_render_seconds>0:

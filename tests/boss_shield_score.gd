@@ -32,16 +32,16 @@ func run() -> void:
 		g.boss = {}
 		g.score = 123
 		intercept(g)
-		check(g.score==123+25*difficulty and g.bullets.is_empty() and is_equal_approx(g.shield_remaining_seconds,2.88) and g.shield_contacts.size()==1,"difficulty%d ordinary shield_remaining_seconds interception retains points,absorption and shield_remaining_seconds cost"%difficulty)
+		check(g.score==123+25*difficulty and g.bullets.is_empty() and is_equal_approx(g.shield_remaining_seconds,2.94) and g.shield_contacts.size()==1,"difficulty%d ordinary shield_remaining_seconds interception retains points,absorption and shield_remaining_seconds cost"%difficulty)
 		for stage in range(1,5):
 			g.boss = Catalog.create(90+stage,Vector2(200,60))
 			g.score = 123
 			intercept(g)
-			check(g.score==123 and g.bullets.is_empty() and is_equal_approx(g.shield_remaining_seconds,2.88) and g.shield_contacts.size()==1,"difficulty%d stage%d boss blocks shield_remaining_seconds points while interception still works"%[difficulty,stage])
+			check(g.score==123 and g.bullets.is_empty() and is_equal_approx(g.shield_remaining_seconds,2.94) and g.shield_contacts.size()==1,"difficulty%d stage%d boss blocks shield_remaining_seconds points while interception still works"%[difficulty,stage])
 	g.title.difficulty = 5
 	g.score = 123
 	for i in range(100): intercept(g)
-	check(g.score==123 and g.bullets.is_empty() and is_equal_approx(g.shield_remaining_seconds,2.88) and g.shield_contacts.size()==1,"100boss-phase interceptions cannot farm score and retain all shield_remaining_seconds costs")
+	check(g.score==123 and g.bullets.is_empty() and is_equal_approx(g.shield_remaining_seconds,2.94) and g.shield_contacts.size()==1,"100boss-phase interceptions cannot farm score and retain all shield_remaining_seconds costs")
 	g.boss.hp = 0
 	g.boss_death_remaining_seconds = 7.2
 	intercept(g)

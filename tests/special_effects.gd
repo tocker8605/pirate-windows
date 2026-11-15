@@ -42,7 +42,7 @@ func run() -> void:
 	game._bullet(game.shield_center,(Vector2(0,0.1))/0.03)
 	var remaining: float = game.shield_remaining_seconds
 	game._update_bullets()
-	check(game.bullets.is_empty() and is_equal_approx(game.shield_remaining_seconds,remaining-0.12) and game.shield_contacts.size()==1,"interception spawns original hit sprite and reduces lifetime")
+	check(game.bullets.is_empty() and is_equal_approx(game.shield_remaining_seconds,remaining-0.06) and game.shield_contacts.size()==1,"interception spawns original hit sprite and reduces lifetime by60ms")
 	game.start_game()
 	game.delta_seconds = 0.03
 	game.enemies.replace_all([{"kind":1,"pos":Vector2(170,120),"velocity":Vector2.ZERO,"pattern":1011,"hp":100.0}])
