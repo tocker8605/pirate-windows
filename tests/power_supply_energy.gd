@@ -34,7 +34,7 @@ func run()->void:
 		g.energy=20
 		g._drop_item({"kind":2,"pos":g.player+Vector2(25,25)})
 		g._update_items()
-		check(g.hp==75 and g.energy==20,"HP item recovery remains25 without restoring energy")
+		check(g.hp==75 and g.energy==20,"HP item recovery is25 without restoring energy")
 	g.audio.stop_all()
 	g.queue_free()
 	await process_frame

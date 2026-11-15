@@ -60,7 +60,16 @@ func run() -> void:
 	g.supply_director.rng.seed = win
 	before = g.supply_director.rng.state
 	g._hurt_player(15)
-	check(g.enemies.is_empty() and not g.supply_director.damage_supply_used and before==g.supply_director.rng.state,"BossRush actual hit never rolls or spawns supplies")
+	check(g.enemies.size()==1 and g.enemies.at(0).kind==202 and g.supply_director.damage_supply_used and g.supply_director.schedule.is_empty(),"BossRush successful hit spawns emergency HP carrier without scheduled supplies")
+	g.invulnerability_seconds = 0
+	g.supply_director.rng.seed = win
+	before = g.supply_director.rng.state
+	g._hurt_player(15)
+	check(g.enemies.size()==1 and before==g.supply_director.rng.state,"BossRush emergency HP is limited to one successful delivery per stage")
+	g._load_stage(3)
+	g.supply_director.rng.seed = win
+	g._hurt_player(15)
+	check(g.enemies.size()==1 and g.supply_director.damage_supply_used,"next BossRush stage resets emergency HP allowance")
 	g.boss_rush = false
 	g._load_stage(1)
 	g.hp = 15

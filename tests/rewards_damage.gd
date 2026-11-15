@@ -27,7 +27,7 @@ func run() -> void:
 			g.player = Vector2(150,300)
 			g._bullet(g.player+Pilot.COCKPIT,(Vector2(0,0.1))/0.03,kind)
 			g._update_bullets()
-			check(g.hp==100-(10+5*difficulty) and is_equal_approx(g.invulnerability_seconds,1.5) and g.bullets.is_empty(),"difficulty%d projectile%d uniform damage with immunity and removal"%[difficulty,kind])
+			check(g.hp==100-[15,20,25,30,35][difficulty-1] and is_equal_approx(g.invulnerability_seconds,1.5) and g.bullets.is_empty(),"difficulty%d projectile%d uniform damage with immunity and removal"%[difficulty,kind])
 		for stage in range(1,5):
 			for rush in [false,true]:
 				g.boss_rush = rush

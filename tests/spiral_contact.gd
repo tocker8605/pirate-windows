@@ -79,9 +79,9 @@ func run() -> void:
 		g.invulnerability_seconds = 0
 		g.title.difficulty = difficulty
 		g._resolve_body_contacts()
-		check(g.hp==100-(10+5*difficulty) and is_equal_approx(g.invulnerability_seconds,1.5) and is_equal_approx(g.hit_flash_remaining_seconds,0.57),"difficulty%d applies one uniform contact hit with normal feedback"%difficulty)
+		check(g.hp==100-[15,20,25,30,35][difficulty-1] and is_equal_approx(g.invulnerability_seconds,1.5) and is_equal_approx(g.hit_flash_remaining_seconds,0.57),"difficulty%d applies one uniform contact hit with normal feedback"%difficulty)
 		g._resolve_body_contacts()
-		check(g.hp==100-(10+5*difficulty),"difficulty%d overlapping enemies cannot bypass hit immunity"%difficulty)
+		check(g.hp==100-[15,20,25,30,35][difficulty-1],"difficulty%d overlapping enemies cannot bypass hit immunity"%difficulty)
 	g.enemies.clear()
 	g.boss = Catalog.create(91,p+Vector2(25,0))
 	g.hp = 100

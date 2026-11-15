@@ -20,7 +20,7 @@ static func sprite_x(kind: int, v: Vector2, cycle: int, y: float = 0) -> int:
 	return 0
 static func pitch_target(kind: int, velocity: Vector2) -> float:
 	if kind==1 or kind==10:
-		return 0.0 if velocity.y>(66.66666666666667 + 0.0001) else (PI/3 if velocity.y>=0 else (PI*2/3 if velocity.y> (-133.33333333333334 + 0.0001) else PI))
+		return acos(clampf(velocity.y/(500.0/3.0),-1.0,1.0))
 	if kind==2 or kind==6 or kind==7: return 0.0 if velocity.y>(0 + 0.0001) else PI
 	return 0.0
 static func bank_target(kind: int, velocity: Vector2) -> float:
@@ -48,12 +48,16 @@ static func advance(pose: Dictionary, kind: int, velocity: Vector2, cycle: int, 
 	pose.pulse = lerpf(pose.pulse,pulse_target(cycle),1-pow(0.7,seconds*33.333333333333336))
 static func projection(pose: Dictionary) -> Vector2:
 	return project(pose.pitch,pose.bank)
+static func crescent_height(pitch: float) -> float:
+	# Preserve a readable hull throughout the turn, including the halfway pose.
+	const MIN_HEIGHT: float = 0.35
+	return sqrt(lerpf(MIN_HEIGHT*MIN_HEIGHT,1.0,pow(cos(pitch),2)))
 static func wing_fold(bank: float) -> float:
 	return clampf(1-absf(bank),0,1)
 static func project(pitch: float, bank: float, kind: int = 0) -> Vector2:
 	var y: float = cos(pitch)
 	# Keep a visible wing edge while pitching through 90 degrees.
-	if absf(y)<0.12: y = 0.12 if pitch<=PI/2 else -0.12
+	if kind not in [1,10] and absf(y)<0.12: y = 0.12 if pitch<=PI/2 else -0.12
 	var span: float = 1.0-absf(bank)*0.08 if kind==8 else 1.0-absf(bank)*0.2
 	return Vector2(span,y)
 

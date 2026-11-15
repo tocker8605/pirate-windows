@@ -1,3 +1,16 @@
+v24.42 follow-up rollback / 2026-11-15
+Damage restored to15/20/25/30/35; HP recovery25. Eight related suites /511checks passed.
+BossRush emergency HP and crescent minimum-height rendering retained.
+
+Pirate II v24.42 — Validation / 2026-11-15
+
+47 headless suites / 2379 checks passed. Updated damage/healing and BossRush emergency-supply contracts.
+The initial run passed 45 suites; smoke and projectile_trails were corrected for intentional specifications and rerun successfully.
+Crescent rendering gallery reviewed: continuous pitch, minimum35% hull height with smooth facing blend, fighter brightness72%. Crescent follow-up:39 checks passed.
+Damage: 15/20/30/40/50. HP item recovery30, cap100.
+BossRush emergency HP: 30% per surviving actual hit; one successful delivery per stage; scheduled supplies remain disabled.
+
+Previous validation record follows:
 Pirate II v24.41 — Validation / 2026-11-15
 
 Type1 single centered bright-lavender line: 1.4 logical-pixel core, previous 1.0.

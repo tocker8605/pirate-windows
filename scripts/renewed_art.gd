@@ -112,7 +112,11 @@ func draw_enemy(c: Node2D, e: Dictionary, pos: Vector2, _frame: int) -> void:
 	if e.kind in [4,5]: projected *= Vector2(1-pulse*0.18,1-pulse*0.06)
 	var shade: float = 0.76+0.24*absf(projected.y)
 	var tint: Color = Color(shade,shade,shade)*Depth.tint_for(e)
-	if pitch>PI/2: tint *= Color(0.78,0.86,0.96)
+	if e.kind in [1,10]:
+		tint *= Color.WHITE.lerp(Color(0.78,0.86,0.96),clampf(-cos(pitch),0,1))
+	else:
+		if pitch>PI/2: tint *= Color(0.78,0.86,0.96)
+	if e.kind==10: tint *= Color(0.72,0.72,0.72)
 	if Boss.part_side(int(e.kind))>0 or e.kind in [101,124]: projected.x *= -1
 	if e.kind==133: center.x += 1
 	if e.kind==3:
@@ -125,7 +129,16 @@ func draw_enemy(c: Node2D, e: Dictionary, pos: Vector2, _frame: int) -> void:
 	if SMALL.has(int(e.kind)) and e.kind!=8:
 		var native := Vector2(sprite.get_width(),sprite.get_height())
 		painted_size = native*minf(size.x/native.x,size.y/native.y)
-	if e.kind==8: draw_hinged_wings(c,center,yaw,projected,Pose.wing_fold(bank),tint)
+	if e.kind in [1,10]:
+		# Blend the two readable faces instead of collapsing the hull into a line.
+		var height: float = Pose.crescent_height(pitch)*Depth.scale_for(e)
+		var front: float = smoothstep(-0.35,0.35,cos(pitch))
+		for facing in [1,-1]:
+			var opacity: float = front if facing==1 else 1-front
+			if opacity<=0: continue
+			c.draw_set_transform(center,yaw,Vector2(projected.x,height*facing))
+			c.draw_texture_rect(sprite,Rect2(-painted_size/2,painted_size),false,Color(tint,tint.a*opacity))
+	elif e.kind==8: draw_hinged_wings(c,center,yaw,projected,Pose.wing_fold(bank),tint)
 	else: c.draw_texture_rect(sprite,Rect2(-painted_size/2,painted_size),false,tint)
 	if e.kind in [4,5,9]:
 		# Keep the generated metal/lens shading; only modulate its emissive centre.

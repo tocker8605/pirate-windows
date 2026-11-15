@@ -1,6 +1,7 @@
 extends RefCounted
 const Combat = preload("res://scripts/combat.gd")
 const POWER_ENERGY_RECOVERY: float = 50.0
+const HEALTH_RECOVERY: float = 25.0
 static func update_items(g: Node) -> void:
 	for item in g.items:
 		item.render_pos = item.pos
@@ -10,7 +11,7 @@ static func update_items(g: Node) -> void:
 			if item.kind == 1:
 				g.power = mini(7,g.power+1)
 				g.energy = minf(100,g.energy+POWER_ENERGY_RECOVERY)
-			else: g.hp = minf(100,g.hp+25)
+			else: g.hp = minf(100,g.hp+HEALTH_RECOVERY)
 			g.score += 1000
 			item.pos.y = 600
 			g._sound("get")

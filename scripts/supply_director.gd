@@ -53,8 +53,8 @@ func advance(g: Node) -> void:
 		_spawn(g,delivery)
 func on_player_hit(g: Node) -> void:
 	# Extra delivery: only a successful roll consumes the once-per-stage allowance.
-	# Unlike scheduled deliveries this may also happen during a normal boss fight.
-	if g.boss_rush or g.state!="playing" or g.hp<=0 or damage_supply_used: return
+	# Unlike scheduled deliveries this also applies during BossRush fights.
+	if g.state!="playing" or g.hp<=0 or damage_supply_used: return
 	if rng.randf()>=DAMAGE_HEALTH_CHANCE: return
 	damage_supply_used = true
 	_spawn(g,_delivery(g.stage_elapsed_seconds,202))

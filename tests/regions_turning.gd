@@ -23,6 +23,8 @@ func run() -> void:
 		var frames: Array = []
 		for vy in velocities: frames.append(Pose.sprite_x(kind,(Vector2(0,vy))/0.03,0))
 		check(frames==expected,"type %d shares the original down/level/pull-up/up frame selector"%kind)
+		check(Pose.pitch_target(kind,Vector2(0,40))!=Pose.pitch_target(kind,Vector2(0,60)) and is_equal_approx(Pose.pitch_target(kind,Vector2.ZERO),PI/2),"type%d pitch follows continuous Y velocity instead of four frame targets"%kind)
+		check(Pose.crescent_height(PI/2)>=0.35 and is_equal_approx(Pose.crescent_height(0),1) and absf(Pose.crescent_height(PI/2-0.001)-Pose.crescent_height(PI/2+0.001))<0.003,"type%d keeps at least35percent hull height throughout a smooth face blend"%kind)
 		var pose: Dictionary = Pose.target(kind,(Vector2(0,5))/0.03,0)
 		var maximum_step: float = 0
 		var compressed: bool = false
