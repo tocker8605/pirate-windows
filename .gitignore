@@ -1,7 +1,8 @@
 # Godot caches and generated files
 .godot/
 build/
-work/
+work/*
+!work/.gdignore
 *.tmp
 
 # Development screenshots and their import metadata

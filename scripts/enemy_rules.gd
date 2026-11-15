@@ -14,12 +14,12 @@ static func cargo_offset(e: Dictionary = {}) -> Vector2:
 	return Catalog.cargo_drop().offset if e.is_empty() else cargo_settings(e).get("offset",Vector2(25,40))
 static func has_cargo(e: Dictionary) -> bool:
 	return Catalog.definition(int(e.kind)).get("role","")=="supply" and not e.get("rescued",false)
-static func carrier(e: Dictionary, previous_y: float = NAN) -> void:
+static func carrier(e: Dictionary, previous_y: Variant = null) -> void:
 	var d: Dictionary = Catalog.definition(int(e.kind))
 	if not d.has("open_at_y") or e.get("rescued",false): return
 	var boundary: float = float(d.open_at_y)
 	var y: float = e.pos.y
-	var crossed: bool = not is_nan(previous_y) and (previous_y-boundary)*(y-boundary)<=0
+	var crossed: bool = previous_y!=null and not is_nan(float(previous_y)) and (float(previous_y)-boundary)*(y-boundary)<=0
 	if is_equal_approx(y,boundary) or crossed:
 		e.kind = int(d.open_kind)
 static func score(kind: int, difficulty: int) -> int:

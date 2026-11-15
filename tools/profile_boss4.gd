@@ -40,7 +40,7 @@ func run() -> void:
 		g.player = Vector2(175,390)
 		g.power = 7
 		g.weapon = 1
-		g.invulnerable = 1000000
+		g.invulnerability_seconds = 1000000
 		g.clock = Clock.new()
 		g.scroll_speed = 0
 		g.scroll_target = 0
@@ -54,7 +54,7 @@ func run() -> void:
 		for i in range(600):
 			g.boss.hp = 300
 			g.energy = 100
-			g._tick(Vector2.ZERO,true,false,false,Clock.units_per_tick())
+			g._tick(Vector2.ZERO,true,false,false,Clock.FIXED_STEP_SECONDS)
 		var frame_ms: Array = []
 		var tick_ms: Array = []
 		var calls: Array = []
@@ -68,7 +68,7 @@ func run() -> void:
 			fx.shape_us = 0
 			fx.particles_us = 0
 			var start: int = Time.get_ticks_usec()
-			g._tick(Vector2.ZERO,true,false,false,Clock.units_per_tick())
+			g._tick(Vector2.ZERO,true,false,false,Clock.FIXED_STEP_SECONDS)
 			var tick: float = (Time.get_ticks_usec()-start)/1000.0
 			g._redraw()
 			await RenderingServer.frame_post_draw
