@@ -31,6 +31,24 @@ func run() -> void:
 	root.add_child(g)
 	await process_frame
 	g.set_process(false)
+	var mixed: Array = [
+		{"at":2,"action":"scroll","mode":1,"speed":10},
+		{"at":0.1,"action":"scroll","mode":2,"speed":20},
+		{"at":0.1,"action":"scroll","mode":3,"speed":30},
+		{"at":1,"action":"banner","name":"mission"}]
+	check(Timeline.validate_document({"schema_version":2,"time_unit":"seconds","events":mixed}).is_empty(),"unordered events pass validation")
+	var ordered: Array = Timeline.sorted_events(mixed)
+	check(ordered.map(func(event): return event.at)==[0.1,0.1,1,2],"load-time sorting orders events by exact time")
+	check(ordered[0].mode==2 and ordered[1].mode==3 and mixed[0].at==2,"equal-time events keep file order without rearranging source data")
+	for invalid_time in [-1,"1",INF,NAN]:
+		var malformed: Dictionary = fractional.duplicate(true)
+		malformed.events[0].at = invalid_time
+		check(not Timeline.validate_document(malformed).is_empty(),"sorting never bypasses invalid time validation: %s"%invalid_time)
+	g._load_stage(1)
+	g.events = ordered
+	g.stage_elapsed_seconds = 0.11
+	g._read_events()
+	check(g.event_cursor==2 and g.map_mode==3 and g.scroll_target==30,"simultaneous ordered control events execute in original file order")
 	g._load_stage(1)
 	g.delta_seconds = 0.03
 	g.events = fractional.events.duplicate(true)

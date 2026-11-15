@@ -25,4 +25,4 @@ static func advance_shots(g: Node) -> void:
 			shot.visual = Weapons.visual(shot,g.player)
 			g.shot_visuals.append(shot.duplicate(true))
 	for shot in g.shots:
-		if not shot.alive or shot.pos.y<0 or shot.pos.x<0 or shot.pos.x>400: g.shots.remove(shot.entity_id)
+		if not shot.alive or shot.pos.y<0 or shot.pos.x< -25 or shot.pos.x>425: g.shots.remove(shot.entity_id)

@@ -6,16 +6,14 @@ static func validate_document(document: Variant) -> PackedStringArray:
 	if not document is Dictionary or document.get("schema_version",0)!=2 or document.get("time_unit","")!="seconds" or not document.get("events") is Array:
 		return PackedStringArray(["Expected version2 timeline with seconds time unit"])
 	var errors := PackedStringArray()
-	var previous: float = -1
 	for i in range(document.events.size()):
 		var e: Variant = document.events[i]
 		var prefix: String = "event %d: "%i
 		if not e is Dictionary:
 			errors.append(prefix+"expected object")
 			continue
-		if not Check.number(e.get("at")) or float(e.get("at",-1))<0 or float(e.get("at",-1))<previous:
-			errors.append(prefix+"at must be nonnegative and ordered")
-		else: previous = float(e.at)
+		if not Check.number(e.get("at")) or float(e.get("at",-1))<0:
+			errors.append(prefix+"at must be a finite nonnegative number")
 		var allowed: Array = ["at","action"]
 		match e.get("action",""):
 			"spawn":
@@ -36,6 +34,17 @@ static func validate_document(document: Variant) -> PackedStringArray:
 		for key in e:
 			if key not in allowed: errors.append(prefix+"unexpected field "+str(key))
 	return errors
+static func sorted_events(events: Array) -> Array:
+	# Input has already passed validation. Explicit source indices make ties stable
+	# even though Array.sort_custom itself does not guarantee a stable sort.
+	var indices: Array = range(events.size())
+	indices.sort_custom(func(a: int, b: int) -> bool:
+		var time_a: float = events[a].at
+		var time_b: float = events[b].at
+		return a<b if time_a==time_b else time_a<time_b)
+	var ordered: Array = []
+	for index in indices: ordered.append(events[index])
+	return ordered
 static func load_stage(stage: int, boss_rush: bool = false) -> Array:
 	var path: String = "res://data/stage%02d.json"%(stage+10 if boss_rush else stage)
 	var parser := JSON.new()
@@ -46,7 +55,7 @@ static func load_stage(stage: int, boss_rush: bool = false) -> Array:
 	if not errors.is_empty():
 		push_error(path+": "+"; ".join(errors))
 		return []
-	return parser.data.events
+	return sorted_events(parser.data.events)
 static func consume(g: Node) -> void:
 	while g.event_cursor<g.events.size():
 		var raw: Variant = g.events[g.event_cursor]

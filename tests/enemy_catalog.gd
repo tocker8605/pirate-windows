@@ -57,7 +57,7 @@ func run() -> void:
 	check(Catalog.definition(1).is_read_only() and Catalog.definition(1).collision.is_read_only(),"shared definitions and nested metadata are immutable")
 	check(Timeline.validate_document(document([spawn(0)])).is_empty(),"valid named timeline is accepted")
 	check(not Timeline.validate_document(document([spawn(0,999)])).is_empty(),"unknown entity IDs fail validation")
-	check(not Timeline.validate_document(document([spawn(2),spawn(1)])).is_empty(),"unsorted event times fail validation")
+	check(Timeline.validate_document(document([spawn(2),spawn(1)])).is_empty(),"unsorted event times are accepted for load-time sorting")
 	var invalid = spawn(0)
 	invalid.hp = 999
 	check(not Timeline.validate_document(document([invalid])).is_empty(),"HP cannot silently leak back into timeline spawn fields")
