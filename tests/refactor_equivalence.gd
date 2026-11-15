@@ -61,8 +61,8 @@ func run() -> void:
 				g._tick(Vector2(sin(tick*0.012),0),true,tick%300==0,tick%500==0,Clock.FIXED_STEP_SECONDS)
 				if tick%60==59:
 					records.append([rush,stage,tick,g.player.x,g.player.y,g.energy,g.score,g.stats.duplicate(),g.background_y,g.scroll_speed,summary(g.enemies),summary(g.bullets),summary(g.shots),g.boss.get("hp",0),Rng.state])
-	var reference: Array = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/energy_replay_v24_34.json"))
-	# v24.34 energy rules; supply RNG remains seeded for reproducible balance replay.
+	var reference: Array = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/supply_energy_replay_v24_40.json"))
+	# v24.40 power pickup adds50energy; supply RNG remains seeded for balance replay.
 	for i in range(reference.size()):
 		checks += 1
 		if not equivalent(reference[i],records[i]):

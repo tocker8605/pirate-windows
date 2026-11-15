@@ -22,7 +22,7 @@ func run() -> void:
 	check(Rng.next_value()==11837123.0/16777216.0,"Rnd returns exact normalized Single fraction")
 	Rng.state = 0x50000
 	var volley: Array = Weapons.volley(Vector2(100,100),3,3)
-	check(volley[0].pos==Vector2(113,100) and volley[1].pos==Vector2(111,100),"scatter weapon consumes original default-seed X sequence")
+	check(volley[0].pos==Vector2(109.5,100) and volley[1].pos==Vector2(113.5,100) and Rng.state==8949370,"distance-spreading fan averages original jitter draws and launches4px apart without changing RNG state")
 	var g = Game.new()
 	g.automatic = false
 	g.mute = true

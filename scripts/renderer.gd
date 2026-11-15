@@ -175,7 +175,7 @@ func _draw_bullet(b: Dictionary) -> void:
 func _draw_shot(shot: Dictionary) -> void:
 	var pos: Vector2 = g.presentation.position(shot)
 	if shot.get("visual",{}).get("phase","")=="launch": pos += g.presentation.player(g)-g.player
-	vfx.draw_shot(self,shot,g.presentation.player(g),g.weapon,pos)
+	vfx.draw_shot(self,shot,g.presentation.player(g),g.weapon,pos,g.renewed_art)
 
 func _draw_hud() -> void:
 	HUD.render(self,g.art,clampi(Weapons.vb_integer(g.hp),0,100),clampf(g.energy,0,100),g.weapon,g.power,g.score,int(g.boss.hp) if not g.boss.is_empty() else -1,int(g.boss.get("max_hp",0)))

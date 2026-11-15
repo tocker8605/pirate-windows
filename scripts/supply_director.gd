@@ -5,7 +5,7 @@ const EARLY_POWER_SECONDS: float = 1.0
 const START_SECONDS: float = 10.0
 const BOSS_MARGIN_SECONDS: float = 10.0
 const POWER_COUNT: int = 3
-const CATCHUP_POWER_COUNT: int = 6
+const POWER_COUNTS_BY_START_LEVEL: Array[int] = [6,5,4,3,3,3,3]
 const HEALTH_COUNT: int = 3
 const DAMAGE_HEALTH_CHANCE: float = 0.3
 const SPAWN_X := Vector2(100,300)
@@ -25,7 +25,7 @@ func plan(stage: int, starting_power: int, events: Array, boss_rush: bool = fals
 		if event.action=="spawn" and Catalog.definition(int(event.definition_id)).get("role","")=="boss":
 			window_end = float(event.at)-BOSS_MARGIN_SECONDS
 			break
-	var power_count: int = CATCHUP_POWER_COUNT if stage>=2 and starting_power==1 else POWER_COUNT
+	var power_count: int = POWER_COUNTS_BY_START_LEVEL[clampi(starting_power,1,7)-1] if stage>=2 else POWER_COUNT
 	if stage>=2:
 		schedule.append(_delivery(EARLY_POWER_SECONDS,201))
 		power_count -= 1

@@ -1,5 +1,8 @@
 extends RefCounted
 ## Presentation-only CPU particles. Never consumes the original game's VB random stream.
+const PlayerStyle = preload("res://scripts/player_weapon_style.gd")
+const PlayerShotArt = preload("res://scripts/player_shot_art.gd")
+const OriginalArt = preload("res://scripts/art.gd")
 const ProjectileFrames = preload("res://scripts/projectile_frames.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Supply = preload("res://scripts/supply_visual.gd")
@@ -16,12 +19,16 @@ const SMOKE_COLOR = Color("101216")
 const CYAN = Color("61e7ff")
 const MINT = Color("91ffd3")
 const VIOLET = Color("c8a0ff")
+const PLAYER_COLORS = PlayerStyle.BASE
 const HOT = Color("ff8945")
 const PINK = Color("ff608f")
+var player_art = PlayerShotArt.new()
+var original_player_art = OriginalArt.new()
 var carrier_releases: Dictionary = {}
 var particles: Array = []
 var blasts: Array = []
-var impacts: Array = []
+var impacts: Dictionary = {}
+var launches: Dictionary = {}
 var rng := RandomNumberGenerator.new()
 var last_frame: int = -1
 var last_stage: int = -1
@@ -56,6 +63,7 @@ func reset() -> void:
 	particles.clear()
 	blasts.clear()
 	impacts.clear()
+	launches.clear()
 	last_frame = -1
 	last_stage = -1
 	last_hit = 0
@@ -95,11 +103,19 @@ func observe(g: Node) -> void:
 		burst(center,70 if large else 40,HOT,6 if large else 4)
 		for i in range(10 if large else 6):
 			emit(center+Vector2(rng.randf_range(-10,10),rng.randf_range(-8,8)),Vector2(rng.randf_range(-0.6,0.6),0),32,18 if large else 13,SMOKE_COLOR,true)
-	impacts = impacts.filter(func(s): return g.shots.contains(s.entity_id))
+	for id in impacts.keys():
+		if not g.shots.contains(id): impacts.erase(id)
+	for id in launches.keys():
+		if not g.shots.contains(id): launches.erase(id)
 	for shot in g.shots:
-		if float(shot.get("impact_remaining_seconds",-1))<0 or impacts.has(shot): continue
-		impacts.append(shot)
-		burst(shot.pos+Vector2(15,8),12,player_color(g.weapon),3.4)
+		var id: int = shot.entity_id
+		if shot.has("launch_pos") and not launches.has(id):
+			launches[id] = true
+			for x in PlayerStyle.PORTS[clampi(g.weapon,1,3)-1]:
+				player_sparks(shot.launch_pos+Vector2(15+x,24),g.weapon,false)
+		if float(shot.get("impact_remaining_seconds",-1))<0 or impacts.has(id): continue
+		impacts[id] = true
+		player_sparks(shot.pos+Vector2(15,8),g.weapon,true)
 	if g.hit_flash_remaining_seconds>last_hit: burst(g.player+Vector2(25,25),28,HOT,4.5)
 	last_hit = g.hit_flash_remaining_seconds
 	for e in g.enemies:
@@ -125,7 +141,8 @@ func observe(g: Node) -> void:
 				emit(b.get("render_pos",b.pos)-direction*5,-direction*0.7,9,2.5 if kind==2 else 1.4,enemy_color(kind))
 		for shot in g.shots:
 			if float(shot.get("impact_remaining_seconds",-1))>=0: continue
-			emit(shot.pos+Vector2(15,20),Vector2(rng.randf_range(-0.2,0.2),2),8,1.8,player_color(g.weapon))
+			for x in PlayerStyle.PORTS[clampi(g.weapon,1,3)-1]:
+				emit(shot.pos+Vector2(15+x,28),Vector2(rng.randf_range(-0.2,0.2),2),8,0.8,player_color(g.weapon))
 	trail_clock += g.delta_seconds
 	if trail_clock>=0.06-0.00000003:
 		trail_clock = fposmod(trail_clock,0.06)
@@ -136,6 +153,16 @@ func observe(g: Node) -> void:
 		if not g.boss.is_empty(): emit_actor_smoke(g.boss)
 		if g.death_remaining_seconds==0:
 			for x in [17,33]: emit(g.player+Pilot.visual_point(Vector2(x,43)),Vector2(0,2.5),6,2.8,CYAN)
+
+func player_sparks(pos: Vector2, weapon: int, impact: bool) -> void:
+	var count: int = 10 if impact else 4
+	for i in range(count):
+		var direction: Vector2 = Vector2.from_angle(rng.randf()*TAU) if impact else Vector2(rng.randf_range(-0.6,0.6),-1).normalized()
+		var color: Color = PlayerStyle.highlight(weapon) if i==0 else player_color(weapon)
+		var before: int = particles.size()
+		emit(pos,direction*rng.randf_range(1.2 if impact else 0.6,3.0 if impact else 1.4),rng.randf_range(4 if impact else 3,8 if impact else 5),rng.randf_range(0.9 if impact else 0.7,1.5 if impact else 1.1),color)
+		if particles.size()==before: break
+		particles[-1].player_effect = "impact" if impact else "launch"
 
 static func boss_smoking(b: Dictionary) -> bool:
 	return b.get("max_hp",0)>0 and Catalog.smoking(b)
@@ -150,7 +177,7 @@ func emit_smoke(pos: Vector2, size: float) -> void:
 		emit(pos+Vector2(rng.randf_range(-3,3),rng.randf_range(-2,2)),Vector2(rng.randf_range(-0.4,0.4),0),28,size*rng.randf_range(0.9,1.1),SMOKE_COLOR,true)
 
 static func player_color(weapon: int) -> Color:
-	return [CYAN,CYAN,VIOLET,MINT][clampi(weapon,1,3)]
+	return PLAYER_COLORS[clampi(weapon,1,3)-1]
 static func enemy_color(kind: int) -> Color:
 	return PINK if kind in [4,5,6,7] else HOT
 
@@ -198,17 +225,13 @@ func draw_bullet(c: Node2D, b: Dictionary, position: Variant = null, phase: floa
 func draw_fireball(c: Node2D,p: Vector2,direction: Vector2,phase: float) -> void:
 	ProjectileFrames.draw(c,p,direction,phase)
 
-func draw_shot(c: Node2D, shot: Dictionary, player: Vector2, weapon: int, position: Variant = null) -> void:
-	var visual: Dictionary = shot.visual if shot.has("visual") else Weapons.visual(shot,player)
-	var p: Vector2 = (position if position!=null else shot.pos)+Vector2(15,12)
-	var color: Color = player_color(weapon)
-	if visual.phase=="impact":
-		var t: float = clampf(float(shot.get("impact_remaining_seconds",0))/0.27,0,1)
-		halo(c,p,12+t*11,color,t*0.7)
-		c.draw_arc(p,3+(1-t)*17,0,TAU,32,Color(color,t*0.7),1.2,true)
+func draw_shot(c: Node2D, shot: Dictionary, player: Vector2, weapon: int, position: Variant = null, renewed: bool = true) -> void:
+	if renewed:
+		player_art.draw(c,shot,player,weapon,position)
 	else:
-		streak(c,p,Vector2.UP,19 if weapon!=3 else 11,2.6 if weapon!=3 else 4,color)
-		if visual.phase=="launch": halo(c,p+Vector2(0,9),13,color,0.9)
+		var visual: Dictionary = shot.visual if shot.has("visual") else Weapons.visual(shot,player)
+		var pos: Vector2 = position if position!=null else shot.pos
+		c.draw_texture(original_player_art.sprite("weapon%d"%weapon,visual.rect,visual.mask),pos+visual.offset)
 
 func _blast_record(blast: Dictionary) -> Dictionary:
 	for record in blasts:

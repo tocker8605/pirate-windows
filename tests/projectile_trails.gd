@@ -47,7 +47,7 @@ func run() -> void:
 		elif p.p.x<200: regular += 1
 		else: player += 1
 	check(flame==2,"fireball emits two embers over eight authored units instead of twelve")
-	check(regular==2 and player==2,"enemy and friendly projectile tail cadence is halved")
+	check(regular==2 and player==4,"enemy tails retain reduced cadence and type1 emits one small particle behind each of its two beams")
 	check(smoke==24,"damaged boss retains six smoke particles every two authored units")
 	check(Rng.state==gameplay_rng,"reduced visual tails do not consume gameplay RNG")
 	fx.reset()

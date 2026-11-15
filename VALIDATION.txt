@@ -1,11 +1,24 @@
-Pirate II v24.34 — Validation / 2026-11-15
+Pirate II v24.41 — Validation / 2026-11-15
 
-Z: no energy cost, fires at zero energy; holding Z suppresses recovery.
-Z released: existing recovery rate1/0.12seconds, capped100.
-X laser8 and C shield40 costs and activation thresholds unchanged.
-Fire cadence, shot count limit and gameplay tick rate unchanged.
+Type1 single centered bright-lavender line: 1.4 logical-pixel core, previous 1.0.
+player_weapon_effects: 21 checks, 0 failures.
+render_player_weapons: 13 checks, 0 failures; rendered image visually reviewed.
+Exported PCK verified: packed version 0.24.41, one-line atlas, stage1 initialization/firing.
+Pirate-II.exe headless startup: exit 0. Runtime SHA256 matches official signed Godot GUI.
+Full regression suite was not rerun for this visual-only release.
+Build script import reported an editor safe-save warning in this environment.
+Native Godot PCK export completed; final packed runtime checks above passed cleanly.
 
-All2263 checks across46 suites passed:
+Previous v24.40 validation record follows:
+Pirate II v24.40 — Validation /2026-11-15
+
+Normal stage2+:start-power1/2/3/4..7 budgets power carriers6/5/4/3.
+Stage1 remains3. Guaranteed1second carrier is included in budget.
+Budget frozen after carried starting power restored; HP deliveries/rush exclusions/part drops unchanged.
+All power pickups restore+50energy capped100, including maximum-power and BossRush cases.
+Power+1/cap7,score1000,HP-item25 unchanged.
+
+All2379 checks across48 relevant suites passed:
 smoke: 39 passed
 combat_reference: 47 passed
 special_effects: 28 passed
@@ -29,7 +42,7 @@ weapon_parallel: 13 passed
 claw_smoke: 17 passed
 supply_boss_v20: 27 passed
 enemy_catalog: 86 passed
-weapon_motion: 26 passed
+weapon_motion: 40 passed
 spiral_contact: 38 passed
 ascent_depth: 18 passed
 projectile_trails: 5 passed
@@ -49,14 +62,20 @@ rewards_damage: 201 passed
 refactor_contracts: 21 passed
 refactor_equivalence: 520 passed
 twin_muzzle_symmetry: 57 passed
-health_supply: 108 passed
+health_supply: 173 passed
 damage_supply: 15 passed
-render_60fps: 6 passed
+player_weapon_effects: 21 passed
+power_supply_energy: 16 passed
+render_health_supply: 6 passed
 
-Actual portable EXE/PCK: player_energy31 passed (all21weapon/power configurations plus10input/regen checks).
-Render60FPS:60.00 process FPS,60.00 drawn FPS,60.00 gameplay ticks/s.
-Official signed executable unchanged; external PCK updated.
+Actual portable EXE/PCK: health_supply173 + power_supply_energy16 =189checks passed.
+Schedule matrix covers all7start-power levels and all4stages; actual carried power2/3 budgets verified.
+Energy tests cover0,20,33.3,50,90,100,max-power and both modes.
+Replay baseline updated for intentional pickup balance:supply_energy_replay_v24_40.json,520checkpoints reproduced.
+First old/new difference at stage1tick1379 is energy only:100(old full fill) vs54(new4+50); other state matches there.
+No visual changes; targeted health-carrier rendering verified.
+Official signed EXE unchanged; external PCK updated.
 No commit or push performed.
 
 Pirate-II.exe SHA256 AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424
-Pirate-II.pck SHA256 5379AC8C62D033349EF58F98A5E4B607A557533B9BF799935DA2041510AC8CF5
+Pirate-II.pck SHA256 A50FF5C804AE89AF89006A4E0E84A2358326C7ADDBBE997C973089BE568ADEDE

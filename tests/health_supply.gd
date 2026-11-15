@@ -36,12 +36,12 @@ func run() -> void:
 		var boss_time := 0.0
 		for event in events:
 			if event.action=="spawn" and Catalog.definition(int(event.definition_id)).role=="boss": boss_time = event.at; break
-		for power in [1,2,7]:
+		for power in range(1,8):
 			var director = Director.new()
 			director.rng.seed = 32000+stage*10+power
 			var before: int = Rng.state
 			director.plan(stage,power,events)
-			var expected_power: int = 6 if stage>=2 and power==1 else 3
+			var expected_power: int = ([6,5,4,3,3,3,3][power-1] if stage>=2 else 3)
 			check(director.schedule.filter(func(e): return e.kind==201).size()==expected_power and director.schedule.filter(func(e): return e.kind==202).size()==3,"stage%d startingPower%d gives%d power and3HP deliveries"%[stage,power,expected_power])
 			check(director.schedule.all(func(e): return ((e.at>10 and e.at<boss_time-10) or (stage>=2 and e.kind==201 and e.at==1.0)) and e.pos.x>=100 and e.pos.x<=300 and e.pos.y==480 and e.pattern==1074),"stage%d supplies obey requested time/X bounds and existing approach motion"%stage)
 			var early: Array = director.schedule.filter(func(e): return e.at<10)
@@ -108,7 +108,10 @@ func run() -> void:
 	g._update_items()
 	check(g.hp==100,"HP payload clamps recovery at100")
 	g._load_stage(2,true)
-	check(g.supply_director.schedule.size()==6,"carried power3plans three power and three HP supplies")
+	check(g.supply_director.schedule.size()==7,"carried power3plans four power and three HP supplies")
+	g.power = 2
+	g._load_stage(2,true)
+	check(g.supply_director.schedule.size()==8,"carried power2plans five power and three HP supplies")
 	g.power = 1
 	g._load_stage(3,true)
 	check(g.supply_director.schedule.size()==9,"carried power1at stage3plans six power and three HP supplies")

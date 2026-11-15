@@ -95,7 +95,7 @@ func run() -> void:
 	check(Weapons.visual(shot,player).rect==Rect2i(0,180,80,30),"impact last three ticks use sheet row 180")
 	shot = {"pos":Vector2(190,350),"kind":4}
 	Weapons.advance(shot,player,0.03)
-	check(near(shot.pos,Vector2(190,338.75)),"accelerating weapon keeps X fixed and retains player-Y-based speed")
+	check(near(shot.pos,Vector2(181+9*exp(-0.1),338.75)),"accelerating weapon smoothly follows pilot X and retains player-Y-based speed")
 	check(Weapons.vb_integer(2.5)==2 and Weapons.vb_integer(3.5)==4 and Weapons.vb_integer(-1.5)==-2,"VB6 ties-to-even pixel assignment")
 	var game = Game.new()
 	game.automatic = false
