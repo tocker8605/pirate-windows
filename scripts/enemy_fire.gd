@@ -66,8 +66,8 @@ static func emit(e: Dictionary, player: Vector2, attack: String, boss: Dictionar
 			_add(result,p+Vector2(10,30),(velocity)*33.333333333333336,7)
 			_add(result,p+Vector2(40,30),(velocity)*33.333333333333336,7)
 		7:
-			for angle in [0.0,deg_to_rad(5),deg_to_rad(-5)]:
-				_add(result,single_muzzle(e),target.rotated(angle)*300.0,5)
+			for angle in [0.0,deg_to_rad(8),deg_to_rad(-8)]:
+				_add(result,single_muzzle(e),target.rotated(angle)*200.0,5)
 		8: _add(result,p+Vector2(25,30),(Vector2(0,-1))*33.333333333333336,2)
 		9: _add(result,single_muzzle(e),(Vector2(3-Rng.between(0,6),-1-Rng.between(0,2)))*33.333333333333336,8)
 		10:

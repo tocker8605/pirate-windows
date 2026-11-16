@@ -207,7 +207,7 @@
       "fire_channels": [
         {
           "name": "triple",
-          "interval_seconds": 0.54,
+          "interval_seconds": 0.72,
           "gate": "always"
         }
       ],

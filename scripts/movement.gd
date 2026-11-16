@@ -47,8 +47,8 @@ static func steer(e: Dictionary, player: Vector2, boss: Vector2, seconds: float 
 			if p.y<140 and ((right and v.x>0) or (not right and v.x<0)): v.x=move_toward(v.x,0,acceleration)
 			if p.y>240: v.x+= -acceleration if right else acceleration
 		1041,1042:
-			if e.pattern==1041 and p.x<player.x-50: v.x=133.3333333333333
-			elif e.pattern==1042 and p.x>player.x+50: v.x= -133.3333333333333
+			if e.pattern==1041 and p.x<player.x-10: v.x=133.3333333333333
+			elif e.pattern==1042 and p.x>player.x+10: v.x= -133.3333333333333
 			else:
 				e.pattern=1094
 				v=Vector2(0,v.y+acceleration*2)
