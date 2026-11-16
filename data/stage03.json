@@ -31,8 +31,6 @@
     {"comment": "fireball_disc 하단"},
     {"at": 12, "action": "spawn", "definition_id": 9, "position": [250, 480], "pattern": 1071},
     {"at": 12.6, "action": "spawn", "definition_id": 9, "position": [300, 480], "pattern": 1071},
-    {"at": 13.2, "action": "spawn", "definition_id": 9, "position": [100, 480], "pattern": 1071},
-    {"at": 13.8, "action": "spawn", "definition_id": 9, "position": [50, 480], "pattern": 1071},
 
     {"comment": "wing 좌하"},
     {"at": 12.6, "action": "spawn", "definition_id": 2, "position": [-50, 220], "pattern": 1053},
@@ -47,6 +45,10 @@
     {"at": 12.6, "action": "spawn", "definition_id": 4, "position": [400, 50], "pattern": 1062},
     {"at": 13.5, "action": "spawn", "definition_id": 4, "position": [400, 50], "pattern": 1062},
     {"at": 14.4, "action": "spawn", "definition_id": 4, "position": [400, 50], "pattern": 1062},
+
+    {"comment": "fireball_disc 하단"},
+    {"at": 16.2, "action": "spawn", "definition_id": 9, "position": [100, 480], "pattern": 1071},
+    {"at": 16.8, "action": "spawn", "definition_id": 9, "position": [50, 480], "pattern": 1071},
 
     {"comment": "wing 우하"},
     {"at": 17.1, "action": "spawn", "definition_id": 2, "position": [400, 220], "pattern": 1054},
