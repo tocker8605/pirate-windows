@@ -40,6 +40,13 @@ func run() -> void:
 	var a: Dictionary = Catalog.create(1,Vector2(100,100))
 	var b: Dictionary = Catalog.create(1,Vector2(100,100))
 	var player := Vector2(175,380)
+	var wing: Dictionary = Catalog.create(2,Vector2(100,99.99))
+	check(Fire.advance(wing,1.0,player).is_empty(),"variable wing does not fire aimed orange shots aboveY100")
+	wing.pos.y = 100
+	check(Fire.advance(wing,0.47,player).is_empty() and Fire.advance(wing,0.01,player).size()==1,"variable wing enables aim atY100 with480ms cadence and no banked shots")
+	wing = Catalog.create(2,Vector2(100,99.99))
+	wing.velocity.x = 100
+	check(Fire.advance(wing,0.18,player).size()==1,"variable wing moving shot remains enabled aboveY100")
 	check(Fire.advance(a,0.35,player).is_empty() and Fire.advance(b,0.1,player).is_empty(),"new actors each wait their own first interval")
 	check(Fire.advance(a,0.01,player).size()==1 and Fire.advance(b,0.01,player).is_empty(),"one actor firing cannot advance another actor clock")
 	a.velocity.y = (4/0.03)

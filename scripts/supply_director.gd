@@ -27,8 +27,9 @@ func plan(stage: int, starting_power: int, events: Array, boss_rush: bool = fals
 			break
 	var power_count: int = POWER_COUNTS_BY_START_LEVEL[clampi(starting_power,1,7)-1] if stage>=2 else POWER_COUNT
 	if stage>=2:
-		schedule.append(_delivery(EARLY_POWER_SECONDS,201))
-		power_count -= 1
+		var early_count: int = 2 if starting_power==1 else 1
+		for i in range(early_count): schedule.append(_delivery(EARLY_POWER_SECONDS,201))
+		power_count -= early_count
 	if window_end<=START_SECONDS: return
 	var kinds: Array = []
 	for i in range(HEALTH_COUNT): kinds.append(202)

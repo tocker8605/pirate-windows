@@ -6,6 +6,9 @@ const Boss = preload("res://scripts/boss.gd")
 const Rng = preload("res://scripts/random.gd")
 const Pilot = preload("res://scripts/pilot_geometry.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
+const HEAVY_CANNON_SWEEP_LEG_SECONDS: float = 6.0
+const HEAVY_CANNON_MIN_DEGREES: float = -10.0
+const HEAVY_CANNON_MAX_DEGREES: float = 30.0
 ## Named volley geometry and independent per-actor attacks.
 ## Keep legacy aim anchors, but normalize the actual direction so distance cannot amplify speed.
 static func aim(enemy: Vector2, player: Vector2, speed: float) -> Vector2:
@@ -22,7 +25,7 @@ static func enabled(e: Dictionary, channel: Dictionary, boss: Dictionary = {}) -
 	match str(channel.gate):
 		"aim_window": return v.y<(133.33333333333334 - 0.0001) and v.y> (-166.66666666666669 + 0.0001)
 		"moving": return v.x!=0
-		"stationary_aim": return v.x==0 and v.y> (-33.333333333333336 + 0.0001)
+		"stationary_aim": return y>=100 and v.x==0 and v.y> (-33.333333333333336 + 0.0001)
 		"sweep_y": return y>20 and y<199
 		"descent_or_stationary": return v.y>(0 + 0.0001) or v.x==0
 		"descending": return v.y>(33.333333333333336 + 0.0001)
@@ -39,7 +42,13 @@ static func enabled(e: Dictionary, channel: Dictionary, boss: Dictionary = {}) -
 		"core_settled": return CoreMotion.active(e) and e.get("core_phase","")=="settled"
 	return true
 
-static func emit(e: Dictionary, player: Vector2, attack: String, boss: Dictionary = {}) -> Array:
+static func heavy_cannon_angle(age: float) -> float:
+	# One leg takes6s; the full smooth return takes12s. Positive rotation is clockwise.
+	var phase: float = fposmod(age,HEAVY_CANNON_SWEEP_LEG_SECONDS*2)
+	var blend: float = (1+cos(PI*phase/HEAVY_CANNON_SWEEP_LEG_SECONDS))/2
+	return deg_to_rad(lerpf(HEAVY_CANNON_MIN_DEGREES,HEAVY_CANNON_MAX_DEGREES,blend))
+
+static func emit(e: Dictionary, player: Vector2, attack: String, boss: Dictionary = {}, fired_at: float = -1) -> Array:
 	var result: Array = []
 	var p: Vector2 = e.pos
 	var v: Vector2 = e.velocity*0.03
@@ -57,9 +66,8 @@ static func emit(e: Dictionary, player: Vector2, attack: String, boss: Dictionar
 			_add(result,p+Vector2(10,30),(velocity)*33.333333333333336,7)
 			_add(result,p+Vector2(40,30),(velocity)*33.333333333333336,7)
 		7:
-			_add(result,single_muzzle(e),(target*9)*33.333333333333336,5)
-			_add(result,single_muzzle(e),(target*7+Vector2(-2,0))*33.333333333333336,5)
-			_add(result,single_muzzle(e),(target*7+Vector2(2,0))*33.333333333333336,5)
+			for angle in [0.0,deg_to_rad(5),deg_to_rad(-5)]:
+				_add(result,single_muzzle(e),target.rotated(angle)*300.0,5)
 		8: _add(result,p+Vector2(25,30),(Vector2(0,-1))*33.333333333333336,2)
 		9: _add(result,single_muzzle(e),(Vector2(3-Rng.between(0,6),-1-Rng.between(0,2)))*33.333333333333336,8)
 		10:
@@ -80,8 +88,9 @@ static func emit(e: Dictionary, player: Vector2, attack: String, boss: Dictionar
 			else: _add(result,single_muzzle(e),(target*10)*33.333333333333336,7)
 		41:
 			if attack=="aim":
-				_add(result,p+Vector2(-20,40),(target*10)*33.333333333333336,6)
-				_add(result,p+Vector2(70,40),(target*10)*33.333333333333336,6)
+				var angle: float = heavy_cannon_angle(float(e.get("fire_age",0.0)) if fired_at<0 else fired_at)
+				_add(result,p+Vector2(-20,40),target.rotated(angle)*333.33333333333337,6)
+				_add(result,p+Vector2(70,40),target.rotated(-angle)*333.33333333333337,6)
 			else: _add(result,p+Vector2(25,40),(Vector2(0,-1))*33.333333333333336,2)
 		42:
 			_add(result,p+Vector2(-10,40),(Vector2(2-Rng.between(0,4),-1-Rng.between(0,2)))*33.333333333333336,2)
@@ -124,7 +133,7 @@ static func advance(e: Dictionary, seconds: float, player: Vector2 = Vector2.ZER
 	if e.hp<=0: return result
 	var channels: Array = Catalog.definition(int(e.kind)).get("fire_channels",[])
 	var events: Array = AttackTimer.advance(e,channels,seconds,func(channel): return enabled(e,channel,boss))
-	for event in events: result.append_array(emit(e,player,event.name,boss))
+	for event in events: result.append_array(emit(e,player,event.name,boss,event.at))
 	result.append_array(_advance_special(e,seconds,player))
 	return result
 

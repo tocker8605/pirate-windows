@@ -44,7 +44,7 @@
         },
         {
           "name": "aim",
-          "interval_seconds": 0.36,
+          "interval_seconds": 0.48,
           "gate": "stationary_aim"
         }
       ],
@@ -255,7 +255,7 @@
       "part_side": 0,
       "attack": {
         "type": "speed_spread",
-        "interval_seconds": 0.12,
+        "interval_seconds": 0.24,
         "speed": 300.0,
         "max_vertical_speed": 333.33333333333337,
         "max_spread_degrees": 90,

@@ -45,9 +45,10 @@ func run() -> void:
 			check(director.schedule.filter(func(e): return e.kind==201).size()==expected_power and director.schedule.filter(func(e): return e.kind==202).size()==3,"stage%d startingPower%d gives%d power and3HP deliveries"%[stage,power,expected_power])
 			check(director.schedule.all(func(e): return ((e.at>10 and e.at<boss_time-10) or (stage>=2 and e.kind==201 and e.at==1.0)) and e.pos.x>=100 and e.pos.x<=300 and e.pos.y==480 and e.pattern==1074),"stage%d supplies obey requested time/X bounds and existing approach motion"%stage)
 			var early: Array = director.schedule.filter(func(e): return e.at<10)
-			check(early.size()==(1 if stage>=2 else 0) and (stage==1 or (early[0].kind==201 and early[0].at==1.0)),"stage%d startingPower%d has exactly the requested1second power allocation within total budget"%[stage,power])
+			var expected_early: int = (2 if power==1 else 1) if stage>=2 else 0
+			check(early.size()==expected_early and early.all(func(e): return e.kind==201 and e.at==1.0),"stage%d startingPower%d has exactly the requested1second power allocation within total budget"%[stage,power])
 			var ordered := true
-			for i in range(1,director.schedule.size()): ordered = ordered and director.schedule[i-1].at<director.schedule[i].at
+			for i in range(1,director.schedule.size()): ordered = ordered and director.schedule[i-1].at<=director.schedule[i].at
 			check(ordered and Rng.state==before,"schedule is ordered and never consumes enemy-pattern RNG")
 		var first = Director.new()
 		var second = Director.new()
@@ -75,9 +76,9 @@ func run() -> void:
 	for i in range(59): g._tick(Vector2.ZERO,false,false,false,Clock.FIXED_STEP_SECONDS)
 	check(g.stats.supply_spawned==0,"early carrier cannot appear before1second")
 	g._tick(Vector2.ZERO,false,false,false,Clock.FIXED_STEP_SECONDS)
-	check(g.stats.supply_spawned==1 and g.enemies.size()==1 and g.enemies.at(0).kind==201,"60th native tick creates the guaranteed power carrier at1second")
+	check(g.stats.supply_spawned==2 and g.enemies.size()==2 and g.enemies.all(func(e): return e.kind==201),"60th native tick creates both guaranteed power carriers at1second when starting at power1")
 	for i in range(120): g._tick(Vector2.ZERO,false,false,false,Clock.FIXED_STEP_SECONDS)
-	check(g.stats.supply_spawned==1,"guaranteed carrier is not duplicated on following ticks")
+	check(g.stats.supply_spawned==2,"guaranteed carrier pair is not duplicated on following ticks")
 	g._load_stage(1)
 	g.events = []
 	g.supply_director.schedule = [{"at":10.1,"kind":202,"pos":Vector2(150,480),"pattern":1074}]
