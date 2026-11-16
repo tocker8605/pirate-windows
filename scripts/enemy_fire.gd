@@ -7,12 +7,10 @@ const Rng = preload("res://scripts/random.gd")
 const Pilot = preload("res://scripts/pilot_geometry.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 ## Named volley geometry and independent per-actor attacks.
-## Legacy aimed volleys retain their top-left aim formula; new fans use cockpit aim.
+## Keep legacy aim anchors, but normalize the actual direction so distance cannot amplify speed.
 static func aim(enemy: Vector2, player: Vector2, speed: float) -> Vector2:
 	var delta: Vector2 = player - enemy
-	var denominator: float = floorf(Vector2(delta.x, delta.y + 20).length())
-	# The original skipped one coincidence case but could still divide by zero.
-	return delta * speed / denominator if denominator > 0 else Vector2.ZERO
+	return delta.normalized()*speed
 
 static func single_muzzle(e: Dictionary, y: float = 25) -> Vector2:
 	return e.pos+Vector2(25,y)
@@ -125,7 +123,7 @@ static func advance(e: Dictionary, seconds: float, player: Vector2 = Vector2.ZER
 	var result: Array = []
 	if e.hp<=0: return result
 	var channels: Array = Catalog.definition(int(e.kind)).get("fire_channels",[])
-	var events: Array = AttackTimer.advance(e,channels,seconds,func(channel): return enabled(e,channel,boss) and (channel.name=="rotating_cross" or channel.gate=="core_settled" or not (player.x==e.pos.x and player.y==e.pos.y-20)))
+	var events: Array = AttackTimer.advance(e,channels,seconds,func(channel): return enabled(e,channel,boss))
 	for event in events: result.append_array(emit(e,player,event.name,boss))
 	result.append_array(_advance_special(e,seconds,player))
 	return result

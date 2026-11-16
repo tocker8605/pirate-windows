@@ -1,5 +1,6 @@
 extends SceneTree
 const Fire = preload("res://tests/fixtures/fire_probe.gd")
+const RuntimeFire = preload("res://scripts/enemy_fire.gd")
 const Weapons = preload("res://scripts/player_weapons.gd")
 const Game = preload("res://scripts/game.gd")
 var checks: int = 0
@@ -23,18 +24,18 @@ func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var b: Array = []
 	var player := Vector2(170,380)
-	# Golden values calculated directly from frmtmrs.frm ewcontrol, not from port helpers.
+	# Retain authored volley geometry; aimed velocities now use unit-length directions.
 	var a: Array = Fire.burst(enemy(1,Vector2(100,100)),player,6,0)
 	check(a.size()==1 and a[0].pos==Vector2(125,120),"type 1 keeps original top-left muzzle anchor")
-	check(near(a[0].velocity,(Vector2(1.59090909,6.36363636))/0.03),"type 1 original floor(sqrt(dx²+(dy+20)²)) aim")
+	check(near(a[0].velocity,Vector2(70,280).normalized()*7/0.03),"type1 aimed shot has its configured speed")
 	check(Fire.burst(enemy(1,Vector2(100,100),Vector2(0,4)),player,6,0).is_empty(),"type 1 upward/downward velocity firing gate")
 	check(Fire.burst(enemy(1,Vector2(100,100)),player,5,0).is_empty(),"original global firing phase gate")
 	a = Fire.burst(enemy(2,Vector2(100,100),Vector2(-6,2)),player,3,0)
 	check(a.size()==1 and a[0].velocity.distance_to((Vector2(6,5))/0.03)<0.001,"type 2 horizontal motion reverses shot X direction")
 	a = Fire.burst(enemy(2,Vector2(100,100),Vector2(0,0)),player,6,0)
-	check(a.size()==1 and a[0].kind==3 and near(a[0].velocity,(Vector2(630,2520)/308.0)/0.03),"type2 stationary long projectile aims toward player while retaining kind3")
+	check(a.size()==1 and a[0].kind==3 and near(a[0].velocity,Vector2(70,280).normalized()*9/0.03),"type2 stationary long projectile aims toward player while retaining kind3")
 	a = Fire.burst(enemy(2,Vector2(100,100)),Vector2(50,30),6,0)
-	check(a.size()==1 and near(a[0].velocity,(Vector2(-450,-630)/70.0)/0.03),"type2 can aim upward-left at a player above it")
+	check(a.size()==1 and near(a[0].velocity,Vector2(-50,-70).normalized()*9/0.03),"type2 can aim upward-left at a player above it")
 	check(Fire.burst(enemy(2,Vector2(100,100),Vector2(0,-1)),player,6,0).is_empty(),"type2 retains its vertical movement firing gate")
 	check(Fire.burst(enemy(2,Vector2(100,100)),player,5,0).is_empty(),"type2 retains its original phase6 shot cadence")
 	check(Fire.burst(enemy(3,Vector2(100,20)),player,2,0).is_empty(),"type 3 lower Y boundary is strict")
@@ -47,10 +48,10 @@ func run() -> void:
 	a = Fire.burst(enemy(6,Vector2(100,100),Vector2(2,3)),player,4,0)
 	check(a.size()==2 and a[0].pos==Vector2(110,130) and a[1].pos==Vector2(140,130) and a[0].velocity.distance_to((Vector2(-2,7))/0.03)<0.001,"type6 centred symmetric muzzles retain motion-linked velocity")
 	a = Fire.burst(enemy(6,Vector2(100,100),Vector2(0,-1)),player,4,0)
-	check(a.size()==2 and near(a[0].velocity,(Vector2(630.0/308,2520.0/308))/0.03),"type 6 rising aircraft switches to aimed fire")
+	check(a.size()==2 and near(a[0].velocity,Vector2(70,280).normalized()*9/0.03),"type 6 rising aircraft switches to aimed fire")
 	check(Fire.burst(enemy(6,Vector2(100,100),Vector2(1,-1)),player,4,0).is_empty(),"type 6 rising horizontal motion suppresses firing")
 	a = Fire.burst(enemy(7,Vector2(100,100)),player,9,0)
-	check(a.size()==3 and near(a[1].velocity,(Vector2(490.0/308-2,1960.0/308))/0.03) and near(a[2].velocity,(Vector2(490.0/308+2,1960.0/308))/0.03),"type 7 three-shot spread restored")
+	check(a.size()==3 and near(a[1].velocity,(Vector2(70,280).normalized()*7+Vector2(-2,0))/0.03) and near(a[2].velocity,(Vector2(70,280).normalized()*7+Vector2(2,0))/0.03),"type7 retains authored spread offsets around normalized aim")
 	a = Fire.burst(enemy(8,Vector2(100,100),Vector2(0,6)),player,3,0)
 	check(a.is_empty(),"type8 descent twins no longer use the legacy phase3 fire gate")
 	a = Fire.burst(enemy(8,Vector2(100,100)),player,10,0)
@@ -63,7 +64,7 @@ func run() -> void:
 	check(a.size()==3 and a[0].velocity.distance_to((Vector2(-1,-1))/0.03)<0.001 and a[1].velocity.distance_to((Vector2(1,-1))/0.03)<0.001,"type 21 original dual missiles plus aimed bullet")
 	check(Fire.burst(enemy(22,Vector2(100,100)),player,2,0).is_empty(),"type 22 Y=100 firing boundary")
 	a = Fire.burst(enemy(22,Vector2(100,101)),player,2,0)
-	check(a.size()==2 and near(a[0].velocity,(Vector2(630.0/307,2511.0/307))/0.03),"type 22 pixel modulo adjustment at Y=101")
+	check(a.size()==2 and near(a[0].velocity,Vector2(70,279).normalized()*9/0.03),"type22 retains plasma geometry with normalized aim")
 	check(Fire.burst(enemy(22,Vector2(100,150)),player,2,0).is_empty(),"type 22 Y=150 firing boundary")
 	a = Fire.burst(enemy(41,Vector2(100,100)),player,3,1)
 	b = Fire.burst(enemy(41,Vector2(100,100)),player,3,2)
@@ -74,7 +75,26 @@ func run() -> void:
 	a = Fire.burst(enemy(101,Vector2(100,391)),player,1,0)
 	check(a.size()==1 and a[0].pos==Vector2(125,411) and is_equal_approx(a[0].velocity.y,(-10/0.03)+absf(a[0].velocity.x)),"wing shots couple random X to original Y velocity")
 	check(Fire.burst(enemy(101,Vector2(100,390)),player,1,0).is_empty(),"wing firing threshold is strictly Y>390")
-	check(Fire.aim(Vector2(100,100),Vector2(100,80),7)==Vector2.ZERO,"zero denominator handled without a crash")
+	check(Fire.aim(Vector2(100,100),Vector2(100,80),7)==Vector2(0,-7),"old singular point now produces a normal upward shot")
+	check(Fire.aim(Vector2(100,100),Vector2(100,100),7)==Vector2.ZERO,"coincident aim anchors are finite without a direction")
+	for delta in [Vector2(0,-19),Vector2(0.01,-20),Vector2(0,-20.01),Vector2(0.01,0),Vector2(0,0.01),Vector2(-1,-1),Vector2(3,4),Vector2(300,400)]:
+		var velocity: Vector2 = Fire.aim(Vector2(100,100),Vector2(100,100)+delta,300)
+		check(is_finite(velocity.x) and is_finite(velocity.y) and absf(velocity.length()-300)<0.001 and velocity.dot(delta)>0,"near/far aim retains300px/s for delta %s"%delta)
+	# Equal direction at different ranges must generate identical complete volleys,
+	# including the additive spread offsets on medium craft and boss arms/claws.
+	for kind in [1,2,4,6,7,10,21,22,41,121,122,131,132]:
+		var actor: Dictionary = enemy(kind,Vector2(100,100))
+		var bounded: bool = true
+		for attack in ["aim","plasma"]:
+			var close_shots: Array = RuntimeFire.emit(actor,Vector2(100.01,80),attack)
+			var far_shots: Array = RuntimeFire.emit(actor,actor.pos+(Vector2(100.01,80)-actor.pos)*10,attack)
+			bounded = bounded and close_shots.size()>0 and close_shots.size()==far_shots.size()
+			for i in range(close_shots.size()):
+				bounded = bounded and close_shots[i].velocity.distance_to(far_shots[i].velocity)<0.01 and close_shots[i].velocity.length()<401
+		check(bounded,"actor%d aimed volleys cannot accelerate with proximity"%kind)
+	var near_actor: Dictionary = enemy(1,Vector2(100,100))
+	var near_volley: Array = RuntimeFire.advance(near_actor,0.36,Vector2(100,80))
+	check(near_volley.size()==1 and absf(near_volley[0].velocity.length()-7/0.03)<0.001,"old20px coincidence no longer suppresses independent firing timer")
 	# Original shot anchors, power-specific layout and image lifecycle.
 	a = Weapons.volley(player,1,3)
 	check(a.size()==2 and a[0].pos==Vector2(165,383) and a[0].kind==1 and a[1].pos==Vector2(195,383) and a[1].kind==1,"weapon1 power3 uses a wider parallel pair")
