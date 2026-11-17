@@ -179,7 +179,7 @@
     {"at": 57.6, "action": "spawn", "definition_id": 2, "position": [400, 240], "pattern": 1054},
 
     {"comment": "대형"},
-    {"at": 57.6, "action": "spawn", "definition_id": 42, "position": [-89, 65], "pattern": 1034},
+    {"at": 57.6, "action": "spawn", "definition_id": 42, "position": [-89, 60], "pattern": 1034},
 
     {"comment": "delta_fighter 좌상"},
     {"at": 57.6, "action": "spawn", "definition_id": 7, "position": [50, -50], "pattern": 1051},

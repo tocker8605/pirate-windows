@@ -114,7 +114,7 @@ func _draw() -> void:
 	for item in g.items:
 		if item.get("born_frame",-1)==g.frame: continue
 		Supply.draw_item(self,g.art,g.presentation.position(item),g.animation,g.presentation.phase(g),Supply.released_scale(item),int(item.kind))
-	# Lower-plane1071 arrivals pass behind all same-plane ships until Y250.
+	# Lower-plane arrivals and protected carriers pass behind same-plane ships.
 	for e in g.enemies:
 		if Depth.is_below(e): _draw_enemy_actor(e)
 	if not g.boss.is_empty():
@@ -132,7 +132,7 @@ func _draw() -> void:
 	for blast in g.explosions: vfx.draw_explosion(self,blast,g.presentation.position(blast))
 	vfx.draw_particles(self,clampf(fraction,0,1),2)
 	for e in g.enemies:
-		if Catalog.definition(int(e.kind)).get("role","")=="supply":
+		if Catalog.definition(int(e.kind)).get("role","")=="supply" and not Depth.is_below(e):
 			Supply.draw_mount(self,g.art,e,g.presentation.position(e),g.animation,g.presentation.phase(g))
 	# Player weapons and enemy bullets remain above actor hulls.
 	for shot in (g.shot_visuals if not g.shot_visuals.is_empty() else g.shots):
@@ -168,6 +168,8 @@ func _draw_enemy_actor(e: Dictionary) -> void:
 	var preparation: Dictionary = Scenery.preparation(e,g.boss)
 	if not preparation.is_empty():
 		vfx.draw_charge(self,preparation.pos+g.presentation.position(e)-e.pos+Vector2(25,25),g.presentation.phase(g))
+	if Depth.is_below(e) and Catalog.definition(int(e.kind)).get("role","")=="supply":
+		Supply.draw_mount(self,g.art,e,g.presentation.position(e),g.animation,g.presentation.phase(g))
 
 func _draw_bullet(b: Dictionary) -> void:
 	vfx.draw_bullet(self,b,g.presentation.position(b),g.presentation.phase(g))

@@ -37,13 +37,13 @@ func run() -> void:
 	var heavy: Dictionary = Catalog.create(41,Vector2(100,100))
 	var player := Vector2(170,380)
 	var direction: Vector2 = (player-heavy.pos).normalized()
-	for sample in [[0,30],[3,10],[6,-10],[9,10],[12,30]]:
+	for sample in [[0,20],[2,5],[4,-10],[6,5],[8,20]]:
 		heavy.fire_age = float(sample[0])
 		shots = Fire.emit(heavy,player,"aim")
 		var angle: float = deg_to_rad(sample[1])
 		check(shots.size()==2 and shots[0].velocity.distance_to(direction.rotated(angle)*333.33333333333337)<0.001 and shots[1].velocity.distance_to(direction.rotated(-angle)*333.33333333333337)<0.001,"heavy cannons mirror the requested angle at %ss"%sample[0])
 		check(shots.all(func(s): return s.kind==6 and absf(s.velocity.length()-333.33333333333337)<0.001),"heavy sweep retains projectile type and speed at %ss"%sample[0])
-	for age in [0.0,3.0,6.0,9.0,12.0]:
+	for age in [0.0,2.0,4.0,6.0,8.0]:
 		check(absf(Fire.heavy_cannon_angle(age-0.001)-Fire.heavy_cannon_angle(age+0.001))<0.001,"sweep is continuous across phase %s"%age)
 	var reference: Array = Fire.advance(Catalog.create(41,Vector2(100,100)),12,player)
 	check(reference.filter(func(s): return s.kind==6).size()==132 and reference.filter(func(s): return s.kind==2).size()==16,"12s preserves66 twin volleys and16missiles")

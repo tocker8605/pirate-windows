@@ -6,9 +6,9 @@ const Boss = preload("res://scripts/boss.gd")
 const Rng = preload("res://scripts/random.gd")
 const Pilot = preload("res://scripts/pilot_geometry.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
-const HEAVY_CANNON_SWEEP_LEG_SECONDS: float = 6.0
+const HEAVY_CANNON_SWEEP_LEG_SECONDS: float = 4.0
 const HEAVY_CANNON_MIN_DEGREES: float = -10.0
-const HEAVY_CANNON_MAX_DEGREES: float = 30.0
+const HEAVY_CANNON_MAX_DEGREES: float = 20.0
 ## Named volley geometry and independent per-actor attacks.
 ## Keep legacy aim anchors, but normalize the actual direction so distance cannot amplify speed.
 static func aim(enemy: Vector2, player: Vector2, speed: float) -> Vector2:
@@ -43,7 +43,7 @@ static func enabled(e: Dictionary, channel: Dictionary, boss: Dictionary = {}) -
 	return true
 
 static func heavy_cannon_angle(age: float) -> float:
-	# One leg takes6s; the full smooth return takes12s. Positive rotation is clockwise.
+	# One leg takes4s; the full smooth return takes8s. Positive rotation is clockwise.
 	var phase: float = fposmod(age,HEAVY_CANNON_SWEEP_LEG_SECONDS*2)
 	var blend: float = (1+cos(PI*phase/HEAVY_CANNON_SWEEP_LEG_SECONDS))/2
 	return deg_to_rad(lerpf(HEAVY_CANNON_MIN_DEGREES,HEAVY_CANNON_MAX_DEGREES,blend))

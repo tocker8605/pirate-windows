@@ -27,7 +27,7 @@ func run() -> void:
 	check(title.difficulty==4,"difficulty still changes independently of fixed speed")
 	for i in range(3): title.navigate(KEY_DOWN)
 	check(title.phase==25 and title.confirm()=="play","all three weapons remain reachable")
-	for row in [[3,2],[7,9],[11,7]]:
+	for row in [[3,2],[7,12],[11,7]]:
 		var actor = {"kind":row[0],"pos":Vector2(90,101),"velocity":Vector2.ZERO}
 		var shots: Array = Fire.burst(actor,Vector2(200,400),row[1],0)
 		check(not shots.is_empty() and shots.all(func(s): return s.pos.x==115),"single-port enemy%d emits every bullet from horizontal centre"%row[0])

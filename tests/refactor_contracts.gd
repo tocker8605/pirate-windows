@@ -55,7 +55,7 @@ func run() -> void:
 	g.shots.at(0).alive = false
 	g._advance_shots()
 	check(g.shots.size()==999 and g.shots.valid(),"in-place expired-bullet removal preserves all other linked entries")
-	check(g.delta_seconds==1.0/60 and is_equal_approx(Catalog.definition(133).core_motion.detach_hp,200),"public timestep is seconds and core threshold lives in metadata")
+	check(g.delta_seconds==1.0/60 and is_equal_approx(Catalog.definition(133).core_motion.detach_hp,300),"public timestep is seconds and core threshold lives in metadata")
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	g.audio.stop_all()
 	g.queue_free()

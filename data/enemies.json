@@ -1279,7 +1279,7 @@
       ],
       "name": "boss4_centre_core",
       "role": "part",
-      "hp": 800,
+      "hp": 900,
       "score": 350,
       "score_scales_with_difficulty": true,
       "damageable": true,
@@ -1309,7 +1309,7 @@
         "velocity_y_offset_seconds": 0.0
       },
       "core_motion": {
-        "detach_hp": 200,
+        "detach_hp": 300,
         "speed": 166.66666666666669,
         "launch_speed": 166.66666666666669,
         "launch_deceleration": 123.4567901234568,

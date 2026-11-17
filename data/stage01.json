@@ -293,7 +293,7 @@
     {"at": 86.8, "action": "spawn", "definition_id": 2, "position": [260, -50], "pattern": 1022},
     {"at": 87.2, "action": "spawn", "definition_id": 2, "position": [270, -50], "pattern": 1022},
     {"at": 87.6, "action": "spawn", "definition_id": 2, "position": [280, -50], "pattern": 1022},
-    {"at": 88.2, "action": "spawn", "definition_id": 2, "position": [290, -50], "pattern": 1022},
+    {"at": 88, "action": "spawn", "definition_id": 2, "position": [290, -50], "pattern": 1022},
 
     {"comment": "crescent 좌측"},
     {"at": 91.8, "action": "spawn", "definition_id": 10, "position": [50, -50], "pattern": 1011},

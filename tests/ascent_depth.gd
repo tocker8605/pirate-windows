@@ -39,8 +39,19 @@ func run() -> void:
 	check(is_equal_approx(e.velocity.y,-10/0.03),"movement retains rapid ascent below the surface boundary")
 	e = actor(350,0)
 	check(Combat.touches_player(e.pos+Vector2(0,7),e) and Depth.scale_for(e)==1,"same enemy with another pattern keeps ordinary contact and appearance")
-	var supply: Dictionary = Catalog.create(201,Vector2(100,350),1074)
-	check(not Depth.is_below(supply) and Depth.scale_for(supply)==1 and not Combat.touches_player(supply.pos+Vector2(0,7),supply),"1074 supply retains normal appearance and its separate contact exemption")
+	for kind in [201,202]:
+		var supply: Dictionary = Catalog.create(kind,Vector2(100,480),1074)
+		check(Depth.is_below(supply) and is_equal_approx(Depth.scale_for(supply),0.8) and is_equal_approx(Depth.tint_for(supply).r,0.65),"protected supply%d shares lower-plane scale and brightness"%kind)
+		check(not Combat.shot_hits(supply.pos,supply) and not Combat.touches_player(supply.pos+Vector2(0,7),supply),"protected supply%d retains damage and contact exemptions"%kind)
+		supply.pos.y = 321
+		check(is_equal_approx(Depth.scale_for(supply),0.9),"supply%d rises smoothly over its last60pixels"%kind)
+		supply.pos.y = 291
+		check(Depth.scale_for(supply)==1 and Depth.tint_for(supply)==Color.WHITE,"supply%d reaches normal size at opening threshold"%kind)
+		supply.kind = 19 if kind==201 else 20
+		check(not Depth.is_below(supply),"open supply%d returns to normal rendering layer"%kind)
+		supply.kind = kind
+		supply.rescued = true
+		check(Depth.is_below(supply) and is_equal_approx(Depth.scale_for(supply),0.8),"rescued supply%d escapes below the combat plane"%kind)
 	var g = Game.new()
 	g.automatic = false
 	g.mute = true

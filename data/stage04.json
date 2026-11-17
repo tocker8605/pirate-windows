@@ -474,8 +474,8 @@
     {"comment": "중형"},
     {"at": 96, "action": "spawn", "definition_id": 22, "position": [50, -90], "pattern": 1073},
     {"at": 96, "action": "spawn", "definition_id": 22, "position": [300, -90], "pattern": 1073},
-    {"at": 97, "action": "spawn", "definition_id": 22, "position": [85, -90], "pattern": 1073},
-    {"at": 97, "action": "spawn", "definition_id": 22, "position": [265, -90], "pattern": 1073},
+    {"at": 98, "action": "spawn", "definition_id": 22, "position": [100, -90], "pattern": 1073},
+    {"at": 98, "action": "spawn", "definition_id": 22, "position": [250, -90], "pattern": 1073},
 
     {"comment": "crescent 좌상"},
     {"at": 98.1, "action": "spawn", "definition_id": 10, "position": [125, -50], "pattern": 1011},

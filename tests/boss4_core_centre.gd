@@ -18,12 +18,13 @@ func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var boss: Dictionary = Catalog.create(94,Vector2(120,70))
 	var core: Dictionary = Catalog.create(133,Vector2.ZERO)
-	core.hp = 200
+	check(core.hp==900 and core.max_hp==900,"central core starts with900HP")
+	core.hp = 300
 	Boss.attach(core,boss)
-	check(core.pattern==0 and core.pos==boss.pos+Vector2(-26,50),"HP200 remains attached at original chest offset")
-	core.hp = 199
+	check(core.pattern==0 and core.pos==boss.pos+Vector2(-26,50),"HP300 remains attached at original chest offset")
+	core.hp = 299
 	Boss.attach(core,boss)
-	check(Core.active(core) and is_equal_approx(core.velocity.x,0/0.03) and core.velocity.y<(0/0.03) and core.velocity.length()<=5.0/0.03+0.0001,"HP199 launches vertically upward before moving to centre")
+	check(Core.active(core) and is_equal_approx(core.velocity.x,0/0.03) and core.velocity.y<(0/0.03) and core.velocity.length()<=5.0/0.03+0.0001,"HP299 launches vertically upward before moving to centre")
 	var definition: Dictionary = Catalog.definition(133)
 	check((Core.target()+definition.draw_offset+definition.draw_size/2)==Vector2(200,240),"target centres actual sprite including drawing offset")
 	var before: Vector2 = core.pos
