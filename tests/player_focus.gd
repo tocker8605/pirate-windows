@@ -31,11 +31,11 @@ func run() -> void:
 	for direction in [Vector2.LEFT,Vector2.RIGHT,Vector2.UP,Vector2.DOWN,Vector2(1,1)]:
 		g.player = Vector2(150,200)
 		g._tick(direction,false,false,false,1.0/60,true)
-		check(g.player.distance_to(Vector2(150,200)+direction*1.11)<0.0001 and g.slow_movement_active,"slow movement travels1.11px per axis and exposes cockpit marker")
+		check(g.player.distance_to(Vector2(150,200)+direction*(100.0/60))<0.0001 and g.slow_movement_active,"slow movement travels1.667px per axis and exposes cockpit marker")
 	for rate in [30,60,120]:
 		g.player = Vector2(100,200)
 		for i in range(rate): g._tick(Vector2.RIGHT,false,false,false,1.0/rate,true)
-		check(absf(g.player.x-166.6)<0.002,"slow movement retains66.6px/s at%sHz"%rate)
+		check(absf(g.player.x-200.0)<0.002,"slow movement retains100px/s at%sHz"%rate)
 	key(KEY_SHIFT,true,KEY_LOCATION_RIGHT)
 	check(not Input.is_action_pressed("slow_movement"),"right Shift does not enable slow movement")
 	key(KEY_SHIFT,false,KEY_LOCATION_RIGHT)
@@ -46,7 +46,7 @@ func run() -> void:
 	g.automatic = true
 	g._process(1.0/60)
 	g.automatic = false
-	check(absf(g.player.x-101.11)<0.0001 and g.slow_movement_active,"real input path applies left Shift precision speed")
+	check(absf(g.player.x-100.0-100.0/60)<0.0001 and g.slow_movement_active,"real input path applies left Shift precision speed")
 	key(KEY_SHIFT,false,KEY_LOCATION_LEFT)
 	var before: float = g.player.x
 	g.automatic = true
