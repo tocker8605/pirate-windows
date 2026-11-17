@@ -25,7 +25,7 @@ static func enabled(e: Dictionary, channel: Dictionary, boss: Dictionary = {}) -
 	match str(channel.gate):
 		"aim_window": return v.y<(133.33333333333334 - 0.0001) and v.y> (-166.66666666666669 + 0.0001)
 		"moving": return v.x!=0
-		"stationary_aim": return y>=100 and v.x==0 and v.y> (-33.333333333333336 + 0.0001)
+		"stationary_aim": return y>=80 and v.x==0 and v.y> (-33.333333333333336 + 0.0001)
 		"sweep_y": return y>20 and y<199
 		"descent_or_stationary": return v.y>(0 + 0.0001) or v.x==0
 		"descending": return v.y>(33.333333333333336 + 0.0001)
