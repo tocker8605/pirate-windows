@@ -70,7 +70,7 @@ func run() -> void:
 	g._tick(Vector2.ZERO,false,false,false,Clock.FIXED_STEP_SECONDS)
 	check(e.pos.y>250 and g.hp==100 and g.invulnerability_seconds==0,"actual60Hz overlap below boundary causes no damage or invulnerability")
 	g._tick(Vector2.ZERO,false,false,false,Clock.FIXED_STEP_SECONDS)
-	check(e.pos.y<250 and g.hp==65 and is_equal_approx(g.invulnerability_seconds,1.5),"actual60Hz crossing enables normal max-difficulty35contact damage immediately")
+	check(e.pos.y<250 and g.hp==64 and is_equal_approx(g.invulnerability_seconds,1.5),"actual60Hz crossing enables normal max-difficulty36contact damage immediately")
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	g.audio.stop_all()
 	g.queue_free()

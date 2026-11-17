@@ -19,11 +19,11 @@ func run() -> void:
 			g.weapon = weapon
 			g.power = power
 			g._fire()
-			var expected_period: float = 0.06 if power%2==0 else 0.09
+			var expected_period: float = 0.06 if power%2==0 else 0.08
 			var expected_count: int = 1 if power<=2 else (2 if power<=4 else (3 if power<=6 else 4))
 			var ok: bool = g.energy==100 and is_equal_approx(g.fire_cooldown_seconds,expected_period) and g.shots.size()==expected_count
 			checks += 1
-			if ok: print("PASS: weapon%d power%d fires without energy cost at unchanged cadence"%[weapon,power])
+			if ok: print("PASS: weapon%d power%d fires without energy cost at configured cadence"%[weapon,power])
 			else:
 				failures += 1
 				push_error("FAIL: weapon%d power%d cost/cadence/volley mismatch"%[weapon,power])

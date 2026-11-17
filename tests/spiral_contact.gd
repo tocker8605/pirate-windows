@@ -79,21 +79,21 @@ func run() -> void:
 		g.invulnerability_seconds = 0
 		g.title.difficulty = difficulty
 		g._resolve_body_contacts()
-		check(g.hp==100-[15,20,25,30,35][difficulty-1] and is_equal_approx(g.invulnerability_seconds,1.5) and is_equal_approx(g.hit_flash_remaining_seconds,0.57),"difficulty%d applies one uniform contact hit with normal feedback"%difficulty)
+		check(g.hp==100-[12,18,24,30,36][difficulty-1] and is_equal_approx(g.invulnerability_seconds,1.5) and is_equal_approx(g.hit_flash_remaining_seconds,0.57),"difficulty%d applies one uniform contact hit with normal feedback"%difficulty)
 		g._resolve_body_contacts()
-		check(g.hp==100-[15,20,25,30,35][difficulty-1],"difficulty%d overlapping enemies cannot bypass hit immunity"%difficulty)
+		check(g.hp==100-[12,18,24,30,36][difficulty-1],"difficulty%d overlapping enemies cannot bypass hit immunity"%difficulty)
 	g.enemies.clear()
 	g.boss = Catalog.create(91,p+Vector2(25,0))
 	g.hp = 100
 	g.invulnerability_seconds = 0
 	g._resolve_body_contacts()
-	check(g.hp==65,"boss torso contact uses explicit hull bounds and maximum35 damage")
+	check(g.hp==64,"boss torso contact uses explicit hull bounds and maximum36 damage")
 	g.boss = {}
 	g.enemies.append(Catalog.create(131,p))
 	g.hp = 100
 	g.invulnerability_seconds = 0
 	g._resolve_body_contacts()
-	check(g.hp==65,"boss arm contact damages the cockpit")
+	check(g.hp==64,"boss arm contact damages the cockpit")
 	for state in [{"kind":201,"rescued":false},{"kind":19,"rescued":false},{"kind":201,"rescued":true}]:
 		var supply: Dictionary = Catalog.create(state.kind,p)
 		supply.rescued = state.rescued
@@ -105,7 +105,7 @@ func run() -> void:
 		check(g.hp==100 and g.invulnerability_seconds==0 and g.hit_flash_remaining_seconds==0,"supply kind%d rescued%s never inflicts contact damage or feedback"%[state.kind,state.rescued])
 	g.enemies.append(Catalog.create(1,p))
 	g._resolve_body_contacts()
-	check(g.hp==65,"overlapping exempt supply does not hide contact with a hostile enemy")
+	check(g.hp==64,"overlapping exempt supply does not hide contact with a hostile enemy")
 	g.hp = 100
 	g.invulnerability_seconds = 0
 	g.death_remaining_seconds = 0.03

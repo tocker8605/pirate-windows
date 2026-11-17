@@ -1,6 +1,8 @@
 extends SceneTree
 const Weapons = preload("res://scripts/player_weapons.gd")
 const Clock = preload("res://scripts/timing.gd")
+const Pilot = preload("res://scripts/pilot_geometry.gd")
+const Style = preload("res://scripts/player_weapon_style.gd")
 var checks: int = 0
 var failures: int = 0
 func check(ok: bool, message: String) -> void:
@@ -25,5 +27,12 @@ func _initialize() -> void:
 		var shots: Array = Weapons.volley(player,1,power)
 		check(shots.any(func(shot): return shot.kind==2) and shots.any(func(shot): return shot.kind==3),"higher power%d keeps authored spreading projectiles"%power)
 	for power in [1,2]: check(Weapons.volley(player,1,power).size()==1,"power%d single-shot layout unchanged"%power)
+	for weapon in range(1,4):
+		for power in range(1,8):
+			var volley: Array = Weapons.volley(player,weapon,power)
+			var centre: float = 0
+			for shot in volley: centre += shot.pos.x+Style.CENTRE.x-float(shot.get("fan_jitter",0))
+			centre /= volley.size()
+			check(absf(centre-player.x-Pilot.COCKPIT.x)<0.0001,"weapon%d power%d sprite centre is symmetric around the cockpit with authored jitter separate"%[weapon,power])
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	quit(0 if failures==0 else 1)

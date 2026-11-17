@@ -64,10 +64,10 @@ func run() -> void:
 	game.invulnerability_seconds = 0
 	game._bullet(game.player+Vector2(25,18),(Vector2(0,0.1))/0.03)
 	game._update_bullets()
-	check(game.hp == 75 and game.invulnerability_seconds == 1.5, "bullet damage grants temporary invulnerability")
+	check(game.hp == 76 and game.invulnerability_seconds == 1.5, "bullet damage grants temporary invulnerability")
 	game._bullet(game.player+Vector2(25,18),(Vector2(0,0.1))/0.03)
 	game._update_bullets()
-	check(game.hp == 75, "invulnerability prevents repeated damage")
+	check(game.hp == 76, "invulnerability prevents repeated damage")
 	game.items.replace_all([{"pos":game.player+Vector2(25,20),"kind":1}])
 	game._update_items()
 	check(game.power == 2 and game.energy == 100, "power-up collection")

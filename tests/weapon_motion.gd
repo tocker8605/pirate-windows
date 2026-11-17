@@ -26,7 +26,7 @@ func _initialize() -> void:
 		var random_before: int = Rng.state
 		for shot in shots:
 			var first_x: float = shot.pos.x
-			smooth = smooth and absf(first_x-player.x-11-float(shot.get("fan_jitter",0))-float(shot.get("fan_lane",0))*4)<0.0001
+			smooth = smooth and absf(first_x-player.x-10-float(shot.get("fan_jitter",0))-float(shot.get("fan_lane",0))*4)<0.0001
 			Weapons.advance(shot,Vector2(250,400),units)
 			smooth = smooth and shot.pos.x>first_x and shot.pos.x<281
 			var next_x: float = shot.pos.x
@@ -102,7 +102,7 @@ func _initialize() -> void:
 	var fine: Dictionary = coarse.duplicate()
 	for i in range(10): Weapons.advance(coarse,Vector2(100,400),0.03)
 	for i in range(18): Weapons.advance(fine,Vector2(100,400),1.0/60.0)
-	check(absf(coarse.pos.x-fine.pos.x)<0.0001 and absf(coarse.pos.x-(111+89*exp(-1.0)))<0.0001,"X pursuit response is timestep independent and reaches63percent in0.3seconds")
+	check(absf(coarse.pos.x-fine.pos.x)<0.0001 and absf(coarse.pos.x-(110+90*exp(-1.0)))<0.0001,"X pursuit response is timestep independent and reaches63percent in0.3seconds")
 	var accel_points: PackedVector2Array = preview.trajectory_paths(3)[0].points
 	check(accel_points[0].y-accel_points[6].y<accel_points[30].y-accel_points[36].y,"equal-time legend dots visibly separate as type3 accelerates")
 	print("RESULT: %d checks, %d failures"%[checks,failures])

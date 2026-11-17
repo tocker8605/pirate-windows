@@ -146,9 +146,10 @@
     {"at": 41.1, "action": "spawn", "definition_id": 2, "position": [400, 235], "pattern": 1054},
 
     {"comment": "ring_rotor 상단"},
-    {"at": 42.2, "action": "spawn", "definition_id": 3, "position": [175, -50], "pattern": 1072},
-    {"at": 43.2, "action": "spawn", "definition_id": 3, "position": [100, -50], "pattern": 1072},
-    {"at": 43.2, "action": "spawn", "definition_id": 3, "position": [250, -50], "pattern": 1072},
+    {"at": 42.2, "action": "spawn", "definition_id": 3, "position": [75, -50], "pattern": 1072},
+    {"at": 42.2, "action": "spawn", "definition_id": 3, "position": [275, -50], "pattern": 1072},
+    {"at": 43.2, "action": "spawn", "definition_id": 3, "position": [120, -50], "pattern": 1072},
+    {"at": 43.2, "action": "spawn", "definition_id": 3, "position": [230, -50], "pattern": 1072},
 
     {"comment": "cross_fighter_b 좌하"},
     {"at": 44.1, "action": "spawn", "definition_id": 5, "position": [-50, 265], "pattern": 1032},
@@ -380,9 +381,10 @@
     {"at": 86.4, "action": "scroll", "mode": 3, "speed": 500.0},
 
     {"comment": "ring_rotor 상단"},
-    {"at": 85.5, "action": "spawn", "definition_id": 3, "position": [250, -50], "pattern": 1072},
-    {"at": 85.5, "action": "spawn", "definition_id": 3, "position": [100, -50], "pattern": 1072},
-    {"at": 86.4, "action": "spawn", "definition_id": 3, "position": [175, -50], "pattern": 1072},
+    {"at": 85.5, "action": "spawn", "definition_id": 3, "position": [275, -50], "pattern": 1072},
+    {"at": 85.5, "action": "spawn", "definition_id": 3, "position": [75, -50], "pattern": 1072},
+    {"at": 86.5, "action": "spawn", "definition_id": 3, "position": [115, -50], "pattern": 1072},
+    {"at": 86.5, "action": "spawn", "definition_id": 3, "position": [235, -50], "pattern": 1072},
 
     {"comment": "swept_wing_fighter 좌하"},
     {"at": 84.1, "action": "spawn", "definition_id": 6, "position": [-60, 280], "pattern": 1032},

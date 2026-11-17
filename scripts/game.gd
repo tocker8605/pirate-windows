@@ -30,6 +30,9 @@ const PlayerProjectiles = preload("res://scripts/player_projectiles.gd")
 const CombatActions = preload("res://scripts/combat_actions.gd")
 const ItemSystem = preload("res://scripts/item_system.gd")
 const SupplyDirector = preload("res://scripts/supply_director.gd")
+const PLAYER_MOVE_SPEED: float = 200.0
+const PLAYER_SLOW_MOVE_SPEED: float = 66.6
+var slow_movement_active: bool = false
 var supply_director = SupplyDirector.new()
 var presentation = Presentation.new()
 var art = Art.new()
@@ -213,11 +216,11 @@ func _process(delta: float) -> void:
 		while accumulator+0.000000001 >= step:
 			accumulator = maxf(0,accumulator-step)
 			var direction := Vector2(float(Input.is_physical_key_pressed(KEY_RIGHT)) - float(Input.is_physical_key_pressed(KEY_LEFT)), float(Input.is_physical_key_pressed(KEY_DOWN)) - float(Input.is_physical_key_pressed(KEY_UP)))
-			_tick(direction, Input.is_physical_key_pressed(KEY_Z), Input.is_physical_key_pressed(KEY_X), Input.is_physical_key_pressed(KEY_C),Clock.FIXED_STEP_SECONDS)
+			_tick(direction, Input.is_physical_key_pressed(KEY_Z), Input.is_physical_key_pressed(KEY_X), Input.is_physical_key_pressed(KEY_C),Clock.FIXED_STEP_SECONDS,Input.is_action_pressed("slow_movement"))
 			if state=="loading" or state not in ["playing","dying","boss_dying"]: break
 	_redraw()
 
-func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, seconds: float = Clock.FIXED_STEP_SECONDS) -> void:
+func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, seconds: float = Clock.FIXED_STEP_SECONDS, slow_movement: bool = false) -> void:
 	delta_seconds = seconds
 	if state=="loading":
 		if loading_remaining_seconds>0:
@@ -232,13 +235,14 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 	clock.begin()
 	animation = clock.animation-1
 	var alive: bool = death_remaining_seconds==0
+	slow_movement_active = slow_movement and alive
 	if automatic and alive:
 		var held: Array = []
 		for code in [KEY_C,KEY_R,KEY_U,KEY_F6,KEY_F7,KEY_F8]:
 			if Input.is_physical_key_pressed(code): held.append(code)
 		if _debug_controls(held): return
 	if alive:
-		player += direction*200.0*seconds
+		player += direction*(PLAYER_SLOW_MOVE_SPEED if slow_movement_active else PLAYER_MOVE_SPEED)*seconds
 		player_bank = 1 if direction.x<0 else (2 if direction.x>0 else 0)
 		if automatic and Input.is_physical_key_pressed(KEY_RIGHT): player_bank = 2
 	player.x = PilotGeometry.clamp_horizontal(player.x)

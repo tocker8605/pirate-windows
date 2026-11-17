@@ -287,6 +287,15 @@ func _draw_shield_lifetime(c: Node2D, center: Vector2, remaining: float, phase: 
 	c.draw_arc(center,37,start,end,96,Color(color,opacity),1.4,true)
 	c.draw_circle(center+Vector2.from_angle(start)*37,1,Color(color,opacity),true,-1,true)
 
+func draw_player_focus(c: Node2D, player: Vector2, seconds: float) -> void:
+	var center: Vector2 = player+Pilot.COCKPIT
+	var pulse: float = 0.5+0.5*sin(seconds*TAU*3)
+	var color := Color("b9edff")
+	halo(c,center,7,color,0.25+0.2*pulse)
+	c.draw_circle(center,2.2,Color(0.02,0.08,0.14,0.9),true,-1,true)
+	c.draw_arc(center,Pilot.HIT_RADIUS,0,TAU,32,Color(color,0.65+0.35*pulse),0.8,true)
+	c.draw_circle(center,1.2,Color(1,1,1,0.7+0.3*pulse),true,-1,true)
+
 func draw_special(c: Node2D, g: Node, player: Variant = null, shield_position: Variant = null, phase: float = -1) -> void:
 	var ship: Vector2 = g.player if player==null else player
 	var shield_pos: Vector2 = g.shield_center if shield_position==null else shield_position

@@ -103,7 +103,7 @@ func run() -> void:
 	g.energy = 42
 	g.power = 3
 	g._update_items()
-	check(g.hp==65 and g.energy==42 and g.power==3 and g.items.is_empty(),"HP payload heals25 without changing power or energy")
+	check(g.hp==70 and g.energy==42 and g.power==3 and g.items.is_empty(),"HP payload heals30 without changing power or energy")
 	g.hp = 95
 	g._drop_item({"pos":g.player+Vector2(25,25),"kind":2})
 	g._update_items()

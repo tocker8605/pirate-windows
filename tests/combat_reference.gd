@@ -103,7 +103,7 @@ func run() -> void:
 	a = Weapons.volley(player,1,1)
 	Weapons.advance(a[0],player,0.03)
 	var visual: Dictionary = Weapons.visual(a[0],player)
-	check(a[0].pos==Vector2(181,361) and visual.phase=="launch" and visual.rect==Rect2i(40,0,40,30) and visual.offset==Vector2(-5,0),"first firing tick uses original 40x30 launch sprite")
+	check(a[0].pos==Vector2(180,361) and visual.phase=="launch" and visual.rect==Rect2i(40,0,40,30) and visual.offset==Vector2(-5,0),"first firing tick uses cockpit-centred launch anchor")
 	Weapons.advance(a[0],player,0.03)
 	visual = Weapons.visual(a[0],player)
 	check(visual.phase=="flight" and visual.rect==Rect2i(10,0,20,30) and visual.offset==Vector2(5,0),"second tick switches to original 20x30 flight sprite")
@@ -115,7 +115,7 @@ func run() -> void:
 	check(Weapons.visual(shot,player).rect==Rect2i(0,180,80,30),"impact last three ticks use sheet row 180")
 	shot = {"pos":Vector2(190,350),"kind":4}
 	Weapons.advance(shot,player,0.03)
-	check(near(shot.pos,Vector2(181+9*exp(-0.1),338.75)),"accelerating weapon smoothly follows pilot X and retains player-Y-based speed")
+	check(near(shot.pos,Vector2(180+10*exp(-0.1),338.75)),"accelerating weapon smoothly follows cockpit X and retains player-Y-based speed")
 	check(Weapons.vb_integer(2.5)==2 and Weapons.vb_integer(3.5)==4 and Weapons.vb_integer(-1.5)==-2,"VB6 ties-to-even pixel assignment")
 	var game = Game.new()
 	game.automatic = false

@@ -1,6 +1,7 @@
 extends RefCounted
 ## Flight bodies only. Launch and impact events are handled by the particle system.
 const ATLAS = preload("res://assets/renewed/player-projectiles-v24.41.png")
+const Style = preload("res://scripts/player_weapon_style.gd")
 const CELL := Vector2(24,34)
 const SCALE: int = 4
 static var _frames: Dictionary = {}
@@ -22,4 +23,4 @@ func frame_texture(weapon: int, _visual: Dictionary = {}) -> Texture2D:
 func draw(c: Node2D, shot: Dictionary, _player: Vector2, weapon: int, position: Variant = null) -> void:
 	if float(shot.get("impact_remaining_seconds",-1))>=0: return
 	var pos: Vector2 = position if position!=null else shot.pos
-	c.draw_texture_rect(frame_texture(weapon),Rect2(pos+Vector2(15,15)-CELL/2,CELL),false)
+	c.draw_texture_rect(frame_texture(weapon),Rect2(pos+Style.CENTRE-CELL/2,CELL),false)

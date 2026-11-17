@@ -142,6 +142,8 @@ func _draw() -> void:
 	vfx.draw_particles(self,clampf(fraction,0,1),1)
 	for bullet in g.bullets:
 		_draw_bullet(bullet)
+	if g.slow_movement_active and g.hp>0 and g.death_remaining_seconds<=0:
+		vfx.draw_player_focus(self,g.presentation.player(g),g.timeline())
 	if g.death_remaining_seconds>0:
 		draw_texture(g.art.sprite("picgov",Rect2i(0,0,200,30),Vector2i(0,30)),Vector2(100,230))
 

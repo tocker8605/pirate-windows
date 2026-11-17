@@ -1,5 +1,6 @@
 extends RefCounted
 ## Shared hue/tone and compact footprints for player projectiles and their particles.
+const CENTRE := Vector2(15,15)
 const BASE = [Color("ceb6fa"),Color("5aa9cf"),Color("81bb6a")]
 const LIGHT = [Color("eee4ff"),Color("abd9ed"),Color("c4e5a0")]
 const SIZES = [Vector2i(13,26),Vector2i(14,26),Vector2i(12,24)]

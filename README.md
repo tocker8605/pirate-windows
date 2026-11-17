@@ -7,7 +7,7 @@
 Godot 4.7.2 일반판에서 `project.godot`를 열고 F5로 실행합니다.
 Windows 배포판은 별도의 VB6 또는 Godot 설치 없이 실행할 수 있습니다. `Pirate-II.exe`와 `Pirate-II.pck`를 같은 폴더에 둡니다. 공식 Godot 서명 EXE를 수정 없이 사용하며 게임 데이터는 PCK로 분리합니다.
 
-- 방향키: 이동, Z: 사격, X: 레이저, C: 실드
+- 방향키: 이동, 왼쪽 Shift: 저속 이동·피격 중심 표시, Z: 사격, X: 레이저, C: 실드
 - Space: 타이틀 시작·선택, P: 일시정지
 - Ctrl+R: 재시작, Esc: 타이틀 복귀, F11: 전체화면, M: 음소거
 

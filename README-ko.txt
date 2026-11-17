@@ -10,6 +10,7 @@ Pirate II — Godot 포팅 v24.43
 
 조작과 메뉴
   방향키: 이동 / Z: 사격 / X: 레이저 / C: 실드
+  왼쪽 Shift: 저속 이동(60FPS 기준 프레임당1.11px) 및 콕핏 피격 중심 표시
   Space: 타이틀 시작·메뉴 선택
   NEW GAME / BOSS RUSH / CONTINUE를 방향키와 Space로 선택합니다.
   설정 화면에서는 좌우로 GAMELEVEL을 조절하고 무기 TYPE1~3을 선택합니다. 게임 속도는1로 고정입니다.

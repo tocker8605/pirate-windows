@@ -49,7 +49,14 @@ func run() -> void:
 	check(Engine.max_fps==60,"render frame cap is60")
 	var pilot = g.view.pilot
 	check(pilot.frames.size()==3 and pilot.texture(0)==pilot.frames[0] and pilot.texture(1)==pilot.frames[1] and pilot.texture(2)==pilot.frames[1],"hero neutral/left/right frames use observed bank direction")
-	check(pilot.frames[0].region.size==pilot.frames[1].region.size and pilot.frames[1].region.size==pilot.frames[2].region.size,"hero frames share crop size and pivot")
+	check(pilot.frames[0].region.size==pilot.frames[1].region.size and pilot.frames[1].region.size==pilot.frames[2].region.size,"hero frames retain shared crop size and scale")
+	for bank in range(3):
+		var source: Vector2 = pilot.COCKPIT_ANCHORS[0 if bank==0 else 1]
+		var uv: Vector2 = (source-Vector2(pilot.frame_crop.position))/Vector2(pilot.frame_crop.size)
+		var rect: Rect2 = pilot.sprite_rect(bank)
+		var local: Vector2 = rect.position+uv*rect.size
+		if bank==1: local.x *= -1
+		check(local.length()<0.0001,"bank%d painted cockpit stays at the fixed hit marker after mirroring"%bank)
 	for pair in [[112,111],[121,122],[131,132]]:
 		for vy in [-7,0,3]:
 			var b = {"pos":Vector2(200,50),"velocity":(Vector2(0,vy))/0.03}

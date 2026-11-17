@@ -1,6 +1,9 @@
 class_name PiratePlayerWeapons
 extends RefCounted
 const Check = preload("res://scripts/data_validation.gd")
+const Pilot = preload("res://scripts/pilot_geometry.gd")
+const Style = preload("res://scripts/player_weapon_style.gd")
+const MUZZLE_CENTRE_X: float = Pilot.COCKPIT.x-Style.CENTRE.x
 static var _settings: Dictionary = _load_settings()
 static func validate_settings(value: Variant) -> PackedStringArray:
 	var errors := PackedStringArray()
@@ -21,7 +24,7 @@ static func volley_count(power: int) -> int: return mini(4,(power+1)/2)
 static func active_limit() -> int: return int(_settings.max_active_shots)
 const Rng = preload("res://scripts/random.gd")
 const TYPE3_FOLLOW_SECONDS: float = 0.3
-const TYPE3_TARGET_X: float = 11.0
+const TYPE3_TARGET_X: float = MUZZLE_CENTRE_X
 const TYPE3_START_SPACING: float = 4.0
 const TYPE3_MAX_SPACING: float = 12.0
 const TYPE3_SPREAD_DISTANCE: float = 180.0
@@ -32,14 +35,14 @@ static func volley(player: Vector2, weapon: int, power: int, random_source: Vari
 	var plan: Array = []
 	var kind: int = 4 if weapon == 3 else 1
 	if power <= 2:
-		_add(plan,player,11,0,kind)
+		_add(plan,player,MUZZLE_CENTRE_X,0,kind)
 	elif power <= 4:
 		if weapon == 1:
 			_add(plan,player,-5,3,1)
 			_add(plan,player,25,3,1)
 		elif weapon == 2:
-			_add(plan,player,17,3,1)
-			_add(plan,player,5,3,1)
+			_add(plan,player,MUZZLE_CENTRE_X+6,3,1)
+			_add(plan,player,MUZZLE_CENTRE_X-6,3,1)
 		else:
 			for i in range(2): _guided(plan,player,i,2,random.between(0,8),8,0)
 	elif power <= 6:
@@ -94,7 +97,7 @@ static func _add(plan: Array, player: Vector2, x: float, y: float, kind: int) ->
 	plan.append({"pos":player+Vector2(x,y),"kind":kind,"alive":true,"impact_remaining_seconds":-1,"launch_pos":player+Vector2(x,y)})
 
 static func cadence_seconds(power: int) -> float:
-	return 0.06 if power%2==0 else 0.09
+	return 0.06 if power%2==0 else 0.08
 
 static func advance(shot: Dictionary, player: Vector2, seconds: float = 1.0/60.0) -> void:
 	var p: Vector2 = shot.pos

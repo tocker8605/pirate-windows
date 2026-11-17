@@ -15,6 +15,7 @@ static func load_stage(g: Node, number: int, preserve_run: bool = false) -> void
 	g.hit_flash_render_seconds = 0
 	g.state = "playing"
 	g.player = Vector2(170, 300)
+	g.slow_movement_active = false
 	g.hp = 100
 	g.energy = 100
 	g.power = 1

@@ -29,6 +29,13 @@ window/size/window_height_override=960
 window/stretch/mode="canvas_items"
 window/vsync/vsync_mode=0
 
+[input]
+
+slow_movement={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":4194325,"location":1)]
+}
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

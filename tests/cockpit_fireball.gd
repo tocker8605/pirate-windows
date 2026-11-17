@@ -30,7 +30,7 @@ func run() -> void:
 	g.delta_seconds = Clock.FIXED_STEP_SECONDS
 	g._bullet(pos+Pilot.COCKPIT-Vector2(0,g.delta_seconds),(Vector2.DOWN)/0.03)
 	g._update_bullets()
-	check(g.hp==75 and is_equal_approx(g.invulnerability_seconds,1.5),"actual enemy bullet at cockpit causes damage and invulnerability")
+	check(g.hp==76 and is_equal_approx(g.invulnerability_seconds,1.5),"actual enemy bullet at cockpit causes damage and invulnerability")
 	g.hp = 100
 	g.invulnerability_seconds = 0
 	g._bullet(pos+Vector2(7,25),(Vector2.DOWN)/0.03)
