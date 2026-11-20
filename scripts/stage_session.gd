@@ -1,5 +1,6 @@
 extends RefCounted
 const StageEvents = preload("res://scripts/stage_events.gd")
+const Pilot = preload("res://scripts/pilot_geometry.gd")
 static func load_stage(g: Node, number: int, preserve_run: bool = false) -> void:
 	var saved_hp: float = g.hp
 	var saved_power: int = g.power
@@ -14,7 +15,7 @@ static func load_stage(g: Node, number: int, preserve_run: bool = false) -> void
 	g.hit_flash_remaining_seconds = 0
 	g.hit_flash_render_seconds = 0
 	g.state = "playing"
-	g.player = Vector2(170, 300)
+	g.player = Vector2(Pilot.centred_x(),300)
 	g.slow_movement_active = false
 	g.hp = 100
 	g.energy = 100

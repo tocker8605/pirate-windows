@@ -39,7 +39,7 @@ func run() -> void:
 	game._tick(Vector2.ZERO,false,false,false,0.03)
 	check(game.state == "playing", "space starts gameplay")
 	game._tick(Vector2(-1,-1),false,false,false,0.03)
-	check(game.player == Vector2(164,294), "movement follows original six-pixel tick")
+	check(game.player == Vector2(169,294), "movement follows original six-pixel tick from centred start")
 	for i in range(100): game._tick(Vector2(-1,-1),false,false,false,0.03)
 	check(game.player == Vector2(-5,0), "40px player drawing reaches the left edge with zero margin")
 	game.player.x = 1000

@@ -43,7 +43,8 @@
 
     {"comment": "cross_fighter_a 우상"},
     {"at": 12.6, "action": "spawn", "definition_id": 4, "position": [400, 50], "pattern": 1062},
-    {"at": 13.5, "action": "spawn", "definition_id": 4, "position": [400, 50], "pattern": 1062},
+    {"at": 13.2, "action": "spawn", "definition_id": 4, "position": [400, 50], "pattern": 1062},
+    {"at": 13.8, "action": "spawn", "definition_id": 4, "position": [400, 50], "pattern": 1062},
     {"at": 14.4, "action": "spawn", "definition_id": 4, "position": [400, 50], "pattern": 1062},
 
     {"comment": "fireball_disc 하단"},

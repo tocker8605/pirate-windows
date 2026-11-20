@@ -72,7 +72,7 @@ func run() -> void:
 	await process_frame
 	game.start_game()
 	game.delta_seconds = 0.03
-	check(game.player==Vector2(170,300) and game.invulnerability_seconds==0,"stage starts at original coordinates without invented invulnerability")
+	check(game.player==Vector2(175,300) and game.invulnerability_seconds==0,"stage starts with cockpit horizontally centred without invented invulnerability")
 	game.events = []
 	game.clock.recovery = 0
 	game.energy = 50
