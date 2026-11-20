@@ -16,7 +16,10 @@ static func update(g: Node) -> void:
 		var previous: float = g.boss_death_remaining_seconds
 		g.boss_death_remaining_seconds = maxf(0,g.boss_death_remaining_seconds-g.delta_seconds)
 		if g.boss_death_remaining_seconds<0.000001: g.boss_death_remaining_seconds = 0
-		for e in g.enemies: e.hp = 0
+		for e in g.enemies:
+			# A part already killed by a shot/beam still earns its normal reward.
+			if e.hp>0 and Catalog.is_part(int(e.kind)): e.auto_destroyed = true
+			e.hp = 0
 		g.bullets.clear()
 		g.items.clear()
 		if int(ceil(previous/0.3))!=int(ceil(g.boss_death_remaining_seconds/0.3)):

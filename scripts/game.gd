@@ -393,7 +393,7 @@ func _resolve_body_contacts() -> void:
 func _destroy_enemy(e: Dictionary) -> void:
 	var kind: int = int(e.kind)
 	_sound(EnemyRules.death_sound(kind))
-	score += EnemyRules.score(kind,title.difficulty)
+	if not e.get("auto_destroyed",false): score += EnemyRules.score(kind,title.difficulty)
 	var item: Dictionary = EnemyRules.drop(e,boss_rush)
 	if not item.is_empty(): _drop_item(item)
 	if EnemyRules.release_and_escape(e): return
