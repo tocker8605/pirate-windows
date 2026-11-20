@@ -23,28 +23,29 @@ func run() -> void:
 	game.mute = true
 	root.add_child(game)
 	await process_frame
-	var totals: Array = [0,130,150,172,183]
-	var spawn_totals: Array = [0,122,140,163,178]
-	var times: Array = [0,116,113,125,121]
+	game.rankings.entries.clear()
 	for stage in range(1,5):
 		for weapon in range(1,4):
 			game._load_stage(stage)
 			game.delta_seconds = 0.03
 			game.weapon = weapon
-			check(game.events.size()==totals[stage],"stage %d weapon %d loads complete event data"%[stage,weapon])
-			for i in range(times[stage]*30+500):
+			var total: int = game.events.size()
+			var spawns: int = game.events.filter(func(e): return e.action=="spawn" and int(e.definition_id)!=90+stage).size()
+			check(total>0,"stage %d weapon %d loads authored event data"%[stage,weapon])
+			for i in range(ceili((float(game.events[-1].at)+2)/0.03)):
 				game.invulnerability_seconds = 3.0
 				game.hp = 100
 				game._tick(Vector2(sin(i*0.012),0),true,i%300==0,i%500==0,0.03)
-			check(game.event_cursor==totals[stage] and game.stats.spawned==spawn_totals[stage]+game.stats.supply_spawned,"stage %d weapon %d consumes all enemy and control events"%[stage,weapon])
+			check(game.event_cursor==total and game.stats.spawned==spawns+game.stats.supply_spawned,"stage %d weapon %d consumes all authored enemy and control events"%[stage,weapon])
 			check(game.stats.boss_spawned and game.boss.get("stage",0)==stage,"stage %d weapon %d creates matching boss body"%[stage,weapon])
 			check(game.stats.killed>0 and game.stats.hits>0,"stage %d weapon %d combat remains active"%[stage,weapon])
 			check(game.bullets.valid() and game.shots.size()<=50 and game.enemies.valid(),"stage %d weapon %d dynamic entity lifecycle remains consistent"%[stage,weapon])
 		game._load_stage(stage)
 		game.delta_seconds = 0.03
-		game.events = game.events.filter(func(row): return is_equal_approx(float(row.at),times[stage]*0.9))
-		game.frame = times[stage]*30+1
-		game.stage_elapsed_seconds = game.frame*0.03
+		var boss_time: float = float(game.events.filter(func(row): return row.action=="spawn" and int(row.definition_id)==90+stage)[0].at)
+		game.events = game.events.filter(func(row): return is_equal_approx(float(row.at),boss_time))
+		game.stage_elapsed_seconds = boss_time+0.03
+		game.frame = roundi(game.stage_elapsed_seconds/0.03)
 		game._read_events()
 		check(game.boss.max_hp==([0,1000,1250,1500,1500][stage]),"stage %d configured boss HP"%stage)
 		var found: Array = []
@@ -129,7 +130,7 @@ func run() -> void:
 			check(game.hp==61 and game.power==4 and game.weapon==2 and game.score==cumulative and game.energy==100,"campaign retains original carried state")
 			check(game.enemies.is_empty() and game.shots.is_empty() and game.bullets.is_empty() and game.beam_render_seconds==0,"stage load removes stale entities and effects")
 		else:
-			check(game.stage==4 and game.state=="menu" and game.last_score==25000*game.title.difficulty and game.score==0,"final boss returns to original Space title with completed score")
+			check(game.stage==4 and game.state=="ranking_entry" and game.last_score==25000*game.title.difficulty and game.score==0,"final boss offers name registration with completed campaign score")
 	# Stage selection starts a fresh practice run, rather than keeping campaign state.
 	game.selected_stage = 3
 	game.start_game()

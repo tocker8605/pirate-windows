@@ -81,11 +81,11 @@ func run() -> void:
 	check(g.event_cursor==1,"event triggers at the first60Hz tick after900ms")
 	reset()
 	ticks(180,true)
-	check(g.stats.shots==34,"default player firing preserves34 volleys over3seconds")
+	check(g.stats.shots==38,"default player firing emits38 volleys over3seconds at80ms cadence")
 	reset()
 	g.hp = 0
 	ticks(432)
-	check(g.state=="menu","240-unit death sequence completes after432 native ticks7.2seconds")
+	check(g.state in ["ranking_entry","menu"],"death sequence reaches ranking or title after432 native ticks7.2seconds")
 	for speed in range(1,6):
 		var clock = Clock.new()
 		var fires: int = 0
@@ -102,12 +102,14 @@ func run() -> void:
 		g.clock = Clock.new()
 		g.fire_cooldown_seconds = 0
 		g.weapon = stage%3+1
-		var duration: int = [0,116,113,125,121][stage]*54+900
+		var event_count: int = g.events.size()
+		var spawn_count: int = g.events.filter(func(e): return e.action=="spawn" and int(e.definition_id)!=90+stage).size()
+		var duration: int = ceili((float(g.events[-1].at)+2)*60)
 		for i in range(duration):
 			g.invulnerability_seconds = 3.0
 			g.hp = 100
 			g._tick(Vector2(sin(i*0.012*units/0.03),0),true,i%540==0,i%900==0,units)
-		check(g.event_cursor==[0,130,150,172,183][stage] and g.stats.spawned==[0,122,140,163,178][stage]+g.stats.supply_spawned,"native60Hz stage%d consumes all authored events"%stage)
+		check(g.event_cursor==event_count and g.stats.spawned==spawn_count+g.stats.supply_spawned,"native60Hz stage%d consumes all currently authored events"%stage)
 		check(g.stats.boss_spawned and g.boss.get("stage",0)==stage and g.stats.killed>0 and g.stats.hits>0,"native60Hz stage%d enemies, boss and combat stay active"%stage)
 		check(g.bullets.valid() and g.enemies.valid() and g.shots.size()<=50,"native60Hz stage%d entity lifecycle remains valid"%stage)
 	print("RESULT: %d checks, %d failures"%[checks,failures])

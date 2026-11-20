@@ -115,13 +115,14 @@ func run() -> void:
 	game.events = []
 	game.hp = 0
 	game.score = 1234
+	game.rankings.entries.clear()
 	game._tick(Vector2.ZERO,false,false,false,0.03)
 	check(game.state=="dying" and is_equal_approx(game.death_remaining_seconds,7.17),"death enters original 240-tick sequence")
 	var position: Vector2 = game.player
 	game._tick(Vector2.ONE,true,true,true,0.03)
 	check(game.player==position and game.beam_remaining_seconds==0,"exploding player cannot move/fire/use beam")
 	for i in range(238): game._tick(Vector2.ZERO,false,false,false,0.03)
-	check(game.state=="menu" and game.last_score==1234 and game.score==0,"death returns to original title with last-run score")
+	check(game.state=="ranking_entry" and game.last_score==1234 and game.score==0,"death preserves last-run score and opens name entry")
 	game.start_game()
 	game.delta_seconds = 0.03
 	game.events = []

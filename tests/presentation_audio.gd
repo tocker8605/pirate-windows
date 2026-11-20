@@ -15,6 +15,10 @@ func key(game: Node, code: int) -> void:
 	event.pressed = true
 	event.keycode = code
 	game._unhandled_key_input(event)
+	var release := InputEventKey.new()
+	release.keycode = code
+	release.pressed = false
+	game._unhandled_key_input(release)
 func enemy(kind: int, y: int) -> Dictionary: return {"kind":kind,"pos":Vector2(100,y)}
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
@@ -41,6 +45,31 @@ func run() -> void:
 	check(title.phase==25 and title.confirm()=="play","third original weapon entry starts selected mode")
 	title.reset()
 	check(title.phase==0 and title.slide==0 and title.scroll==0 and title.difficulty==3,"return to title resets animation but retains settings")
+	title.phase = 23
+	title.navigation_input(KEY_DOWN,true)
+	check(title.phase==24,"one menu press advances exactly one weapon")
+	title.repeat_navigation(0.12)
+	title.navigation_input(KEY_DOWN,true,true)
+	check(title.phase==24,"short hold and operating-system echo do not skip a weapon")
+	title.navigation_input(KEY_DOWN,false)
+	title.repeat_navigation(1.0)
+	check(title.phase==24,"released arrow cannot repeat")
+	title.navigation_input(KEY_UP,true)
+	title.repeat_navigation(0.34)
+	check(title.phase==23,"held arrow waits for the initial repeat delay")
+	title.repeat_navigation(0.02)
+	check(title.phase==22,"held arrow repeats after the initial delay")
+	title.navigation_input(KEY_UP,false)
+	title.navigation_input(KEY_DOWN,true)
+	title.repeat_navigation(1.0)
+	check(title.phase==24,"a stalled frame repeats only once rather than jumping through the menu")
+	title.repeat_navigation(0.14)
+	check(title.phase==24,"subsequent repeats wait for their interval")
+	title.repeat_navigation(0.02)
+	check(title.phase==25,"held arrow repeats at the configured interval")
+	title.confirm()
+	check(title.navigation_key==0,"confirm clears held navigation before changing screens")
+	title.reset()
 	var clouds: Array = Scenery.initial_clouds()
 	check(clouds==[Vector2(120,400),Vector2(320,20)],"original two cloud starting positions")
 	Scenery.advance_clouds(clouds,(2)/0.03,0.03)

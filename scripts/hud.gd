@@ -26,7 +26,7 @@ static func render(canvas: Node2D, art: RefCounted, hull: int, energy: float, we
 	if energy>7: masked(canvas,art,"pichud",Vector2(47,35),Rect2i(70,116,30,20),Vector2i(70,136))
 	if energy>39: masked(canvas,art,"pichud",Vector2(79,35),Rect2i(100,116,30,20),Vector2i(100,136))
 	var digits: String = str(maxi(score,0))
-	for i in range(mini(digits.length(),6)):
+	for i in range(mini(digits.length(),7)):
 		var digit: int = int(digits[digits.length()-1-i])
 		masked(canvas,art,"pichud",Vector2(375-i*10,35),Rect2i(digit*10,156,10,20),Vector2i(digit*10,176))
 	if boss_hp >= 0:

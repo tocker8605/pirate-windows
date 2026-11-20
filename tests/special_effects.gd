@@ -47,7 +47,7 @@ func run() -> void:
 	game.delta_seconds = 0.03
 	game.enemies.replace_all([{"kind":1,"pos":Vector2(170,120),"velocity":Vector2.ZERO,"pattern":1011,"hp":100.0}])
 	game._tick(Vector2.ZERO,false,true,false,0.03)
-	check(game.laser_contacts==[game.enemies.at(0).pos+Vector2(10,25)] and game.enemies.at(0).hp==96,"beam contact keeps original hit artwork anchor")
+	check(game.laser_contacts==[Vector2(game.player.x+10,game.enemies.at(0).pos.y+25)] and game.enemies.at(0).hp==96,"beam contact follows the centred player's beam column")
 	for i in range(14): game._tick(Vector2.ZERO,false,false,false,0.03)
 	check(game.beam_remaining_seconds==0 and is_equal_approx(game.beam_render_seconds,0.03),"last beam sprite is visible on final active tick")
 	game._tick(Vector2.ZERO,false,false,false,0.03)

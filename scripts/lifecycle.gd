@@ -34,8 +34,7 @@ static func update(g: Node) -> void:
 		if g.death_remaining_seconds>0 and int(ceil(previous/0.3))!=int(ceil(g.death_remaining_seconds/0.3)):
 			g._explosion(g.player+Vector2(20-Rng.between(0,39),-10),0.6,true)
 		if g.death_remaining_seconds==0:
-			g._return_title()
-			g.score = 0
+			g._finish_run()
 
 static func begin_boss_death(g: Node) -> void:
 	if g.boss_defeated: return
@@ -57,5 +56,4 @@ static func complete_stage(g: Node) -> void:
 		g.loading_remaining_seconds = 0
 		g.state = "loading"
 	else:
-		g._return_title()
-		g.score = 0
+		g._finish_run()

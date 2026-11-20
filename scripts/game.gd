@@ -30,6 +30,11 @@ const PlayerProjectiles = preload("res://scripts/player_projectiles.gd")
 const CombatActions = preload("res://scripts/combat_actions.gd")
 const ItemSystem = preload("res://scripts/item_system.gd")
 const SupplyDirector = preload("res://scripts/supply_director.gd")
+const ScoreRanking = preload("res://scripts/score_ranking.gd")
+const RankingScreen = preload("res://scripts/ranking_screen.gd")
+var rankings = ScoreRanking.new()
+var ranking_entry = RankingScreen.new()
+var title_wait_for_release: bool = false
 const PLAYER_MOVE_SPEED: float = 200.0
 const PLAYER_SLOW_MOVE_SPEED: float = PLAYER_MOVE_SPEED*0.5
 var slow_movement_active: bool = false
@@ -54,7 +59,6 @@ var loading_preserve: bool = false
 var loading_remaining_seconds: float = 0
 var debug_enabled: bool = false
 var boss_defeated: bool = false
-var title_repeat: float = 0
 var clouds: Array = Scenery.initial_clouds()
 var boss_rush: bool = false
 var checkpoint_stage: int = 0
@@ -134,6 +138,18 @@ func _load_stage(number: int, preserve_run: bool = false) -> void:
 	StageSession.load_stage(self, number, preserve_run)
 
 func _unhandled_key_input(event: InputEvent) -> void:
+	if state=="menu" and event is InputEventKey and event.keycode in Title.NAVIGATION_KEYS:
+		title.navigation_input(event.keycode,event.pressed,event.echo)
+		_redraw()
+		return
+	if state=="ranking_entry" and event is InputEventKey and event.pressed and event.keycode not in [KEY_F11,KEY_M]:
+		if event.keycode in RankingScreen.CONFIRM_KEYS:
+			if not event.echo: _submit_ranking()
+		elif event.keycode in RankingScreen.NEXT_KEYS:
+			if not event.echo and ranking_entry.advance_cursor(): _submit_ranking()
+		else: ranking_entry.navigate(event.keycode)
+		_redraw()
+		return
 	if not event is InputEventKey or not event.pressed or event.echo: return
 	var key: int = event.keycode
 	if key==KEY_F11:
@@ -144,8 +160,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	elif state=="menu":
 		if key==KEY_ESCAPE: _quit()
 		elif key in [KEY_SPACE,KEY_ENTER]:
-			_title_accept()
-		else: title.navigate(key)
+			if not title_wait_for_release: _title_accept()
 	elif key==KEY_ESCAPE:
 		_return_title()
 	elif key==KEY_R and event.ctrl_pressed:
@@ -161,12 +176,31 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	_sync_audio()
 	_redraw()
 
-func _return_title() -> void:
-	last_score = score
+func _return_title(preserve_last_score: bool = false) -> void:
+	if not preserve_last_score: _save_score()
 	state = "menu"
 	title.reset()
 	_stop_music()
+
+func _finish_run() -> void:
 	_save_score()
+	_stop_music()
+	var position: int = rankings.insertion_index(score)
+	if position>=0:
+		ranking_entry.begin(position,{"score":clampi(score,0,ScoreRanking.MAX_SCORE),"weapon":weapon,"level":title.difficulty,"mission":stage})
+		state = "ranking_entry"
+	else: _return_title(true)
+	score = 0
+	slow_movement_active = false
+	accumulator = 0
+
+func _submit_ranking() -> void:
+	if rankings.submit(ranking_entry.record,ranking_entry.player_name)!=OK:
+		ranking_entry.save_failed = true
+		return
+	_return_title(true)
+	title_wait_for_release = true
+	accumulator = 0
 
 func _sync_audio() -> void:
 	if audio!=null: audio.sync(mute,state=="paused")
@@ -182,6 +216,7 @@ func _stop_music() -> void:
 	if audio!=null: audio.stop()
 
 func _notification(what: int) -> void:
+	if what==NOTIFICATION_APPLICATION_FOCUS_OUT: title.clear_navigation()
 	if what==NOTIFICATION_WM_CLOSE_REQUEST: _quit()
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and state in ["playing","dying","boss_dying"] and automatic:
 		paused_state = state
@@ -192,17 +227,21 @@ func _notification(what: int) -> void:
 func _process(delta: float) -> void:
 	if not automatic: return
 	_sync_audio()
+	if state=="ranking_entry":
+		ranking_entry.elapsed += delta
+		_redraw()
+		return
 	var step: float = Clock.MENU_STEP_SECONDS if state=="menu" else Clock.FIXED_STEP_SECONDS
 	if state=="menu":
-		title_repeat += delta
-		if title_repeat>=0.12:
-			title_repeat = 0
-			for code in [KEY_UP,KEY_DOWN,KEY_LEFT,KEY_RIGHT]:
-				if Input.is_physical_key_pressed(code): title.navigate(code)
+		if title_wait_for_release:
+			var held: bool = false
+			for code in RankingScreen.CONFIRM_KEYS+RankingScreen.NEXT_KEYS: held = held or Input.is_physical_key_pressed(code)
+			if not held: title_wait_for_release = false
+		title.repeat_navigation(delta)
 		accumulator += minf(delta,0.15)
 		while accumulator>=step:
 			accumulator -= step
-			if Input.is_physical_key_pressed(KEY_SPACE): _title_accept()
+			if not title_wait_for_release and Input.is_physical_key_pressed(KEY_SPACE): _title_accept()
 			title.tick()
 			if state!="menu":
 				_redraw()
@@ -313,6 +352,7 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 		shield_remaining_seconds = Clock.countdown(shield_remaining_seconds,seconds)
 	_apply_beam()
 	_update_lifecycle()
+	if state=="ranking_entry": return
 	if state in ["menu","loading"]:
 		if clock.recover(death_remaining_seconds==0,seconds) and not firing: energy = minf(100,energy+1)
 		return

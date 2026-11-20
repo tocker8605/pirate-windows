@@ -22,7 +22,7 @@ func run() -> void:
 	check(Rng.next_value()==11837123.0/16777216.0,"Rnd returns exact normalized Single fraction")
 	Rng.state = 0x50000
 	var volley: Array = Weapons.volley(Vector2(100,100),3,3)
-	check(volley[0].pos==Vector2(109.5,100) and volley[1].pos==Vector2(113.5,100) and Rng.state==8949370,"distance-spreading fan averages original jitter draws and launches4px apart without changing RNG state")
+	check(volley[0].pos==Vector2(108.5,100) and volley[1].pos==Vector2(112.5,100) and Rng.state==8949370,"cockpit-centred fan averages original jitter draws and launches4px apart without changing RNG state")
 	var g = Game.new()
 	g.automatic = false
 	g.mute = true
@@ -53,9 +53,10 @@ func run() -> void:
 	g.delta_seconds = 0.03
 	check(Rng.state==before,"stage loading does not reseed or consume original Rnd state")
 	g.stage = 4
+	g.rankings.entries.clear()
 	Rng.state = 0x50000
 	g._complete_stage()
-	check(g.state=="menu" and Rng.state==11837123,"final clear still consumes original unused loading-picture choice")
+	check(g.state=="ranking_entry" and Rng.state==11837123,"final clear opens ranking entry without changing gameplay RNG consumption")
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	g.audio.stop_all()
 	await create_timer(0.15).timeout

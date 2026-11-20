@@ -72,7 +72,7 @@ func refresh() -> void:
 		vfx.observe(g)
 		renewal.observe(g)
 		renewal.render_fraction = g.presentation.alpha
-		var in_game: bool = g.state not in ["menu","loading"]
+		var in_game: bool = g.state not in ["menu","loading","ranking_entry"]
 		var title_earth: bool = g.state=="menu" and g.title.phase>0 and g.title.loading_ticks==0
 		background.position = Vector2(-round(g.title.scroll/3.5),0) if title_earth else Vector2.ZERO
 		background.visible = (in_game or title_earth) and g.renewed_art
@@ -107,7 +107,11 @@ func _draw() -> void:
 		elif g.state=="loading":
 			if g.loading_image=="loading2": g.title.weapon_preview.draw_loading(self,g.art,g.frame)
 			else: draw_texture(g.art.texture(g.loading_image),Vector2.ZERO)
+		elif g.state=="ranking_entry": draw_rect(Rect2(0,0,400,480),Color.BLACK)
 		elif not g.renewed_art: draw_texture_rect_region(g.art.texture("stage%d"%g.stage),Rect2(0,0,400,480),Rect2(0,g.background_y,400,480))
+		return
+	if g.state=="ranking_entry":
+		g.ranking_entry.render(self)
 		return
 	if g.state in ["menu","loading"]: return
 	var fraction: float = g.presentation.alpha
@@ -185,4 +189,4 @@ func _draw_hud() -> void:
 	HUD.render(self,g.art,clampi(Weapons.vb_integer(g.hp),0,100),clampf(g.energy,0,100),g.weapon,g.power,g.score,int(g.boss.hp) if not g.boss.is_empty() else -1,int(g.boss.get("max_hp",0)))
 
 func _draw_menu() -> void:
-	g.title.render(self,g.art,g.last_score,g.renewed_art and g.title.phase>0 and g.title.loading_ticks==0)
+	g.title.render(self,g.art,g.last_score,g.renewed_art and g.title.phase>0 and g.title.loading_ticks==0,g.rankings.entries)
