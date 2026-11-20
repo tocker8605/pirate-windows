@@ -73,12 +73,12 @@ func refresh() -> void:
 		renewal.observe(g)
 		renewal.render_fraction = g.presentation.alpha
 		var in_game: bool = g.state not in ["menu","loading","ranking_entry"]
-		var title_earth: bool = g.state=="menu" and g.title.phase>0 and g.title.loading_ticks==0
-		background.position = Vector2(-round(g.title.scroll/3.5),0) if title_earth else Vector2.ZERO
+		var title_earth: bool = g.state=="menu" and g.title.shows_background()
+		background.position = Vector2(-g.title.background_offset(),0) if title_earth else Vector2.ZERO
 		background.visible = (in_game or title_earth) and g.renewed_art
 		if background.visible:
 			background.material.set_shader_parameter("stage",4 if title_earth else g.stage)
-			background.material.set_shader_parameter("source_top",3360.0-g.title.scroll if title_earth else g.presentation.background(g))
+			background.material.set_shader_parameter("source_top",3360.0-g.title.background_scroll() if title_earth else g.presentation.background(g))
 		for i in range(cloud_nodes.size()):
 			var cloud: Sprite2D = cloud_nodes[i]
 			cloud.position = g.presentation.cloud(g,i)
@@ -105,8 +105,8 @@ func _draw() -> void:
 	if not foreground_only:
 		if g.state=="menu": _draw_menu()
 		elif g.state=="loading":
-			if g.loading_image=="loading2": g.title.weapon_preview.draw_loading(self,g.art,g.frame)
-			else: draw_texture(g.art.texture(g.loading_image),Vector2.ZERO)
+			if g.flow.loading_image=="loading2": g.title.weapon_preview.draw_loading(self,g.art,g.flow.legend_elapsed)
+			else: draw_texture(g.art.texture(g.flow.loading_image),Vector2.ZERO)
 		elif g.state=="ranking_entry": draw_rect(Rect2(0,0,400,480),Color.BLACK)
 		elif not g.renewed_art: draw_texture_rect_region(g.art.texture("stage%d"%g.stage),Rect2(0,0,400,480),Rect2(0,g.background_y,400,480))
 		return
@@ -126,7 +126,7 @@ func _draw() -> void:
 			renewal.draw_boss_links(self,g.presentation.position(g.boss),g.enemies,g.presentation)
 			renewal.draw_boss(self,g.stage,g.presentation.position(g.boss))
 		else: draw_texture(g.art.sprite("boss%02d"%g.stage,Rect2i(0,0,150,100),Vector2i(0,100)),g.boss.pos+Vector2(-75,0))
-	if g.state != "dead" and (int(ceil(g.invulnerability_render_seconds*33.333333333333336-0.000001))%2==0):
+	if (int(ceil(g.invulnerability_render_seconds*33.333333333333336-0.000001))%2==0):
 		if g.renewed_art: pilot.draw(self,g.presentation.player(g),g.player_bank)
 		else: draw_texture(g.art.sprite("picair",Rect2i(g.player_bank*50,0,50,50),Vector2i(g.player_bank*50,50)),g.presentation.player(g))
 
@@ -156,7 +156,7 @@ func _draw() -> void:
 		if g.banner.begins_with("WARNING"):
 			draw_texture(g.art.sprite("picwarn",Rect2i(0,0,250,60),Vector2i(0,60)),Vector2(75,200))
 		elif not g.banner.is_empty():
-			draw_texture(g.art.sprite("mis%02d"%(g.stage+10 if g.boss_rush else g.stage),Rect2i(0,0,250,30),Vector2i(0,30)),Vector2(75,200))
+			draw_texture(g.art.sprite("mis%02d"%(g.stage+10 if g.run_settings.boss_rush else g.stage),Rect2i(0,0,250,30),Vector2i(0,30)),Vector2(75,200))
 	if g.state=="paused":
 		draw_rect(Rect2(0,0,400,480),Color(0.01,0.02,0.05,0.7))
 		_center(202,"PAUSED",28,Color(0.7,0.92,1))
@@ -183,10 +183,10 @@ func _draw_bullet(b: Dictionary) -> void:
 func _draw_shot(shot: Dictionary) -> void:
 	var pos: Vector2 = g.presentation.position(shot)
 	if shot.get("visual",{}).get("phase","")=="launch": pos += g.presentation.player(g)-g.player
-	vfx.draw_shot(self,shot,g.presentation.player(g),g.weapon,pos,g.renewed_art)
+	vfx.draw_shot(self,shot,g.presentation.player(g),g.run_settings.weapon,pos,g.renewed_art)
 
 func _draw_hud() -> void:
-	HUD.render(self,g.art,clampi(Weapons.vb_integer(g.hp),0,100),clampf(g.energy,0,100),g.weapon,g.power,g.score,int(g.boss.hp) if not g.boss.is_empty() else -1,int(g.boss.get("max_hp",0)))
+	HUD.render(self,g.art,clampi(Weapons.vb_integer(g.hp),0,100),clampf(g.energy,0,100),g.run_settings.weapon,g.power,g.score,int(g.boss.hp) if not g.boss.is_empty() else -1,int(g.boss.get("max_hp",0)))
 
 func _draw_menu() -> void:
-	g.title.render(self,g.art,g.last_score,g.renewed_art and g.title.phase>0 and g.title.loading_ticks==0,g.rankings.entries)
+	g.title.render(self,g.art,g.last_score,g.renewed_art and g.title.shows_background(),g.rankings.entries)

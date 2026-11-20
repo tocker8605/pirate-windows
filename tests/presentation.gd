@@ -40,7 +40,7 @@ func run() -> void:
 	check(p.position({"pos":Vector2(20,40)})==Vector2(20,40),"new entity has no stale interpolation")
 	g.shield_center = Vector2(150,350)
 	check(p.shield_position(g)==g.shield_center,"new shield_remaining_seconds starts at the current anchor")
-	g.state = "paused"
+	g.flow.state = "paused"
 	p.refresh(g)
 	check(p.alpha==0.5,"pause freezes presentation")
 	p.reset(g)

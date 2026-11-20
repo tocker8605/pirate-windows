@@ -20,7 +20,7 @@ func run()->void:
 	for weapon in range(1,4):
 		g._load_stage(1)
 		g.events=[]
-		g.weapon=weapon
+		g.run_settings = g.run_settings.with_weapon(weapon)
 		g.power=1
 		g.death_remaining_seconds=0.03
 		g.delta_seconds=1.0/60

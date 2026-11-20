@@ -58,10 +58,10 @@ func run() -> void:
 	g.set_process(false)
 	for rush in [false,true]:
 		for stage in range(1,5):
-			g.boss_rush = rush
+			g.run_settings = g.run_settings.with_boss_rush(rush)
 			g.supply_director.rng.seed = 243200+stage
 			g._load_stage(stage)
-			g.weapon = 2
+			g.run_settings = g.run_settings.with_weapon(2)
 			g.power = 7
 			Rng.state = 0x50000
 			for tick in range(600 if rush else 7200):

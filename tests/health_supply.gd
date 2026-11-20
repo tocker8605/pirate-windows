@@ -118,7 +118,7 @@ func run() -> void:
 	check(g.supply_director.schedule.size()==9,"carried power1at stage3plans six power and three HP supplies")
 	g.power = 7
 	check(g.supply_director.schedule.size()==9,"midstage power gain cannot change the starting-power delivery budget")
-	g.boss_rush = true
+	g.run_settings = g.run_settings.with_boss_rush(true)
 	g._load_stage(4)
 	check(g.supply_director.schedule.is_empty(),"actual BossRush stage load contains no scheduled supply carriers")
 	g.supply_director.schedule = [{"at":0,"kind":202,"pos":Vector2(150,480),"pattern":1074}]

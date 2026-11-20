@@ -60,7 +60,7 @@ func run() -> void:
 	g._load_stage(2)
 	check(not g.slow_movement_active,"stage reset clears precision presentation state")
 	for rush in [false,true]:
-		g.boss_rush = rush
+		g.run_settings = g.run_settings.with_boss_rush(rush)
 		for stage in range(1,5):
 			g._load_stage(stage)
 			check(g.player.x+Geometry.COCKPIT.x==200 and g.player.y==300,"stage%d rush%s starts cockpit at screen centreX200"%[stage,rush])

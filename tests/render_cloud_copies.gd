@@ -35,7 +35,7 @@ func run() -> void:
 	g.clouds = [Vector2(-500,-500),Vector2(-500,-500)]
 	g._redraw()
 	check(g.view.cloud_copies.all(func(c): return not c.visible) and g.view.cloud_nodes.all(func(c): return not c.visible),"offscreen clouds skip copying and shader drawing")
-	g.state = "menu"
+	g.flow.state = "menu"
 	g._redraw()
 	check(g.view.cloud_copies.all(func(c): return not c.visible),"menu/loading do not run game-cloud copies")
 	print("RESULT: %d checks, %d failures"%[checks,failures])

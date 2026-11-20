@@ -77,7 +77,7 @@ func run() -> void:
 	for difficulty in range(1,6):
 		g.hp = 100
 		g.invulnerability_seconds = 0
-		g.title.difficulty = difficulty
+		g.run_settings = g.run_settings.with_difficulty(difficulty)
 		g._resolve_body_contacts()
 		check(g.hp==100-[12,18,24,30,36][difficulty-1] and is_equal_approx(g.invulnerability_seconds,1.5) and is_equal_approx(g.hit_flash_remaining_seconds,0.57),"difficulty%d applies one uniform contact hit with normal feedback"%difficulty)
 		g._resolve_body_contacts()

@@ -13,7 +13,7 @@ class Station extends Node2D:
 class Board extends Node2D:
 	var old = OldArt.new()
 	var preview = Preview.new()
-	var clock: int = 12
+	var elapsed_seconds: float = 0.3
 	func _draw() -> void:
 		var font = ThemeDB.fallback_font
 		draw_rect(Rect2(0,0,640,450),Color("111d2b"))
@@ -22,8 +22,8 @@ class Board extends Node2D:
 		draw_string(font,Vector2(36,194),"ORIGINAL",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("adbccc"))
 		for i in range(3): draw_string(font,Vector2(185+i*110,194),["ANGLE A","ANGLE B","ANGLE C"][i],HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("adbccc"))
 		draw_string(font,Vector2(535,56),"ICON LEGENDS",HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color("adbccc"))
-		for i in range(3): preview.draw_small(self,Rect2(535,70+i*40,83,36),i+1,clock,i==0)
-		for i in range(3): preview.draw_large(self,old,Rect2(12+i*210,225,196,210),i+1,clock)
+		for i in range(3): preview.draw_small(self,Rect2(535,70+i*40,83,36),i+1,elapsed_seconds,i==0)
+		for i in range(3): preview.draw_large(self,old,Rect2(12+i*210,225,196,210),i+1,elapsed_seconds)
 func check(ok: bool, message: String) -> void:
 	checks += 1
 	if ok: print("PASS: "+message)
@@ -67,12 +67,12 @@ func run() -> void:
 	var second: Image = root.get_texture().get_image()
 	check(art.station_texture().region==Rect2(30,27,829,832),"only the v22 habitat ring is selected; separate spindle is excluded")
 	check(difference(first,second,Rect2i(175,78,100,84))>0.1,"habitat ring visibly rotates between phases")
-	board.clock = 36
+	board.elapsed_seconds = 0.9
 	board.queue_redraw()
 	await RenderingServer.frame_post_draw
 	var animated: Image = root.get_texture().get_image()
 	check(difference(second,animated,Rect2i(12,225,616,210))>0.1,"weapon legends animate along their real paths")
-	board.clock = 112
+	board.elapsed_seconds = 2.8
 	board.queue_redraw()
 	stations[0].angle = 0
 	stations[0].queue_redraw()

@@ -7,14 +7,15 @@ static func run(g: Node) -> void:
 	g.automatic = false
 	g.mute = true
 	if g.preview_mode in ["menu","opening","title","weapons","weapons2","weapons3"]:
-		g.title.loading_ticks = 0
+		g.title.screen = g.title.RANKING
 		if g.preview_mode!="menu":
 			g.title.confirm()
-			for i in range(45 if g.preview_mode=="opening" else 94): g.title.tick()
+			g.title.advance(1.125 if g.preview_mode=="opening" else g.title.OPENING_DURATION)
 			if g.preview_mode.begins_with("weapons"):
 				g.title.confirm()
-				g.title.phase = 24 if g.preview_mode=="weapons2" else (25 if g.preview_mode=="weapons3" else 23)
-				g.title.preview_clock = 12
+				g.title.screen = g.title.SETTINGS
+				g.title.settings_selection = 2 if g.preview_mode=="weapons2" else (3 if g.preview_mode=="weapons3" else 1)
+				g.title.preview_elapsed = 0.3
 	elif g.preview_mode!="menu":
 		g._load_stage(4 if g.preview_mode in ["boss4-final","boss4-sweep"] else g.preview_stage)
 		var stills: Dictionary = {"boss4-final":0,"boss4-sweep":0,"stage-start":0,"stage-start-late":600,"region1":0,"region2":0,"region3":0,"region4":0,"earth-horizon":0,"lunar-entry":0,"connector12":0,"connector23":0,"turn-up":0,"turn-finished":0}
@@ -33,7 +34,7 @@ static func run(g: Node) -> void:
 				for kind in [131,132,133]: g.enemies.append(Catalog.create(kind,Vector2.ZERO))
 			g.player = Vector2(175,390)
 			g.power = 7
-			g.weapon = 1
+			g.run_settings = g.run_settings.with_weapon(1)
 			g.invulnerability_seconds = 1000000
 			g.clock = Clock.new()
 			g.scroll_speed = 0
@@ -80,7 +81,7 @@ static func run(g: Node) -> void:
 		if g.preview_mode in ["particles","particles2","particles3"]:
 			g._load_stage(4)
 			g.events = []
-			g.weapon = 2 if g.preview_mode=="particles2" else (3 if g.preview_mode=="particles3" else 1)
+			g.run_settings = g.run_settings.with_weapon(2 if g.preview_mode=="particles2" else (3 if g.preview_mode=="particles3" else 1))
 			g.background_y = 2160
 			g.scenery_distance = 1200
 			g.clouds = [Vector2(-500,-500),Vector2(-500,-500)]
@@ -124,10 +125,9 @@ static func run(g: Node) -> void:
 			else: g.hp = 0
 			for i in range(60): g._tick(Vector2.ZERO,false,false,false)
 			if g.preview_mode=="loading":
-				g.state = "loading"
-				g.loading_image = "loading2"
+				g.flow.load_stage(g,g.stage,false,"loading2")
 		g.invulnerability_seconds = 0
-		if g.preview_mode not in ["boss-death","gameover","loading"]: g.state = "playing"
+		if g.preview_mode not in ["boss-death","gameover","loading"]: g.flow.play_stage(g)
 	g._redraw()
 	await RenderingServer.frame_post_draw
 	g.get_viewport().get_texture().get_image().save_png(g.preview_path)

@@ -10,6 +10,8 @@ var entries: Array = []
 func _init(save_path: String = PATH) -> void:
 	path = save_path
 	_load()
+static func score_text(points: int) -> String:
+	return str(clampi(points,0,MAX_SCORE)).lpad(7," ")
 static func clean_name(value: String) -> String:
 	var result: String = ""
 	for letter in value.to_upper():

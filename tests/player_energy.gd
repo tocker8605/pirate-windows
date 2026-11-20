@@ -16,7 +16,7 @@ func run() -> void:
 			g.shots.clear()
 			g.fire_cooldown_seconds = 0
 			g.energy = 100
-			g.weapon = weapon
+			g.run_settings = g.run_settings.with_weapon(weapon)
 			g.power = power
 			g._fire()
 			var expected_period: float = 0.06 if power%2==0 else 0.08

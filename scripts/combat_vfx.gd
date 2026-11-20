@@ -111,11 +111,11 @@ func observe(g: Node) -> void:
 		var id: int = shot.entity_id
 		if shot.has("launch_pos") and not launches.has(id):
 			launches[id] = true
-			for x in PlayerStyle.PORTS[clampi(g.weapon,1,3)-1]:
-				player_sparks(shot.launch_pos+Vector2(15+x,24),g.weapon,false)
+			for x in PlayerStyle.PORTS[clampi(g.run_settings.weapon,1,3)-1]:
+				player_sparks(shot.launch_pos+Vector2(15+x,24),g.run_settings.weapon,false)
 		if float(shot.get("impact_remaining_seconds",-1))<0 or impacts.has(id): continue
 		impacts[id] = true
-		player_sparks(shot.pos+Vector2(15,8),g.weapon,true)
+		player_sparks(shot.pos+Vector2(15,8),g.run_settings.weapon,true)
 	if g.hit_flash_remaining_seconds>last_hit: burst(g.player+Vector2(25,25),28,HOT,4.5)
 	last_hit = g.hit_flash_remaining_seconds
 	for e in g.enemies:
@@ -141,8 +141,8 @@ func observe(g: Node) -> void:
 				emit(b.get("render_pos",b.pos)-direction*5,-direction*0.7,9,2.5 if kind==2 else 1.4,enemy_color(kind))
 		for shot in g.shots:
 			if float(shot.get("impact_remaining_seconds",-1))>=0: continue
-			for x in PlayerStyle.PORTS[clampi(g.weapon,1,3)-1]:
-				emit(shot.pos+Vector2(15+x,28),Vector2(rng.randf_range(-0.2,0.2),2),8,0.8,player_color(g.weapon))
+			for x in PlayerStyle.PORTS[clampi(g.run_settings.weapon,1,3)-1]:
+				emit(shot.pos+Vector2(15+x,28),Vector2(rng.randf_range(-0.2,0.2),2),8,0.8,player_color(g.run_settings.weapon))
 	trail_clock += g.delta_seconds
 	if trail_clock>=0.06-0.00000003:
 		trail_clock = fposmod(trail_clock,0.06)

@@ -20,7 +20,7 @@ func run() -> void:
 	root.add_child(g)
 	await process_frame
 	g.set_process(false)
-	g.boss_rush = true
+	g.run_settings = g.run_settings.with_boss_rush(true)
 	g._load_stage(4)
 	g.delta_seconds = 0.03
 	check(g.map_mode==1 and g.scroll_speed==(20/0.03) and g.background_y==3360,"rush4 keeps the same takeoff initialization as other rush stages")
@@ -30,9 +30,9 @@ func run() -> void:
 	for source in [3360,1920,1200,480]:
 		g.background_y = source
 		g.presentation.reset(g)
-		g.boss_rush = false
+		g.run_settings = g.run_settings.with_boss_rush(false)
 		var normal: Image = await capture(g)
-		g.boss_rush = true
+		g.run_settings = g.run_settings.with_boss_rush(true)
 		var rush: Image = await capture(g)
 		var same := true
 		for y in range(120,430,13):

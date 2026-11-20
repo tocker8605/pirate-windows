@@ -109,13 +109,14 @@ func run() -> void:
 	after = await capture(g)
 	if before.get_data()!=after.get_data(): failures += 1
 	g._return_title()
-	g.title.loading_ticks = 0
-	g.title.phase = 23
-	g.title.slide = 96
-	g.title.scroll = 479
-	g.title.preview_clock = 12
+	g.title.screen = g.title.RANKING
+	g.title.screen = g.title.SETTINGS
+	g.title.settings_selection = 1
+	g.title.opening_elapsed = g.title.OPENING_DURATION
+	g.title.background_elapsed = g.title.BACKGROUND_LIMIT/g.title.BACKGROUND_SPEED
+	g.title.preview_elapsed = 0.3
 	var one: Image = await capture(g)
-	g.title.preview_clock = 36
+	g.title.preview_elapsed = 0.9
 	var two: Image = await capture(g)
 	if one.get_data()==two.get_data(): failures += 1
 	print("RESULT: 8 checks, %d failures"%failures)

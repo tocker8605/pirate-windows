@@ -6,6 +6,9 @@ const Particles = preload("res://scripts/combat_vfx.gd")
 const PlayerShotArt = preload("res://scripts/player_shot_art.gd")
 const Pilot = preload("res://scripts/pilot_art.gd")
 const TRACE_TICKS: int = 36
+const TRACE_PAUSE_SECONDS: float = 0.2
+const POWER_PREVIEW_SECONDS: float = 2.5
+const LOADING_PLAYBACK_RATE: float = 1.5
 var pilot_art = Pilot.new()
 var art = PlayerShotArt.new()
 var path_cache: Dictionary = {}
@@ -34,13 +37,15 @@ func trajectory_paths(weapon: int, power: int = 7) -> Array:
 	return path_cache[key]
 static func demo_player(weapon: int, tick: int) -> Vector2:
 	return Vector2(30*sin(tick*Clock.FIXED_STEP_SECONDS*3),0) if weapon==3 else Vector2.ZERO
-static func displayed_age(clock: int) -> int:
-	return mini(int(clock*1.5)%(TRACE_TICKS+12),TRACE_TICKS)
-static func displayed_power(clock: int) -> int:
-	return 4 if int(clock/100)%2==0 else 7
-func _draw_paths(c: Node2D, weapon: int, power: int, origin: Vector2, scale: Vector2, clock: int, small: bool) -> void:
+static func displayed_age(elapsed_seconds: float) -> int:
+	var cycle_seconds: float = TRACE_TICKS*Clock.FIXED_STEP_SECONDS+TRACE_PAUSE_SECONDS
+	var cycle_time: float = fposmod(maxf(0,elapsed_seconds),cycle_seconds)
+	return mini(floori((cycle_time+0.000000001)/Clock.FIXED_STEP_SECONDS),TRACE_TICKS)
+static func displayed_power(elapsed_seconds: float) -> int:
+	return 4 if floori((maxf(0,elapsed_seconds)+0.000000001)/POWER_PREVIEW_SECONDS)%2==0 else 7
+func _draw_paths(c: Node2D, weapon: int, power: int, origin: Vector2, scale: Vector2, elapsed_seconds: float, small: bool) -> void:
 	var color: Color = Particles.player_color(weapon)
-	var age: int = displayed_age(clock)
+	var age: int = displayed_age(elapsed_seconds)
 	for path in trajectory_paths(weapon,power):
 		var points := PackedVector2Array()
 		for point in path.points: points.append(origin+(point-Vector2(25,0))*scale)
@@ -57,30 +62,31 @@ func _draw_paths(c: Node2D, weapon: int, power: int, origin: Vector2, scale: Vec
 		var texture: Texture2D = art.frame_texture(weapon,visual)
 		var size: Vector2 = PlayerShotArt.CELL*(0.3 if small else 0.6)
 		c.draw_texture_rect(texture,Rect2(points[age]-size/2,size),false)
-func draw_small(c: Node2D, rect: Rect2, weapon: int, clock: int, selected: bool) -> void:
+func draw_small(c: Node2D, rect: Rect2, weapon: int, elapsed_seconds: float, selected: bool) -> void:
 	var color: Color = Particles.player_color(weapon)
 	c.draw_rect(rect,Color(0.015,0.035,0.06,0.95))
 	c.draw_rect(rect,Color(color,0.8 if selected else 0.25),false,1)
-	_draw_paths(c,weapon,displayed_power(clock),rect.position+Vector2(rect.size.x/2,rect.size.y-4),Vector2(0.7,0.07),clock,true)
-func draw_large(c: Node2D, _original: RefCounted, rect: Rect2, weapon: int, clock: int) -> void:
+	_draw_paths(c,weapon,displayed_power(elapsed_seconds),rect.position+Vector2(rect.size.x/2,rect.size.y-4),Vector2(0.7,0.07),elapsed_seconds,true)
+func draw_large(c: Node2D, _original: RefCounted, rect: Rect2, weapon: int, elapsed_seconds: float) -> void:
 	var color: Color = Particles.player_color(weapon)
 	var font: Font = ThemeDB.fallback_font
-	var power: int = displayed_power(clock)
+	var power: int = displayed_power(elapsed_seconds)
 	c.draw_rect(rect,Color(0.012,0.027,0.045,0.94))
 	c.draw_rect(rect,Color(color,0.5),false,1)
 	c.draw_string(font,rect.position+Vector2(12,20),"TYPE %d / %s"%[weapon,["","SPREAD","STRAIGHT","FOLLOW"][weapon]],HORIZONTAL_ALIGNMENT_LEFT,-1,13,color)
 	var description: String = ("WIDE PARALLEL" if power==4 else "OUTWARD SPREAD") if weapon==1 else ("PARALLEL LANES" if weapon==2 else "FOLLOW X / SPEED UP")
 	c.draw_string(font,rect.position+Vector2(12,36),"POWER %d / %s"%[power,description],HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("a9bdcf"))
 	var pilot: Vector2 = rect.position+Vector2(rect.size.x/2-25,rect.size.y-50)
-	_draw_paths(c,weapon,power,rect.position+Vector2(rect.size.x/2,rect.size.y-47),Vector2(1.7,0.245),clock,false)
-	pilot.x += demo_player(weapon,displayed_age(clock)).x*1.7
+	_draw_paths(c,weapon,power,rect.position+Vector2(rect.size.x/2,rect.size.y-47),Vector2(1.7,0.245),elapsed_seconds,false)
+	pilot.x += demo_player(weapon,displayed_age(elapsed_seconds)).x*1.7
 	pilot_art.draw(c,pilot)
 	c.draw_string(font,rect.position+Vector2(9,rect.size.y-8),"DOTS = TIME",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("9db0c3"))
 	c.draw_string(font,rect.position+Vector2(rect.size.x-58,rect.size.y-8),"P4 / P7",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color(color,0.8))
-func draw_loading(c: Node2D, original: RefCounted, clock: int) -> void:
+## Loading legends retain their established 1.5x playback speed.
+func draw_loading(c: Node2D, original: RefCounted, elapsed_seconds: float) -> void:
 	c.draw_texture(original.texture("loading2"),Vector2.ZERO)
 	for i in range(3):
 		var rect := Rect2(3+i*140,58,100,122)
 		c.draw_rect(rect,Color("060f1c"))
 		c.draw_string(ThemeDB.fallback_font,rect.position+Vector2(9,18),"TYPE %d"%(i+1),HORIZONTAL_ALIGNMENT_LEFT,-1,13,Particles.player_color(i+1))
-		draw_small(c,Rect2(rect.position+Vector2(7,45),Vector2(80,38)),i+1,clock,false)
+		draw_small(c,Rect2(rect.position+Vector2(7,45),Vector2(80,38)),i+1,elapsed_seconds*LOADING_PLAYBACK_RATE,false)

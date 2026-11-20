@@ -55,7 +55,7 @@ func run() -> void:
 	g.supply_director.rng.seed = win
 	g._hurt_player(15)
 	check(g.enemies.size()==1 and g.enemies.at(0).kind==202,"normal boss fight permits emergency supply outside schedule window")
-	g.boss_rush = true
+	g.run_settings = g.run_settings.with_boss_rush(true)
 	g._load_stage(2)
 	g.supply_director.rng.seed = win
 	before = g.supply_director.rng.state
@@ -70,7 +70,7 @@ func run() -> void:
 	g.supply_director.rng.seed = win
 	g._hurt_player(15)
 	check(g.enemies.size()==1 and g.supply_director.damage_supply_used,"next BossRush stage resets emergency HP allowance")
-	g.boss_rush = false
+	g.run_settings = g.run_settings.with_boss_rush(false)
 	g._load_stage(1)
 	g.hp = 15
 	g.supply_director.rng.seed = win
@@ -86,7 +86,7 @@ func run() -> void:
 	g._hurt_player(15)
 	check(g.enemies.is_empty() and before==g.supply_director.rng.state,"death animation cannot trigger delivery")
 	g._load_stage(1)
-	g.state = "menu"
+	g.flow.state = "menu"
 	g.supply_director.rng.seed = win
 	before = g.supply_director.rng.state
 	g._hurt_player(15)

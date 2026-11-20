@@ -28,7 +28,7 @@ func run() -> void:
 	g.delta_seconds = 0.03
 	g.events = []
 	for difficulty in range(1,6):
-		g.title.difficulty = difficulty
+		g.run_settings = g.run_settings.with_difficulty(difficulty)
 		g.boss = {}
 		g.score = 123
 		intercept(g)
@@ -38,7 +38,7 @@ func run() -> void:
 			g.score = 123
 			intercept(g)
 			check(g.score==123 and g.bullets.is_empty() and is_equal_approx(g.shield_remaining_seconds,2.88) and g.shield_contacts.size()==1,"difficulty%d stage%d boss blocks shield points and doubles interception cost to120ms"%[difficulty,stage])
-	g.title.difficulty = 5
+	g.run_settings = g.run_settings.with_difficulty(5)
 	g.score = 123
 	for i in range(100): intercept(g)
 	check(g.score==123 and g.bullets.is_empty() and is_equal_approx(g.shield_remaining_seconds,2.88) and g.shield_contacts.size()==1,"100boss-phase interceptions cannot farm score and retain doubled shield costs")

@@ -101,7 +101,7 @@ func run() -> void:
 		g.delta_seconds = 0.03
 		g.clock = Clock.new()
 		g.fire_cooldown_seconds = 0
-		g.weapon = stage%3+1
+		g.run_settings = g.run_settings.with_weapon(stage%3+1)
 		var event_count: int = g.events.size()
 		var spawn_count: int = g.events.filter(func(e): return e.action=="spawn" and int(e.definition_id)!=90+stage).size()
 		var duration: int = ceili((float(g.events[-1].at)+2)*60)

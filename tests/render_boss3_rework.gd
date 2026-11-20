@@ -49,7 +49,7 @@ func run() -> void:
 	g.boss.hp = 500
 	g.player = Vector2(175,390)
 	g.power = 7
-	g.weapon = 1
+	g.run_settings = g.run_settings.with_weapon(1)
 	g.invulnerability_seconds = 30000.0
 	g.clock = Clock.new()
 	g.scroll_speed = (0/0.03)

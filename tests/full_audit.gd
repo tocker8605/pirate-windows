@@ -152,7 +152,7 @@ func run() -> void:
 	game.clouds = old_clouds.duplicate()
 	game.selected_stage = 2
 	game._begin_run()
-	check(game.state=="loading" and game.loading_image=="loading1" and is_equal_approx(game.loading_remaining_seconds,0.03),"New Game and Continue use original loading1 artwork before stage entry")
+	check(game.state=="loading" and game.flow.loading_image=="loading1" and is_equal_approx(game.flow.loading_remaining_seconds,0.03),"New Game and Continue use original loading1 artwork before stage entry")
 	game._tick(Vector2.ZERO,false,false,false,0.03)
 	check(game.state=="loading","initial loading picture lasts for a presented simulation frame")
 	game._tick(Vector2.ZERO,false,false,false,0.03)

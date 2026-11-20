@@ -32,9 +32,13 @@ const ItemSystem = preload("res://scripts/item_system.gd")
 const SupplyDirector = preload("res://scripts/supply_director.gd")
 const ScoreRanking = preload("res://scripts/score_ranking.gd")
 const RankingScreen = preload("res://scripts/ranking_screen.gd")
+const RunSettings = preload("res://scripts/run_settings.gd")
+const GameFlow = preload("res://scripts/game_flow.gd")
+var run_settings = RunSettings.new()
+var checkpoint_settings = RunSettings.new()
+var flow = GameFlow.new()
 var rankings = ScoreRanking.new()
 var ranking_entry = RankingScreen.new()
-var title_wait_for_release: bool = false
 const PLAYER_MOVE_SPEED: float = 200.0
 const PLAYER_SLOW_MOVE_SPEED: float = PLAYER_MOVE_SPEED*0.5
 var slow_movement_active: bool = false
@@ -53,26 +57,19 @@ var last_score: int = 0
 var death_remaining_seconds: float = 0
 var boss_death_remaining_seconds: float = 0
 var hit_flash_remaining_seconds: float = 0
-var loading_image: String = "loading2"
-var loading_target: int = 1
-var loading_preserve: bool = false
-var loading_remaining_seconds: float = 0
 var debug_enabled: bool = false
 var boss_defeated: bool = false
 var clouds: Array = Scenery.initial_clouds()
-var boss_rush: bool = false
 var checkpoint_stage: int = 0
-var checkpoint_rush: bool = false
 var music: AudioStreamPlayer
 var music_track: String = ""
 var events: Array = []
 var event_cursor: int = 0
-var paused_state: String = "playing"
-var state: String = "menu"
+var state: StringName:
+	get: return flow.state
 var stage: int = 1
 var selected_stage: int = 1
 var preview_stage: int = 1
-var weapon: int = 1
 var player: Vector2 = Vector2(PilotGeometry.centred_x(),380)
 var player_bank: int = 0
 var hp: float = 100
@@ -138,18 +135,15 @@ func _load_stage(number: int, preserve_run: bool = false) -> void:
 	StageSession.load_stage(self, number, preserve_run)
 
 func _unhandled_key_input(event: InputEvent) -> void:
-	if state=="menu" and event is InputEventKey and event.keycode in Title.NAVIGATION_KEYS:
-		title.navigation_input(event.keycode,event.pressed,event.echo)
-		_redraw()
-		return
-	if state=="ranking_entry" and event is InputEventKey and event.pressed and event.keycode not in [KEY_F11,KEY_M]:
-		if event.keycode in RankingScreen.CONFIRM_KEYS:
-			if not event.echo: _submit_ranking()
-		elif event.keycode in RankingScreen.NEXT_KEYS:
-			if not event.echo and ranking_entry.advance_cursor(): _submit_ranking()
-		else: ranking_entry.navigate(event.keycode)
-		_redraw()
-		return
+	if event is InputEventKey and event.keycode not in [KEY_F11,KEY_M]:
+		if state=="menu" and event.keycode in Title.NAVIGATION_KEYS+Title.CONFIRM_KEYS:
+			_title_accept(title.handle_key(event))
+			_redraw()
+			return
+		if state=="ranking_entry":
+			if ranking_entry.handle_key(event): _submit_ranking(event.keycode)
+			_redraw()
+			return
 	if not event is InputEventKey or not event.pressed or event.echo: return
 	var key: int = event.keycode
 	if key==KEY_F11:
@@ -159,48 +153,33 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		mute = not mute
 	elif state=="menu":
 		if key==KEY_ESCAPE: _quit()
-		elif key in [KEY_SPACE,KEY_ENTER]:
-			if not title_wait_for_release: _title_accept()
 	elif key==KEY_ESCAPE:
 		_return_title()
 	elif key==KEY_R and event.ctrl_pressed:
 		start_game()
-	elif key==KEY_P and state in ["playing","dying","boss_dying","paused"]:
-		if state=="paused": state = paused_state
-		else:
-			paused_state = state
-			state = "paused"
-	elif state in ["dead","clear"] and key in [KEY_SPACE,KEY_ENTER]:
-		if state=="clear" and stage<4: _load_stage(stage+1,true)
-		else: start_game()
+	elif key==KEY_P:
+		flow.toggle_pause(self)
 	_sync_audio()
 	_redraw()
 
-func _return_title(preserve_last_score: bool = false) -> void:
-	if not preserve_last_score: _save_score()
-	state = "menu"
-	title.reset()
-	_stop_music()
+func _return_title() -> void:
+	_remember_score()
+	flow.show_menu(self)
 
 func _finish_run() -> void:
-	_save_score()
-	_stop_music()
-	var position: int = rankings.insertion_index(score)
+	_remember_score()
+	var position: int = rankings.insertion_index(last_score) if run_settings.qualifies_for_ranking() else -1
 	if position>=0:
-		ranking_entry.begin(position,{"score":clampi(score,0,ScoreRanking.MAX_SCORE),"weapon":weapon,"level":title.difficulty,"mission":stage})
-		state = "ranking_entry"
-	else: _return_title(true)
+		ranking_entry.begin(position,{"score":clampi(last_score,0,ScoreRanking.MAX_SCORE),"weapon":run_settings.weapon,"level":run_settings.difficulty,"mission":stage})
+		flow.show_ranking(self)
+	else: flow.show_menu(self)
 	score = 0
-	slow_movement_active = false
-	accumulator = 0
 
-func _submit_ranking() -> void:
+func _submit_ranking(confirm_key: int) -> void:
 	if rankings.submit(ranking_entry.record,ranking_entry.player_name)!=OK:
 		ranking_entry.save_failed = true
 		return
-	_return_title(true)
-	title_wait_for_release = true
-	accumulator = 0
+	flow.show_menu(self,confirm_key)
 
 func _sync_audio() -> void:
 	if audio!=null: audio.sync(mute,state=="paused")
@@ -216,40 +195,24 @@ func _stop_music() -> void:
 	if audio!=null: audio.stop()
 
 func _notification(what: int) -> void:
-	if what==NOTIFICATION_APPLICATION_FOCUS_OUT: title.clear_navigation()
+	if what==NOTIFICATION_APPLICATION_FOCUS_OUT: title.clear_input()
 	if what==NOTIFICATION_WM_CLOSE_REQUEST: _quit()
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and state in ["playing","dying","boss_dying"] and automatic:
-		paused_state = state
-		state = "paused"
-		_sync_audio()
+		flow.pause(self)
 		_redraw()
 
 func _process(delta: float) -> void:
 	if not automatic: return
 	_sync_audio()
 	if state=="ranking_entry":
-		ranking_entry.elapsed += delta
+		ranking_entry.advance(delta)
 		_redraw()
 		return
-	var step: float = Clock.MENU_STEP_SECONDS if state=="menu" else Clock.FIXED_STEP_SECONDS
 	if state=="menu":
-		if title_wait_for_release:
-			var held: bool = false
-			for code in RankingScreen.CONFIRM_KEYS+RankingScreen.NEXT_KEYS: held = held or Input.is_physical_key_pressed(code)
-			if not held: title_wait_for_release = false
-		title.repeat_navigation(delta)
-		accumulator += minf(delta,0.15)
-		while accumulator>=step:
-			accumulator -= step
-			if not title_wait_for_release and Input.is_physical_key_pressed(KEY_SPACE): _title_accept()
-			title.tick()
-			if state!="menu":
-				_redraw()
-				return
-	if state=="menu":
+		title.advance(delta)
 		_redraw()
 		return
-	# A menu-to-game transition already consumed this frame's elapsed time.
+	var step: float = Clock.FIXED_STEP_SECONDS
 	if state in ["playing","dying","boss_dying","loading"]:
 		accumulator += minf(delta, 0.15)
 		while accumulator+0.000000001 >= step:
@@ -262,10 +225,7 @@ func _process(delta: float) -> void:
 func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, seconds: float = Clock.FIXED_STEP_SECONDS, slow_movement: bool = false) -> void:
 	delta_seconds = seconds
 	if state=="loading":
-		if loading_remaining_seconds>0:
-			loading_remaining_seconds = Clock.countdown(loading_remaining_seconds,seconds)
-			return
-		_load_stage(loading_target,loading_preserve)
+		flow.advance_loading(self,seconds)
 		return
 	if state not in ["playing","dying","boss_dying"]: return
 	presentation.capture(self)
@@ -433,8 +393,8 @@ func _resolve_body_contacts() -> void:
 func _destroy_enemy(e: Dictionary) -> void:
 	var kind: int = int(e.kind)
 	_sound(EnemyRules.death_sound(kind))
-	if not e.get("auto_destroyed",false): score += EnemyRules.score(kind,title.difficulty)
-	var item: Dictionary = EnemyRules.drop(e,boss_rush)
+	if not e.get("auto_destroyed",false): score += EnemyRules.score(kind,run_settings.difficulty)
+	var item: Dictionary = EnemyRules.drop(e,run_settings.boss_rush)
 	if not item.is_empty(): _drop_item(item)
 	if EnemyRules.release_and_escape(e): return
 	_explosion(e.pos,EnemyRules.explosion_seconds(kind))
@@ -454,7 +414,7 @@ func _explosion(pos: Vector2, duration_seconds: float = 0.6, pending_sound: bool
 func _sound(id: String) -> void:
 	if audio!=null: audio.sound(id,mute)
 
-func _save_score() -> void:
+func _remember_score() -> void:
 	last_score = score
 
 func _exit_tree() -> void:
@@ -463,16 +423,14 @@ func _exit_tree() -> void:
 func _redraw() -> void:
 	if view!=null: view.refresh()
 
-func _title_accept() -> void:
-	var action: String = title.confirm()
+func _title_accept(action: String) -> void:
 	if action=="opening": _play_music("title")
 	elif action=="play":
-		boss_rush = title.boss_rush
-		weapon = title.phase-22
+		run_settings = RunSettings.new(title.difficulty,title.selected_weapon(),title.boss_rush)
 		selected_stage = 1
 		_begin_run()
 	elif action=="continue" and checkpoint_stage>0:
-		boss_rush = checkpoint_rush
+		run_settings = checkpoint_settings
 		selected_stage = checkpoint_stage
 		_begin_run()
 
@@ -492,9 +450,4 @@ func _quit() -> void:
 	get_tree().quit()
 
 func _begin_run() -> void:
-	_stop_music()
-	loading_target = selected_stage
-	loading_preserve = false
-	loading_remaining_seconds = 0.03
-	loading_image = "loading1"
-	state = "loading"
+	flow.load_stage(self,selected_stage,false,"loading1",0.03)

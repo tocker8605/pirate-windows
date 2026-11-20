@@ -47,7 +47,7 @@ func plan(stage: int, starting_power: int, events: Array, boss_rush: bool = fals
 func _delivery(at: float, kind: int) -> Dictionary:
 	return {"at":at,"kind":kind,"pos":Vector2(rng.randf_range(SPAWN_X.x,SPAWN_X.y),480),"pattern":1074}
 func advance(g: Node) -> void:
-	if g.boss_rush or g.state!="playing" or not g.boss.is_empty(): return
+	if g.run_settings.boss_rush or g.state!="playing" or not g.boss.is_empty(): return
 	while cursor<schedule.size() and float(schedule[cursor].at)<=g.stage_elapsed_seconds+0.000000003:
 		var delivery: Dictionary = schedule[cursor]
 		cursor += 1

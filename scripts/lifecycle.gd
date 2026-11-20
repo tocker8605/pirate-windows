@@ -8,10 +8,7 @@ static func update(g: Node) -> void:
 	if g.hp<=0 and g.death_remaining_seconds==0:
 		g.hp = 0
 		g.death_remaining_seconds = 7.2
-		g.state = "dying"
-		g.beam_remaining_seconds = 0
-		g.beam_render_seconds = 0
-		if g.music_track!="boss01": g._stop_music()
+		g.flow.player_died(g)
 	if g.boss_death_remaining_seconds>0:
 		var previous: float = g.boss_death_remaining_seconds
 		g.boss_death_remaining_seconds = maxf(0,g.boss_death_remaining_seconds-g.delta_seconds)
@@ -39,21 +36,17 @@ static func update(g: Node) -> void:
 static func begin_boss_death(g: Node) -> void:
 	if g.boss_defeated: return
 	g.boss_defeated = true
-	g.score += Rules.score(int(Catalog.for_actor(g.boss).id),g.title.difficulty)
-	g._save_score()
+	g.score += Rules.score(int(Catalog.for_actor(g.boss).id),g.run_settings.difficulty)
+	g._remember_score()
 	g.boss_death_remaining_seconds = 7.2
 	g.scroll_target = 133.33333333333334
-	if g.death_remaining_seconds==0: g.state = "boss_dying"
+	g.flow.boss_died(g)
 
 static func complete_stage(g: Node) -> void:
-	g._stop_music()
-	g._save_score()
+	# Preserve one visual-RNG draw per completion, including the final stage.
 	var image: String = "loading2" if Rng.between(0,1)==0 else "loading3"
 	if g.stage<4:
-		g.loading_image = image
-		g.loading_target = g.stage+1
-		g.loading_preserve = true
-		g.loading_remaining_seconds = 0
-		g.state = "loading"
+		g._remember_score()
+		g.flow.load_stage(g,g.stage+1,true,image)
 	else:
 		g._finish_run()

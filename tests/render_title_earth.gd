@@ -19,7 +19,7 @@ func run() -> void:
 	g.mute = true
 	root.add_child(g)
 	await process_frame
-	g.title.loading_ticks = 0
+	g.title.screen = g.title.RANKING
 	var title: Image = await capture(g)
 	title.save_png("res://preview-title-black-v17.png")
 	check(not g.view.background.visible and title.get_pixel(400,400)==Color.BLACK,"initial title stays black before Space")
@@ -31,13 +31,13 @@ func run() -> void:
 			if title.get_pixel(x*2+1,y*2+1).r<0.99: text_ok = false
 	check(text_ok,"original initial start lettering remains intact")
 	g.title.confirm()
-	for i in range(47): g.title.tick()
+	g.title.advance(1.175)
 	var opening: Image = await capture(g)
 	opening.save_png("res://preview-opening-earth-v17.png")
 	check(g.view.background.visible and g.view.background.material.get_shader_parameter("earth_texture")==g.view.renewal.earth,"Space reveals the exact shared stage4 Earth texture")
 	check(g.view.background.material.get_shader_parameter("stage")==4,"opening uses normal-stage4 Earth shader mode")
-	var source_top: float = 3360.0-g.title.scroll
-	var dx: int = int(round(g.title.scroll/3.5))
+	var source_top: float = 3360.0-g.title.background_scroll()
+	var dx: int = int(round(g.title.background_scroll()/3.5))
 	check(g.view.background.material.get_shader_parameter("source_top")==source_top and g.view.background.position.x==-dx,"opening retains original vertical scroll and horizontal camera drift")
 	check(opening.get_pixel(400,600)==Color.BLACK and opening.get_pixel(60,600)!=Color.BLACK,"black pane reveals Earth from left to right")
 	g._load_stage(4)
@@ -55,11 +55,11 @@ func run() -> void:
 			delta = maxf(delta,maxf(absf(a.r-b.r),maxf(absf(a.g-b.g),absf(a.b-b.b))))
 	check(delta<=1.1/255,"revealed Earth matches stage4 sampled GPU pixels(delta%.5f)"%delta)
 	g._return_title()
-	g.title.loading_ticks = 0
+	g.title.screen = g.title.RANKING
 	g.title.confirm()
-	for i in range(94): g.title.tick()
+	g.title.advance(2.350)
 	await capture(g)
-	check(g.title.phase==11 and g.view.background.visible,"completed slide enters the original menu over Earth")
+	check(g.title.screen==g.title.MAIN and g.title.main_selection==0 and g.view.background.visible,"completed slide enters the original menu over Earth")
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	g.audio.stop_all()
 	await create_timer(0.15).timeout

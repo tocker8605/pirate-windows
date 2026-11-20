@@ -83,11 +83,11 @@ func run() -> void:
 	check(Regions.sample(game.background_y).near==2 and Regions.sample(game.background_y+480).near==2,"the complete viewport reaches region2 after crossing its connector")
 	game._load_stage(4)
 	game.delta_seconds = 0.03
-	game.boss_rush = true
+	game.run_settings = game.run_settings.with_boss_rush(true)
 	game._load_stage(4)
 	game.delta_seconds = 0.03
 	check(game.map_mode==1 and game.background_y==3360,"Boss Rush14 retains its original region1 looping start")
-	game.boss_rush = false
+	game.run_settings = game.run_settings.with_boss_rush(false)
 	game._load_stage(1)
 	game.delta_seconds = 0.03
 	game.events = []

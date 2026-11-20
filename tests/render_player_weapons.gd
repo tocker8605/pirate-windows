@@ -33,9 +33,9 @@ class Gallery extends Node2D:
 			art.draw(self,{"pos":Vector2(180,y),"impact_remaining_seconds":-1},Vector2.ZERO,weapon)
 			# This region must stay empty: impact entities never render a sprite.
 			art.draw(self,{"pos":Vector2(560,y),"impact_remaining_seconds":0.27},Vector2.ZERO,weapon)
-			preview.draw_small(self,Rect2(15,380+(weapon-1)*52,100,42),weapon,12,true)
+			preview.draw_small(self,Rect2(15,380+(weapon-1)*52,100,42),weapon,0.3,true)
 		fx.draw_particles(self,1,2)
-		for weapon in range(1,4):preview.draw_large(self,old,Rect2(130+(weapon-1)*166,380,158,218),weapon,12)
+		for weapon in range(1,4):preview.draw_large(self,old,Rect2(130+(weapon-1)*166,380,158,218),weapon,0.3)
 func check(ok:bool,message:String)->void:
 	checks+=1
 	if ok:print("PASS: "+message)

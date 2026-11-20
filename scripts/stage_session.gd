@@ -6,15 +6,14 @@ static func load_stage(g: Node, number: int, preserve_run: bool = false) -> void
 	var saved_power: int = g.power
 	var saved_score: int = g.score
 	g.stage = clampi(number,1,4)
-	g.events = StageEvents.load_stage(g.stage,g.boss_rush)
+	g.events = StageEvents.load_stage(g.stage,g.run_settings.boss_rush)
 	g.checkpoint_stage = g.stage
-	g.checkpoint_rush = g.boss_rush
+	g.checkpoint_settings = g.run_settings
 	g.death_remaining_seconds = 0
 	g.boss_death_remaining_seconds = 0
 	g.boss_defeated = false
 	g.hit_flash_remaining_seconds = 0
 	g.hit_flash_render_seconds = 0
-	g.state = "playing"
 	g.player = Vector2(Pilot.centred_x(),300)
 	g.slow_movement_active = false
 	g.hp = 100
@@ -41,7 +40,7 @@ static func load_stage(g: Node, number: int, preserve_run: bool = false) -> void
 	g.scroll_target = 66.66666666666667
 	g.map_mode = 1
 	# frmtmrs.fload Case 4 overrides the normal takeoff; Case 14 does not.
-	if g.stage==4 and not g.boss_rush:
+	if g.stage==4 and not g.run_settings.boss_rush:
 		g.map_mode = 2
 		g.scroll_speed = 66.66666666666667
 	g.banner = ""
@@ -54,13 +53,12 @@ static func load_stage(g: Node, number: int, preserve_run: bool = false) -> void
 	g.boss.clear()
 	g.accumulator = 0
 	g.stats = {"spawned":0,"killed":0,"shots":0,"hits":0,"boss_spawned":false,"supply_spawned":0}
-	if g.boss_rush: g._stop_music()
-	else: g._play_music("bgm%02d"%g.stage)
 	if preserve_run:
 		g.hp = saved_hp
 		g.power = saved_power
 		g.score = saved_score
-	g.supply_director.plan(g.stage,g.power,g.events,g.boss_rush)
+	g.supply_director.plan(g.stage,g.power,g.events,g.run_settings.boss_rush)
+	g.flow.play_stage(g)
 	g.presentation.reset(g)
 	g.view.vfx.reset()
 	g.view.renewal.reset_motion()

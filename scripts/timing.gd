@@ -1,7 +1,6 @@
 class_name PirateClock
 extends RefCounted
 const FIXED_STEP_SECONDS: float = 1.0/60.0
-const MENU_STEP_SECONDS: float = 0.025
 const ANIMATION_INTERVAL_SECONDS: float = 0.27
 const ENERGY_INTERVAL_SECONDS: float = 0.12
 var animation_elapsed_seconds: float = 0.0

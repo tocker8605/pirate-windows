@@ -67,7 +67,7 @@ func run() -> void:
 	for i in range(10): screen.navigate(KEY_LEFT)
 	check(screen.cursor==0,"left cursor stops at the first character")
 	check(Screen.suffix(1)=="ST" and Screen.suffix(2)=="ND" and Screen.suffix(3)=="RD" and Screen.suffix(10)=="TH","rank suffixes are correct")
-	check(Screen.score_text(934567)==" 934567" and Screen.score_text(42)=="     42" and Screen.score_text(0)=="      0","scores remove leading zeros and right-align in seven slots")
+	check(Ranking.score_text(934567)==" 934567" and Ranking.score_text(42)=="     42" and Ranking.score_text(0)=="      0","scores remove leading zeros and right-align in seven slots")
 	check(SpriteFont.frame(0,0).region==Rect2(0,0,10,20) and SpriteFont.frame(35,1).region==Rect2(350,20,10,20),"green and white text use the requested atlas rows")
 	check(SpriteFont.frame(SpriteFont.NAME_CURSOR,2).region==Rect2(0,40,10,20) and SpriteFont.frame(SpriteFont.MENU_CURSOR,2).region==Rect2(10,40,10,20),"name and menu cursors have separate bottom-row cells")
 	check(SpriteFont.frame(2,2).region==Rect2(20,40,10,20) and SpriteFont.frame(4,2).region==Rect2(40,40,10,20),"three weapon icons follow both cursor cells")
@@ -80,12 +80,12 @@ func run() -> void:
 	g.set_process(false)
 	g._load_stage(2)
 	g.events = []
-	g.weapon = 3
-	g.title.difficulty = 4
+	g.run_settings = g.run_settings.with_weapon(3)
+	g.run_settings = g.run_settings.with_difficulty(4)
 	g.score = 1234567
 	g.hp = 0
 	g.death_remaining_seconds = 1.0/60
-	g.state = "dying"
+	g.flow.state = "dying"
 	g._tick(Vector2.ZERO,false,false,false)
 	check(g.state=="ranking_entry" and g.last_score==1234567 and g.score==0,"end of game-over animation enters name registration with the final score")
 	check(g.ranking_entry.record=={"score":1234567,"weapon":3,"level":4,"mission":2},"registration snapshots the run weapon, difficulty and mission")
@@ -96,9 +96,9 @@ func run() -> void:
 	key(g,KEY_SPACE,true)
 	check(g.state=="ranking_entry","held firing/confirm keys cannot auto-submit a name")
 	key(g,KEY_ENTER)
-	check(g.state=="menu" and g.title.phase==0 and g.rankings.entries[0].name=="TOCKER" and g.last_score==1234567,"submission saves the name and returns to the initial black title")
+	check(g.state=="menu" and g.title.screen==g.title.RANKING and g.rankings.entries[0].name=="TOCKER" and g.last_score==1234567,"submission saves the name and returns to the initial black title")
 	key(g,KEY_SPACE)
-	check(g.title.phase==0,"confirm key cannot also skip the initial title")
+	check(g.title.screen==g.title.RANKING,"confirm key cannot also skip the initial title")
 	g._load_stage(4)
 	g.events = []
 	g.score = 7654321
@@ -106,12 +106,12 @@ func run() -> void:
 	check(g.state=="ranking_entry" and g.ranking_entry.record.mission==4 and g.ranking_entry.record.score==7654321,"fourth-boss clear opens registration instead of discarding the run")
 	for code in Screen.CONFIRM_KEYS:
 		g.ranking_entry.begin(0,result(8000000+code%100))
-		g.state = "ranking_entry"
+		g.flow.state = "ranking_entry"
 		key(g,code)
 		check(g.state=="menu" and g.rankings.entries.any(func(e): return e.name=="      "),"confirm key%s accepts a six-slot name including blanks"%code)
 	for code in Screen.NEXT_KEYS:
 		g.ranking_entry.begin(0,result(8500000+code))
-		g.state = "ranking_entry"
+		g.flow.state = "ranking_entry"
 		key(g,code,true)
 		check(g.ranking_entry.cursor==0 and g.state=="ranking_entry","held next key%s cannot skip blank slots"%code)
 		for position in range(5):

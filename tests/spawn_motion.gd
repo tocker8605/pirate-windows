@@ -84,7 +84,7 @@ func run()->void:
 	var actor=g.enemies.at(0)
 	var position:Vector2=actor.pos
 	var velocity:Vector2=actor.velocity
-	g.state="paused"
+	g.flow.state ="paused"
 	for i in range(30):g._tick(Vector2.ZERO,false,false,false,Clock.FIXED_STEP_SECONDS)
 	check(actor.pos==position and actor.velocity==velocity,"pause freezes both position and velocity")
 	g._load_stage(2)

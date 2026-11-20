@@ -19,7 +19,7 @@ func run() -> void:
 	await process_frame
 	g.set_process(false)
 	for difficulty in range(1,6):
-		g.title.difficulty = difficulty
+		g.run_settings = g.run_settings.with_difficulty(difficulty)
 		for kind in range(1,9):
 			g._load_stage(1)
 			g.delta_seconds = 0.03
@@ -30,7 +30,7 @@ func run() -> void:
 			check(g.hp==100-[12,18,24,30,36][difficulty-1] and is_equal_approx(g.invulnerability_seconds,1.5) and g.bullets.is_empty(),"difficulty%d projectile%d uniform damage with immunity and removal"%[difficulty,kind])
 		for stage in range(1,5):
 			for rush in [false,true]:
-				g.boss_rush = rush
+				g.run_settings = g.run_settings.with_boss_rush(rush)
 				g._load_stage(stage)
 				g.delta_seconds = 0.03
 				g.events = []
@@ -49,9 +49,9 @@ func run() -> void:
 				check(g.score==123+reward,"stage%d repeated death handling cannot duplicate reward"%stage)
 				g._complete_stage()
 				check((g.score==123+reward if stage<4 else g.last_score==123+reward),"stage%d transition never adds a second reward"%stage)
-	g.boss_rush = false
+	g.run_settings = g.run_settings.with_boss_rush(false)
 	g._load_stage(1)
-	g.title.difficulty = 3
+	g.run_settings = g.run_settings.with_difficulty(3)
 	g.delta_seconds = 0.03
 	g.boss = Catalog.create(91,Vector2(200,100))
 	g.boss.hp = 1
@@ -61,11 +61,11 @@ func run() -> void:
 	check(g.boss.hp<=0 and g.score==9000 and g.boss_defeated,"beam lethal hit also rewards immediately with difficulty scaling")
 	var parts_by_stage: Dictionary = {1:[101,102],2:[111,112,113],3:[121,122,123,124],4:[131,132,133]}
 	for difficulty in range(1,6):
-		g.title.difficulty = difficulty
+		g.run_settings = g.run_settings.with_difficulty(difficulty)
 		for stage in range(1,5):
 			for rush in [false,true]:
 				for already_killed in [false,true]:
-					g.boss_rush = rush
+					g.run_settings = g.run_settings.with_boss_rush(rush)
 					g._load_stage(stage)
 					g.events = []
 					g.invulnerability_seconds = 300
@@ -83,11 +83,11 @@ func run() -> void:
 					g._tick(Vector2.ZERO,false,false,false)
 					check(g.score==expected,"repeated boss cleanup cannot award automatic part points")
 	var part_scores: Dictionary = {101:500,102:500,111:750,112:750,113:1000,121:1200,122:1200,123:1200,124:1200,131:1500,132:1500,133:2000}
-	g.boss_rush = false
+	g.run_settings = g.run_settings.with_boss_rush(false)
 	g._load_stage(1)
 	for kind in part_scores:
 		for difficulty in range(1,6):
-			g.title.difficulty = difficulty
+			g.run_settings = g.run_settings.with_difficulty(difficulty)
 			g.score = 0
 			var part: Dictionary = Catalog.create(kind,Vector2(100,100))
 			part.hp = 0

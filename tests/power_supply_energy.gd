@@ -17,7 +17,7 @@ func run()->void:
 	await process_frame
 	g.set_process(false)
 	for rush in [false,true]:
-		g.boss_rush=rush
+		g.run_settings = g.run_settings.with_boss_rush(rush)
 		for initial in [0.0,20.0,33.3,50.0,90.0,100.0]:
 			g._load_stage(1)
 			g.energy=initial

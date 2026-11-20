@@ -16,6 +16,14 @@ func begin(index: int, result: Dictionary) -> void:
 	cursor = 0
 	elapsed = 0
 	save_failed = false
+func handle_key(event: InputEventKey) -> bool:
+	if not event.pressed: return false
+	if event.keycode in CONFIRM_KEYS: return not event.echo
+	if event.keycode in NEXT_KEYS: return not event.echo and advance_cursor()
+	navigate(event.keycode)
+	return false
+func advance(seconds: float) -> void:
+	elapsed += maxf(0,seconds)
 func advance_cursor() -> bool:
 	if cursor==Ranking.NAME_LENGTH-1: return true
 	cursor += 1
@@ -35,13 +43,11 @@ static func suffix(number: int) -> String:
 		2: return "ND"
 		3: return "RD"
 	return "TH"
-static func score_text(points: int) -> String:
-	return str(clampi(points,0,Ranking.MAX_SCORE)).lpad(7," ")
 static func row(canvas: Node2D, y: float, number: int, result: Dictionary, name_override: String = "", active_cursor: int = -1) -> void:
 	var digits: String = str(number)
 	SpriteFont.text(canvas,Vector2(15,y),digits,true)
 	SpriteFont.text(canvas,Vector2(15+digits.length()*10,y),suffix(number))
-	SpriteFont.text(canvas,Vector2(65,y),score_text(int(result.get("score",0))),true)
+	SpriteFont.text(canvas,Vector2(65,y),Ranking.score_text(int(result.get("score",0))),true)
 	if active_cursor>=0: SpriteFont.icon(canvas,Vector2(145+active_cursor*10,y),SpriteFont.NAME_CURSOR)
 	SpriteFont.text(canvas,Vector2(145,y),str(result.get("name","")) if name_override.is_empty() else name_override)
 	if result.has("weapon"): SpriteFont.weapon_icon(canvas,Vector2(215,y),int(result.weapon))

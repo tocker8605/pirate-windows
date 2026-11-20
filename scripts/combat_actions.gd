@@ -50,9 +50,9 @@ static func update_bullets(g: Node) -> void:
 			g.shield_contacts.append(bullet.pos)
 			var shield_cost: float = 0.06 if g.boss.is_empty() else 0.12
 			g.shield_remaining_seconds = maxf(0,g.shield_remaining_seconds-shield_cost)
-			if g.boss.is_empty(): g.score += 25*g.title.difficulty
+			if g.boss.is_empty(): g.score += 25*g.run_settings.difficulty
 		elif g.hp>0 and g.invulnerability_seconds==0 and Combat.hurts_player(g.player,bullet.pos):
-			g._hurt_player(Combat.incoming_damage(g.title.difficulty))
+			g._hurt_player(Combat.incoming_damage(g.run_settings.difficulty))
 			bullet.alive = false
 	for bullet in g.bullets:
 		if not bullet.alive: g.bullets.remove(bullet.entity_id)
@@ -68,9 +68,9 @@ static func hurt_player(g: Node, damage: float) -> void:
 static func resolve_body_contacts(g: Node) -> void:
 	if g.hp<=0 or g.invulnerability_seconds>0 or g.death_remaining_seconds>0: return
 	if Combat.touches_player(g.player,g.boss):
-		g._hurt_player(Combat.incoming_damage(g.title.difficulty))
+		g._hurt_player(Combat.incoming_damage(g.run_settings.difficulty))
 		return
 	for e in g.enemies:
 		if Combat.touches_player(g.player,e):
-			g._hurt_player(Combat.incoming_damage(g.title.difficulty))
+			g._hurt_player(Combat.incoming_damage(g.run_settings.difficulty))
 			return

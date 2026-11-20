@@ -37,10 +37,10 @@ func run() -> void:
 	check(game.state == "menu", "title screen loads")
 	check(not game.events.is_empty(), "authored stage-one events imported")
 	key(game,KEY_SPACE)
-	for i in range(94): game.title.tick()
+	game.title.advance(2.350)
 	key(game,KEY_SPACE)
 	for i in range(2): key(game,KEY_DOWN)
-	check(game.title.phase==24,"original title weapon selection handles input")
+	check(game.title.screen==game.title.SETTINGS and game.title.settings_selection==2,"original title weapon selection handles input")
 	key(game,KEY_SPACE)
 	game._tick(Vector2.ZERO,false,false,false,0.03)
 	game._tick(Vector2.ZERO,false,false,false,0.03)
@@ -89,7 +89,7 @@ func run() -> void:
 	for w in range(1,4):
 		game.start_game()
 		game.delta_seconds = 0.03
-		game.weapon = w
+		game.run_settings = game.run_settings.with_weapon(w)
 		var total: int = game.events.size()
 		var spawns: int = game.events.filter(func(e): return e.action=="spawn" and int(e.definition_id)!=91).size()
 		for i in range(ceili((float(game.events[-1].at)+2)/0.03)):
@@ -128,7 +128,7 @@ func run() -> void:
 	check(game.state=="dying" and is_equal_approx(game.death_remaining_seconds,7.17), "fatal damage starts original game-over explosion sequence")
 	for i in range(239): game._tick(Vector2.ZERO,false,false,false,0.03)
 	key(game,KEY_SPACE)
-	for i in range(94): game.title.tick()
+	game.title.advance(2.350)
 	key(game,KEY_DOWN)
 	key(game,KEY_DOWN)
 	key(game,KEY_SPACE)

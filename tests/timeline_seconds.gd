@@ -59,7 +59,7 @@ func run() -> void:
 	g._tick(Vector2.ZERO,false,false,false,Clock.FIXED_STEP_SECONDS)
 	check(g.event_cursor==1 and is_equal_approx(g.stage_elapsed_seconds,2.0/60),"25ms event runs on first native tick after its scheduled time")
 	var elapsed: float = g.stage_elapsed_seconds
-	g.state = "paused"
+	g.flow.state = "paused"
 	for i in range(60): g._tick(Vector2.ZERO,false,false,false,Clock.FIXED_STEP_SECONDS)
 	check(g.stage_elapsed_seconds==elapsed,"pause does not advance stage seconds")
 	g._load_stage(2)

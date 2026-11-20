@@ -34,10 +34,10 @@ func run() -> void:
 	var snapshot: String = var_to_str(fx.particles)
 	fx.observe(game)
 	check(var_to_str(fx.particles)==snapshot,"redrawing or pausing on the same simulation tick cannot emit or age particles")
-	game.state = "paused"
+	game.flow.state = "paused"
 	game._redraw()
 	check(var_to_str(fx.particles)==snapshot,"paused refresh freezes all particle lifetimes")
-	game.state = "playing"
+	game.flow.state = "playing"
 	game.frame += 1
 	fx.observe(game)
 	check(fx.particles[0].p!=str_to_var(snapshot)[0].p,"particles integrate velocity on the next simulation tick")
@@ -57,10 +57,10 @@ func run() -> void:
 	fx.observe(game)
 	check(fx.particles.is_empty(),"expired particles are reclaimed without retaining a dead emitter")
 	fx.burst(Vector2.ZERO,10,VFX.HOT)
-	game.state = "loading"
+	game.flow.state = "loading"
 	fx.observe(game)
 	check(fx.particles.is_empty() and fx.blasts.is_empty() and fx.impacts.is_empty(),"loading clears particles and stale source references")
-	game.state = "playing"
+	game.flow.state = "playing"
 	fx.burst(Vector2.ZERO,10,VFX.HOT)
 	game._load_stage(1)
 	game.delta_seconds = 0.03

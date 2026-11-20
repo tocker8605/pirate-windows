@@ -18,15 +18,15 @@ func check(ok: bool, message: String) -> void:
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var title = Title.new()
-	title.phase = 11
+	title.screen = title.MAIN
 	title.confirm()
-	check(title.phase==22,"settings opens on difficulty with no speed menu row")
+	check(title.screen==title.SETTINGS and title.settings_selection==0,"settings opens on difficulty with no speed menu row")
 	for i in range(20): title.navigate(KEY_UP)
-	check(title.phase==22,"up navigation cannot select a hidden speed setting")
+	check(title.screen==title.SETTINGS and title.settings_selection==0,"up navigation cannot select a hidden speed setting")
 	title.navigate(KEY_RIGHT)
 	check(title.difficulty==4,"difficulty still changes independently of fixed speed")
 	for i in range(3): title.navigate(KEY_DOWN)
-	check(title.phase==25 and title.confirm()=="play","all three weapons remain reachable")
+	check(title.screen==title.SETTINGS and title.settings_selection==3 and title.confirm()=="play","all three weapons remain reachable")
 	for row in [[3,2],[7,12],[11,7]]:
 		var actor = {"kind":row[0],"pos":Vector2(90,101),"velocity":Vector2.ZERO}
 		var shots: Array = Fire.burst(actor,Vector2(200,400),row[1],0)

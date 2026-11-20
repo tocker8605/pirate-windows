@@ -3,7 +3,7 @@ const Weapons = preload("res://scripts/player_weapons.gd")
 const Clock = preload("res://scripts/timing.gd")
 static func fire(g: Node) -> void:
 	if g.shots.size()+Weapons.volley_count(g.power)>Weapons.active_limit(): return
-	var volley: Array = Weapons.volley(g.player,g.weapon,g.power)
+	var volley: Array = Weapons.volley(g.player,g.run_settings.weapon,g.power)
 	for shot in volley:
 		g.shots.append(shot)
 		g.stats.shots += 1

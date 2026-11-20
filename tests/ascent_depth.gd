@@ -62,7 +62,7 @@ func run() -> void:
 	g.delta_seconds = 0.03
 	g.events = []
 	g.clock = Clock.new()
-	g.title.difficulty = 5
+	g.run_settings = g.run_settings.with_difficulty(5)
 	g.player = Vector2(100,267)
 	e = actor(260)
 	e.velocity = (Vector2(0,-10))/0.03

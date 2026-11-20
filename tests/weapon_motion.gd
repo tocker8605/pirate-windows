@@ -89,7 +89,7 @@ func _initialize() -> void:
 	check(Rng.state==0x50000,"all trajectory legends preserve gameplay RNG state")
 	for i in range(20): preview.trajectory_paths(3,7)
 	check(preview.path_cache.size()==6,"legend paths are cached rather than simulated every draw")
-	check(Preview.displayed_power(12)==4 and Preview.displayed_power(112)==7,"large legend alternates power4 and7 examples")
+	check(Preview.displayed_power(0.3)==4 and Preview.displayed_power(2.8)==7,"large legend alternates power4 and7 examples")
 	for weapon in [2]:
 		var straight: bool = true
 		for path in preview.trajectory_paths(weapon):

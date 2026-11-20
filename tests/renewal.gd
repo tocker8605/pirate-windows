@@ -16,7 +16,7 @@ func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	for speed in range(1,6):
 		check(is_equal_approx(Clock.FIXED_STEP_SECONDS,1.0/60.0),"speed %d uses native60Hz gameplay interval"%speed)
-		check(is_equal_approx(Clock.MENU_STEP_SECONDS,0.025),"speed %d keeps original menu-animation interval"%speed)
+		check(is_equal_approx(Game.Title.OPENING_DURATION,2.35),"speed %d keeps the original opening duration in seconds"%speed)
 	var preview = Preview.new()
 	for weapon in range(1,4):
 		Rng.state = 0x50000
@@ -41,7 +41,7 @@ func run() -> void:
 		for i in range(render_rate): game._process(1.0/render_rate)
 		game.automatic = false
 		check(game.frame==60,"one second produces60 gameplay ticks at %d render frames/sec"%render_rate)
-	game.state = "paused"
+	game.flow.state = "paused"
 	var distance: float = game.scenery_distance
 	game.automatic = true
 	game._process(1.0)

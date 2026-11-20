@@ -37,7 +37,7 @@ func run() -> void:
 	await process_frame
 	g.set_process(false)
 	g._load_stage(1)
-	g.weapon = 3
+	g.run_settings = g.run_settings.with_weapon(3)
 	g.power = 7
 	g.energy = 100
 	for i in range(Weapons.active_limit()-3): g.shots.append({"pos":Vector2(100,100),"kind":1,"alive":true,"impact_remaining_seconds":-1})
