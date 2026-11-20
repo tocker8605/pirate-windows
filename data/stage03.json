@@ -187,11 +187,6 @@
     {"at": 49.3, "action": "spawn", "definition_id": 1, "position": [310, -50], "pattern": 1012},
     {"at": 49.7, "action": "spawn", "definition_id": 1, "position": [175, -50], "pattern": 1012},
 
-    {"comment": "delta_fighter 좌상"},
-    {"at": 50.4, "action": "spawn", "definition_id": 7, "position": [50, -50], "pattern": 1051},
-    {"at": 50.8, "action": "spawn", "definition_id": 7, "position": [60, -50], "pattern": 1051},
-    {"at": 51.2, "action": "spawn", "definition_id": 7, "position": [70, -50], "pattern": 1051},
-
     {"comment": "wing 좌하"},
     {"at": 48.6, "action": "spawn", "definition_id": 2, "position": [-50, 220], "pattern": 1053},
     {"at": 49.0, "action": "spawn", "definition_id": 11, "position": [-50, 222.5], "pattern": 1053},
@@ -201,11 +196,16 @@
     {"at": 50.6, "action": "spawn", "definition_id": 11, "position": [-50, 232.5], "pattern": 1053},
     {"at": 51.0, "action": "spawn", "definition_id": 2, "position": [-50, 235], "pattern": 1053},
 
+    {"comment": "delta_fighter 좌상"},
+    {"at": 50.4, "action": "spawn", "definition_id": 7, "position": [50, -50], "pattern": 1051},
+    {"at": 50.8, "action": "spawn", "definition_id": 7, "position": [60, -50], "pattern": 1051},
+    {"at": 51.2, "action": "spawn", "definition_id": 7, "position": [70, -50], "pattern": 1051},
+
     {"comment": "wing 좌상"},
-    {"at": 51.3, "action": "spawn", "definition_id": 2, "position": [75, -50], "pattern": 1051},
-    {"at": 51.7, "action": "spawn", "definition_id": 2, "position": [87.5, -50], "pattern": 1051},
-    {"at": 52.1, "action": "spawn", "definition_id": 2, "position": [100, -50], "pattern": 1051},
-    {"at": 52.5, "action": "spawn", "definition_id": 2, "position": [112.5, -50], "pattern": 1051},
+    {"at": 51.6, "action": "spawn", "definition_id": 2, "position": [75, -50], "pattern": 1051},
+    {"at": 52, "action": "spawn", "definition_id": 2, "position": [87.5, -50], "pattern": 1051},
+    {"at": 52.4, "action": "spawn", "definition_id": 2, "position": [100, -50], "pattern": 1051},
+    {"at": 52.8, "action": "spawn", "definition_id": 2, "position": [112.5, -50], "pattern": 1051},
 
     {"comment": "folding_wing_fighter 우상"},
     {"at": 52, "action": "spawn", "definition_id": 8, "position": [400, 25], "pattern": 1042},
@@ -219,10 +219,10 @@
     {"at": 54.8, "action": "spawn", "definition_id": 7, "position": [280, -50], "pattern": 1052},
 
     {"comment": "wing 우상"},
-    {"at": 55.8, "action": "spawn", "definition_id": 2, "position": [275, -50], "pattern": 1052},
-    {"at": 56.2, "action": "spawn", "definition_id": 2, "position": [262.5, -50], "pattern": 1052},
-    {"at": 56.6, "action": "spawn", "definition_id": 2, "position": [250, -50], "pattern": 1052},
-    {"at": 57, "action": "spawn", "definition_id": 2, "position": [237.5, -50], "pattern": 1052},
+    {"at": 55.2, "action": "spawn", "definition_id": 2, "position": [275, -50], "pattern": 1052},
+    {"at": 55.6, "action": "spawn", "definition_id": 2, "position": [262.5, -50], "pattern": 1052},
+    {"at": 56, "action": "spawn", "definition_id": 2, "position": [250, -50], "pattern": 1052},
+    {"at": 56.4, "action": "spawn", "definition_id": 2, "position": [237.5, -50], "pattern": 1052},
 
     {"comment": "folding_wing_fighter 좌상"},
     {"at": 52.8, "action": "spawn", "definition_id": 8, "position": [-50, 25], "pattern": 1041},
