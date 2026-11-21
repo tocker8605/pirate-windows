@@ -1,5 +1,7 @@
 extends Node2D
 ## Fixed60Hz orchestration. Gameplay time is seconds and velocity is pixels/second.
+const Campaign = preload("res://scripts/campaign_rules.gd")
+const Ground = preload("res://scripts/ground_turret.gd")
 const Art = preload("res://scripts/art.gd")
 const Movement = preload("res://scripts/movement.gd")
 const EnemyFire = preload("res://scripts/enemy_fire.gd")
@@ -103,6 +105,7 @@ var shots = Entities.new()
 var bullets = Entities.new()
 var items = Entities.new()
 var explosions: Array = []
+var ground_wrecks: Array = []
 var boss: Dictionary = {}
 var mute: bool = false
 var automatic: bool = true
@@ -125,7 +128,7 @@ func _ready() -> void:
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--preview="): preview_path = arg.trim_prefix("--preview=")
 		if arg.begins_with("--preview-mode="): preview_mode = arg.trim_prefix("--preview-mode=")
-		if arg.begins_with("--preview-stage="): preview_stage = clampi(int(arg.trim_prefix("--preview-stage=")),1,4)
+		if arg.begins_with("--preview-stage="): preview_stage = clampi(int(arg.trim_prefix("--preview-stage=")),1,Campaign.stage_count())
 	if not preview_path.is_empty(): await Capture.run(self)
 
 func start_game() -> void:
@@ -272,7 +275,7 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 	_read_events()
 	supply_director.advance(self)
 	for e in enemies:
-		Movement.steer(e,player,boss.get("pos",Vector2(200,-100)),delta_seconds)
+		if not Ground.active(e): Movement.steer(e,player,boss.get("pos",Vector2(200,-100)),delta_seconds)
 	_boss_steer()
 	for e in enemies:
 		if OrbMotion.active(e): OrbMotion.prepare(e,boss)
@@ -280,6 +283,7 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 		BulletPool.body(self,delta_seconds)
 		for e in enemies: _enemy_fire(e,delta_seconds)
 	_update_scenery()
+	Ground.advance_wrecks(self)
 	for blast in explosions:
 		if blast.get("pending_sound",false):
 			_sound("bang-e")
@@ -289,7 +293,8 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 	_update_boss()
 	for e in enemies:
 		var previous_y: float = e.pos.y
-		if CoreMotion.active(e): CoreMotion.advance(e,seconds)
+		if Ground.active(e): Ground.advance(e,self,seconds)
+		elif CoreMotion.active(e): CoreMotion.advance(e,seconds)
 		elif OrbMotion.active(e): OrbMotion.advance(e,seconds)
 		else: e.pos += Movement.displacement(e.velocity,seconds)
 		Boss.attach(e,boss)
@@ -393,6 +398,7 @@ func _resolve_body_contacts() -> void:
 func _destroy_enemy(e: Dictionary) -> void:
 	var kind: int = int(e.kind)
 	_sound(EnemyRules.death_sound(kind))
+	if Ground.active(e): Ground.wreck(self,e)
 	if not e.get("auto_destroyed",false): score += EnemyRules.score(kind,run_settings.difficulty)
 	var item: Dictionary = EnemyRules.drop(e,run_settings.boss_rush)
 	if not item.is_empty(): _drop_item(item)

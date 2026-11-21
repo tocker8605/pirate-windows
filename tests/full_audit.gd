@@ -134,14 +134,14 @@ func run() -> void:
 	game._load_stage(2,true)
 	game.delta_seconds = 0.03
 	check(game.clock.animation_elapsed_seconds==4,"visual animation clock remains independent of stage loading and actor movement")
-	for sheet in ["enemy_sm","picsmo"]:
+	for sheet in ["picair","picsmo"]:
 		var clipped: Image = game.art.sprite(sheet,Rect2i(-50,0,50,50),Vector2i(-50,50)).get_image()
 		check(clipped.get_pixel(0,0).a==0,"GDI out-of-sheet region clips transparently for "+sheet)
 	var right: Image = game.art.enemy(8,Vector2(2,0)/0.03,0).get_image()
-	var expected: Image = game.art.sprite("enemy_sm",Rect2i(1800,0,50,50),Vector2i(1800,50)).get_image()
+	var expected: Image = load("res://assets/enemies/classic/folding_wing_fighter.png").get_image().get_region(Rect2i(100,0,50,50))
 	check(right.get_data()==expected.get_data(),"type 8 right-bank sprite restored to sheet X=1800")
 	right = game.art.enemy(7,Vector2(0,1),0).get_image()
-	expected = game.art.sprite("enemy_sm",Rect2i(1550,0,50,50),Vector2i(1550,50)).get_image()
+	expected = load("res://assets/enemies/classic/delta_fighter.png").get_image().get_region(Rect2i(150,0,50,50))
 	check(right.get_data()==expected.get_data(),"type 7 downward orientation restored to sheet X=1550")
 	game.audio.effect.volume_db = -80
 	game.audio.sound("get",false)

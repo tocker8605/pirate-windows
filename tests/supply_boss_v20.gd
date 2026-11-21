@@ -85,8 +85,8 @@ func run() -> void:
 	for i in range(60): g._process(1.0/60.0)
 	g.automatic = false
 	check(g.frame==60 and is_equal_approx(g.stage_elapsed_seconds,60*Clock.FIXED_STEP_SECONDS),"real one-second gameplay stays at native60Hz and fixed level1 speed")
-	check(g.view.renewal.enemies.resource_path.ends_with("enemies-v18.png"),"v18 regular enemy atlas is active")
-	check(g.view.renewal.bosses.resource_path.ends_with("bosses-v15.png"),"existing mecha boss artwork is retained")
+	check(g.view.renewal.enemy_texture(1).resource_path.ends_with("crescent_scout.png"),"standalone regular enemy texture is active")
+	check(g.view.renewal.enemy_texture(94).resource_path.ends_with("stage04/body.png"),"existing mecha boss artwork is retained")
 	g.audio.stop_all()
 	await create_timer(0.15).timeout
 	g.queue_free()

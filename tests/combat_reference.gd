@@ -85,7 +85,8 @@ func run() -> void:
 	for kind in [1,2,4,6,7,10,21,22,41,121,122,131,132]:
 		var actor: Dictionary = enemy(kind,Vector2(100,100))
 		var bounded: bool = true
-		for attack in ["aim","plasma"]:
+		for channel in RuntimeFire.Catalog.definition(kind).fire_channels:
+			var attack: String=channel.name
 			var close_shots: Array = RuntimeFire.emit(actor,Vector2(100.01,80),attack)
 			var far_shots: Array = RuntimeFire.emit(actor,actor.pos+(Vector2(100.01,80)-actor.pos)*10,attack)
 			bounded = bounded and close_shots.size()>0 and close_shots.size()==far_shots.size()

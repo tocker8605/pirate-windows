@@ -71,7 +71,7 @@ func run() -> void:
 	e = part(111)
 	b.velocity.y = (3/0.03)
 	Boss.attach(e,b)
-	check(e.pos==Vector2(226,160),"stage 2 side weapon follows body and vertical speed")
+	check(e.pos==Vector2(230,185),"stage 2 side weapon stays on its fixed hinge despite vertical speed")
 	e = part(133)
 	e.hp = 199
 	b = body(4)
@@ -109,7 +109,7 @@ func run() -> void:
 	game.hp = 61
 	game.power = 4
 	var cumulative: int = 0
-	for stage in range(1,5):
+	for stage in range(1,6):
 		game.boss = body(stage)
 		game.boss.hp = 3
 		game.enemies.clear()
@@ -118,19 +118,19 @@ func run() -> void:
 		game.events = []
 		game.shots.replace_all([{"pos":Vector2(200,145),"kind":1,"alive":true,"impact_remaining_seconds":-1}])
 		game._tick(Vector2.ZERO,false,false,false,0.03)
-		cumulative += [0,3000,5000,7000,10000][stage]*game.run_settings.difficulty
+		cumulative += [0,3000,5000,7000,10000,0][stage]*game.run_settings.difficulty
 		check(game.score==cumulative,"stage %d lethal hit immediately grants boss score"%stage)
 		game._tick(Vector2.ZERO,false,false,false,0.03)
 		check(game.state=="boss_dying" and is_equal_approx(game.boss_death_remaining_seconds,7.17),"campaign stage %d starts original boss destruction"%stage)
 		for i in range(239): game._tick(Vector2.ZERO,false,false,false,0.03)
-		if stage<4:
+		if stage<5:
 			check(game.state=="loading" and game.score==cumulative,"stage %d stage transition preserves already-awarded boss score"%stage)
 			game._tick(Vector2.ZERO,false,false,false,0.03)
 			check(game.stage==stage+1 and game.state=="playing","campaign advances %d -> %d after original loading artwork"%[stage,stage+1])
 			check(game.hp==61 and game.power==4 and game.run_settings.weapon==2 and game.score==cumulative and game.energy==100,"campaign retains original carried state")
 			check(game.enemies.is_empty() and game.shots.is_empty() and game.bullets.is_empty() and game.beam_render_seconds==0,"stage load removes stale entities and effects")
 		else:
-			check(game.stage==4 and game.state=="ranking_entry" and game.last_score==25000*game.run_settings.difficulty and game.score==0,"final boss offers name registration with completed campaign score")
+			check(game.stage==5 and game.state=="ranking_entry" and game.last_score==25000*game.run_settings.difficulty and game.score==0,"final boss offers name registration with completed campaign score")
 	# Stage selection starts a fresh practice run, rather than keeping campaign state.
 	game.selected_stage = 3
 	game.start_game()

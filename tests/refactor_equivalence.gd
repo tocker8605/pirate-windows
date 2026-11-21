@@ -1,85 +1,61 @@
 extends SceneTree
-const Game = preload("res://scripts/game.gd")
-const Clock = preload("res://scripts/timing.gd")
-const Rng = preload("res://scripts/random.gd")
-class ReplayGame extends "res://scripts/game.gd":
-	const ReplayTimeline=preload("res://scripts/stage_events.gd")
-	var timelines: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/motion_timelines_v24_43.json"))
-	func _load_stage(number: int, preserve_run: bool = false) -> void:
-		super._load_stage(number,preserve_run)
-		events=ReplayTimeline.sorted_events(timelines["stage%02d"%(stage+10 if boss_rush else stage)].events)
-		supply_director.rng.seed=243200+stage
-		supply_director.plan(stage,power,events,boss_rush)
-
-var records: Array = []
-var checks := 0
-var failures := 0
-func close(a: Variant,b: Variant,tolerance: float = 0.02) -> bool:
-	if a is Dictionary:
-		if a.size()!=b.size(): return false
-		for key in a:
-			if not b.has(key) or not close(a[key],b[key],tolerance): return false
-		return true
-	if a is Array:
-		if a.size()!=b.size(): return false
-		for i in range(a.size()):
-			if not close(a[i],b[i],tolerance): return false
-		return true
-	if a is bool: return a==b
-	return absf(float(a)-float(b))<=tolerance
-func equivalent(a: Array,b: Array) -> bool:
-	# Score, combat counters, bossHP and gameplay RNG must match exactly.
-	for i in [0,1,2,6,7,13,14]:
-		if not close(a[i],b[i],0): return false
-	for i in [3,4,5,8,9,10,12]:
-		if not close(a[i],b[i]): return false
-	if a[11][0]==b[11][0]: return close(a[11],b[11])
-	# Conversion can put a single already-invisible projectile on either side of
-	# the strict y480 removal boundary for one native tick. No on-screen delta.
-	var extra: float = b[11][0]-a[11][0]
-	return absf(extra)==1 and absf((b[11][2]-a[11][2])*extra-480.0)<0.02 and (b[11][1]-a[11][1])*extra>=0 and (b[11][1]-a[11][1])*extra<=400
-
-func _initialize() -> void: call_deferred("run")
-func summary(collection: Variant) -> Array:
-	var value := Vector2.ZERO
-	var velocity := Vector2.ZERO
-	var hp := 0.0
-	for e in collection:
-		value += e.pos
-		velocity += e.get("velocity",Vector2.ZERO)
-		hp += e.get("hp",0)
-	return [collection.size(),value.x,value.y,velocity.x,velocity.y,hp]
-func run() -> void:
-	var g = ReplayGame.new()
-	g.automatic = false
-	g.mute = true
-	root.add_child(g)
-	await process_frame
-	g.set_process(false)
-	for rush in [false,true]:
-		for stage in range(1,5):
-			g.run_settings = g.run_settings.with_boss_rush(rush)
-			g.supply_director.rng.seed = 243200+stage
-			g._load_stage(stage)
-			g.run_settings = g.run_settings.with_weapon(2)
-			g.power = 7
-			Rng.state = 0x50000
-			for tick in range(600 if rush else 7200):
-				g.invulnerability_seconds = 10000
-				g.hp = 100
-				g._tick(Vector2(sin(tick*0.012),0),true,tick%300==0,tick%500==0,Clock.FIXED_STEP_SECONDS)
-				if tick%60==59:
-					records.append([rush,stage,tick,g.player.x,g.player.y,g.energy,g.score,g.stats.duplicate(),g.background_y,g.scroll_speed,summary(g.enemies),summary(g.bullets),summary(g.shots),g.boss.get("hp",0),Rng.state])
-	var reference: Array = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/motion_replay_v24_43.json"))
-	# v24.43 continuous movement uses frozen authoring inputs and independently checked physics.
-	for i in range(reference.size()):
-		checks += 1
-		if not equivalent(reference[i],records[i]):
-			failures += 1
-			if failures<=5: push_error("FAIL: replay checkpoint%d differs: %s / %s"%[i,reference[i],records[i]])
-	print("RESULT: %d checks, %d failures"%[checks,failures])
-	g.audio.stop_all()
-	g.queue_free()
-	await process_frame
-	await create_timer(0.2).timeout
-	quit(0 if failures==0 else 1)
+const Catalog=preload("res://scripts/enemy_catalog.gd")
+const Fire=preload("res://scripts/enemy_fire.gd")
+const Boss=preload("res://scripts/boss.gd")
+const Rng=preload("res://scripts/random.gd")
+var rows: Array=[]
+var checks: int=0
+var failures: int=0
+func pack_volley(owner: int, scenario: int, tick: int, shots: Array) -> void:
+    for s in shots: rows.append([owner,scenario,tick,s.kind,s.pos.x,s.pos.y,s.velocity.x,s.velocity.y])
+func _initialize() -> void:
+    var reference: Array=JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/attacks_before_structure_refactor.json"))
+    var original_ids: Dictionary={}
+    for row in reference:original_ids[int(row[0])]=true
+    for kind in Catalog.ids():
+        if not original_ids.has(kind):continue
+        var d: Dictionary=Catalog.definition(kind)
+        if d.role not in ["enemy","part"]:continue
+        for scenario in range(3):
+            Rng.state=0x50000
+            var e: Dictionary=Catalog.create(kind,Vector2(120+scenario*70,100))
+            var b: Dictionary=Catalog.create(94,Vector2(200,60))
+            for tick in range(720):
+                var phase: int=(tick/90)%8
+                e.pos.y=[50,100,140,200,300,395,401,80][phase]
+                e.velocity=Vector2(0 if phase%2==0 else 80,-200+phase*60)
+                e.orb_y_stationary=phase%2==0
+                e.orb_stationary=phase%2==0
+                e.deployment_progress=1.0
+                b.pos.y=50 if phase%2==0 else 140
+                b.velocity=Vector2(70,-100)
+                var shots: Array=Fire.advance(e,1.0/60,Vector2(40+scenario*130,380),b)
+                pack_volley(kind,scenario,tick,shots)
+            rows.append([kind,scenario,"rng",Rng.state])
+    for stage in range(1,6):
+        for scenario in range(3):
+            Rng.state=0x50000
+            var b: Dictionary=Catalog.create(90+stage,Vector2(200,100))
+            var parts: Array=[]
+            for kind in Catalog.ids():
+                if Catalog.is_part(kind): parts.append(Catalog.create(kind,Vector2.ZERO))
+            for tick in range(720):
+                if tick==240:parts=[]
+                b.velocity=Vector2(40,-100+float(tick%60)*4)
+                pack_volley(90+stage,scenario,tick,Boss.advance(b,parts,1.0/60,Vector2(40+scenario*130,380)))
+            rows.append([90+stage,scenario,"rng",Rng.state])
+    checks+=1
+    if rows.size()!=reference.size():failures+=1;push_error("FAIL: volley record count differs")
+    for i in range(mini(rows.size(),reference.size())):
+        checks+=1
+        var a: Array=reference[i]
+        var b: Array=rows[i]
+        var same: bool=a.size()==b.size()
+        for j in range(a.size()):
+            if j<4:same=same and a[j]==b[j]
+            else:same=same and absf(float(a[j])-float(b[j]))<0.001
+        if not same:
+            failures+=1
+            if failures<=5:push_error("FAIL: volley checkpoint%d differs: %s / %s"%[i,a,b])
+    print("RESULT: %d checks, %d failures"%[checks,failures])
+    quit(0 if failures==0 else 1)

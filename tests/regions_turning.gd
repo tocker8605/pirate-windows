@@ -18,10 +18,10 @@ func run() -> void:
 	check(Regions.sample(2640).blend==0.5 and Regions.sample(1200).blend==0.5,"both original 480px connectors blend the two neighboring regions")
 	check(is_equal_approx(Regions.source_phase(3102),Regions.source_phase(3582)),"480px loop wrap preserves reusable texture phase")
 	for kind in [1,10]:
-		var expected: Array = [0,50,100,150] if kind==1 else [2050,2100,2150,2200]
+		var expected: Array = [0,1,2,3]
 		var velocities: Array = [5,0,-2,-5]
 		var frames: Array = []
-		for vy in velocities: frames.append(Pose.sprite_x(kind,(Vector2(0,vy))/0.03,0))
+		for vy in velocities: frames.append(Pose.frame_index(kind,(Vector2(0,vy))/0.03,0))
 		check(frames==expected,"type %d shares the original down/level/pull-up/up frame selector"%kind)
 		check(Pose.pitch_target(kind,Vector2(0,40))!=Pose.pitch_target(kind,Vector2(0,60)) and is_equal_approx(Pose.pitch_target(kind,Vector2.ZERO),PI/2),"type%d pitch follows continuous Y velocity instead of four frame targets"%kind)
 		check(Pose.crescent_height(PI/2)>=0.35 and is_equal_approx(Pose.crescent_height(0),1) and absf(Pose.crescent_height(PI/2-0.001)-Pose.crescent_height(PI/2+0.001))<0.003,"type%d keeps at least35percent hull height throughout a smooth face blend"%kind)
@@ -34,7 +34,7 @@ func run() -> void:
 			maximum_step = maxf(maximum_step,absf(pose.pitch-before))
 			compressed = compressed or absf(Pose.projection(pose).y)<0.4
 		check(is_equal_approx(pose.pitch,PI) and maximum_step<=Pose.TURN_STEP+0.00001 and compressed,"type %d pitches continuously through a visible wing-edge attitude without instant 180deg yaw"%kind)
-	check(Pose.sprite_x(7,(Vector2(0,1))/0.03,0)==1550 and Pose.sprite_x(7,(Vector2(0,-1))/0.03,0)==1400,"type7 retains its reversed source-sheet orientation layout")
+	check(Pose.frame_index(7,(Vector2(0,1))/0.03,0)==3 and Pose.frame_index(7,(Vector2(0,-1))/0.03,0)==0,"type7 retains its reversed local animation orientation order")
 	for kind in [2,6,7]:
 		check(Pose.target(kind,(Vector2(0,1))/0.03,0).pitch==0 and Pose.target(kind,(Vector2(0,0))/0.03,0).pitch==PI,"kind %d preserves original vY>0 versus vY<=0 facing threshold"%kind)
 	check(Pose.target(8,(Vector2(1,0))/0.03,0).bank==0 and Pose.target(8,(Vector2(2,0))/0.03,0).bank==1 and Pose.target(8,(Vector2(-2,0))/0.03,0).bank== -1,"type8 uses original strict left/right bank thresholds")

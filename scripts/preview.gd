@@ -125,7 +125,7 @@ static func run(g: Node) -> void:
 			else: g.hp = 0
 			for i in range(60): g._tick(Vector2.ZERO,false,false,false)
 			if g.preview_mode=="loading":
-				g.flow.load_stage(g,g.stage,false,"loading2")
+				g.flow.load_stage(g,g.stage,false,"loading")
 		g.invulnerability_seconds = 0
 		if g.preview_mode not in ["boss-death","gameover","loading"]: g.flow.play_stage(g)
 	g._redraw()

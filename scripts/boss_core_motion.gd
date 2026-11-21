@@ -1,5 +1,6 @@
 extends RefCounted
 ## Detached core: bounded upward launch, transfer to centre, then stationary.
+const Geometry=preload("res://scripts/entity_geometry.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const KIND: int = 133
 const SCREEN_SIZE := Vector2(400,480)
@@ -10,7 +11,7 @@ static func active(e: Dictionary) -> bool:
 	return int(e.kind)==KIND and int(e.pattern)==int(settings().pattern)
 static func target() -> Vector2:
 	var definition: Dictionary = Catalog.definition(KIND)
-	return Vector2(settings().target_center[0],settings().target_center[1])-definition.draw_offset-definition.draw_size/2
+	return Vector2(settings().target_center[0],settings().target_center[1])-Geometry.transform(definition,Vector2.ZERO).origin
 static func vertical_bounds() -> Vector2:
 	var definition: Dictionary = Catalog.definition(KIND)
 	return Vector2(float(settings().vertical_margin)-definition.draw_offset.y,SCREEN_SIZE.y-float(settings().vertical_margin)-definition.draw_offset.y-definition.draw_size.y)

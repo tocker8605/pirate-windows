@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "stages": [
+    {
+      "id": 1,
+      "boss_rush": true,
+      "music": "bgm01",
+      "regions": [
+        {
+          "name": "OCEAN",
+          "path": "res://assets/backgrounds/stage01/region01-ocean.png"
+        },
+        {
+          "name": "COAST",
+          "path": "res://assets/backgrounds/stage01/region02-coast.png"
+        },
+        {
+          "name": "FOREST",
+          "path": "res://assets/backgrounds/stage01/region03-forest.png"
+        }
+      ],
+      "layout": "three_region",
+      "initial": {
+        "background_y": 3360,
+        "map_mode": 1,
+        "scroll_speed": 666.6666666666667,
+        "scroll_target": 66.66666666666667
+      },
+      "cloud_texture": "cl03",
+      "classic_background": "stage1"
+    },
+    {
+      "id": 2,
+      "boss_rush": true,
+      "music": "bgm02",
+      "regions": [
+        {
+          "name": "GREEN VALLEYS",
+          "path": "res://assets/backgrounds/stage02/region01-green-valleys.png"
+        },
+        {
+          "name": "SNOW PEAKS",
+          "path": "res://assets/backgrounds/stage02/region02-snow-peaks.png"
+        },
+        {
+          "name": "FOREST RIDGES",
+          "path": "res://assets/backgrounds/stage02/region03-forest-ridges.png"
+        }
+      ],
+      "layout": "three_region",
+      "initial": {
+        "background_y": 3360,
+        "map_mode": 1,
+        "scroll_speed": 666.6666666666667,
+        "scroll_target": 66.66666666666667
+      },
+      "cloud_texture": "cl02",
+      "classic_background": "stage2"
+    },
+    {
+      "id": 3,
+      "boss_rush": true,
+      "music": "bgm03",
+      "regions": [
+        {
+          "name": "NIGHT SNOW",
+          "path": "res://assets/backgrounds/stage03/region01-night-snow.png"
+        },
+        {
+          "name": "NIGHT OUTPOST",
+          "path": "res://assets/backgrounds/stage03/region02-night-outpost.png"
+        },
+        {
+          "name": "NIGHT OCEAN",
+          "path": "res://assets/backgrounds/stage03/region03-night-ocean.png"
+        }
+      ],
+      "layout": "three_region",
+      "initial": {
+        "background_y": 3360,
+        "map_mode": 1,
+        "scroll_speed": 666.6666666666667,
+        "scroll_target": 66.66666666666667
+      },
+      "cloud_texture": "cl01",
+      "classic_background": "stage3"
+    },
+    {
+      "id": 4,
+      "boss_rush": true,
+      "music": "bgm04",
+      "regions": [
+        {
+          "name": "EARTH",
+          "path": "res://assets/backgrounds/stage04/region01-earth.png"
+        },
+        {
+          "name": "SPACE",
+          "path": "res://assets/backgrounds/stage04/region02-space.png"
+        },
+        {
+          "name": "MOON SURFACE",
+          "path": "res://assets/backgrounds/stage04/region03-moon-surface.png"
+        },
+        {
+          "name": "LUNAR CAVERN",
+          "path": "res://assets/backgrounds/stage04/region04-lunar-cavern.png"
+        }
+      ],
+      "layout": "earth_lunar",
+      "initial": {
+        "background_y": 3360,
+        "map_mode": 2,
+        "scroll_speed": 66.66666666666667,
+        "scroll_target": 66.66666666666667
+      },
+      "cloud_texture": "cl01",
+      "classic_background": "stage4",
+      "boss_rush_initial": {
+        "map_mode": 1,
+        "scroll_speed": 666.6666666666667
+      }
+    },
+    {
+      "id": 5,
+      "boss_rush": false,
+      "music": "bgm04",
+      "regions": [
+        {
+          "name": "DEEP LUNAR TUNNEL",
+          "path": "res://assets/backgrounds/stage05/region01-deep-lunar-tunnel.png"
+        },
+        {
+          "name": "METAL TUNNEL",
+          "path": "res://assets/backgrounds/stage05/region02-metal-tunnel.png"
+        },
+        {
+          "name": "SUPERCOMPUTER CHAMBER",
+          "path": "res://assets/backgrounds/stage05/region03-supercomputer-chamber.png"
+        }
+      ],
+      "layout": "three_region",
+      "initial": {
+        "background_y": 3360,
+        "map_mode": 1,
+        "scroll_speed": 60,
+        "scroll_target": 60
+      },
+      "cloud_texture": "",
+      "classic_background": ""
+    }
+  ]
+}

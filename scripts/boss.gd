@@ -1,11 +1,10 @@
 class_name PirateBoss
 extends RefCounted
+const Volleys=preload("res://scripts/projectile_volley.gd")
 const Movement = preload("res://scripts/movement.gd")
 const AttackTimer = preload("res://scripts/attack_timer.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const CoreMotion = preload("res://scripts/boss_core_motion.gd")
-const Pilot = preload("res://scripts/pilot_geometry.gd")
-const Rng = preload("res://scripts/random.gd")
 ## Four original boss bodies, attached weapons and body attack phases.
 static func parts_alive(enemies: Variant) -> bool:
 	for e in enemies:
@@ -18,6 +17,9 @@ static func has_part(enemies: Variant, kind: int) -> bool:
 	return false
 
 static func steer(b: Dictionary, player: Vector2, enemies: Variant, seconds: float = 1.0/60.0) -> void:
+	if Catalog.for_actor(b).get("movement_mode","pattern")=="stationary":
+		b.velocity = Vector2.ZERO
+		return
 	if seconds<=0: return
 	var acceleration: float = Movement.BASE_ACCELERATION*seconds
 	var p: Vector2 = b.pos
@@ -67,7 +69,6 @@ static func attach(e: Dictionary, b: Dictionary) -> void:
 	var offset := Vector2(attachment.offset[0],attachment.offset[1])
 	e.pos.x = p.x+offset.x
 	if attachment.follow_y: e.pos.y = p.y+offset.y
-	e.pos.x += b.velocity.y*float(attachment.velocity_y_offset_seconds)
 	if int(e.kind)==CoreMotion.KIND and e.hp<CoreMotion.settings().detach_hp:
 		CoreMotion.detach(e)
 
@@ -79,48 +80,24 @@ static func enabled(enemies: Variant, channel: Dictionary) -> bool:
 			for part_id in channel.part_ids:
 				if has_part(enemies,int(part_id)): return false
 			return true
-		"left_missing": return not has_part(enemies,131)
-		"right_missing": return not has_part(enemies,132)
 	return true
 
 static func emit(b: Dictionary, attack: String, player: Vector2 = Vector2.ZERO) -> Array:
-	var result: Array = []
-	var p: Vector2 = b.pos
-	match int(b.stage):
-		2:
-			var projectile_kind: int = int(Catalog.fire_channel(92,attack).projectile_kind)
-			_add(result,p+Vector2(15,60),(Vector2(3-Rng.between(0,6),3-Rng.between(0,6)))*33.333333333333336,projectile_kind)
-			_add(result,p+Vector2(-15,60),(Vector2(3-Rng.between(0,6),3-Rng.between(0,6)))*33.333333333333336,projectile_kind)
-		3:
-			if attack=="missiles":
-				_add(result,p+Vector2(40,40),(Vector2(2-Rng.between(0,4),-1-Rng.between(0,2)))*33.333333333333336,2)
-				_add(result,p+Vector2(-40,40),(Vector2(2-Rng.between(0,4),-1-Rng.between(0,2)))*33.333333333333336,2)
-			elif attack in ["left_enrage","right_enrage"]:
-				result.append_array(_shoulder_aimed_fan(p,player,Catalog.boss_definition(3).attack,0 if attack=="left_enrage" else 1))
-		4:
-			if attack=="left_replacement":
-				var vx: int = 5-Rng.between(0,8)
-				_add(result,p+Vector2(-35,55),(Vector2(vx,11-absi(vx)))*33.333333333333336,5)
-			elif attack=="right_replacement":
-				var vx: int = 3-Rng.between(0,8)
-				_add(result,p+Vector2(35,55),(Vector2(vx,11-absi(vx)))*33.333333333333336,5)
-			else:
-				var x: int = 10-Rng.between(0,20)
-				var vx: int = 3-Rng.between(0,6)
-				_add(result,p+Vector2(x,35),(Vector2(vx,-5+absi(vx)))*33.333333333333336,8)
-	return result
+	var definition: Dictionary=Catalog.for_actor(b)
+	return Volleys.emit(b,player,Catalog.fire_channel(int(definition.id),attack),{},-1,definition.get("attack",{}))
 
 # The paired sweep has an independent100ms clock, not the legacy60ms phase clock.
 # Both ports start downward and share sweep progress with opposite rotation signs.
 static func advance(b: Dictionary,enemies: Variant,seconds: float,player: Vector2 = Vector2.ZERO) -> Array:
 	var result: Array = []
 	if b.is_empty() or b.hp<=0: return result
-	if int(b.stage)==1: return _advance_first(b,enemies,seconds)
+	var definition: Dictionary=Catalog.for_actor(b)
+	if definition.get("attack",{}).get("type")=="alternating": return _advance_first(b,enemies,seconds)
 	var channels: Array = Catalog.boss_definition(int(b.stage)).get("fire_channels",[])
 	var events: Array = AttackTimer.advance(b,channels,seconds,func(channel): return enabled(enemies,channel))
 	for event in events: result.append_array(emit(b,event.name,player))
-	if int(b.stage)!=4: return result
-	var attack: Dictionary = Catalog.boss_definition(4).get("attack",{})
+	var attack: Dictionary = definition.get("attack",{})
+	if attack.get("type")!="spiral":return result
 	if attack.is_empty() or not attack.has("ports"): return result
 	if not parts_alive(enemies) or b.pos.y<=float(attack.get("min_y",-INF)):
 		b.body_attack_elapsed = 0.0
@@ -139,7 +116,7 @@ static func advance(b: Dictionary,enemies: Variant,seconds: float,player: Vector
 	return result
 
 static func _advance_first(b: Dictionary,enemies: Variant,seconds: float) -> Array:
-	var attack: Dictionary = Catalog.boss_definition(1).get("attack",{})
+	var attack: Dictionary = Catalog.for_actor(b).get("attack",{})
 	var result: Array = []
 	if attack.is_empty(): return result
 	var interval: float = attack.interval_seconds if parts_alive(enemies) else attack.enraged_interval_seconds
@@ -157,27 +134,12 @@ static func _advance_first(b: Dictionary,enemies: Variant,seconds: float) -> Arr
 	b.body_attack_elapsed = elapsed
 	return result
 
-static func _shoulder_aimed_fan(position: Vector2, player: Vector2, attack: Dictionary, port_index: int) -> Array:
-	var result: Array = []
-	var count: int = int(attack.count)
-	var half_arc: float = deg_to_rad(float(attack.spread_degrees))/2
-	var port: Array = attack.ports[port_index]
-	var muzzle: Vector2 = position+Vector2(port[0],port[1])
-	var target: Vector2 = player+Pilot.COCKPIT-muzzle
-	var angle: float = target.angle() if target.length_squared()>0 else PI/2
-	for i in range(count):
-		var offset: float = lerpf(-half_arc,half_arc,float(i)/(count-1)) if count>1 else 0.0
-		_add(result,muzzle,Vector2.from_angle(angle+offset)*float(attack.speed),int(attack.projectile_kind))
-	return result
-
 static func _add(result: Array, pos: Vector2, velocity: Vector2, kind: int) -> void:
 	result.append({"pos":pos,"velocity":velocity,"kind":kind})
 
 static func part_side(kind: int) -> int:
 	return int(Catalog.definition(kind).get("part_side",0))
 static func claw_muzzle(e: Dictionary) -> Vector2:
-	# Inner empty region of the existing50x100 claw sprite, mirrored about the torso.
-	match int(e.kind):
-		131: return e.pos+Vector2(14,36)
-		132: return e.pos+Vector2(36,36)
-	return e.pos+Vector2(25,25)
+	var volley: Dictionary=Catalog.fire_channel(int(e.kind),"plasma").get("volley",{})
+	var ports: Array=volley.get("ports",[[25,25]])
+	return e.pos+Vector2(ports[0][0],ports[0][1])

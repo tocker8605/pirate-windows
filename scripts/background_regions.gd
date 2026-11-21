@@ -2,15 +2,11 @@ extends RefCounted
 ## Shared three-region stages plus stage4: one-shot Earth/surface and looping space/cavern.
 const SCREEN: float = 480.0
 const EDGES: Vector4 = Vector4(SCREEN*2,SCREEN*3,SCREEN*5,SCREEN*6)
-const NAMES: Array = [
-	["OCEAN","COAST","FOREST"],
-	["GREEN VALLEYS","SNOW PEAKS","FOREST RIDGES"],
-	["NIGHT SNOW","NIGHT OUTPOST","NIGHT OCEAN"],
-	["EARTH","SPACE","MOON SURFACE","LUNAR CAVERN"]]
-static func count(stage: int) -> int: return NAMES[clampi(stage,1,4)-1].size()
+const Stages=preload("res://scripts/stage_catalog.gd")
+static func count(stage: int) -> int:return Stages.definition(stage).regions.size()
 static func earth_phase(source_y: float) -> float: return (source_y-SCREEN*6)/(SCREEN*2)
 static func sample(source_y: float, stage: int = 1) -> Dictionary:
-	if stage==4:
+	if Stages.definition(stage).layout=="earth_lunar":
 		var region: int = 1 if source_y>=SCREEN*6 else (2 if source_y>=SCREEN*3 else (3 if source_y>=SCREEN*2 else 4))
 		return {"near":region,"far":region,"blend":0.0}
 	if source_y>=EDGES.w: return {"near":1,"far":1,"blend":0.0}

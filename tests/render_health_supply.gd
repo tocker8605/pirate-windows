@@ -35,7 +35,7 @@ func run() -> void:
 	var pixels: Image = root.get_texture().get_image()
 	pixels.save_png(OS.get_cmdline_user_args()[0] if not OS.get_cmdline_user_args().is_empty() else "user://health-supply-v24.32.png")
 	var failures := 0
-	if game.view.renewal.enemy_texture(201)!=game.view.renewal.enemy_texture(202): failures += 1
+	if game.view.renewal.enemy_texture(201).get_image().get_data()!=game.view.renewal.enemy_texture(202).get_image().get_data(): failures += 1
 	for row in range(3):
 		var badge: Color = pixels.get_pixel(600,(62+120*row)*2)
 		if badge.r<badge.g+0.2: failures += 1

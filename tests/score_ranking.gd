@@ -99,11 +99,11 @@ func run() -> void:
 	check(g.state=="menu" and g.title.screen==g.title.RANKING and g.rankings.entries[0].name=="TOCKER" and g.last_score==1234567,"submission saves the name and returns to the initial black title")
 	key(g,KEY_SPACE)
 	check(g.title.screen==g.title.RANKING,"confirm key cannot also skip the initial title")
-	g._load_stage(4)
+	g._load_stage(5)
 	g.events = []
 	g.score = 7654321
 	g._complete_stage()
-	check(g.state=="ranking_entry" and g.ranking_entry.record.mission==4 and g.ranking_entry.record.score==7654321,"fourth-boss clear opens registration instead of discarding the run")
+	check(g.state=="ranking_entry" and g.ranking_entry.record.mission==5 and g.ranking_entry.record.score==7654321,"fifth-boss clear opens registration instead of discarding the run")
 	for code in Screen.CONFIRM_KEYS:
 		g.ranking_entry.begin(0,result(8000000+code%100))
 		g.flow.state = "ranking_entry"

@@ -1,4 +1,5 @@
 extends SceneTree
+const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Mecha = preload("res://scripts/renewed_art.gd")
 const Boss = preload("res://scripts/boss.gd")
 var checks: int = 0
@@ -9,31 +10,17 @@ func check(ok: bool, message: String) -> void:
 	else:
 		failures += 1
 		push_error("FAIL: "+message)
-static func visible_bounds(source: Image, region: Rect2i) -> Rect2i:
-	# Generated anti-alias fringe below5percent alpha can extend between components.
-	# Measure the visible silhouette without editing the source pixels.
-	var first: Vector2i = region.end
-	var last: Vector2i = region.position-Vector2i.ONE
-	for y in range(region.position.y,region.end.y):
-		for x in range(region.position.x,region.end.x):
-			if source.get_pixel(x,y).a<=0.05: continue
-			first.x = mini(first.x,x)
-			first.y = mini(first.y,y)
-			last.x = maxi(last.x,x)
-			last.y = maxi(last.y,y)
-	return Rect2i(first,last-first+Vector2i.ONE)
-
 func _initialize() -> void:
 	var art = Mecha.new()
-	var source: Image = art.bosses.get_image()
-	for index in range(12):
-		var texture: AtlasTexture = art.cell(art.bosses,index,4,3)
-		var region: Rect2 = texture.region
-		var row: int = int(index/4)
-		var top_left := Vector2i(art.BOSS_COLUMN_EDGES[row][index%4],art.BOSS_ROW_EDGES[row])
-		var bottom_right := Vector2i(art.BOSS_COLUMN_EDGES[row][index%4+1],art.BOSS_ROW_EDGES[row+1])
-		var measured: Rect2i = visible_bounds(source,Rect2i(top_left,bottom_right-top_left))
-		check(region==Rect2(measured) and region.size.x>10 and region.size.y>10 and region.position.y>art.BOSS_ROW_EDGES[row] and region.end.y<art.BOSS_ROW_EDGES[row+1] and region.position.x>art.BOSS_COLUMN_EDGES[row][index%4] and region.end.x<art.BOSS_COLUMN_EDGES[row][index%4+1],"mecha cell%d retains complete alpha silhouette without crossing/cutting its cell"%index)
+	for kind in Catalog.ids():
+		var definition: Dictionary=Catalog.definition(kind)
+		if definition.role not in ["boss","part"] or not definition.has("sprite_path"):continue
+		var texture: Texture2D=art.enemy_texture(kind)
+		var source: Texture2D=texture.atlas if texture is AtlasTexture else texture
+		var independent: bool=source.resource_path==definition.sprite_path and texture.get_width()>0 and texture.get_height()>0
+		if texture is AtlasTexture:independent=independent and definition.has("sprite_region") and texture.region==Rect2(definition.sprite_region[0],definition.sprite_region[1],definition.sprite_region[2],definition.sprite_region[3])
+		check(independent,"boss entity%d uses its own PNG with only its declared transparent-border crop"%kind)
+		check(maxi(source.get_width(),source.get_height())>=1024,"boss entity%d has native high-resolution artwork comparable to stage5"%kind)
 	for pair in [[112,111],[121,122],[131,132]]:
 		var symmetric: bool = true
 		for vy in [-7,0,3]:
@@ -42,9 +29,9 @@ func _initialize() -> void:
 			var right = {"kind":pair[1],"pos":Vector2.ZERO}
 			Boss.attach(left,b)
 			Boss.attach(right,b)
-			var a: Vector2 = art.arm_joint(pair[0],left.pos)
-			var z: Vector2 = art.arm_joint(pair[1],right.pos)
+			var a: Vector2 = left.pos+Vector2(25,0)
+			var z: Vector2 = right.pos+Vector2(25,0)
 			symmetric = symmetric and is_equal_approx(a.x+z.x,400) and is_equal_approx(a.y,z.y)
-		check(symmetric,"mecha shoulder couplings for%d/%d remain mirrored during boss movement"%pair)
+		check(symmetric,"mecha arm anchors for%d/%d remain mirrored during boss movement"%pair)
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	quit(0 if failures==0 else 1)

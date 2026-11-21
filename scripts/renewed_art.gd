@@ -1,79 +1,19 @@
 extends RefCounted
+const Geometry=preload("res://scripts/entity_geometry.gd")
+const Textures=preload("res://scripts/entity_textures.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Depth = preload("res://scripts/enemy_depth.gd")
 const Pose = preload("res://scripts/enemy_pose.gd")
-const Boss = preload("res://scripts/boss.gd")
 var poses: Dictionary = {}
 var last_frame: int = -1
 var render_fraction: float = 1.0
-## Generated alpha atlases are consumed non-destructively at the original game anchors.
-var station_atlas: Texture2D = preload("res://assets/renewed/ring-station-v22.png")
-var station_frame: AtlasTexture
-const STATION_RECT = Rect2i(30,27,829,832)
-var carrier: Texture2D = preload("res://assets/renewed/carrier-v20.png")
-var enemies: Texture2D = preload("res://assets/renewed/enemies-v18.png")
-var bosses: Texture2D = preload("res://assets/renewed/bosses-v15.png")
-var cells: Dictionary = {}
-var images: Dictionary = {}
+## Each entity resolves its own editable PNG through the catalog.
+var texture_cache=Textures.new()
 var wing_textures: Array = []
-const ENEMY_ROW_EDGES: Array = [0, 333, 631, 922, 1254]
-const ENEMY_COLUMN_EDGES: Array = [[0, 324, 641, 924, 1254], [0, 320, 634, 930, 1254], [0, 321, 639, 929, 1254], [0, 317, 618, 939, 1254]]
-const ENEMY_RECTS: Array = [
-	Rect2i(24,86,269,227),
-	Rect2i(357,25,251,292),
-	Rect2i(675,45,218,275),
-	Rect2i(957,25,290,294),
-	Rect2i(18,355,279,262),
-	Rect2i(344,347,267,270),
-	Rect2i(659,361,251,253),
-	Rect2i(952,349,291,271),
-	Rect2i(10,652,291,240),
-	Rect2i(342,690,271,220),
-	Rect2i(666,644,237,266),
-	Rect2i(956,644,290,266),
-	Rect2i(9,950,297,209),
-	Rect2i(329,936,280,246),
-	Rect2i(628,962,306,203),
-	Rect2i(945,962,305,203)]
-const BOSS_COLUMN_EDGES: Array = [[0,384,714,1090,1448],[0,362,724,1086,1448],[0,362,724,1086,1448]]
-const BOSS_ROW_EDGES: Array = [0,369,800,1086] # Native1448x1086 sheet has unequal row heights.
-# Measured once from alpha>5percent; avoid scanning the atlas when a boss first appears.
-const BOSS_RECTS: Array = [
-	Rect2i(20,14,361,352),Rect2i(387,10,314,356),Rect2i(727,14,360,352),Rect2i(1093,10,339,358),
-	Rect2i(81,375,260,415),Rect2i(455,376,241,412),Rect2i(794,370,268,423),Rect2i(1149,482,228,230),
-	Rect2i(53,810,279,259),Rect2i(435,811,252,239),Rect2i(844,802,138,269),Rect2i(1173,840,202,203)]
-const BOSS_PARTS: Dictionary = {101:7,102:7,111:4,112:4,113:8,121:5,122:5,123:9,124:9,131:6,132:6,133:10}
-const SMALL: Dictionary = {1:0,2:1,3:2,4:3,5:4,6:5,7:6,8:7,9:8,10:9,11:10,19:11,20:11,201:11,202:11,21:12,22:13,41:14,42:15}
-func cell(atlas: Texture2D, index: int, columns: int, rows: int) -> AtlasTexture:
-	var key: String = "%s:%d"%[atlas.resource_path,index]
-	if not cells.has(key):
-		var crop: Rect2i
-		if atlas==bosses: crop = BOSS_RECTS[index]
-		elif atlas==enemies: crop = ENEMY_RECTS[index]
-		else:
-			var size := Vector2i(atlas.get_width()/columns,atlas.get_height()/rows)
-			var region := Rect2i(Vector2i(index%columns,int(index/columns))*size,size)
-			if not images.has(atlas.resource_path): images[atlas.resource_path] = atlas.get_image()
-			var used: Rect2i = images[atlas.resource_path].get_region(region).get_used_rect()
-			crop = Rect2i(region.position+used.position,used.size)
-		var texture := AtlasTexture.new()
-		texture.atlas = atlas
-		texture.region = Rect2(crop)
-		texture.filter_clip = true
-		cells[key] = texture
-	return cells[key]
 func enemy_texture(kind: int) -> Texture2D:
-	if kind==3: return station_texture()
-	if Catalog.definition(kind).get("role","")=="supply": return carrier
-	if SMALL.has(kind): return cell(enemies,int(SMALL[kind]),4,4)
-	return cell(bosses,int(BOSS_PARTS.get(kind,11)),4,3)
+	return texture_cache.for_definition(Catalog.definition(kind))
 func station_texture() -> Texture2D:
-	if station_frame==null:
-		station_frame = AtlasTexture.new()
-		station_frame.atlas = station_atlas
-		station_frame.region = Rect2(STATION_RECT)
-		station_frame.filter_clip = true
-	return station_frame
+	return enemy_texture(3)
 func draw_station(c: Node2D, center: Vector2, scale: Vector2, phase: float, tint: Color = Color.WHITE) -> void:
 	# v22 habitat/truss only. The separate axial spindle is intentionally omitted.
 	c.draw_set_transform(center,phase,scale)
@@ -93,12 +33,14 @@ func observe(g: Node) -> void:
 	if g.frame==last_frame: return
 	last_frame = g.frame
 	for e in g.enemies:
+		if Geometry.layer(Catalog.definition(int(e.kind)))=="floor": continue
 		var id: int = e.entity_id
 		if not poses.has(id): poses[id] = Pose.target(int(e.kind),e.velocity,g.animation)
 		else: Pose.advance(poses[id],int(e.kind),e.velocity,g.animation,g.delta_seconds)
 func draw_enemy(c: Node2D, e: Dictionary, pos: Vector2, _frame: int) -> void:
 	var size: Vector2 = dimensions(int(e.kind))
-	var center: Vector2 = pos+size/2
+	var sprite: Texture2D = enemy_texture(int(e.kind))
+	var center: Vector2 = Geometry.transform(Catalog.definition(int(e.kind)),pos,sprite.get_size()).origin
 	var id: int = e.get("entity_id",-1)
 	var pose: Dictionary = poses[id] if poses.has(id) else Pose.target(int(e.kind),e.velocity,0)
 	var pitch: float = lerpf(pose.previous_pitch,pose.pitch,render_fraction)
@@ -114,18 +56,14 @@ func draw_enemy(c: Node2D, e: Dictionary, pos: Vector2, _frame: int) -> void:
 	else:
 		if pitch>PI/2: tint *= Color(0.78,0.86,0.96)
 	if e.kind==10: tint *= Color(0.72,0.72,0.72)
-	if Boss.part_side(int(e.kind))>0 or e.kind in [101,124]: projected.x *= -1
-	if e.kind==133: center.x += 1
+	if Geometry.visual(Catalog.definition(int(e.kind))).get("flip_h",false): projected.x *= -1
 	if e.kind==3:
 		draw_station(c,center,projected,spin,tint)
 		return
-	var yaw: float = Pose.bank_yaw(bank,projected.y,int(e.kind))+arm_roll(int(e.kind))+(spin if e.kind==9 else 0.0)
+	var yaw: float = Pose.bank_yaw(bank,projected.y,int(e.kind))+Geometry.rotation(Catalog.definition(int(e.kind)))+(spin if e.kind==9 else 0.0)
 	c.draw_set_transform(center,yaw,projected)
-	var painted_size: Vector2 = Vector2(41,80) if e.kind==133 else size
-	var sprite: Texture2D = enemy_texture(int(e.kind))
-	if SMALL.has(int(e.kind)) and e.kind!=8:
-		var native := Vector2(sprite.get_width(),sprite.get_height())
-		painted_size = native*minf(size.x/native.x,size.y/native.y)
+	var definition: Dictionary=Catalog.definition(int(e.kind))
+	var painted_size: Vector2=Geometry.image_rect(definition,sprite.get_size()).size
 	if e.kind in [1,10]:
 		# Blend the two readable faces instead of collapsing the hull into a line.
 		var height: float = Pose.crescent_height(pitch)*Depth.scale_for(e)
@@ -144,11 +82,11 @@ func draw_enemy(c: Node2D, e: Dictionary, pos: Vector2, _frame: int) -> void:
 
 func draw_hinged_wings(c: Node2D, center: Vector2, yaw: float, scale: Vector2, fold: float, tint: Color) -> void:
 	if wing_textures.is_empty():
-		var source: AtlasTexture = enemy_texture(8)
+		var source: Texture2D = enemy_texture(8)
 		for band in [Vector2(0,0.35),Vector2(0.35,0.30),Vector2(0.65,0.35)]:
 			var texture := AtlasTexture.new()
-			texture.atlas = source.atlas
-			texture.region = Rect2(source.region.position+Vector2(source.region.size.x*band.x,0),source.region.size*Vector2(band.y,1))
+			texture.atlas = source
+			texture.region = Rect2(Vector2(source.get_width()*band.x,0),source.get_size()*Vector2(band.y,1))
 			texture.filter_clip = true
 			wing_textures.append(texture)
 	var base := Transform2D(yaw,center).scaled_local(scale)
@@ -161,27 +99,11 @@ func draw_hinged_wings(c: Node2D, center: Vector2, yaw: float, scale: Vector2, f
 	c.draw_set_transform_matrix(base)
 	c.draw_texture_rect(wing_textures[1],Rect2(-7.5,-25,15,50),false,tint)
 
-static func arm_roll(kind: int) -> float:
-	# The stage2 forearm is aligned with its original lower central muzzle.
-	return Boss.part_side(kind)*0.25 if kind in [111,112] else 0.0
-static func arm_joint(kind: int, pos: Vector2) -> Vector2:
-	var local := Vector2(15 if Boss.part_side(kind)<0 else -15,-36)
-	return pos+Vector2(25,0)+local.rotated(arm_roll(kind))
-
-func draw_boss_links(c: Node2D, pos: Vector2, actors: Variant, presentation: RefCounted) -> void:
-	# Shoulder coupling sits behind the torso and follows authored arm separation.
-	for e in actors:
-		var side: int = Boss.part_side(int(e.kind))
-		if side==0 or e.hp<=0: continue
-		var socket := pos+Vector2(side*32,22)
-		var joint: Vector2 = arm_joint(int(e.kind),presentation.position(e))
-		c.draw_line(socket,joint,Color("101820"),9,true)
-		c.draw_line(socket,joint,Color("8b99a3"),4,true)
-		c.draw_line(socket+Vector2(0,3),joint+Vector2(0,3),Color("39434c"),1.5,true)
-		c.draw_circle(joint,3.5,Color("252d35"),true,-1,true)
-		c.draw_circle(joint,1.5,Color("d27146"),true,-1,true)
-
 func draw_boss(c: Node2D, stage: int, pos: Vector2) -> void:
-	# Original bodies are compact robot torsos; the wide old frame includes empty margins.
-	var size: Vector2 = Catalog.boss_definition(stage).draw_size
-	c.draw_texture_rect(cell(bosses,stage-1,4,3),Rect2(pos+Vector2(-size.x/2,0),size),false)
+	var definition: Dictionary=Catalog.boss_definition(stage)
+	var sprite: Texture2D=enemy_texture(int(definition.id))
+	c.draw_set_transform_matrix(Geometry.transform(definition,pos,sprite.get_size()))
+	var rect: Rect2=Geometry.image_rect(definition,sprite.get_size())
+	rect.position-=definition.draw_size/2
+	c.draw_texture_rect(sprite,rect,false)
+	c.draw_set_transform(Vector2.ZERO)

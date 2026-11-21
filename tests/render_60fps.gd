@@ -1,6 +1,8 @@
 extends SceneTree
 const Game = preload("res://scripts/game.gd")
 const Renewed = preload("res://scripts/renewed_art.gd")
+const Geometry=preload("res://scripts/entity_geometry.gd")
+const Catalog=preload("res://scripts/enemy_catalog.gd")
 const Boss = preload("res://scripts/boss.gd")
 var checks: int = 0
 var failures: int = 0
@@ -37,12 +39,24 @@ func run() -> void:
 	shot.save_png("res://preview-boss-symmetry-v13.png")
 	for index in range(3):
 		var delta: float = 0
+		var error_sum: float=0
+		var outliers: int=0
+		var pixels: int=0
 		for y in range((60+index*140)*2,(160+index*140)*2):
 			for x in range(100*2,200*2):
 				var a = shot.get_pixel(x,y)
 				var b = shot.get_pixel(799-x,y)
-				delta = maxf(delta,maxf(absf(a.r-b.r),maxf(absf(a.g-b.g),absf(a.b-b.b))))
-		check(delta<=1.1/255,"stage%d pod pixels mirror around boss axis (delta %.5f)"%[index+2,delta])
+				var difference: float=maxf(absf(a.r-b.r),maxf(absf(a.g-b.g),absf(a.b-b.b)))
+				delta=maxf(delta,difference)
+				error_sum+=difference
+				pixels+=1
+				if difference>1.1/255:outliers+=1
+		# Rotated nearest-filtered edges can differ at an isolated subpixel sample.
+		# Bound both its maximum and total coverage, rather than accepting a shifted hull.
+		var rotated: bool=not is_zero_approx(Geometry.rotation(Catalog.definition([[112,111],[121,122],[131,132]][index][0])))
+		var symmetric: bool=delta<=1.1/255
+		if rotated:symmetric=delta<=8.1/255 and error_sum/pixels<=0.01/255 and float(outliers)/pixels<=0.0001
+		check(symmetric,"stage%d pod pixels mirror around boss axis (max %.5f, mean %.7f)"%[index+2,delta,error_sum/pixels])
 	pods.queue_free()
 	await process_frame
 	var g = Game.new()

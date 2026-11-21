@@ -1,4 +1,5 @@
 extends RefCounted
+const Campaign = preload("res://scripts/campaign_rules.gd")
 ## Top10 local records. Ties preserve the order in which names were submitted.
 const LIMIT: int = 10
 const MAX_SCORE: int = 9999999
@@ -23,7 +24,7 @@ static func valid_record(value: Variant) -> bool:
 	for field in ["score","weapon","level","mission"]:
 		var number: Variant = value.get(field)
 		if not (number is int or number is float) or not is_finite(float(number)) or float(number)!=int(number): return false
-	return value.get("name") is String and value.name==clean_name(value.name) and value.score>=0 and value.score<=MAX_SCORE and value.weapon>=1 and value.weapon<=3 and value.level>=1 and value.level<=5 and value.mission>=1 and value.mission<=4
+	return value.get("name") is String and value.name==clean_name(value.name) and value.score>=0 and value.score<=MAX_SCORE and value.weapon>=1 and value.weapon<=3 and value.level>=1 and value.level<=5 and value.mission>=1 and value.mission<=Campaign.stage_count()
 static func normalized_record(value: Dictionary) -> Dictionary:
 	# JSON numbers reload as floats; the display and live records use integers.
 	return {"score":int(value.score),"name":str(value.name),"weapon":int(value.weapon),"level":int(value.level),"mission":int(value.mission)}

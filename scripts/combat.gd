@@ -1,6 +1,7 @@
 class_name PirateCombat
 extends RefCounted
 ## Collision geometry is explicit metadata; preserve strict authored point edges.
+const Ground = preload("res://scripts/ground_turret.gd")
 const Depth = preload("res://scripts/enemy_depth.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Pilot = preload("res://scripts/pilot_geometry.gd")
@@ -8,7 +9,7 @@ static func incoming_damage(difficulty: int) -> float:
 	return 6+clampi(difficulty,1,5)*6
 static func between(value: float, low: float, high: float) -> bool: return value>low and value<high
 static func _shot_hits(pos: Vector2, actor: Dictionary, definition: Dictionary) -> bool:
-	if not definition.get("damageable",false): return false
+	if not definition.get("damageable",false) or not Ground.ready(actor): return false
 	var bounds: Array = definition.collision.shot_bounds
 	var local: Vector2 = pos-actor.pos
 	return between(local.x,bounds[0],bounds[2]) and between(local.y,bounds[1],bounds[3])
@@ -17,7 +18,7 @@ static func shot_hits(pos: Vector2, e: Dictionary) -> bool:
 static func shot_hits_boss(pos: Vector2, boss: Dictionary) -> bool:
 	return not boss.is_empty() and _shot_hits(pos,boss,Catalog.for_actor(boss))
 static func _beam_hits(player: Vector2, actor: Dictionary, definition: Dictionary) -> bool:
-	if actor.pos.y>=player.y or not definition.get("damageable",false): return false
+	if actor.pos.y>=player.y or not definition.get("damageable",false) or not Ground.ready(actor): return false
 	var bounds: Array = definition.collision.beam_bounds
 	return between(actor.pos.x,player.x+bounds[0],player.x+bounds[1])
 static func beam_hits(player: Vector2, e: Dictionary) -> bool:
@@ -29,7 +30,7 @@ static func hurts_player(player: Vector2, point: Vector2) -> bool:
 static func touches_player(player: Vector2, actor: Dictionary) -> bool:
 	if actor.is_empty() or actor.get("hp",0)<=0: return false
 	var definition: Dictionary = Catalog.for_actor(actor)
-	if definition.get("role","")=="supply" or Depth.is_below(actor): return false
+	if definition.has("ground_turret") or definition.get("role","")=="supply" or Depth.is_below(actor): return false
 	var bounds: Array = definition.collision.contact_bounds
 	var local: Vector2 = player+Pilot.COCKPIT-actor.pos
 	var closest := Vector2(clampf(local.x,bounds[0],bounds[2]),clampf(local.y,bounds[1],bounds[3]))

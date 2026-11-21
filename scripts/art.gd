@@ -1,5 +1,6 @@
 class_name PirateArt
 extends RefCounted
+const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Pose = preload("res://scripts/enemy_pose.gd")
 ## Converts the original colour/mask pairs to ordinary alpha textures once.
 var sheets: Dictionary = {}
@@ -35,21 +36,25 @@ func sprite(id: String, colour: Rect2i, mask: Vector2i) -> Texture2D:
 		textures[key] = ImageTexture.create_from_image(image)
 	return textures[key]
 
-func enemy(kind: int, velocity: Vector2, frame: int, stage: int = 1, y: float = 0) -> Texture2D:
-	var x: int = Pose.sprite_x(kind,velocity,frame,y)
-	match kind:
-		21, 22:
-			return sprite("enemy_mid", Rect2i(0 if kind == 21 else 100, 0, 100, 100), Vector2i(0 if kind == 21 else 100, 100))
-		41, 42:
-			return sprite("enemy_big", Rect2i(0 if kind == 41 else 150, 0, 150, 100), Vector2i(0 if kind == 41 else 150, 100))
-		101, 102:
-			return sprite("boss%02d"%stage, Rect2i(150, 0 if kind == 101 else 100, 50, 50), Vector2i(150, 50 if kind == 101 else 150))
-		111,112,121,122,131,132:
-			x = 150 if kind%10==1 else 200
-			return sprite("boss%02d"%stage,Rect2i(x,0,50,100),Vector2i(x,100))
-		113: return sprite("boss02",Rect2i(250,0,50,50),Vector2i(250,150))
-		123,124:
-			var row: int = 0 if kind==123 else 100
-			return sprite("boss03",Rect2i(250,row,50,50),Vector2i(250,row+50))
-		133: return sprite("boss04",Rect2i(250,10,50,80),Vector2i(250,110))
-	return sprite("enemy_sm", Rect2i(x, 0, 50, 50), Vector2i(x, 50))
+## Classic colour/mask sheets are baked into one transparent strip per entity.
+func classic_frame(kind: int, index: int) -> Texture2D:
+	var settings: Dictionary = Catalog.definition(kind).get("classic_sprite",{})
+	if settings.is_empty():
+		push_error("No classic sprite configured for entity %d"%kind)
+		return null
+	var path: String = settings.path
+	var key: String = "%s:%d"%[path,index]
+	if not textures.has(key):
+		if not textures.has(path): textures[path] = load(path)
+		var atlas: Texture2D = textures[path]
+		var size := Vector2(settings.frame_size[0],settings.frame_size[1])
+		var frame := AtlasTexture.new()
+		frame.atlas = atlas
+		frame.region = Rect2(Vector2(clampi(index,0,int(atlas.get_width()/size.x)-1)*size.x,0),size)
+		frame.filter_clip = true
+		textures[key] = frame
+	return textures[key]
+func enemy(kind: int, velocity: Vector2, frame: int, _stage: int = 1, y: float = 0) -> Texture2D:
+	return classic_frame(kind,Pose.frame_index(kind,velocity,frame,y))
+func boss_body(stage: int) -> Texture2D:
+	return classic_frame(int(Catalog.boss_definition(stage).id),0)

@@ -7,6 +7,9 @@ const BASE_ACCELERATION: float = 123.45679012345679
 const MAX_SPEED: float = 333.3333333333333
 const OSCILLATION_SPEED: float = 200.0
 static func steer(e: Dictionary, player: Vector2, boss: Vector2, seconds: float = 1.0/60.0) -> void:
+	if Catalog.definition(int(e.kind)).get("movement_mode","pattern")=="stationary":
+		e.velocity=Vector2.ZERO
+		return
 	if seconds<=0: return
 	var p: Vector2 = e.pos
 	if int(e.pattern)==int(Catalog.definition(int(e.kind)).get("core_motion",{}).get("pattern",-1)): return

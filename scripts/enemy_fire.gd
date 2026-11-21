@@ -1,14 +1,12 @@
 class_name PirateEnemyFire
 extends RefCounted
+const Geometry=preload("res://scripts/entity_geometry.gd")
+const Volleys=preload("res://scripts/projectile_volley.gd")
+const Ground = preload("res://scripts/ground_turret.gd")
 const CoreMotion = preload("res://scripts/boss_core_motion.gd")
 const AttackTimer = preload("res://scripts/attack_timer.gd")
-const Boss = preload("res://scripts/boss.gd")
-const Rng = preload("res://scripts/random.gd")
 const Pilot = preload("res://scripts/pilot_geometry.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
-const HEAVY_CANNON_SWEEP_LEG_SECONDS: float = 4.0
-const HEAVY_CANNON_MIN_DEGREES: float = -10.0
-const HEAVY_CANNON_MAX_DEGREES: float = 20.0
 ## Named volley geometry and independent per-actor attacks.
 ## Keep legacy aim anchors, but normalize the actual direction so distance cannot amplify speed.
 static func aim(enemy: Vector2, player: Vector2, speed: float) -> Vector2:
@@ -23,6 +21,7 @@ static func enabled(e: Dictionary, channel: Dictionary, boss: Dictionary = {}) -
 	var y: float = e.pos.y
 	var by: float = boss.get("pos",Vector2.ZERO).y
 	match str(channel.gate):
+		"ground_ready": return Ground.ready(e) and y>=0 and y<430
 		"aim_window": return v.y<(133.33333333333334 - 0.0001) and v.y> (-166.66666666666669 + 0.0001)
 		"moving": return v.x!=0
 		"stationary_aim": return y>=80 and v.x==0 and v.y> (-33.333333333333336 + 0.0001)
@@ -42,89 +41,11 @@ static func enabled(e: Dictionary, channel: Dictionary, boss: Dictionary = {}) -
 		"core_settled": return CoreMotion.active(e) and e.get("core_phase","")=="settled"
 	return true
 
-static func heavy_cannon_angle(age: float) -> float:
-	# One leg takes4s; the full smooth return takes8s. Positive rotation is clockwise.
-	var phase: float = fposmod(age,HEAVY_CANNON_SWEEP_LEG_SECONDS*2)
-	var blend: float = (1+cos(PI*phase/HEAVY_CANNON_SWEEP_LEG_SECONDS))/2
-	return deg_to_rad(lerpf(HEAVY_CANNON_MIN_DEGREES,HEAVY_CANNON_MAX_DEGREES,blend))
-
+static func heavy_cannon_angle(age: float) -> float:return Volleys.heavy_cannon_angle(age)
 static func emit(e: Dictionary, player: Vector2, attack: String, boss: Dictionary = {}, fired_at: float = -1) -> Array:
-	var result: Array = []
-	var p: Vector2 = e.pos
-	var v: Vector2 = e.velocity*0.03
-	var kind: int = int(e.kind)
-	var target: Vector2 = aim(p,player,1)
-	match kind:
-		1: _add(result,p+Vector2(25,20),(target*7)*33.333333333333336)
-		2:
-			if attack=="moving": _add(result,p+Vector2(25,20),(Vector2(-v.x,11-absf(v.x)))*33.333333333333336)
-			else: _add(result,p+Vector2(25,20),(target*9)*33.333333333333336,3)
-		3: _add(result,single_muzzle(e,30),(Vector2((10-absf(20-int(p.y)%41))/3.0,8))*33.333333333333336,5)
-		4: _add(result,single_muzzle(e),(target*9)*33.333333333333336,4)
-		6:
-			var velocity: Vector2 = Vector2(-v.x,7) if v.y>0 else target*9
-			_add(result,p+Vector2(10,30),(velocity)*33.333333333333336,7)
-			_add(result,p+Vector2(40,30),(velocity)*33.333333333333336,7)
-		7:
-			for angle in [0.0,deg_to_rad(8),deg_to_rad(-8)]:
-				_add(result,single_muzzle(e),target.rotated(angle)*200.0,5)
-		8: _add(result,p+Vector2(25,30),(Vector2(0,-1))*33.333333333333336,2)
-		9: _add(result,single_muzzle(e),(Vector2(3-Rng.between(0,6),-1-Rng.between(0,2)))*33.333333333333336,8)
-		10:
-			if attack=="twin":
-				_add(result,p+Vector2(10,40),(Vector2(0,8))*33.333333333333336)
-				_add(result,p+Vector2(40,40),(Vector2(0,8))*33.333333333333336)
-			else: _add(result,p+Vector2(25,20),(target*7)*33.333333333333336)
-		11:
-			_add(result,single_muzzle(e),(Vector2(-v.x/2,9))*33.333333333333336,7)
-			_add(result,single_muzzle(e),(Vector2(-v.x/3,6))*33.333333333333336,5)
-		21:
-			if attack=="missiles":
-				_add(result,p+Vector2(0,40),(Vector2(-1,-1))*33.333333333333336,2)
-				_add(result,p+Vector2(50,40),(Vector2(1,-1))*33.333333333333336,2)
-			else: _add(result,p+Vector2(25,40),(target*10)*33.333333333333336)
-		22:
-			if attack=="plasma": _add(result,single_muzzle(e),(target*9+Vector2(3-int(p.y)%7,0))*33.333333333333336,5)
-			else: _add(result,single_muzzle(e),(target*10)*33.333333333333336,7)
-		41:
-			if attack=="aim":
-				var angle: float = heavy_cannon_angle(float(e.get("fire_age",0.0)) if fired_at<0 else fired_at)
-				_add(result,p+Vector2(-20,40),target.rotated(angle)*333.33333333333337,6)
-				_add(result,p+Vector2(70,40),target.rotated(-angle)*333.33333333333337,6)
-			else: _add(result,p+Vector2(25,40),(Vector2(0,-1))*33.333333333333336,2)
-		42:
-			_add(result,p+Vector2(-10,40),(Vector2(2-Rng.between(0,4),-1-Rng.between(0,2)))*33.333333333333336,2)
-			_add(result,p+Vector2(60,40),(Vector2(2-Rng.between(0,4),-1-Rng.between(0,2)))*33.333333333333336,2)
-		101,102:
-			var vx: int = 3-Rng.between(0,6)
-			_add(result,p+Vector2(25,20),(Vector2(vx,-10+absi(vx)))*33.333333333333336,5)
-		111: _add(result,p+Vector2(30,55),(Vector2(-boss.get("velocity",Vector2.ZERO).x*0.03,8))*33.333333333333336)
-		112:
-			var vx: float = -boss.get("velocity",Vector2.ZERO).x*0.03
-			_add(result,p+Vector2(20,55),(Vector2(vx,8))*33.333333333333336,7)
-			_add(result,p+Vector2(20,55),(Vector2(vx-2,7))*33.333333333333336,7)
-			_add(result,p+Vector2(20,55),(Vector2(vx+2,7))*33.333333333333336,7)
-		113:
-			var vx: float = 2-floorf((p.y-280)/20)
-			var vy: float = -floorf((500-p.y)/12)
-			_add(result,single_muzzle(e),(Vector2(vx,vy))*33.333333333333336,8)
-			_add(result,single_muzzle(e),(Vector2(-vx,vy))*33.333333333333336,8)
-		121,122:
-			var muzzle: Vector2 = p+Vector2(5 if kind==121 else 45,50)
-			_add(result,muzzle,(target*8+Vector2(-1,0))*33.333333333333336,5)
-			_add(result,muzzle,(target*9)*33.333333333333336,5)
-			_add(result,muzzle,(target*8+Vector2(1,0))*33.333333333333336,5)
-		123,124: result.append_array(_rotating_volley(e,Catalog.fire_channel(kind,attack),single_muzzle(e)))
-		131,132:
-			if attack=="plasma": _add(result,Boss.claw_muzzle(e),(target*9+Vector2(3-int(p.y)%7,0))*33.333333333333336,5)
-			else: _add(result,Boss.claw_muzzle(e),(target*10)*33.333333333333336,7)
-		133:
-			if attack=="radial":
-				result.append_array(_rotating_volley(e,Catalog.fire_channel(kind,attack),p+Vector2(25,20)))
-			else:
-				var vx: int = 3-Rng.between(0,6)
-				_add(result,p+Vector2(25,20),(Vector2(vx,-5+absi(vx)))*33.333333333333336,8)
-	return result
+	var channel: Dictionary=Catalog.fire_channel(int(e.kind),attack)
+	if Ground.active(e):return Ground.emit(e,player,channel)
+	return Volleys.emit(e,player,channel,boss,fired_at)
 
 # Elapsed seconds avoids quantizing the 100ms cadence to the legacy 60ms fire clock.
 # Bullets fly straight; sequential emission angles form the expanding spiral.
@@ -191,24 +112,9 @@ static func _advance_aimed_fan(e: Dictionary,attack: Dictionary,player: Vector2,
 		# Use the actual drawing centre, including large-craft offsets, and aim
 		# the middle ray at the cockpit. Every ray starts at this same point.
 		var definition: Dictionary = Catalog.definition(int(e.kind))
-		var muzzle: Vector2 = e.pos+definition.draw_offset+definition.draw_size/2
-		var target: Vector2 = player+Pilot.COCKPIT-muzzle
-		var aim_angle: float = target.angle() if target.length_squared()>0 else PI/2
-		var count: int = int(attack.count)
-		var arc: float = deg_to_rad(attack.spread_degrees)
-		for i in range(count):
-			var offset: float = lerpf(-arc/2,arc/2,float(i)/(count-1)) if count>1 else 0.0
-			_add(result,muzzle,Vector2.from_angle(aim_angle+offset)*float(attack.speed),int(attack.projectile_kind))
+		var muzzle: Vector2 = Geometry.transform(definition,e.pos).origin
+		result.append_array(Volleys.aimed_fan(muzzle,player+Pilot.COCKPIT,int(attack.count),deg_to_rad(attack.spread_degrees),float(attack.speed),int(attack.projectile_kind)))
 	e.attack_elapsed = elapsed
-	return result
-
-static func _rotating_volley(e: Dictionary, channel: Dictionary, muzzle: Vector2) -> Array:
-	var result: Array = []
-	var angle: float = float(e.get("radial_angle",deg_to_rad(channel.initial_degrees)))
-	for i in range(int(channel.count)):
-		var direction: float = angle+deg_to_rad(float(channel.spacing_degrees)*i)
-		_add(result,muzzle,Vector2.from_angle(direction)*float(channel.speed),int(channel.projectile_kind))
-	e.radial_angle = wrapf(angle+deg_to_rad(channel.rotation_step_degrees)*float(channel.get("rotation_direction",1)),-PI,PI)
 	return result
 
 static func _add(result: Array, pos: Vector2, velocity: Vector2, kind: int = 1) -> void:

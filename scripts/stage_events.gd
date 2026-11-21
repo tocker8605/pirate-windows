@@ -1,4 +1,5 @@
 extends RefCounted
+const Ground = preload("res://scripts/ground_turret.gd")
 const MissionBanner = preload("res://scripts/mission_banner.gd")
 ## Named timeline events, validated before play. No per-frame legacy actor quota.
 const Check = preload("res://scripts/data_validation.gd")
@@ -21,11 +22,14 @@ static func validate_document(document: Variant) -> PackedStringArray:
 		var allowed: Array = ["at","action","comment"]
 		match e.get("action",""):
 			"spawn":
-				allowed += ["definition_id","position","pattern","overrides"]
+				allowed += ["definition_id","position","pattern","overrides","start_exposed"]
 				if not Check.number(e.get("definition_id")) or float(e.get("definition_id",0))!=int(e.get("definition_id",0)) or Catalog.definition(int(e.get("definition_id",0))).is_empty(): errors.append(prefix+"unknown definition_id")
 				if Check.number(e.get("definition_id")) and Catalog.definition(int(e.definition_id)).get("role","")=="supply": errors.append(prefix+"supply carriers belong to SupplyDirector, not timelines")
 				if not Check.vector(e.get("position"),2): errors.append(prefix+"position must contain X,Y")
 				if not Check.number(e.get("pattern",0)): errors.append(prefix+"invalid pattern")
+				if e.has("start_exposed"):
+					if not e.start_exposed is bool: errors.append(prefix+"start_exposed must be boolean (true or false)")
+					if not Catalog.definition(int(e.get("definition_id",0))).has("ground_turret"): errors.append(prefix+"start_exposed is only supported by ground turrets")
 				if e.has("overrides"):
 					if not e.overrides is Dictionary or e.overrides.keys().any(func(key): return key!="hp") or not Check.number(e.overrides.get("hp")) or float(e.overrides.get("hp",0))<=0: errors.append(prefix+"only a positive HP override is supported")
 			"scroll":
@@ -86,8 +90,12 @@ static func consume(g: Node) -> void:
 				var kind: int = int(event.definition_id)
 				if Catalog.definition(kind).get("role","")=="supply": continue
 				var actor: Dictionary = Catalog.create(kind,Vector2(event.position[0],event.position[1]),int(event.get("pattern",0)),event.get("overrides",{}))
+				if Ground.active(actor): Ground.initialize(actor,g.scenery_distance,event.get("start_exposed",false))
 				if Catalog.definition(kind).role=="boss":
 					g.boss = actor
+					if Catalog.definition(kind).get("boss_scroll",{}).get("stop_on_spawn",false):
+						g.scroll_speed = 0
+						g.scroll_target = 0
 					g.stats.boss_spawned = true
 					g._play_music(Catalog.definition(kind).music)
 					g.banner = ""

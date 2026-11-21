@@ -1,0 +1,32 @@
+{
+  "source": "exec-4303ad21-39b6-45a6-a4cc-eb401f8a5a8a.png",
+  "reference": "assets/renewed/pilot-v14.png",
+  "output": "assets/renewed/pilot-white-wings.png",
+  "intent": "Recolor blue outer wing armor white/cool silver, retaining central blue/violet body, cyan lights, poses and original coordinate registration.",
+  "cell_size": [
+    724,
+    724
+  ],
+  "registration_crop": [
+    0,
+    19,
+    720,
+    705
+  ],
+  "runtime_poses": {
+    "neutral": {
+      "cell": 0,
+      "mirror_x": false
+    },
+    "left": {
+      "cell": 1,
+      "mirror_x": true
+    },
+    "right": {
+      "cell": 1,
+      "mirror_x": false
+    }
+  },
+  "note": "Third source cell duplicates neutral and is intentionally unused.",
+  "render_color": "Unmodified source colors; no additional brightness multiplier."
+}

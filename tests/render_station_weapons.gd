@@ -44,8 +44,8 @@ func run() -> void:
 	root.content_scale_size = Vector2i(640,450)
 	root.size = Vector2i(1280,900)
 	var art = Art.new()
-	var raw: Image = art.station_atlas.get_image()
-	check(raw.get_pixel(330,330).a==0 and raw.get_pixel(550,330).a==0 and raw.get_pixel(330,550).a==0 and raw.get_pixel(550,550).a==0,"station apertures have clean alpha without a glass disk or haze")
+	var raw: Image = art.station_texture().get_image()
+	check(raw.get_pixel(300,303).a==0 and raw.get_pixel(520,303).a==0 and raw.get_pixel(300,523).a==0 and raw.get_pixel(520,523).a==0,"station apertures have clean alpha without a glass disk or haze")
 	var pose: Dictionary = Pose.target(3,(Vector2.ZERO)/0.03,0)
 	for i in range(60): Pose.advance(pose,3,(Vector2.ZERO)/0.03,0,Clock.FIXED_STEP_SECONDS)
 	check(is_equal_approx(pose.spin,TAU/7.2),"habitat ring rotates at the retained 7.2-second period")
@@ -65,7 +65,7 @@ func run() -> void:
 	stations[0].queue_redraw()
 	await RenderingServer.frame_post_draw
 	var second: Image = root.get_texture().get_image()
-	check(art.station_texture().region==Rect2(30,27,829,832),"only the v22 habitat ring is selected; separate spindle is excluded")
+	check(art.station_texture().get_size()==Vector2(829,832) and art.station_texture().resource_path.ends_with("ring_rotor.png"),"standalone ring retains the v22 habitat without the separate spindle")
 	check(difference(first,second,Rect2i(175,78,100,84))>0.1,"habitat ring visibly rotates between phases")
 	board.elapsed_seconds = 0.9
 	board.queue_redraw()

@@ -46,7 +46,7 @@ func run() -> void:
 			total+=1
 		check(hp_same,"%s actors retain configured HP and explicit instance overrides"%filename)
 	check(total==expected_total,"all current authored events load without a fixed event count")
-	check(Catalog.ids().size()==35,"catalog defines all35 entity kinds including supply state")
+	check(Catalog.ids().size()==44,"catalog defines44 kinds including ordinary ground turrets and two boss-support turret variants")
 	for id in expected_hp:
 		check(Catalog.definition(id).hp==expected_hp[id],"entity%d matches configured base HP"%id)
 	var a: Dictionary = Catalog.create(21,Vector2.ZERO)

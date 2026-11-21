@@ -1,5 +1,9 @@
 extends Node2D
 ## Rendering consumes game state; input, simulation and audio live elsewhere.
+const Ground = preload("res://scripts/ground_turret.gd")
+const Geometry=preload("res://scripts/entity_geometry.gd")
+const Stages=preload("res://scripts/stage_catalog.gd")
+const GroundArt = preload("res://scripts/ground_art.gd")
 const Depth = preload("res://scripts/enemy_depth.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Weapons = preload("res://scripts/player_weapons.gd")
@@ -14,6 +18,7 @@ const BackgroundAssets = preload("res://scripts/background_assets.gd")
 const Supply = preload("res://scripts/supply_visual.gd")
 const Pilot = preload("res://scripts/pilot_art.gd")
 var pilot = Pilot.new()
+var ground_art: RefCounted
 
 var vfx = Particles.new()
 var renewal = Renewed.new()
@@ -75,7 +80,7 @@ func refresh() -> void:
 		var in_game: bool = g.state not in ["menu","loading","ranking_entry"]
 		var title_earth: bool = g.state=="menu" and g.title.shows_background()
 		background.position = Vector2(-g.title.background_offset(),0) if title_earth else Vector2.ZERO
-		background.visible = (in_game or title_earth) and g.renewed_art
+		background.visible = (in_game or title_earth) and (g.renewed_art or Stages.definition(g.stage).classic_background.is_empty())
 		if background.visible:
 			var next_stage: int = 4 if title_earth else g.stage
 			if next_stage!=background_stage:
@@ -89,14 +94,14 @@ func refresh() -> void:
 			var cloud: Sprite2D = cloud_nodes[i]
 			cloud.position = g.presentation.cloud(g,i)
 			var on_screen: bool = Rect2(Vector2.ZERO,Vector2(400,480)).intersects(Rect2(cloud.position,Vector2(300,300)))
-			cloud.visible = in_game and on_screen
+			cloud.visible = in_game and on_screen and not Stages.definition(g.stage).cloud_texture.is_empty()
 			# Only the original bitwise GDI shader reads SCREEN_TEXTURE. Renewed
 			# alpha clouds never need these two full-viewport framebuffer copies.
 			cloud_copies[i].visible = cloud.visible and not g.renewed_art
 			if not cloud.visible: continue
 			cloud.material.shader = new_cloud_shader if g.renewed_art else old_cloud_shader
 			cloud.region_enabled = not g.renewed_art
-			cloud.texture = vfx.glow if g.renewed_art else g.art.texture(["","cl03","cl02","cl01","cl01"][g.stage])
+			cloud.texture = vfx.glow if g.renewed_art else g.art.texture(Stages.definition(g.stage).cloud_texture)
 			cloud.scale = Vector2.ONE*(300.0/vfx.glow.get_width()) if g.renewed_art else Vector2.ONE
 			if g.renewed_art: cloud.material.set_shader_parameter("phase",g.presentation.phase(g))
 		foreground.queue_redraw()
@@ -111,10 +116,10 @@ func _draw() -> void:
 	if not foreground_only:
 		if g.state=="menu": _draw_menu()
 		elif g.state=="loading":
-			if g.flow.loading_image=="loading2": g.title.weapon_preview.draw_loading(self,g.art,g.flow.legend_elapsed)
-			else: draw_texture(g.art.texture(g.flow.loading_image),Vector2.ZERO)
+			draw_texture(g.art.texture(g.flow.loading_image),Vector2.ZERO)
 		elif g.state=="ranking_entry": draw_rect(Rect2(0,0,400,480),Color.BLACK)
-		elif not g.renewed_art: draw_texture_rect_region(g.art.texture("stage%d"%g.stage),Rect2(0,0,400,480),Rect2(0,g.background_y,400,480))
+		elif not g.renewed_art and not Stages.definition(g.stage).classic_background.is_empty(): draw_texture_rect_region(g.art.texture(Stages.definition(g.stage).classic_background),Rect2(0,0,400,480),Rect2(0,g.background_y,400,480))
+		if g.state not in ["menu","loading","ranking_entry"]: _draw_floor_actors()
 		return
 	if g.state=="ranking_entry":
 		g.ranking_entry.render(self)
@@ -127,11 +132,10 @@ func _draw() -> void:
 	# Lower-plane arrivals and protected carriers pass behind same-plane ships.
 	for e in g.enemies:
 		if Depth.is_below(e): _draw_enemy_actor(e)
-	if not g.boss.is_empty():
+	if not g.boss.is_empty() and not Geometry.layer(Catalog.for_actor(g.boss))=="floor":
 		if g.renewed_art:
-			renewal.draw_boss_links(self,g.presentation.position(g.boss),g.enemies,g.presentation)
 			renewal.draw_boss(self,g.stage,g.presentation.position(g.boss))
-		else: draw_texture(g.art.sprite("boss%02d"%g.stage,Rect2i(0,0,150,100),Vector2i(0,100)),g.boss.pos+Vector2(-75,0))
+		else: draw_texture(g.art.boss_body(g.stage),g.boss.pos+Vector2(-75,0))
 	if (int(ceil(g.invulnerability_render_seconds*33.333333333333336-0.000001))%2==0):
 		if g.renewed_art: pilot.draw(self,g.presentation.player(g),g.player_bank)
 		else: draw_texture(g.art.sprite("picair",Rect2i(g.player_bank*50,0,50,50),Vector2i(g.player_bank*50,50)),g.presentation.player(g))
@@ -168,13 +172,36 @@ func _draw() -> void:
 		_center(202,"PAUSED",28,Color(0.7,0.92,1))
 		_center(278,"P: RESUME",14)
 		_center(307,"ESC: TITLE",12,Color(0.65,0.75,0.85))
+func _draw_floor_actors() -> void:
+	var floor_boss: bool = not g.boss.is_empty() and Geometry.layer(Catalog.for_actor(g.boss))=="floor"
+	var turrets: Array = []
+	var boss_pieces: Array = []
+	for e in g.enemies:
+		if Geometry.layer(Catalog.for_actor(e))!="floor":continue
+		if Ground.active(e): turrets.append(e)
+		elif Geometry.layer(Catalog.for_actor(e))=="floor": boss_pieces.append(e)
+	if floor_boss: boss_pieces.append(g.boss)
+	var has_decoration: bool=not g.boss.is_empty() and Catalog.for_actor(g.boss).has("floor_decoration")
+	if turrets.is_empty() and g.ground_wrecks.is_empty() and boss_pieces.is_empty() and not has_decoration: return
+	if ground_art==null: ground_art = GroundArt.new()
+	if has_decoration:ground_art.draw_floor_decoration(self,g.boss,g.presentation.position(g.boss))
+	for remains in g.ground_wrecks: ground_art.draw_wreck(self,remains,g.presentation.position(remains))
+	for actor in turrets: ground_art.draw_turret(self,actor,g.presentation.position(actor))
+	boss_pieces.sort_custom(func(a,b):return int(Geometry.visual(Catalog.for_actor(a)).get("order",0))<int(Geometry.visual(Catalog.for_actor(b)).get("order",0)))
+	for actor in boss_pieces: ground_art.draw_floor_actor(self,actor,g.presentation.position(actor))
+
 func _draw_enemy_actor(e: Dictionary) -> void:
+	if Geometry.layer(Catalog.definition(int(e.kind)))=="floor": return
 	var offset: Vector2 = Catalog.definition(int(e.kind)).get("draw_offset",Vector2.ZERO)
-	var pos: Vector2 = g.presentation.position(e)+offset
+	var pos: Vector2 = g.presentation.position(e)
+	if Ground.active(e):
+		if ground_art==null:ground_art=GroundArt.new()
+		ground_art.draw_turret(self,e,pos)
+		return
 	if g.renewed_art: renewal.draw_enemy(self,e,pos,g.frame)
 	else:
 		var size: Vector2 = Catalog.definition(int(e.kind)).get("draw_size",Vector2(50,50))
-		draw_set_transform(pos+size/2,0,Vector2.ONE*Depth.scale_for(e))
+		draw_set_transform(pos+offset+size/2,0,Vector2.ONE*Depth.scale_for(e))
 		draw_texture(g.art.enemy(int(e.get("render_kind",e.kind)),e.velocity,g.animation,g.stage,e.pos.y),-size/2,Depth.tint_for(e))
 		draw_set_transform(Vector2.ZERO)
 	var preparation: Dictionary = Scenery.preparation(e,g.boss)

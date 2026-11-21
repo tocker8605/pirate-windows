@@ -8,7 +8,6 @@ const Pilot = preload("res://scripts/pilot_art.gd")
 const TRACE_TICKS: int = 36
 const TRACE_PAUSE_SECONDS: float = 0.2
 const POWER_PREVIEW_SECONDS: float = 2.5
-const LOADING_PLAYBACK_RATE: float = 1.5
 var pilot_art = Pilot.new()
 var art = PlayerShotArt.new()
 var path_cache: Dictionary = {}
@@ -82,11 +81,3 @@ func draw_large(c: Node2D, _original: RefCounted, rect: Rect2, weapon: int, elap
 	pilot_art.draw(c,pilot)
 	c.draw_string(font,rect.position+Vector2(9,rect.size.y-8),"DOTS = TIME",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("9db0c3"))
 	c.draw_string(font,rect.position+Vector2(rect.size.x-58,rect.size.y-8),"P4 / P7",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color(color,0.8))
-## Loading legends retain their established 1.5x playback speed.
-func draw_loading(c: Node2D, original: RefCounted, elapsed_seconds: float) -> void:
-	c.draw_texture(original.texture("loading2"),Vector2.ZERO)
-	for i in range(3):
-		var rect := Rect2(3+i*140,58,100,122)
-		c.draw_rect(rect,Color("060f1c"))
-		c.draw_string(ThemeDB.fallback_font,rect.position+Vector2(9,18),"TYPE %d"%(i+1),HORIZONTAL_ALIGNMENT_LEFT,-1,13,Particles.player_color(i+1))
-		draw_small(c,Rect2(rect.position+Vector2(7,45),Vector2(80,38)),i+1,elapsed_seconds*LOADING_PLAYBACK_RATE,false)

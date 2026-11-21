@@ -1,4 +1,5 @@
 extends SceneTree
+const Geometry=preload("res://scripts/entity_geometry.gd")
 const Core = preload("res://scripts/boss_core_motion.gd")
 const Boss = preload("res://scripts/boss.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
@@ -22,6 +23,11 @@ func run() -> void:
 	core.hp = 300
 	Boss.attach(core,boss)
 	check(core.pattern==0 and core.pos==boss.pos+Vector2(-26,50),"HP300 remains attached at original chest offset")
+	var core_definition: Dictionary=Catalog.definition(133)
+	var hole_uv:=Vector2(436.5/889.0,428.0/1732.0)
+	var hole: Vector2=Geometry.image_point(core_definition,core.pos,hole_uv)
+	var chest: Vector2=Geometry.image_point(Catalog.for_actor(boss),boss.pos,Vector2(556.5/1112.0,734.0/1210.0))
+	check(hole.distance_to(chest)<0.001,"attached core opening is concentric with the actual painted chest circle")
 	core.hp = 299
 	Boss.attach(core,boss)
 	check(Core.active(core) and is_equal_approx(core.velocity.x,0/0.03) and core.velocity.y<(0/0.03) and core.velocity.length()<=5.0/0.03+0.0001,"HP299 launches vertically upward before moving to centre")

@@ -8,7 +8,18 @@
         {
           "name": "aim",
           "interval_seconds": 0.36,
-          "gate": "aim_window"
+          "gate": "aim_window",
+          "volley": {
+            "type": "aimed",
+            "ports": [
+              [
+                25,
+                20
+              ]
+            ],
+            "speed": 233.33333333333334,
+            "projectile_kind": 1
+          }
         }
       ],
       "name": "crescent_scout",
@@ -18,34 +29,87 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 3,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/enemies/crescent_scout.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/crescent_scout.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
     },
     "2": {
       "fire_channels": [
         {
           "name": "moving",
           "interval_seconds": 0.18,
-          "gate": "moving"
+          "gate": "moving",
+          "volley": {
+            "type": "motion_deflection",
+            "ports": [
+              [
+                25,
+                20
+              ]
+            ],
+            "down_speed": 366.6666666666667,
+            "projectile_kind": 1
+          }
         },
         {
           "name": "aim",
           "interval_seconds": 0.48,
-          "gate": "stationary_aim"
+          "gate": "stationary_aim",
+          "volley": {
+            "type": "aimed",
+            "ports": [
+              [
+                25,
+                20
+              ]
+            ],
+            "speed": 300,
+            "projectile_kind": 3
+          }
         }
       ],
       "name": "variable_wing_fighter",
@@ -55,29 +119,71 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 4,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/enemies/variable_wing_fighter.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/variable_wing_fighter.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
     },
     "3": {
       "fire_channels": [
         {
           "name": "sweep",
           "interval_seconds": 0.12,
-          "gate": "sweep_y"
+          "gate": "sweep_y",
+          "volley": {
+            "type": "height_sweep",
+            "ports": [
+              [
+                25,
+                30
+              ]
+            ],
+            "speed_y": 266.6666666666667,
+            "projectile_kind": 5
+          }
         }
       ],
       "name": "ring_rotor",
@@ -87,29 +193,71 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 7,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/enemies/ring_rotor.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/ring_rotor.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
     },
     "4": {
       "fire_channels": [
         {
           "name": "aim",
           "interval_seconds": 0.3,
-          "gate": "always"
+          "gate": "always",
+          "volley": {
+            "type": "aimed",
+            "ports": [
+              [
+                25,
+                25
+              ]
+            ],
+            "speed": 300,
+            "projectile_kind": 4
+          }
         }
       ],
       "name": "cross_fighter_a",
@@ -119,22 +267,53 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 9,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/enemies/cross_fighter_a.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/cross_fighter_a.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
     },
     "5": {
       "name": "cross_fighter_b",
@@ -144,19 +323,41 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 9,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
       "attack": {
@@ -169,14 +370,39 @@
         "initial_degrees": -90,
         "projectile_kind": 6
       },
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/enemies/cross_fighter_b.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/cross_fighter_b.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
     },
     "6": {
       "fire_channels": [
         {
           "name": "twin",
           "interval_seconds": 0.24,
-          "gate": "descent_or_stationary"
+          "gate": "descent_or_stationary",
+          "volley": {
+            "type": "motion_or_aim",
+            "ports": [
+              [
+                10,
+                30
+              ],
+              [
+                40,
+                30
+              ]
+            ],
+            "speed": 300,
+            "speed_y": 233.33333333333334,
+            "projectile_kind": 7
+          }
         }
       ],
       "name": "swept_wing_fighter",
@@ -186,29 +412,76 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 13,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/enemies/swept_wing_fighter.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/swept_wing_fighter.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
     },
     "7": {
       "fire_channels": [
         {
           "name": "triple",
           "interval_seconds": 0.72,
-          "gate": "always"
+          "gate": "always",
+          "volley": {
+            "type": "aimed",
+            "ports": [
+              [
+                25,
+                25
+              ]
+            ],
+            "speed": 200,
+            "projectile_kind": 5,
+            "angles_degrees": [
+              0,
+              8,
+              -8
+            ]
+          }
         }
       ],
       "name": "delta_fighter",
@@ -218,29 +491,74 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 5,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/enemies/delta_fighter.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/delta_fighter.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
     },
     "8": {
       "fire_channels": [
         {
           "name": "missile",
           "interval_seconds": 0.6,
-          "gate": "always"
+          "gate": "always",
+          "volley": {
+            "type": "fixed",
+            "ports": [
+              [
+                25,
+                30
+              ]
+            ],
+            "velocity": [
+              0,
+              -33.333333333333336
+            ],
+            "projectile_kind": 2
+          }
         }
       ],
       "name": "folding_wing_fighter",
@@ -250,8 +568,14 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "attack": {
         "type": "speed_spread",
@@ -261,31 +585,85 @@
         "max_spread_degrees": 90,
         "projectile_kind": 1,
         "ports": [
-          [35, 25],
-          [15, 25]
+          [
+            35,
+            25
+          ],
+          [
+            15,
+            25
+          ]
         ],
-        "spread_directions": [-1, 1]
+        "spread_directions": [
+          -1,
+          1
+        ]
       },
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 15,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/enemies/folding_wing_fighter.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/folding_wing_fighter.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
     },
     "9": {
       "fire_channels": [
         {
           "name": "flame",
           "interval_seconds": 0.18,
-          "gate": "flame_y"
+          "gate": "flame_y",
+          "volley": {
+            "type": "random",
+            "ports": [
+              [
+                25,
+                25
+              ]
+            ],
+            "x_random": {
+              "base": 100,
+              "step": -33.333333333333336,
+              "count": 7
+            },
+            "projectile_kind": 8,
+            "y_random": {
+              "base": -33.333333333333336,
+              "step": -33.333333333333336,
+              "count": 3
+            }
+          }
         }
       ],
       "name": "fireball_disc",
@@ -295,34 +673,94 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 12,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/enemies/fireball_disc.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/fireball_disc.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
     },
     "10": {
       "fire_channels": [
         {
           "name": "twin",
           "interval_seconds": 0.36,
-          "gate": "descending"
+          "gate": "descending",
+          "volley": {
+            "type": "fixed",
+            "ports": [
+              [
+                10,
+                40
+              ],
+              [
+                40,
+                40
+              ]
+            ],
+            "velocity": [
+              0,
+              266.6666666666667
+            ],
+            "projectile_kind": 1
+          }
         },
         {
           "name": "aim",
           "interval_seconds": 0.3,
-          "gate": "aim_window"
+          "gate": "aim_window",
+          "volley": {
+            "type": "aimed",
+            "ports": [
+              [
+                25,
+                20
+              ]
+            ],
+            "speed": 233.33333333333334,
+            "projectile_kind": 1
+          }
         }
       ],
       "name": "crescent_fighter",
@@ -332,29 +770,70 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 5,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/enemies/crescent_fighter.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/crescent_fighter.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
     },
     "11": {
       "fire_channels": [
         {
           "name": "twin",
           "interval_seconds": 0.42,
-          "gate": "always"
+          "gate": "always",
+          "volley": {
+            "type": "pod_twin",
+            "ports": [
+              [
+                25,
+                25
+              ]
+            ],
+            "projectile_kind": 7
+          }
         }
       ],
       "name": "twin_pod_fighter",
@@ -364,22 +843,53 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 5,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/enemies/twin_pod_fighter.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/twin_pod_fighter.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
     },
     "19": {
       "name": "supply_open",
@@ -389,17 +899,39 @@
       "score_scales_with_difficulty": false,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "drop": {
         "item": 1,
-        "offset": [25, 40],
+        "offset": [
+          25,
+          40
+        ],
         "cargo_release": true
       },
       "on_defeat": {
@@ -407,19 +939,63 @@
         "definition_id": 201,
         "pattern": 1091
       },
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/enemies/supply_open.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/supply_open.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
     },
     "21": {
       "fire_channels": [
         {
           "name": "missiles",
           "interval_seconds": 0.72,
-          "gate": "always"
+          "gate": "always",
+          "volley": {
+            "type": "fixed_pair",
+            "ports": [
+              [
+                0,
+                40
+              ],
+              [
+                50,
+                40
+              ]
+            ],
+            "velocities": [
+              [
+                -33.333333333333336,
+                -33.333333333333336
+              ],
+              [
+                33.333333333333336,
+                -33.333333333333336
+              ]
+            ],
+            "projectile_kind": 2
+          }
         },
         {
           "name": "aim",
           "interval_seconds": 0.24,
-          "gate": "always"
+          "gate": "always",
+          "volley": {
+            "type": "aimed",
+            "ports": [
+              [
+                25,
+                40
+              ]
+            ],
+            "speed": 333.33333333333337,
+            "projectile_kind": 1
+          }
         }
       ],
       "name": "medium_fighter",
@@ -429,35 +1005,91 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-be",
-      "draw_size": [100, 100],
-      "draw_offset": [-25, -25],
+      "draw_size": [
+        100,
+        100
+      ],
+      "draw_offset": [
+        -25,
+        -25
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-40, -25, 60, 30],
-        "beam_bounds": [-35, 35],
-        "contact_bounds": [-10.0, -10.0, 60.0, 60.0]
+        "shot_bounds": [
+          -40,
+          -25,
+          60,
+          30
+        ],
+        "beam_bounds": [
+          -35,
+          35
+        ],
+        "contact_bounds": [
+          -10.0,
+          -10.0,
+          60.0,
+          60.0
+        ]
       },
       "damage_smoke": {
         "below_hp": 40,
         "size": 16,
         "ports": [
-          [25, 25],
-          [60, 35]
+          [
+            25,
+            25
+          ],
+          [
+            60,
+            35
+          ]
         ]
       },
-      "explosion_seconds": 1.05
+      "explosion_seconds": 1.05,
+      "sprite_path": "res://assets/enemies/medium_fighter.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/medium_fighter.png",
+        "frame_size": [
+          100,
+          100
+        ]
+      }
     },
     "22": {
       "fire_channels": [
         {
           "name": "plasma",
           "interval_seconds": 0.06,
-          "gate": "charge_y"
+          "gate": "charge_y",
+          "volley": {
+            "type": "energy",
+            "ports": [
+              [
+                25,
+                25
+              ]
+            ],
+            "speed": 300,
+            "projectile_kind": 5
+          }
         },
         {
           "name": "streak",
           "interval_seconds": 0.12,
-          "gate": "charge_y"
+          "gate": "charge_y",
+          "volley": {
+            "type": "aimed",
+            "ports": [
+              [
+                25,
+                25
+              ]
+            ],
+            "speed": 333.33333333333337,
+            "projectile_kind": 7
+          }
         }
       ],
       "name": "charge_fighter",
@@ -467,35 +1099,98 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-be",
-      "draw_size": [100, 100],
-      "draw_offset": [-25, -45],
+      "draw_size": [
+        100,
+        100
+      ],
+      "draw_offset": [
+        -25,
+        -45
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-40, -25, 60, 30],
-        "beam_bounds": [-35, 35],
-        "contact_bounds": [-10.0, -30.0, 60.0, 40.0]
+        "shot_bounds": [
+          -40,
+          -25,
+          60,
+          30
+        ],
+        "beam_bounds": [
+          -35,
+          35
+        ],
+        "contact_bounds": [
+          -10.0,
+          -30.0,
+          60.0,
+          40.0
+        ]
       },
       "damage_smoke": {
         "below_hp": 50,
         "size": 16,
         "ports": [
-          [25, 25],
-          [60, 35]
+          [
+            25,
+            25
+          ],
+          [
+            60,
+            35
+          ]
         ]
       },
-      "explosion_seconds": 1.05
+      "explosion_seconds": 1.05,
+      "sprite_path": "res://assets/enemies/charge_fighter.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/charge_fighter.png",
+        "frame_size": [
+          100,
+          100
+        ]
+      }
     },
     "41": {
       "fire_channels": [
         {
           "name": "aim",
           "interval_seconds": 0.18,
-          "gate": "always"
+          "gate": "always",
+          "volley": {
+            "type": "sweeping_pair",
+            "ports": [
+              [
+                -20,
+                40
+              ],
+              [
+                70,
+                40
+              ]
+            ],
+            "speed": 333.33333333333337,
+            "projectile_kind": 6
+          }
         },
         {
           "name": "missile",
           "interval_seconds": 0.72,
-          "gate": "always"
+          "gate": "always",
+          "volley": {
+            "type": "fixed",
+            "ports": [
+              [
+                25,
+                40
+              ]
+            ],
+            "velocity": [
+              0,
+              -33.333333333333336
+            ],
+            "projectile_kind": 2
+          }
         }
       ],
       "name": "heavy_fighter_a",
@@ -505,31 +1200,92 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-be",
-      "draw_size": [150, 100],
-      "draw_offset": [-50, -25],
+      "draw_size": [
+        150,
+        100
+      ],
+      "draw_offset": [
+        -50,
+        -25
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-65, -25, 85, 30],
-        "beam_bounds": [-55, 55],
-        "contact_bounds": [-27.5, -10.0, 77.5, 60.0]
+        "shot_bounds": [
+          -65,
+          -25,
+          85,
+          30
+        ],
+        "beam_bounds": [
+          -55,
+          55
+        ],
+        "contact_bounds": [
+          -27.5,
+          -10.0,
+          77.5,
+          60.0
+        ]
       },
       "damage_smoke": {
         "below_hp": 90,
         "size": 16,
         "ports": [
-          [25, 25],
-          [60, 35],
-          [-25, 35]
+          [
+            25,
+            25
+          ],
+          [
+            60,
+            35
+          ],
+          [
+            -25,
+            35
+          ]
         ]
       },
-      "explosion_seconds": 1.05
+      "explosion_seconds": 1.05,
+      "sprite_path": "res://assets/enemies/heavy_fighter_a.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/heavy_fighter_a.png",
+        "frame_size": [
+          150,
+          100
+        ]
+      }
     },
     "42": {
       "fire_channels": [
         {
           "name": "missiles",
           "interval_seconds": 0.48,
-          "gate": "always"
+          "gate": "always",
+          "volley": {
+            "type": "random",
+            "ports": [
+              [
+                -10,
+                40
+              ],
+              [
+                60,
+                40
+              ]
+            ],
+            "x_random": {
+              "base": 66.66666666666667,
+              "step": -33.333333333333336,
+              "count": 5
+            },
+            "projectile_kind": 2,
+            "y_random": {
+              "base": -33.333333333333336,
+              "step": -33.333333333333336,
+              "count": 3
+            }
+          }
         }
       ],
       "name": "heavy_fighter_b",
@@ -539,8 +1295,14 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-be",
-      "draw_size": [150, 100],
-      "draw_offset": [-50, -25],
+      "draw_size": [
+        150,
+        100
+      ],
+      "draw_offset": [
+        -50,
+        -25
+      ],
       "part_side": 0,
       "attack": {
         "type": "aimed_fan",
@@ -551,20 +1313,51 @@
         "projectile_kind": 6
       },
       "collision": {
-        "shot_bounds": [-65, -25, 85, 30],
-        "beam_bounds": [-55, 55],
-        "contact_bounds": [-27.5, -10.0, 77.5, 60.0]
+        "shot_bounds": [
+          -65,
+          -25,
+          85,
+          30
+        ],
+        "beam_bounds": [
+          -55,
+          55
+        ],
+        "contact_bounds": [
+          -27.5,
+          -10.0,
+          77.5,
+          60.0
+        ]
       },
       "damage_smoke": {
         "below_hp": 100,
         "size": 16,
         "ports": [
-          [25, 25],
-          [60, 35],
-          [-25, 35]
+          [
+            25,
+            25
+          ],
+          [
+            60,
+            35
+          ],
+          [
+            -25,
+            35
+          ]
         ]
       },
-      "explosion_seconds": 1.05
+      "explosion_seconds": 1.05,
+      "sprite_path": "res://assets/enemies/heavy_fighter_b.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/heavy_fighter_b.png",
+        "frame_size": [
+          150,
+          100
+        ]
+      }
     },
     "91": {
       "name": "boss_stage1",
@@ -575,13 +1368,32 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [115, 100],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        115,
+        100
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-90, -25, 60, 60],
-        "beam_bounds": [-25, 75],
-        "contact_bounds": [-40.25, 15.0, 40.25, 85.0]
+        "shot_bounds": [
+          -90,
+          -25,
+          60,
+          60
+        ],
+        "beam_bounds": [
+          -25,
+          75
+        ],
+        "contact_bounds": [
+          -40.25,
+          15.0,
+          40.25,
+          85.0
+        ]
       },
       "stage": 1,
       "music": "boss01",
@@ -591,8 +1403,14 @@
         "enraged_interval_seconds": 0.15,
         "side_hold_seconds": 1.8,
         "ports": [
-          [-40, 50],
-          [40, 50]
+          [
+            -40,
+            50
+          ],
+          [
+            40,
+            50
+          ]
         ],
         "horizontal_base": 33.333333333333336,
         "speed_y": 300.0,
@@ -602,12 +1420,37 @@
         "below_ratio": 0.4,
         "size": 16,
         "ports": [
-          [-35, 55],
-          [0, 45],
-          [35, 55]
+          [
+            -35,
+            55
+          ],
+          [
+            0,
+            45
+          ],
+          [
+            35,
+            55
+          ]
         ]
       },
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/bosses/stage01/body.png",
+      "sprite_fit": "stretch",
+      "classic_sprite": {
+        "path": "res://assets/bosses/stage01/classic/body.png",
+        "frame_size": [
+          150,
+          100
+        ]
+      },
+      "boss_scroll": {
+        "stop_on_spawn": false,
+        "defeat_speed": 133.33333333333334
+      },
+      "visual": {
+        "anchor": "top_center"
+      }
     },
     "92": {
       "fire_channels": [
@@ -616,7 +1459,31 @@
           "interval_seconds": 0.09,
           "projectile_kind": 5,
           "gate": "part_missing",
-          "part_id": 113
+          "part_id": 113,
+          "volley": {
+            "type": "random",
+            "ports": [
+              [
+                15,
+                60
+              ],
+              [
+                -15,
+                60
+              ]
+            ],
+            "x_random": {
+              "base": 100,
+              "step": -33.333333333333336,
+              "count": 7
+            },
+            "projectile_kind": 5,
+            "y_random": {
+              "base": 100,
+              "step": -33.333333333333336,
+              "count": 7
+            }
+          }
         }
       ],
       "name": "boss_stage2",
@@ -627,13 +1494,32 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [100, 100],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        100,
+        100
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-90, -25, 60, 60],
-        "beam_bounds": [-25, 75],
-        "contact_bounds": [-35.0, 15.0, 35.0, 85.0]
+        "shot_bounds": [
+          -90,
+          -25,
+          60,
+          60
+        ],
+        "beam_bounds": [
+          -25,
+          75
+        ],
+        "contact_bounds": [
+          -35.0,
+          15.0,
+          35.0,
+          85.0
+        ]
       },
       "stage": 2,
       "music": "boss01",
@@ -641,31 +1527,94 @@
         "below_ratio": 0.4,
         "size": 16,
         "ports": [
-          [-35, 55],
-          [0, 45],
-          [35, 55]
+          [
+            -35,
+            55
+          ],
+          [
+            0,
+            45
+          ],
+          [
+            35,
+            55
+          ]
         ]
       },
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/bosses/stage02/body.png",
+      "sprite_fit": "stretch",
+      "classic_sprite": {
+        "path": "res://assets/bosses/stage02/classic/body.png",
+        "frame_size": [
+          150,
+          100
+        ]
+      },
+      "boss_scroll": {
+        "stop_on_spawn": false,
+        "defeat_speed": 133.33333333333334
+      },
+      "visual": {
+        "anchor": "top_center"
+      }
     },
     "93": {
       "fire_channels": [
         {
           "name": "missiles",
           "interval_seconds": 0.48,
-          "gate": "always"
+          "gate": "always",
+          "volley": {
+            "type": "random",
+            "ports": [
+              [
+                40,
+                40
+              ],
+              [
+                -40,
+                40
+              ]
+            ],
+            "x_random": {
+              "base": 66.66666666666667,
+              "step": -33.333333333333336,
+              "count": 5
+            },
+            "projectile_kind": 2,
+            "y_random": {
+              "base": -33.333333333333336,
+              "step": -33.333333333333336,
+              "count": 3
+            }
+          }
         },
         {
           "name": "left_enrage",
           "interval_seconds": 0.3,
           "gate": "parts_missing",
-          "part_ids": [121, 122]
+          "part_ids": [
+            121,
+            122
+          ],
+          "volley": {
+            "type": "shoulder_fan",
+            "port_index": 0
+          }
         },
         {
           "name": "right_enrage",
           "interval_seconds": 0.3,
           "gate": "parts_missing",
-          "part_ids": [121, 122]
+          "part_ids": [
+            121,
+            122
+          ],
+          "volley": {
+            "type": "shoulder_fan",
+            "port_index": 1
+          }
         }
       ],
       "attack": {
@@ -675,8 +1624,14 @@
         "spread_degrees": 45,
         "projectile_kind": 6,
         "ports": [
-          [-43, 46],
-          [43, 46]
+          [
+            -43,
+            46
+          ],
+          [
+            43,
+            46
+          ]
         ]
       },
       "name": "boss_stage3",
@@ -687,13 +1642,32 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [100, 100],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        100,
+        100
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-90, -25, 60, 60],
-        "beam_bounds": [-25, 75],
-        "contact_bounds": [-35.0, 15.0, 35.0, 85.0]
+        "shot_bounds": [
+          -90,
+          -25,
+          60,
+          60
+        ],
+        "beam_bounds": [
+          -25,
+          75
+        ],
+        "contact_bounds": [
+          -35.0,
+          15.0,
+          35.0,
+          85.0
+        ]
       },
       "stage": 3,
       "music": "boss01",
@@ -701,29 +1675,112 @@
         "below_ratio": 0.4,
         "size": 16,
         "ports": [
-          [-35, 55],
-          [0, 45],
-          [35, 55]
+          [
+            -35,
+            55
+          ],
+          [
+            0,
+            45
+          ],
+          [
+            35,
+            55
+          ]
         ]
       },
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/bosses/stage03/body.png",
+      "sprite_fit": "stretch",
+      "classic_sprite": {
+        "path": "res://assets/bosses/stage03/classic/body.png",
+        "frame_size": [
+          150,
+          100
+        ]
+      },
+      "boss_scroll": {
+        "stop_on_spawn": false,
+        "defeat_speed": 133.33333333333334
+      },
+      "visual": {
+        "anchor": "top_center"
+      }
     },
     "94": {
       "fire_channels": [
         {
           "name": "left_replacement",
           "interval_seconds": 0.12,
-          "gate": "left_missing"
+          "gate": "part_missing",
+          "volley": {
+            "type": "random",
+            "ports": [
+              [
+                -35,
+                55
+              ]
+            ],
+            "x_random": {
+              "base": 166.66666666666669,
+              "step": -33.333333333333336,
+              "count": 9
+            },
+            "projectile_kind": 5,
+            "speed_y": 366.6666666666667,
+            "abs_x_factor": -1
+          },
+          "part_id": 131
         },
         {
           "name": "right_replacement",
           "interval_seconds": 0.12,
-          "gate": "right_missing"
+          "gate": "part_missing",
+          "volley": {
+            "type": "random",
+            "ports": [
+              [
+                35,
+                55
+              ]
+            ],
+            "x_random": {
+              "base": 100,
+              "step": -33.333333333333336,
+              "count": 9
+            },
+            "projectile_kind": 5,
+            "speed_y": 366.6666666666667,
+            "abs_x_factor": -1
+          },
+          "part_id": 132
         },
         {
           "name": "enrage",
           "interval_seconds": 0.06,
-          "gate": "no_parts"
+          "gate": "no_parts",
+          "volley": {
+            "type": "random",
+            "ports": [
+              [
+                0,
+                35
+              ]
+            ],
+            "x_random": {
+              "base": 100,
+              "step": -33.333333333333336,
+              "count": 7
+            },
+            "projectile_kind": 8,
+            "speed_y": -166.66666666666669,
+            "abs_x_factor": 1,
+            "origin_x_random": {
+              "base": 10,
+              "step": -1,
+              "count": 21
+            }
+          }
         }
       ],
       "name": "boss_stage4",
@@ -734,13 +1791,32 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [100, 100],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        100,
+        100
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-90, -25, 60, 60],
-        "beam_bounds": [-25, 75],
-        "contact_bounds": [-35.0, 15.0, 35.0, 85.0]
+        "shot_bounds": [
+          -90,
+          -25,
+          60,
+          60
+        ],
+        "beam_bounds": [
+          -25,
+          75
+        ],
+        "contact_bounds": [
+          -35.0,
+          15.0,
+          35.0,
+          85.0
+        ]
       },
       "stage": 4,
       "music": "boss01",
@@ -753,28 +1829,79 @@
         "projectile_kind": 6,
         "min_y": 49,
         "ports": [
-          [-25, 50],
-          [25, 50]
+          [
+            -25,
+            50
+          ],
+          [
+            25,
+            50
+          ]
         ],
-        "rotation_directions": [-1, 1]
+        "rotation_directions": [
+          -1,
+          1
+        ]
       },
       "damage_smoke": {
         "below_ratio": 0.4,
         "size": 16,
         "ports": [
-          [-35, 55],
-          [0, 45],
-          [35, 55]
+          [
+            -35,
+            55
+          ],
+          [
+            0,
+            45
+          ],
+          [
+            35,
+            55
+          ]
         ]
       },
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/bosses/stage04/body.png",
+      "sprite_fit": "stretch",
+      "classic_sprite": {
+        "path": "res://assets/bosses/stage04/classic/body.png",
+        "frame_size": [
+          150,
+          100
+        ]
+      },
+      "boss_scroll": {
+        "stop_on_spawn": false,
+        "defeat_speed": 133.33333333333334
+      },
+      "visual": {
+        "anchor": "top_center"
+      }
     },
     "101": {
       "fire_channels": [
         {
           "name": "plasma",
           "interval_seconds": 0.06,
-          "gate": "fist_y"
+          "gate": "fist_y",
+          "volley": {
+            "type": "random",
+            "ports": [
+              [
+                25,
+                20
+              ]
+            ],
+            "x_random": {
+              "base": 100,
+              "step": -33.333333333333336,
+              "count": 7
+            },
+            "projectile_kind": 5,
+            "speed_y": -333.33333333333337,
+            "abs_x_factor": 1
+          }
         }
       ],
       "name": "boss1_left_fist",
@@ -784,38 +1911,94 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 80,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
       "boss_rush_drop": {
         "item": 1,
-        "offset": [25, 40]
+        "offset": [
+          25,
+          40
+        ]
       },
       "attachment": {
-        "offset": [-65, 0],
-        "follow_y": false,
-        "velocity_y_offset_seconds": 0.0
+        "offset": [
+          -65,
+          0
+        ],
+        "follow_y": false
       },
-      "explosion_seconds": 0.8999999999999999
+      "explosion_seconds": 0.8999999999999999,
+      "sprite_path": "res://assets/bosses/stage01/left_fist.png",
+      "sprite_fit": "stretch",
+      "classic_sprite": {
+        "path": "res://assets/bosses/stage01/classic/left_fist.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      },
+      "visual": {
+        "flip_h": true
+      }
     },
     "102": {
       "fire_channels": [
         {
           "name": "plasma",
           "interval_seconds": 0.06,
-          "gate": "fist_y"
+          "gate": "fist_y",
+          "volley": {
+            "type": "random",
+            "ports": [
+              [
+                25,
+                20
+              ]
+            ],
+            "x_random": {
+              "base": 100,
+              "step": -33.333333333333336,
+              "count": 7
+            },
+            "projectile_kind": 5,
+            "speed_y": -333.33333333333337,
+            "abs_x_factor": 1
+          }
         }
       ],
       "name": "boss1_right_fist",
@@ -825,31 +2008,67 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 80,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
       "boss_rush_drop": {
         "item": 1,
-        "offset": [25, 40]
+        "offset": [
+          25,
+          40
+        ]
       },
       "attachment": {
-        "offset": [15, 0],
-        "follow_y": false,
-        "velocity_y_offset_seconds": 0.0
+        "offset": [
+          15,
+          0
+        ],
+        "follow_y": false
       },
-      "explosion_seconds": 0.8999999999999999
+      "explosion_seconds": 0.8999999999999999,
+      "sprite_path": "res://assets/bosses/stage01/right_fist.png",
+      "sprite_fit": "stretch",
+      "classic_sprite": {
+        "path": "res://assets/bosses/stage01/classic/right_fist.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
     },
     "111": {
       "fire_channels": [
@@ -857,7 +2076,27 @@
           "name": "streak",
           "interval_seconds": 0.12,
           "gate": "always",
-          "window_seconds": [2.7, 0, 1.8]
+          "window_seconds": [
+            2.7,
+            0,
+            1.8
+          ],
+          "volley": {
+            "type": "inherited_fan",
+            "ports": [
+              [
+                30,
+                55
+              ]
+            ],
+            "velocity_offsets": [
+              [
+                0,
+                266.6666666666667
+              ]
+            ],
+            "projectile_kind": 1
+          }
         }
       ],
       "name": "boss2_right_arm",
@@ -867,31 +2106,71 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 100],
-      "draw_offset": [0, -50],
+      "draw_size": [
+        50,
+        100
+      ],
+      "draw_offset": [
+        0,
+        -50
+      ],
       "part_side": 1,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, -35.0, 42.5, 35.0]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          -35.0,
+          42.5,
+          35.0
+        ]
       },
       "damage_smoke": {
         "below_hp": 80,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
       "boss_rush_drop": {
         "item": 1,
-        "offset": [25, 40]
+        "offset": [
+          25,
+          40
+        ]
       },
       "attachment": {
-        "offset": [20, 60],
-        "follow_y": true,
-        "velocity_y_offset_seconds": 0.06
+        "offset": [
+          30,
+          85
+        ],
+        "follow_y": true
       },
-      "explosion_seconds": 0.8999999999999999
+      "explosion_seconds": 0.8999999999999999,
+      "sprite_path": "res://assets/bosses/stage02/right_arm.png",
+      "sprite_fit": "stretch",
+      "classic_sprite": {
+        "path": "res://assets/bosses/stage02/classic/right_arm.png",
+        "frame_size": [
+          50,
+          100
+        ]
+      },
+      "visual": {
+        "flip_h": true,
+        "rotation_radians": 0.25
+      }
     },
     "112": {
       "fire_channels": [
@@ -899,7 +2178,35 @@
           "name": "triple",
           "interval_seconds": 0.36,
           "gate": "always",
-          "window_seconds": [3.6, 1.8, 3.6]
+          "window_seconds": [
+            3.6,
+            1.8,
+            3.6
+          ],
+          "volley": {
+            "type": "inherited_fan",
+            "ports": [
+              [
+                20,
+                55
+              ]
+            ],
+            "velocity_offsets": [
+              [
+                0,
+                266.6666666666667
+              ],
+              [
+                -66.66666666666667,
+                233.33333333333334
+              ],
+              [
+                66.66666666666667,
+                233.33333333333334
+              ]
+            ],
+            "projectile_kind": 7
+          }
         }
       ],
       "name": "boss2_left_arm",
@@ -909,38 +2216,87 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 100],
-      "draw_offset": [0, -50],
+      "draw_size": [
+        50,
+        100
+      ],
+      "draw_offset": [
+        0,
+        -50
+      ],
       "part_side": -1,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, -35.0, 42.5, 35.0]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          -35.0,
+          42.5,
+          35.0
+        ]
       },
       "damage_smoke": {
         "below_hp": 80,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
       "boss_rush_drop": {
         "item": 1,
-        "offset": [25, 40]
+        "offset": [
+          25,
+          40
+        ]
       },
       "attachment": {
-        "offset": [-70, 60],
-        "follow_y": true,
-        "velocity_y_offset_seconds": -0.06
+        "offset": [
+          -80,
+          85
+        ],
+        "follow_y": true
       },
-      "explosion_seconds": 0.8999999999999999
+      "explosion_seconds": 0.8999999999999999,
+      "sprite_path": "res://assets/bosses/stage02/left_arm.png",
+      "sprite_fit": "stretch",
+      "classic_sprite": {
+        "path": "res://assets/bosses/stage02/classic/left_arm.png",
+        "frame_size": [
+          50,
+          100
+        ]
+      },
+      "visual": {
+        "rotation_radians": -0.25
+      }
     },
     "113": {
       "fire_channels": [
         {
           "name": "flames",
           "interval_seconds": 0.12,
-          "gate": "pod_y"
+          "gate": "pod_y",
+          "volley": {
+            "type": "diving_pair",
+            "ports": [
+              [
+                25,
+                25
+              ]
+            ],
+            "projectile_kind": 8
+          }
         }
       ],
       "name": "boss2_centre_module",
@@ -950,31 +2306,67 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 120,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
       "boss_rush_drop": {
         "item": 1,
-        "offset": [25, 40]
+        "offset": [
+          25,
+          40
+        ]
       },
       "attachment": {
-        "offset": [-25, 0],
-        "follow_y": false,
-        "velocity_y_offset_seconds": 0.0
+        "offset": [
+          -25,
+          0
+        ],
+        "follow_y": false
       },
-      "explosion_seconds": 0.8999999999999999
+      "explosion_seconds": 0.8999999999999999,
+      "sprite_path": "res://assets/bosses/stage02/centre_module.png",
+      "sprite_fit": "stretch",
+      "classic_sprite": {
+        "path": "res://assets/bosses/stage02/classic/centre_module.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
     },
     "121": {
       "fire_channels": [
@@ -982,7 +2374,21 @@
           "name": "triple",
           "interval_seconds": 0.48,
           "gate": "always",
-          "window_seconds": [3.6, 1.8, 3.6]
+          "window_seconds": [
+            3.6,
+            1.8,
+            3.6
+          ],
+          "volley": {
+            "type": "biased_aim",
+            "ports": [
+              [
+                5,
+                50
+              ]
+            ],
+            "projectile_kind": 5
+          }
         }
       ],
       "name": "boss3_left_arm",
@@ -992,31 +2398,67 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 100],
-      "draw_offset": [0, -50],
+      "draw_size": [
+        50,
+        100
+      ],
+      "draw_offset": [
+        0,
+        -50
+      ],
       "part_side": -1,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, -35.0, 42.5, 35.0]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          -35.0,
+          42.5,
+          35.0
+        ]
       },
       "damage_smoke": {
         "below_hp": 160,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
       "boss_rush_drop": {
         "item": 1,
-        "offset": [25, 40]
+        "offset": [
+          25,
+          40
+        ]
       },
       "attachment": {
-        "offset": [-75, 65],
-        "follow_y": true,
-        "velocity_y_offset_seconds": 0.0
+        "offset": [
+          -75,
+          65
+        ],
+        "follow_y": true
       },
-      "explosion_seconds": 0.8999999999999999
+      "explosion_seconds": 0.8999999999999999,
+      "sprite_path": "res://assets/bosses/stage03/left_arm.png",
+      "sprite_fit": "stretch",
+      "classic_sprite": {
+        "path": "res://assets/bosses/stage03/classic/left_arm.png",
+        "frame_size": [
+          50,
+          100
+        ]
+      }
     },
     "122": {
       "fire_channels": [
@@ -1024,7 +2466,21 @@
           "name": "triple",
           "interval_seconds": 0.48,
           "gate": "always",
-          "window_seconds": [3.6, 0, 1.8]
+          "window_seconds": [
+            3.6,
+            0,
+            1.8
+          ],
+          "volley": {
+            "type": "biased_aim",
+            "ports": [
+              [
+                45,
+                50
+              ]
+            ],
+            "projectile_kind": 5
+          }
         }
       ],
       "name": "boss3_right_arm",
@@ -1034,31 +2490,70 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 100],
-      "draw_offset": [0, -50],
+      "draw_size": [
+        50,
+        100
+      ],
+      "draw_offset": [
+        0,
+        -50
+      ],
       "part_side": 1,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, -35.0, 42.5, 35.0]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          -35.0,
+          42.5,
+          35.0
+        ]
       },
       "damage_smoke": {
         "below_hp": 160,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
       "boss_rush_drop": {
         "item": 1,
-        "offset": [25, 40]
+        "offset": [
+          25,
+          40
+        ]
       },
       "attachment": {
-        "offset": [25, 65],
-        "follow_y": true,
-        "velocity_y_offset_seconds": 0.0
+        "offset": [
+          25,
+          65
+        ],
+        "follow_y": true
       },
-      "explosion_seconds": 0.8999999999999999
+      "explosion_seconds": 0.8999999999999999,
+      "sprite_path": "res://assets/bosses/stage03/right_arm.png",
+      "sprite_fit": "stretch",
+      "classic_sprite": {
+        "path": "res://assets/bosses/stage03/classic/right_arm.png",
+        "frame_size": [
+          50,
+          100
+        ]
+      },
+      "visual": {
+        "flip_h": true
+      }
     },
     "123": {
       "fire_channels": [
@@ -1072,7 +2567,16 @@
           "rotation_step_degrees": 10,
           "rotation_direction": 1,
           "initial_degrees": 90,
-          "speed": 300.0
+          "speed": 300.0,
+          "volley": {
+            "type": "rotating",
+            "ports": [
+              [
+                25,
+                25
+              ]
+            ]
+          }
         }
       ],
       "name": "boss3_orb_a",
@@ -1082,29 +2586,60 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 80,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
       "boss_rush_drop": {
         "item": 1,
-        "offset": [25, 40]
+        "offset": [
+          25,
+          40
+        ]
       },
       "motion": {
         "type": "boss_health_stations",
-        "upper_center": [100, 100],
-        "lower_center": [100, 240],
+        "upper_center": [
+          100,
+          100
+        ],
+        "lower_center": [
+          100,
+          240
+        ],
         "lower_below_ratio": 0.5,
         "speed": 166.66666666666669,
         "lower_follow": {
@@ -1113,7 +2648,16 @@
           "acceleration_seconds": 0.4
         }
       },
-      "explosion_seconds": 0.8999999999999999
+      "explosion_seconds": 0.8999999999999999,
+      "sprite_path": "res://assets/bosses/stage03/orb_a.png",
+      "sprite_fit": "stretch",
+      "classic_sprite": {
+        "path": "res://assets/bosses/stage03/classic/orb_a.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
     },
     "124": {
       "fire_channels": [
@@ -1127,7 +2671,16 @@
           "rotation_step_degrees": 10,
           "rotation_direction": -1,
           "initial_degrees": 90,
-          "speed": 300.0
+          "speed": 300.0,
+          "volley": {
+            "type": "rotating",
+            "ports": [
+              [
+                25,
+                25
+              ]
+            ]
+          }
         }
       ],
       "name": "boss3_orb_b",
@@ -1137,29 +2690,60 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "damage_smoke": {
         "below_hp": 80,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
       "boss_rush_drop": {
         "item": 1,
-        "offset": [25, 40]
+        "offset": [
+          25,
+          40
+        ]
       },
       "motion": {
         "type": "boss_health_stations",
-        "upper_center": [300, 100],
-        "lower_center": [300, 240],
+        "upper_center": [
+          300,
+          100
+        ],
+        "lower_center": [
+          300,
+          240
+        ],
         "lower_below_ratio": 0.5,
         "speed": 166.66666666666669,
         "lower_follow": {
@@ -1168,19 +2752,53 @@
           "acceleration_seconds": 0.4
         }
       },
-      "explosion_seconds": 0.8999999999999999
+      "explosion_seconds": 0.8999999999999999,
+      "sprite_path": "res://assets/bosses/stage03/orb_b.png",
+      "sprite_fit": "stretch",
+      "classic_sprite": {
+        "path": "res://assets/bosses/stage03/classic/orb_b.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      },
+      "visual": {
+        "flip_h": true
+      }
     },
     "131": {
       "fire_channels": [
         {
           "name": "plasma",
           "interval_seconds": 0.06,
-          "gate": "left_claw_y"
+          "gate": "left_claw_y",
+          "volley": {
+            "type": "energy",
+            "ports": [
+              [
+                14,
+                36
+              ]
+            ],
+            "speed": 300,
+            "projectile_kind": 5
+          }
         },
         {
           "name": "streak",
           "interval_seconds": 0.12,
-          "gate": "left_claw_y"
+          "gate": "left_claw_y",
+          "volley": {
+            "type": "aimed",
+            "ports": [
+              [
+                14,
+                36
+              ]
+            ],
+            "speed": 333.33333333333337,
+            "projectile_kind": 7
+          }
         }
       ],
       "name": "boss4_left_claw",
@@ -1190,43 +2808,101 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 100],
-      "draw_offset": [0, -50],
+      "draw_size": [
+        50,
+        100
+      ],
+      "draw_offset": [
+        0,
+        -50
+      ],
       "part_side": -1,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, -35.0, 42.5, 35.0]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          -35.0,
+          42.5,
+          35.0
+        ]
       },
       "damage_smoke": {
         "below_hp": 240,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
       "boss_rush_drop": {
         "item": 1,
-        "offset": [25, 40]
+        "offset": [
+          25,
+          40
+        ]
       },
       "attachment": {
-        "offset": [-80, 65],
-        "follow_y": true,
-        "velocity_y_offset_seconds": 0.0
+        "offset": [
+          -80,
+          82
+        ],
+        "follow_y": true
       },
-      "explosion_seconds": 0.8999999999999999
+      "explosion_seconds": 0.8999999999999999,
+      "sprite_path": "res://assets/bosses/stage04/left_claw.png",
+      "sprite_fit": "stretch",
+      "classic_sprite": {
+        "path": "res://assets/bosses/stage04/classic/left_claw.png",
+        "frame_size": [
+          50,
+          100
+        ]
+      }
     },
     "132": {
       "fire_channels": [
         {
           "name": "plasma",
           "interval_seconds": 0.06,
-          "gate": "right_claw_y"
+          "gate": "right_claw_y",
+          "volley": {
+            "type": "energy",
+            "ports": [
+              [
+                36,
+                36
+              ]
+            ],
+            "speed": 300,
+            "projectile_kind": 5
+          }
         },
         {
           "name": "streak",
           "interval_seconds": 0.12,
-          "gate": "right_claw_y"
+          "gate": "right_claw_y",
+          "volley": {
+            "type": "aimed",
+            "ports": [
+              [
+                36,
+                36
+              ]
+            ],
+            "speed": 333.33333333333337,
+            "projectile_kind": 7
+          }
         }
       ],
       "name": "boss4_right_claw",
@@ -1236,38 +2912,94 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 100],
-      "draw_offset": [0, -50],
+      "draw_size": [
+        50,
+        100
+      ],
+      "draw_offset": [
+        0,
+        -50
+      ],
       "part_side": 1,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, -35.0, 42.5, 35.0]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          -35.0,
+          42.5,
+          35.0
+        ]
       },
       "damage_smoke": {
         "below_hp": 240,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
       "boss_rush_drop": {
         "item": 1,
-        "offset": [25, 40]
+        "offset": [
+          25,
+          40
+        ]
       },
       "attachment": {
-        "offset": [30, 65],
-        "follow_y": true,
-        "velocity_y_offset_seconds": 0.0
+        "offset": [
+          30,
+          82
+        ],
+        "follow_y": true
       },
-      "explosion_seconds": 0.8999999999999999
+      "explosion_seconds": 0.8999999999999999,
+      "sprite_path": "res://assets/bosses/stage04/right_claw.png",
+      "sprite_fit": "stretch",
+      "classic_sprite": {
+        "path": "res://assets/bosses/stage04/classic/right_claw.png",
+        "frame_size": [
+          50,
+          100
+        ]
+      },
+      "visual": {
+        "flip_h": true
+      }
     },
     "133": {
       "fire_channels": [
         {
           "name": "flame",
           "interval_seconds": 0.06,
-          "gate": "detached"
+          "gate": "detached",
+          "volley": {
+            "type": "random",
+            "ports": [
+              [
+                25,
+                20
+              ]
+            ],
+            "x_random": {
+              "base": 100,
+              "step": -33.333333333333336,
+              "count": 7
+            },
+            "projectile_kind": 8,
+            "speed_y": -166.66666666666669,
+            "abs_x_factor": 1
+          }
         },
         {
           "name": "radial",
@@ -1278,7 +3010,16 @@
           "spacing_degrees": 12,
           "rotation_step_degrees": 1,
           "initial_degrees": 90,
-          "speed": 233.33333333333334
+          "speed": 233.33333333333334,
+          "volley": {
+            "type": "rotating",
+            "ports": [
+              [
+                25,
+                20
+              ]
+            ]
+          }
         }
       ],
       "name": "boss4_centre_core",
@@ -1288,40 +3029,85 @@
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 80],
-      "draw_offset": [0, -8],
+      "draw_size": [
+        50,
+        80
+      ],
+      "draw_offset": [
+        1.414,
+        -9.108
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, -3.0, 42.5, 53.0]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          -3.0,
+          42.5,
+          53.0
+        ]
       },
       "damage_smoke": {
         "below_hp": 200,
         "size": 12,
         "ports": [
-          [25, 25]
+          [
+            25,
+            25
+          ]
         ]
       },
       "boss_rush_drop": {
         "item": 1,
-        "offset": [25, 40]
+        "offset": [
+          25,
+          40
+        ]
       },
       "attachment": {
-        "offset": [-26, 50],
-        "follow_y": true,
-        "velocity_y_offset_seconds": 0.0
+        "offset": [
+          -26,
+          50
+        ],
+        "follow_y": true
       },
       "core_motion": {
         "detach_hp": 300,
         "speed": 166.66666666666669,
         "launch_speed": 166.66666666666669,
         "launch_deceleration": 123.4567901234568,
-        "target_center": [200, 240],
+        "target_center": [
+          200,
+          240
+        ],
         "vertical_margin": 8,
         "pattern": 2401
       },
-      "explosion_seconds": 0.8999999999999999
+      "explosion_seconds": 0.8999999999999999,
+      "sprite_path": "res://assets/bosses/stage04/centre_core.png",
+      "sprite_fit": "stretch",
+      "classic_sprite": {
+        "path": "res://assets/bosses/stage04/classic/centre_core.png",
+        "frame_size": [
+          50,
+          80
+        ]
+      },
+      "visual": {
+        "painted_size": [
+          41,
+          80
+        ]
+      }
     },
     "201": {
       "name": "supply_approach",
@@ -1331,17 +3117,45 @@
       "score_scales_with_difficulty": true,
       "damageable": false,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "open_at_y": 291,
       "open_kind": 19,
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/enemies/supply_approach.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/supply_approach.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
     },
     "20": {
       "name": "health_supply_open",
@@ -1351,17 +3165,39 @@
       "score_scales_with_difficulty": false,
       "damageable": true,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "drop": {
         "item": 2,
-        "offset": [25, 40],
+        "offset": [
+          25,
+          40
+        ],
         "cargo_release": true
       },
       "on_defeat": {
@@ -1369,7 +3205,16 @@
         "definition_id": 202,
         "pattern": 1091
       },
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/enemies/health_supply_open.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/health_supply_open.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
     },
     "202": {
       "name": "health_supply_approach",
@@ -1379,17 +3224,848 @@
       "score_scales_with_difficulty": true,
       "damageable": false,
       "death_sound": "bang-e",
-      "draw_size": [50, 50],
-      "draw_offset": [0, 0],
+      "draw_size": [
+        50,
+        50
+      ],
+      "draw_offset": [
+        0,
+        0
+      ],
       "part_side": 0,
       "collision": {
-        "shot_bounds": [-15, -25, 35, 30],
-        "beam_bounds": [-15, 15],
-        "contact_bounds": [7.5, 7.5, 42.5, 42.5]
+        "shot_bounds": [
+          -15,
+          -25,
+          35,
+          30
+        ],
+        "beam_bounds": [
+          -15,
+          15
+        ],
+        "contact_bounds": [
+          7.5,
+          7.5,
+          42.5,
+          42.5
+        ]
       },
       "open_at_y": 291,
       "open_kind": 20,
-      "explosion_seconds": 0.6
+      "explosion_seconds": 0.6,
+      "sprite_path": "res://assets/enemies/health_supply_approach.png",
+      "sprite_fit": "contain",
+      "classic_sprite": {
+        "path": "res://assets/enemies/classic/health_supply_approach.png",
+        "frame_size": [
+          50,
+          50
+        ]
+      }
+    },
+    "51": {
+      "name": "autocannon_turret",
+      "role": "enemy",
+      "hp": 75,
+      "score": 120,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "death_sound": "bang-e",
+      "draw_size": [
+        64,
+        64
+      ],
+      "draw_offset": [
+        -7,
+        -7
+      ],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [
+          0,
+          0,
+          50,
+          50
+        ],
+        "beam_bounds": [
+          -25,
+          25
+        ],
+        "contact_bounds": [
+          4,
+          4,
+          46,
+          46
+        ]
+      },
+      "explosion_seconds": 0.6,
+      "ground_turret": {
+        "body_size": [
+          45,
+          56
+        ],
+        "ports": [
+          [
+            -5,
+            31
+          ],
+          [
+            5,
+            31
+          ]
+        ],
+        "reveal_y": 80,
+        "raise_seconds": 0.8,
+        "hatch": {
+          "path": "res://assets/enemies/stage05/retractable-hatch.png",
+          "region": [
+            84,
+            86,
+            1087,
+            1083
+          ]
+        },
+        "wreck": {
+          "path": "res://assets/enemies/stage05/turret-wreck.png",
+          "region": [
+            82,
+            83,
+            1090,
+            1088
+          ]
+        },
+        "center": [
+          25,
+          25
+        ]
+      },
+      "damage_smoke": {
+        "below_ratio": 0.4,
+        "ports": [
+          [
+            25,
+            25
+          ]
+        ],
+        "size": 8
+      },
+      "fire_channels": [
+        {
+          "name": "ground_shot",
+          "interval_seconds": 0.18,
+          "gate": "ground_ready",
+          "projectile_kind": 1,
+          "speed": 210
+        }
+      ],
+      "sprite_path": "res://assets/enemies/stage05/autocannon-turret.png",
+      "sprite_region": [
+        270,
+        169,
+        713,
+        891
+      ],
+      "movement_mode": "scenery",
+      "visual": {
+        "layer": "floor"
+      }
+    },
+    "52": {
+      "name": "energy_turret",
+      "role": "enemy",
+      "hp": 110,
+      "score": 180,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "death_sound": "bang-e",
+      "draw_size": [
+        64,
+        64
+      ],
+      "draw_offset": [
+        -7,
+        -7
+      ],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [
+          0,
+          0,
+          50,
+          50
+        ],
+        "beam_bounds": [
+          -25,
+          25
+        ],
+        "contact_bounds": [
+          4,
+          4,
+          46,
+          46
+        ]
+      },
+      "explosion_seconds": 0.6,
+      "ground_turret": {
+        "body_size": [
+          46,
+          56
+        ],
+        "ports": [
+          [
+            0,
+            29
+          ]
+        ],
+        "reveal_y": 80,
+        "raise_seconds": 0.8,
+        "hatch": {
+          "path": "res://assets/enemies/stage05/retractable-hatch.png",
+          "region": [
+            84,
+            86,
+            1087,
+            1083
+          ]
+        },
+        "wreck": {
+          "path": "res://assets/enemies/stage05/turret-wreck.png",
+          "region": [
+            82,
+            83,
+            1090,
+            1088
+          ]
+        },
+        "center": [
+          25,
+          25
+        ]
+      },
+      "damage_smoke": {
+        "below_ratio": 0.4,
+        "ports": [
+          [
+            25,
+            25
+          ]
+        ],
+        "size": 8
+      },
+      "fire_channels": [
+        {
+          "name": "ground_shot",
+          "interval_seconds": 1.2,
+          "gate": "ground_ready",
+          "projectile_kind": 5,
+          "speed": 160
+        }
+      ],
+      "sprite_path": "res://assets/enemies/stage05/energy-turret.png",
+      "sprite_region": [
+        269,
+        168,
+        716,
+        873
+      ],
+      "movement_mode": "scenery",
+      "visual": {
+        "layer": "floor"
+      }
+    },
+    "95": {
+      "name": "boss_stage5",
+      "display_name": "SUPERCOMPUTER",
+      "role": "boss",
+      "stage": 5,
+      "music": "boss01",
+      "hp": 2000,
+      "score": 0,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "death_sound": "bang-e",
+      "draw_size": [
+        100,
+        100
+      ],
+      "draw_offset": [
+        -50,
+        0
+      ],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [
+          -31.8182,
+          -25,
+          31.8182,
+          60
+        ],
+        "beam_bounds": [
+          -31.8182,
+          31.8182
+        ],
+        "contact_bounds": [
+          -29.5455,
+          21.2766,
+          29.5455,
+          82.4468
+        ]
+      },
+      "explosion_seconds": 1.05,
+      "fire_channels": [],
+      "damage_smoke": {
+        "below_ratio": 0.4,
+        "ports": [
+          [
+            -27.2727,
+            34.5745
+          ],
+          [
+            27.2727,
+            34.5745
+          ]
+        ],
+        "size": 5.9091
+      },
+      "boss_scroll": {
+        "stop_on_spawn": true,
+        "defeat_speed": 0
+      },
+      "sprite_path": "res://assets/enemies/stage05/supercomputer-mainframe.png",
+      "sprite_region": [
+        97,
+        4,
+        1254,
+        1072
+      ],
+      "sprite_fit": "stretch",
+      "movement_mode": "stationary",
+      "visual": {
+        "anchor": "top_left",
+        "layer": "floor",
+        "flip_h": false,
+        "order": 1
+      },
+      "floor_decoration": {
+        "asset": {
+          "path": "res://assets/enemies/stage05/supercomputer-floor-cables.png"
+        },
+        "size": [
+          240,
+          240
+        ],
+        "offset": [
+          0,
+          0
+        ]
+      }
+    },
+    "141": {
+      "name": "supercomputer_gatling_left",
+      "role": "part",
+      "hp": 400,
+      "score": 0,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "death_sound": "bang-e",
+      "draw_size": [
+        50,
+        100
+      ],
+      "draw_offset": [
+        -35.083763,
+        -11.597938
+      ],
+      "part_side": -1,
+      "attachment": {
+        "offset": [
+          -32,
+          37
+        ],
+        "follow_y": true
+      },
+      "collision": {
+        "shot_bounds": [
+          -35.083763,
+          -11.597938,
+          14.916237,
+          88.402062
+        ],
+        "beam_bounds": [
+          -14.916237,
+          35.083763
+        ],
+        "contact_bounds": [
+          -32.583763,
+          -7.431238,
+          12.416237,
+          84.235362
+        ]
+      },
+      "damage_smoke": {
+        "below_ratio": 0.4,
+        "ports": [
+          [
+            -10.083763,
+            38.402062
+          ]
+        ],
+        "size": 5.0
+      },
+      "explosion_seconds": 0.8,
+      "fire_channels": [],
+      "sprite_path": "res://assets/enemies/stage05/supercomputer-gatling-arm.png",
+      "sprite_region": [
+        107,
+        105,
+        677,
+        1552
+      ],
+      "sprite_fit": "contain",
+      "movement_mode": "stationary",
+      "visual": {
+        "layer": "floor",
+        "anchor": "hinge",
+        "flip_h": false,
+        "order": 3,
+        "hinge_uv": [
+          0.7311669128508124,
+          0.11597938144329897
+        ]
+      }
+    },
+    "142": {
+      "name": "supercomputer_gatling_right",
+      "role": "part",
+      "hp": 400,
+      "score": 0,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "death_sound": "bang-e",
+      "draw_size": [
+        50,
+        100
+      ],
+      "draw_offset": [
+        -14.916237,
+        -11.597938
+      ],
+      "part_side": 1,
+      "attachment": {
+        "offset": [
+          32,
+          37
+        ],
+        "follow_y": true
+      },
+      "collision": {
+        "shot_bounds": [
+          -14.916237,
+          -11.597938,
+          35.083763,
+          88.402062
+        ],
+        "beam_bounds": [
+          -35.083763,
+          14.916237
+        ],
+        "contact_bounds": [
+          -12.416237,
+          -7.431238,
+          32.583763,
+          84.235362
+        ]
+      },
+      "damage_smoke": {
+        "below_ratio": 0.4,
+        "ports": [
+          [
+            10.083763,
+            38.402062
+          ]
+        ],
+        "size": 5.0
+      },
+      "explosion_seconds": 0.8,
+      "fire_channels": [],
+      "sprite_path": "res://assets/enemies/stage05/supercomputer-gatling-arm.png",
+      "sprite_region": [
+        107,
+        105,
+        677,
+        1552
+      ],
+      "sprite_fit": "contain",
+      "movement_mode": "stationary",
+      "visual": {
+        "flip_h": true,
+        "layer": "floor",
+        "anchor": "hinge",
+        "order": 3,
+        "hinge_uv": [
+          0.7311669128508124,
+          0.11597938144329897
+        ]
+      }
+    },
+    "143": {
+      "name": "supercomputer_missile_wing_left",
+      "role": "part",
+      "hp": 400,
+      "score": 0,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "death_sound": "bang-e",
+      "draw_size": [
+        100,
+        50
+      ],
+      "draw_offset": [
+        -74.155909,
+        -41.211519
+      ],
+      "part_side": -1,
+      "attachment": {
+        "offset": [
+          -32,
+          37
+        ],
+        "follow_y": true
+      },
+      "collision": {
+        "shot_bounds": [
+          -74.155909,
+          -41.211519,
+          25.844091000000006,
+          8.788480999999997
+        ],
+        "beam_bounds": [
+          -25.844091000000006,
+          74.155909
+        ],
+        "contact_bounds": [
+          -70.155909,
+          -37.211519,
+          21.844091000000006,
+          4.788480999999997
+        ]
+      },
+      "damage_smoke": {
+        "below_ratio": 0.4,
+        "ports": [
+          [
+            -24.155908999999994,
+            -16.211519000000003
+          ]
+        ],
+        "size": 5
+      },
+      "explosion_seconds": 0.8,
+      "fire_channels": [],
+      "sprite_path": "res://assets/enemies/stage05/supercomputer-missile-wing.png",
+      "sprite_region": [
+        68,
+        45,
+        1281,
+        1007
+      ],
+      "sprite_fit": "contain",
+      "movement_mode": "stationary",
+      "visual": {
+        "layer": "floor",
+        "anchor": "hinge",
+        "flip_h": false,
+        "order": 2,
+        "hinge_uv": [
+          0.8797814207650273,
+          0.8242303872889771
+        ]
+      }
+    },
+    "144": {
+      "name": "supercomputer_missile_wing_right",
+      "role": "part",
+      "hp": 400,
+      "score": 0,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "death_sound": "bang-e",
+      "draw_size": [
+        100,
+        50
+      ],
+      "draw_offset": [
+        -25.844091,
+        -41.211519
+      ],
+      "part_side": 1,
+      "attachment": {
+        "offset": [
+          32,
+          37
+        ],
+        "follow_y": true
+      },
+      "collision": {
+        "shot_bounds": [
+          -25.844091,
+          -41.211519,
+          74.15590900000001,
+          8.788480999999997
+        ],
+        "beam_bounds": [
+          -74.15590900000001,
+          25.844091
+        ],
+        "contact_bounds": [
+          -21.844091,
+          -37.211519,
+          70.15590900000001,
+          4.788480999999997
+        ]
+      },
+      "damage_smoke": {
+        "below_ratio": 0.4,
+        "ports": [
+          [
+            24.155909,
+            -16.211519000000003
+          ]
+        ],
+        "size": 5
+      },
+      "explosion_seconds": 0.8,
+      "fire_channels": [],
+      "sprite_path": "res://assets/enemies/stage05/supercomputer-missile-wing.png",
+      "sprite_region": [
+        68,
+        45,
+        1281,
+        1007
+      ],
+      "sprite_fit": "contain",
+      "movement_mode": "stationary",
+      "visual": {
+        "flip_h": true,
+        "layer": "floor",
+        "anchor": "hinge",
+        "order": 2,
+        "hinge_uv": [
+          0.8797814207650273,
+          0.8242303872889771
+        ]
+      }
+    },
+    "145": {
+      "name": "supercomputer_autocannon_turret",
+      "role": "part",
+      "hp": 75,
+      "score": 120,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "death_sound": "bang-e",
+      "draw_size": [
+        64,
+        64
+      ],
+      "draw_offset": [
+        -7,
+        -7
+      ],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [
+          0,
+          0,
+          50,
+          50
+        ],
+        "beam_bounds": [
+          -25,
+          25
+        ],
+        "contact_bounds": [
+          4,
+          4,
+          46,
+          46
+        ]
+      },
+      "explosion_seconds": 0.6,
+      "ground_turret": {
+        "body_size": [
+          45,
+          56
+        ],
+        "ports": [
+          [
+            -5,
+            31
+          ],
+          [
+            5,
+            31
+          ]
+        ],
+        "reveal_y": 80,
+        "raise_seconds": 0.8,
+        "hatch": {
+          "path": "res://assets/enemies/stage05/retractable-hatch.png",
+          "region": [
+            84,
+            86,
+            1087,
+            1083
+          ]
+        },
+        "wreck": {
+          "path": "res://assets/enemies/stage05/turret-wreck.png",
+          "region": [
+            82,
+            83,
+            1090,
+            1088
+          ]
+        },
+        "center": [
+          25,
+          25
+        ]
+      },
+      "damage_smoke": {
+        "below_ratio": 0.4,
+        "ports": [
+          [
+            25,
+            25
+          ]
+        ],
+        "size": 8
+      },
+      "fire_channels": [
+        {
+          "name": "ground_shot",
+          "interval_seconds": 0.18,
+          "gate": "ground_ready",
+          "projectile_kind": 1,
+          "speed": 210
+        }
+      ],
+      "sprite_path": "res://assets/enemies/stage05/supercomputer-autocannon-turret.png",
+      "sprite_region": [
+        250,
+        145,
+        753,
+        965
+      ],
+      "movement_mode": "scenery",
+      "visual": {
+        "layer": "floor"
+      }
+    },
+    "146": {
+      "name": "supercomputer_energy_turret",
+      "role": "part",
+      "hp": 110,
+      "score": 180,
+      "score_scales_with_difficulty": true,
+      "damageable": true,
+      "death_sound": "bang-e",
+      "draw_size": [
+        64,
+        64
+      ],
+      "draw_offset": [
+        -7,
+        -7
+      ],
+      "part_side": 0,
+      "collision": {
+        "shot_bounds": [
+          0,
+          0,
+          50,
+          50
+        ],
+        "beam_bounds": [
+          -25,
+          25
+        ],
+        "contact_bounds": [
+          4,
+          4,
+          46,
+          46
+        ]
+      },
+      "explosion_seconds": 0.6,
+      "ground_turret": {
+        "body_size": [
+          46,
+          56
+        ],
+        "ports": [
+          [
+            0,
+            29
+          ]
+        ],
+        "reveal_y": 80,
+        "raise_seconds": 0.8,
+        "hatch": {
+          "path": "res://assets/enemies/stage05/retractable-hatch.png",
+          "region": [
+            84,
+            86,
+            1087,
+            1083
+          ]
+        },
+        "wreck": {
+          "path": "res://assets/enemies/stage05/turret-wreck.png",
+          "region": [
+            82,
+            83,
+            1090,
+            1088
+          ]
+        },
+        "center": [
+          25,
+          25
+        ]
+      },
+      "damage_smoke": {
+        "below_ratio": 0.4,
+        "ports": [
+          [
+            25,
+            25
+          ]
+        ],
+        "size": 8
+      },
+      "fire_channels": [
+        {
+          "name": "ground_shot",
+          "interval_seconds": 1.2,
+          "gate": "ground_ready",
+          "projectile_kind": 5,
+          "speed": 160
+        }
+      ],
+      "sprite_path": "res://assets/enemies/stage05/supercomputer-energy-turret.png",
+      "sprite_region": [
+        201,
+        78,
+        852,
+        1075
+      ],
+      "movement_mode": "scenery",
+      "visual": {
+        "layer": "floor"
+      }
     }
   }
 }

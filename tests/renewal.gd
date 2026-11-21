@@ -1,4 +1,5 @@
 extends SceneTree
+const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Game = preload("res://scripts/game.gd")
 const Clock = preload("res://scripts/timing.gd")
 const Preview = preload("res://scripts/weapon_preview.gd")
@@ -52,9 +53,10 @@ func run() -> void:
 	game.events = []
 	for i in range(600): game._tick(Vector2.ZERO,false,false,false,0.03)
 	check(game.background_y==2160 and game.scenery_distance==1200 and game.scroll_speed==(2/0.03),"slow stage4 intro keeps the original two-pixel movement for all 600 ticks")
-	for kind in game.view.renewal.SMALL:
+	for kind in Catalog.ids():
+		if Catalog.definition(kind).get("sprite_fit","")!="contain": continue
 		var texture: Texture2D = game.view.renewal.enemy_texture(kind)
-		check(texture.get_width()>0 and texture.get_height()>0,"renewed enemy kind %d resolves a nonempty atlas cell"%kind)
+		check(texture.get_width()>0 and texture.get_height()>0,"renewed enemy kind %d resolves a nonempty standalone sprite"%kind)
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	game.audio.stop_all()
 	await create_timer(0.15).timeout

@@ -13,7 +13,7 @@ func check(ok: bool, message: String) -> void:
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var paths: Array = []
-	for stage in range(1,5):
+	for stage in range(1,6):
 		var textures: Array[Texture2D] = Assets.load_stage(stage)
 		check(textures.size()==Regions.count(stage),"stage%d keeps its original region count"%stage)
 		for i in range(textures.size()):
@@ -21,7 +21,7 @@ func run() -> void:
 			check(texture.get_width()>=960 and texture.get_height()>=960,"stage%d region%d has native resolution of at least960x960"%[stage,i+1])
 			check(not paths.has(texture.resource_path) and texture.resource_path.begins_with(Assets.ROOT+"stage%02d/"%stage),"stage%d region%d uses its own stage-local image"%[stage,i+1])
 			paths.append(texture.resource_path)
-	check(paths.size()==13,"all thirteen regions have independent image resources")
+	check(paths.size()==16,"all sixteen regions have independent image resources")
 	var g = Game.new()
 	g.automatic = false
 	g.mute = true

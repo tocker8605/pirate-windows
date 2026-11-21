@@ -36,7 +36,7 @@ func run() -> void:
 			else:
 				var expected: int = {111:49,112:8,121:6,122:9}[id]
 				check(events.size()==expected and events.all(func(e): return Scheduler.in_window(channel,e.at)),"entity%d preserves intentional local burst/rest windows without banking shots"%id)
-	check(channel_count==41,"all41migrated attack channels are audited")
+	check(channel_count==43,"all43independent attack channels including ground turrets are audited")
 	var a: Dictionary = Catalog.create(1,Vector2(100,100))
 	var b: Dictionary = Catalog.create(1,Vector2(100,100))
 	var player := Vector2(175,380)

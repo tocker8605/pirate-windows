@@ -1,6 +1,9 @@
 extends RefCounted
+const Campaign = preload("res://scripts/campaign_rules.gd")
+const Visual=preload("res://scripts/entity_visual_schema.gd")
+const Volleys=preload("res://scripts/projectile_volley_schema.gd")
 const Check = preload("res://scripts/data_validation.gd")
-const FIELDS: Array = ["name","display_name","role","hp","score","score_scales_with_difficulty","damageable","explosion_seconds","death_sound","draw_size","draw_offset","part_side","collision","damage_smoke","boss_rush_drop","drop","stage","music","open_at_y","open_kind","on_defeat","attack","fire_channels","motion","attachment","core_motion"]
+const FIELDS: Array = ["name","display_name","role","hp","score","score_scales_with_difficulty","damageable","explosion_seconds","death_sound","draw_size","draw_offset","part_side","collision","damage_smoke","boss_rush_drop","drop","stage","music","open_at_y","open_kind","on_defeat","attack","fire_channels","motion","attachment","core_motion","movement_mode","boss_scroll","floor_decoration","visual","sprite_region","ground_turret","sprite_path","sprite_fit","classic_sprite"]
 static func validate_document(document: Variant) -> PackedStringArray:
 	var errors := PackedStringArray()
 	if not document is Dictionary or document.get("schema_version",0)!=2 or not document.get("entities") is Dictionary:
@@ -16,21 +19,29 @@ static func validate_document(document: Variant) -> PackedStringArray:
 			continue
 		for field in d:
 			if field not in FIELDS: errors.append(prefix+"unexpected field "+str(field))
+		if d.has("sprite_path") and (not d.sprite_path is String or not str(d.sprite_path).begins_with("res://assets/") or not str(d.sprite_path).ends_with(".png")): errors.append(prefix+"sprite_path must name a project PNG")
+		if d.has("sprite_fit") and d.sprite_fit not in ["contain","stretch"]: errors.append(prefix+"invalid sprite_fit")
+		if d.has("classic_sprite"):
+			var classic: Variant=d.classic_sprite
+			Check.nested_fields(classic,["path","frame_size"],prefix+"classic_sprite.",errors)
+			if not classic is Dictionary: errors.append(prefix+"classic_sprite must be an object")
+			elif not classic.get("path") is String or not str(classic.path).begins_with("res://assets/") or not Check.vector(classic.get("frame_size"),2): errors.append(prefix+"invalid classic sprite metadata")
+		Visual.validate(d,prefix,errors)
 		Check.nested_fields(d.get("collision",{}),["beam_bounds", "contact_bounds", "shot_bounds"],prefix+"collision.",errors)
 		Check.nested_fields(d.get("motion",{}),["type", "upper_center", "lower_center", "lower_below_ratio", "speed", "lower_follow"],prefix+"motion.",errors)
-		Check.nested_fields(d.get("fire_channels",{}),["name", "gate", "interval_seconds", "projectile_kind", "part_id", "part_ids", "count", "initial_degrees", "rotation_direction", "rotation_step_degrees", "spacing_degrees", "speed", "window_seconds"],prefix+"fire_channels.",errors)
+		Check.nested_fields(d.get("fire_channels",{}),["name", "gate", "interval_seconds", "projectile_kind", "part_id", "part_ids", "count", "initial_degrees", "rotation_direction", "rotation_step_degrees", "spacing_degrees", "speed", "window_seconds", "volley"],prefix+"fire_channels.",errors)
 		Check.nested_fields(d.get("attack",{}),["count", "enraged_interval_seconds", "horizontal_base", "initial_degrees", "interval_seconds", "max_spread_degrees", "max_vertical_speed", "min_y", "opposed", "ports", "projectile_kind", "requires_stationary_x", "rotation_directions", "side_hold_seconds", "speed", "speed_y", "spread_degrees", "spread_directions", "step_degrees", "type"],prefix+"attack.",errors)
 		Check.nested_fields(d.get("damage_smoke",{}),["below_hp", "below_ratio", "ports", "size"],prefix+"damage_smoke.",errors)
 		Check.nested_fields(d.get("drop",{}),["cargo_release", "item", "offset"],prefix+"drop.",errors)
 		Check.nested_fields(d.get("boss_rush_drop",{}),["cargo_release", "item", "offset"],prefix+"boss_rush_drop.",errors)
 		Check.nested_fields(d.get("on_defeat",{}),["action", "definition_id", "pattern"],prefix+"on_defeat.",errors)
-		Check.nested_fields(d.get("attachment",{}),["offset", "follow_y", "velocity_y_offset_seconds"],prefix+"attachment.",errors)
+		Check.nested_fields(d.get("attachment",{}),["offset", "follow_y"],prefix+"attachment.",errors)
 		Check.nested_fields(d.get("core_motion",{}),["detach_hp", "speed", "launch_speed", "launch_deceleration", "target_center", "vertical_margin", "pattern"],prefix+"core_motion.",errors)
 		if d.get("motion",{} ) is Dictionary and d.get("motion",{}).get("lower_follow") is Dictionary:
 			Check.unknown_fields(d.motion.lower_follow,["x_offset","speed","acceleration_seconds"],prefix+"motion.lower_follow.",errors)
 		if d.has("attachment"):
 			var attachment: Variant = d.attachment
-			if not attachment is Dictionary or not Check.vector(attachment.get("offset"),2) or not attachment.get("follow_y") is bool or not Check.number(attachment.get("velocity_y_offset_seconds")): errors.append(prefix+"invalid attachment")
+			if not attachment is Dictionary or not Check.vector(attachment.get("offset"),2) or not attachment.get("follow_y") is bool: errors.append(prefix+"invalid attachment")
 		if d.has("core_motion"):
 			var core: Variant = d.core_motion
 			if not core is Dictionary: errors.append(prefix+"core_motion must be an object")
@@ -84,9 +95,10 @@ static func validate_document(document: Variant) -> PackedStringArray:
 						continue
 					if not channel.get("name") is String or channel.get("name","").is_empty() or channel.get("name") in names: errors.append(prefix+"invalid/duplicate fire channel name")
 					names.append(channel.get("name"))
+					if channel.has("volley"): Volleys.validate(channel.volley,prefix+"volley.",errors)
 					if not Check.number(channel.get("interval_seconds")) or float(channel.interval_seconds)<=0: errors.append(prefix+"invalid fire channel interval")
 					if channel.has("projectile_kind") and (not Check.number(channel.projectile_kind) or float(channel.projectile_kind)!=int(channel.projectile_kind) or int(channel.projectile_kind) not in range(1,9)): errors.append(prefix+"invalid channel projectile kind")
-					if channel.get("gate","") not in ["always","aim_window","moving","stationary_aim","sweep_y","descent_or_stationary","descending","flame_y","charge_y","fist_y","pod_y","orb_y","orb_y_stationary","orb_stationary","left_claw_y","right_claw_y","detached","core_settled","no_parts","part_missing","parts_missing","left_missing","right_missing"]: errors.append(prefix+"unknown fire gate")
+					if channel.get("gate","") not in ["always","ground_ready","aim_window","moving","stationary_aim","sweep_y","descent_or_stationary","descending","flame_y","charge_y","fist_y","pod_y","orb_y","orb_y_stationary","orb_stationary","left_claw_y","right_claw_y","detached","core_settled","no_parts","part_missing","parts_missing"]: errors.append(prefix+"unknown fire gate")
 					if channel.get("gate") in ["part_missing","parts_missing"]:
 						var part_ids: Variant = [channel.get("part_id")] if channel.gate=="part_missing" else channel.get("part_ids")
 						if not part_ids is Array or part_ids.is_empty(): errors.append(prefix+"missing-part gate requires a nonempty part list")
@@ -97,7 +109,7 @@ static func validate_document(document: Variant) -> PackedStringArray:
 									var part_definition: Variant = document.entities.get(str(int(part_id)),{})
 									if not part_definition is Dictionary or part_definition.get("role","")!="part": errors.append(prefix+"missing-part gate must reference a part")
 					if channel.has("rotation_direction") and (not Check.number(channel.rotation_direction) or absf(float(channel.rotation_direction))!=1.0): errors.append(prefix+"invalid rotation direction")
-					if channel.get("name") in ["radial","rotating_cross"]:
+					if channel.get("volley",{}) is Dictionary and channel.get("volley",{}).get("type")=="rotating":
 						for field in ["speed","spacing_degrees","rotation_step_degrees","projectile_kind"]:
 							if not Check.number(channel.get(field)) or float(channel[field])<=0: errors.append(prefix+"invalid radial "+field)
 						if not Check.number(channel.get("initial_degrees")): errors.append(prefix+"invalid radial initial angle")
@@ -142,7 +154,7 @@ static func validate_document(document: Variant) -> PackedStringArray:
 				if not Check.number(attack.get("horizontal_base")): errors.append(prefix+"invalid alternating horizontal base")
 				if not attack.get("ports") is Array or attack.ports.size()!=2: errors.append(prefix+"alternating attack needs two ports")
 		if not Check.number(d.get("explosion_seconds")) or float(d.get("explosion_seconds",0))<=0: errors.append(prefix+"invalid explosion duration")
-		if d.get("role")=="boss" and (int(d.get("stage",0)) not in [1,2,3,4] or not d.get("music") is String): errors.append(prefix+"boss stage/music missing")
+		if d.get("role")=="boss" and (int(d.get("stage",0)) not in range(1,Campaign.stage_count()+1) or not d.get("music") is String): errors.append(prefix+"boss stage/music missing")
 		if d.has("damage_smoke"):
 			var smoke: Variant = d.damage_smoke
 			if not smoke is Dictionary:

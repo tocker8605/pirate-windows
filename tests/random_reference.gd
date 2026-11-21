@@ -52,7 +52,7 @@ func run() -> void:
 	g._load_stage(2)
 	g.delta_seconds = 0.03
 	check(Rng.state==before,"stage loading does not reseed or consume original Rnd state")
-	g.stage = 4
+	g.stage = 5
 	g.rankings.entries.clear()
 	Rng.state = 0x50000
 	g._complete_stage()

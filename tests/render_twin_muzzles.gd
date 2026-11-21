@@ -11,7 +11,7 @@ class Board extends Node2D:
 			var e: Dictionary = row.actor
 			var d: Dictionary = Catalog.definition(e.kind)
 			var center: Vector2 = e.pos+d.draw_offset+d.draw_size/2
-			game.view.renewal.draw_enemy(self,e,e.pos+d.draw_offset,0)
+			game.view.renewal.draw_enemy(self,e,e.pos,0)
 			draw_line(center-Vector2(0,55),center+Vector2(0,55),Color(1,1,1,0.4),0.7)
 			for shot in row.shots: draw_circle(shot.pos,3,Color("4dff80"))
 			draw_string(ThemeDB.fallback_font,center+Vector2(-75,65),"%d / %s"%[e.kind,d.name],HORIZONTAL_ALIGNMENT_LEFT,160,9,Color.WHITE)
@@ -33,8 +33,10 @@ func run() -> void:
 		var center := Vector2(100+200*(i%2),70+150*floori(i/2.0))
 		var e: Dictionary = Catalog.create(ids[i],center-Vector2(25,25))
 		e.velocity = Vector2(0,100)
-		var shots: Array = Fire.advance(e,0.12) if e.kind==8 else Fire.emit(e,Vector2(175,450),names[e.kind])
-		if shots.size()!=2 or not is_equal_approx((shots[0].pos.x+shots[1].pos.x)/2,center.x): failures += 1
+		var shots: Array = Fire.advance(e,Catalog.definition(8).attack.interval_seconds) if e.kind==8 else Fire.emit(e,Vector2(175,450),names[e.kind])
+		if shots.size()!=2 or not is_equal_approx((shots[0].pos.x+shots[1].pos.x)/2,center.x):
+			failures += 1
+			push_error("FAIL: actor%d muzzle positions are not symmetric"%e.kind)
 		board.rows.append({"actor":e,"shots":shots})
 	root.add_child(board)
 	await RenderingServer.frame_post_draw

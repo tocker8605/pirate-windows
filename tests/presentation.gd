@@ -48,8 +48,8 @@ func run() -> void:
 	check(is_equal_approx(Clock.FIXED_STEP_SECONDS,1.0/60.0),"default simulation runs one tick per16.667ms")
 	check(Engine.max_fps==60,"render frame cap is60")
 	var pilot = g.view.pilot
-	check(pilot.frames.size()==3 and pilot.texture(0)==pilot.frames[0] and pilot.texture(1)==pilot.frames[1] and pilot.texture(2)==pilot.frames[1],"hero neutral/left/right frames use observed bank direction")
-	check(pilot.frames[0].region.size==pilot.frames[1].region.size and pilot.frames[1].region.size==pilot.frames[2].region.size,"hero frames retain shared crop size and scale")
+	check(pilot.frames.size()==2 and pilot.texture(0)==pilot.frames[0] and pilot.texture(1)==pilot.frames[1] and pilot.texture(2)==pilot.frames[1],"hero neutral/left/right frames use observed bank direction")
+	check(pilot.frames[0].region.size==pilot.frames[1].region.size,"hero frames retain shared crop size and scale")
 	for bank in range(3):
 		var source: Vector2 = pilot.COCKPIT_ANCHORS[0 if bank==0 else 1]
 		var uv: Vector2 = (source-Vector2(pilot.frame_crop.position))/Vector2(pilot.frame_crop.size)
@@ -65,7 +65,9 @@ func run() -> void:
 			Boss.attach(left,b)
 			Boss.attach(right,b)
 			check(left.pos.x+25-200==-(right.pos.x+25-200) and left.pos.y==right.pos.y,"boss %d/%d attachment symmetry at vy%d"%[pair[0],pair[1],vy])
-		check(g.view.renewal.enemy_texture(pair[0])==g.view.renewal.enemy_texture(pair[1]) and Boss.part_side(pair[0])==-1 and Boss.part_side(pair[1])==1,"paired parts share canonical artwork and opposite handedness")
+		var left_texture: Texture2D=g.view.renewal.enemy_texture(pair[0])
+		var right_texture: Texture2D=g.view.renewal.enemy_texture(pair[1])
+		check(left_texture.resource_path!=right_texture.resource_path and left_texture.get_image().get_data()==right_texture.get_image().get_data() and Boss.part_side(pair[0])==-1 and Boss.part_side(pair[1])==1,"paired parts have independent files with matching artwork and opposite handedness")
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	g.audio.stop_all()
 	await create_timer(0.15).timeout

@@ -17,9 +17,9 @@ func check(ok: bool, message: String) -> void:
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var art = Art.new()
-	check(art.enemies.resource_path.ends_with("enemies-v18.png"),"regular enemies use the restored v18 renewal atlas")
-	check(art.bosses.resource_path.ends_with("bosses-v15.png"),"current boss artwork remains unchanged")
-	var raw: Image = art.bosses.get_image()
+	check(art.enemy_texture(1).resource_path.ends_with("crescent_scout.png"),"regular enemies resolve independent PNGs")
+	check(art.enemy_texture(94).resource_path.ends_with("stage04/body.png"),"current boss artwork remains unchanged")
+	var raw: Image = art.enemy_texture(131).get_image()
 	for kind in [131,132]:
 		var body = {"pos":Vector2(200,60 if kind==131 else 130),"velocity":Vector2.ZERO}
 		var arm = {"kind":kind,"pos":Vector2.ZERO,"velocity":Vector2.ZERO,"pattern":0,"hp":600}
@@ -27,11 +27,11 @@ func run() -> void:
 		var muzzle: Vector2 = Boss.claw_muzzle(arm)
 		var local: Vector2 = muzzle-(arm.pos-Vector2(0,50))
 		if kind==132: local.x = 50-local.x
-		var rect: Rect2i = art.BOSS_RECTS[6]
-		var point := Vector2i(rect.position)+Vector2i(local/Vector2(50,100)*Vector2(rect.size))
+		var point := Vector2i(local/Vector2(50,100)*Vector2(raw.get_size()))
 		check(raw.get_pixelv(point).a<0.05,"arm%d firing point is inside the transparent claw opening"%kind)
-		var left: Color = raw.get_pixelv(point-Vector2i(40,0))
-		var right: Color = raw.get_pixelv(point+Vector2i(40,0))
+		var finger_offset := Vector2i(roundi(raw.get_width()*40.0/268.0),0)
+		var left: Color = raw.get_pixelv(point-finger_offset)
+		var right: Color = raw.get_pixelv(point+finger_offset)
 		check(left.a>0.5 and right.a>0.5,"arm%d muzzle is between actual opaque claw fingers"%kind)
 		var shots: Array = Fire.burst(arm,Vector2(170,400),2,0,body)
 		check(shots.size()==2 and shots.all(func(shot): return shot.pos==muzzle),"arm%d all projectile kinds spawn in the claw opening"%kind)

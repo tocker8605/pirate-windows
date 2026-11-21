@@ -82,7 +82,11 @@ func run() -> void:
 	g._complete_stage()
 	check(g.state==Flow.MENU and g.last_score==8765432 and g.score==0 and g.rankings.entries.is_empty(),"Boss Rush final clear also bypasses rankings")
 	g.run_settings = Settings.new(2,3,false)
-	g._load_stage(4)
+	for stage in range(1,5):
+		g._load_stage(stage)
+		g._complete_stage()
+		check(g.state==Flow.LOADING and g.flow.loading_image=="loading" and g.flow.loading_target==stage+1 and g.flow.loading_preserve,"stage%d transition uses loading.png and preserves run state"%stage)
+	g._load_stage(5)
 	g.score = 8765432
 	g._complete_stage()
 	check(g.state==Flow.RANKING_ENTRY and g.last_score==8765432,"normal final clear remains eligible for ranking")

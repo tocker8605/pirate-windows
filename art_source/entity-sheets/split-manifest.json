@@ -1,0 +1,1001 @@
+{
+  "schema_version": 1,
+  "note": "Lossless per-entity extraction. Original production sheets are archived here, excluded from Godot import/export. Each runtime image contains one entity design; classic frames stay within that entity only.",
+  "entries": [
+    {
+      "kind": 1,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/enemies-v18.png",
+      "output": "assets/enemies/crescent_scout.png",
+      "rect": [
+        24,
+        86,
+        269,
+        227
+      ]
+    },
+    {
+      "kind": 1,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_sm.png",
+      "output": "assets/enemies/classic/crescent_scout.png",
+      "rect": [
+        0,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        0,
+        50
+      ],
+      "frames": 4
+    },
+    {
+      "kind": 2,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/enemies-v18.png",
+      "output": "assets/enemies/variable_wing_fighter.png",
+      "rect": [
+        357,
+        25,
+        251,
+        292
+      ]
+    },
+    {
+      "kind": 2,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_sm.png",
+      "output": "assets/enemies/classic/variable_wing_fighter.png",
+      "rect": [
+        200,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        200,
+        50
+      ],
+      "frames": 6
+    },
+    {
+      "kind": 3,
+      "mode": "crop",
+      "source": "assets/renewed/ring-station-v22.png",
+      "output": "assets/enemies/ring_rotor.png",
+      "rect": [
+        30,
+        27,
+        829,
+        832
+      ]
+    },
+    {
+      "kind": 3,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_sm.png",
+      "output": "assets/enemies/classic/ring_rotor.png",
+      "rect": [
+        500,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        500,
+        50
+      ],
+      "frames": 4
+    },
+    {
+      "kind": 4,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/enemies-v18.png",
+      "output": "assets/enemies/cross_fighter_a.png",
+      "rect": [
+        957,
+        25,
+        290,
+        294
+      ]
+    },
+    {
+      "kind": 4,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_sm.png",
+      "output": "assets/enemies/classic/cross_fighter_a.png",
+      "rect": [
+        700,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        700,
+        50
+      ],
+      "frames": 4
+    },
+    {
+      "kind": 5,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/enemies-v18.png",
+      "output": "assets/enemies/cross_fighter_b.png",
+      "rect": [
+        18,
+        355,
+        279,
+        262
+      ]
+    },
+    {
+      "kind": 5,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_sm.png",
+      "output": "assets/enemies/classic/cross_fighter_b.png",
+      "rect": [
+        900,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        900,
+        50
+      ],
+      "frames": 4
+    },
+    {
+      "kind": 6,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/enemies-v18.png",
+      "output": "assets/enemies/swept_wing_fighter.png",
+      "rect": [
+        344,
+        347,
+        267,
+        270
+      ]
+    },
+    {
+      "kind": 6,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_sm.png",
+      "output": "assets/enemies/classic/swept_wing_fighter.png",
+      "rect": [
+        1100,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        1100,
+        50
+      ],
+      "frames": 6
+    },
+    {
+      "kind": 7,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/enemies-v18.png",
+      "output": "assets/enemies/delta_fighter.png",
+      "rect": [
+        659,
+        361,
+        251,
+        253
+      ]
+    },
+    {
+      "kind": 7,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_sm.png",
+      "output": "assets/enemies/classic/delta_fighter.png",
+      "rect": [
+        1400,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        1400,
+        50
+      ],
+      "frames": 6
+    },
+    {
+      "kind": 8,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/enemies-v18.png",
+      "output": "assets/enemies/folding_wing_fighter.png",
+      "rect": [
+        952,
+        349,
+        291,
+        271
+      ]
+    },
+    {
+      "kind": 8,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_sm.png",
+      "output": "assets/enemies/classic/folding_wing_fighter.png",
+      "rect": [
+        1700,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        1700,
+        50
+      ],
+      "frames": 3
+    },
+    {
+      "kind": 9,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/enemies-v18.png",
+      "output": "assets/enemies/fireball_disc.png",
+      "rect": [
+        10,
+        652,
+        291,
+        240
+      ]
+    },
+    {
+      "kind": 9,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_sm.png",
+      "output": "assets/enemies/classic/fireball_disc.png",
+      "rect": [
+        1850,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        1850,
+        50
+      ],
+      "frames": 4
+    },
+    {
+      "kind": 10,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/enemies-v18.png",
+      "output": "assets/enemies/crescent_fighter.png",
+      "rect": [
+        342,
+        690,
+        271,
+        220
+      ]
+    },
+    {
+      "kind": 10,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_sm.png",
+      "output": "assets/enemies/classic/crescent_fighter.png",
+      "rect": [
+        2050,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        2050,
+        50
+      ],
+      "frames": 4
+    },
+    {
+      "kind": 11,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/enemies-v18.png",
+      "output": "assets/enemies/twin_pod_fighter.png",
+      "rect": [
+        666,
+        644,
+        237,
+        266
+      ]
+    },
+    {
+      "kind": 11,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_sm.png",
+      "output": "assets/enemies/classic/twin_pod_fighter.png",
+      "rect": [
+        2250,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        2250,
+        50
+      ],
+      "frames": 3
+    },
+    {
+      "kind": 19,
+      "mode": "crop",
+      "source": "assets/renewed/carrier-v20.png",
+      "output": "assets/enemies/supply_open.png",
+      "rect": null
+    },
+    {
+      "kind": 19,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_sm.png",
+      "output": "assets/enemies/classic/supply_open.png",
+      "rect": [
+        2400,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        2400,
+        50
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 21,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/enemies-v18.png",
+      "output": "assets/enemies/medium_fighter.png",
+      "rect": [
+        9,
+        950,
+        297,
+        209
+      ]
+    },
+    {
+      "kind": 21,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_mid.png",
+      "output": "assets/enemies/classic/medium_fighter.png",
+      "rect": [
+        0,
+        0,
+        100,
+        100
+      ],
+      "mask": [
+        0,
+        100
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 22,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/enemies-v18.png",
+      "output": "assets/enemies/charge_fighter.png",
+      "rect": [
+        329,
+        936,
+        280,
+        246
+      ]
+    },
+    {
+      "kind": 22,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_mid.png",
+      "output": "assets/enemies/classic/charge_fighter.png",
+      "rect": [
+        100,
+        0,
+        100,
+        100
+      ],
+      "mask": [
+        100,
+        100
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 41,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/enemies-v18.png",
+      "output": "assets/enemies/heavy_fighter_a.png",
+      "rect": [
+        628,
+        962,
+        306,
+        203
+      ]
+    },
+    {
+      "kind": 41,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_big.png",
+      "output": "assets/enemies/classic/heavy_fighter_a.png",
+      "rect": [
+        0,
+        0,
+        150,
+        100
+      ],
+      "mask": [
+        0,
+        100
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 42,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/enemies-v18.png",
+      "output": "assets/enemies/heavy_fighter_b.png",
+      "rect": [
+        945,
+        962,
+        305,
+        203
+      ]
+    },
+    {
+      "kind": 42,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_big.png",
+      "output": "assets/enemies/classic/heavy_fighter_b.png",
+      "rect": [
+        150,
+        0,
+        150,
+        100
+      ],
+      "mask": [
+        150,
+        100
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 91,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/bosses-v15.png",
+      "output": "assets/bosses/stage01/body.png",
+      "rect": [
+        20,
+        14,
+        361,
+        352
+      ]
+    },
+    {
+      "kind": 91,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/boss01.png",
+      "output": "assets/bosses/stage01/classic/body.png",
+      "rect": [
+        0,
+        0,
+        150,
+        100
+      ],
+      "mask": [
+        0,
+        100
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 92,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/bosses-v15.png",
+      "output": "assets/bosses/stage02/body.png",
+      "rect": [
+        387,
+        10,
+        314,
+        356
+      ]
+    },
+    {
+      "kind": 92,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/boss02.png",
+      "output": "assets/bosses/stage02/classic/body.png",
+      "rect": [
+        0,
+        0,
+        150,
+        100
+      ],
+      "mask": [
+        0,
+        100
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 93,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/bosses-v15.png",
+      "output": "assets/bosses/stage03/body.png",
+      "rect": [
+        727,
+        14,
+        360,
+        352
+      ]
+    },
+    {
+      "kind": 93,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/boss03.png",
+      "output": "assets/bosses/stage03/classic/body.png",
+      "rect": [
+        0,
+        0,
+        150,
+        100
+      ],
+      "mask": [
+        0,
+        100
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 94,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/bosses-v15.png",
+      "output": "assets/bosses/stage04/body.png",
+      "rect": [
+        1093,
+        10,
+        339,
+        358
+      ]
+    },
+    {
+      "kind": 94,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/boss04.png",
+      "output": "assets/bosses/stage04/classic/body.png",
+      "rect": [
+        0,
+        0,
+        150,
+        100
+      ],
+      "mask": [
+        0,
+        100
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 101,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/bosses-v15.png",
+      "output": "assets/bosses/stage01/left_fist.png",
+      "rect": [
+        1149,
+        482,
+        228,
+        230
+      ]
+    },
+    {
+      "kind": 101,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/boss01.png",
+      "output": "assets/bosses/stage01/classic/left_fist.png",
+      "rect": [
+        150,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        150,
+        50
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 102,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/bosses-v15.png",
+      "output": "assets/bosses/stage01/right_fist.png",
+      "rect": [
+        1149,
+        482,
+        228,
+        230
+      ]
+    },
+    {
+      "kind": 102,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/boss01.png",
+      "output": "assets/bosses/stage01/classic/right_fist.png",
+      "rect": [
+        150,
+        100,
+        50,
+        50
+      ],
+      "mask": [
+        150,
+        150
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 111,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/bosses-v15.png",
+      "output": "assets/bosses/stage02/right_arm.png",
+      "rect": [
+        81,
+        375,
+        260,
+        415
+      ]
+    },
+    {
+      "kind": 111,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/boss02.png",
+      "output": "assets/bosses/stage02/classic/right_arm.png",
+      "rect": [
+        150,
+        0,
+        50,
+        100
+      ],
+      "mask": [
+        150,
+        100
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 112,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/bosses-v15.png",
+      "output": "assets/bosses/stage02/left_arm.png",
+      "rect": [
+        81,
+        375,
+        260,
+        415
+      ]
+    },
+    {
+      "kind": 112,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/boss02.png",
+      "output": "assets/bosses/stage02/classic/left_arm.png",
+      "rect": [
+        200,
+        0,
+        50,
+        100
+      ],
+      "mask": [
+        200,
+        100
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 113,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/bosses-v15.png",
+      "output": "assets/bosses/stage02/centre_module.png",
+      "rect": [
+        53,
+        810,
+        279,
+        259
+      ]
+    },
+    {
+      "kind": 113,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/boss02.png",
+      "output": "assets/bosses/stage02/classic/centre_module.png",
+      "rect": [
+        250,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        250,
+        150
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 121,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/bosses-v15.png",
+      "output": "assets/bosses/stage03/left_arm.png",
+      "rect": [
+        455,
+        376,
+        241,
+        412
+      ]
+    },
+    {
+      "kind": 121,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/boss03.png",
+      "output": "assets/bosses/stage03/classic/left_arm.png",
+      "rect": [
+        150,
+        0,
+        50,
+        100
+      ],
+      "mask": [
+        150,
+        100
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 122,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/bosses-v15.png",
+      "output": "assets/bosses/stage03/right_arm.png",
+      "rect": [
+        455,
+        376,
+        241,
+        412
+      ]
+    },
+    {
+      "kind": 122,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/boss03.png",
+      "output": "assets/bosses/stage03/classic/right_arm.png",
+      "rect": [
+        200,
+        0,
+        50,
+        100
+      ],
+      "mask": [
+        200,
+        100
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 123,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/bosses-v15.png",
+      "output": "assets/bosses/stage03/orb_a.png",
+      "rect": [
+        435,
+        811,
+        252,
+        239
+      ]
+    },
+    {
+      "kind": 123,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/boss03.png",
+      "output": "assets/bosses/stage03/classic/orb_a.png",
+      "rect": [
+        250,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        250,
+        50
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 124,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/bosses-v15.png",
+      "output": "assets/bosses/stage03/orb_b.png",
+      "rect": [
+        435,
+        811,
+        252,
+        239
+      ]
+    },
+    {
+      "kind": 124,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/boss03.png",
+      "output": "assets/bosses/stage03/classic/orb_b.png",
+      "rect": [
+        250,
+        100,
+        50,
+        50
+      ],
+      "mask": [
+        250,
+        150
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 131,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/bosses-v15.png",
+      "output": "assets/bosses/stage04/left_claw.png",
+      "rect": [
+        794,
+        370,
+        268,
+        423
+      ]
+    },
+    {
+      "kind": 131,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/boss04.png",
+      "output": "assets/bosses/stage04/classic/left_claw.png",
+      "rect": [
+        150,
+        0,
+        50,
+        100
+      ],
+      "mask": [
+        150,
+        100
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 132,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/bosses-v15.png",
+      "output": "assets/bosses/stage04/right_claw.png",
+      "rect": [
+        794,
+        370,
+        268,
+        423
+      ]
+    },
+    {
+      "kind": 132,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/boss04.png",
+      "output": "assets/bosses/stage04/classic/right_claw.png",
+      "rect": [
+        200,
+        0,
+        50,
+        100
+      ],
+      "mask": [
+        200,
+        100
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 133,
+      "mode": "crop",
+      "source": "art_source/entity-sheets/renewed/bosses-v15.png",
+      "output": "assets/bosses/stage04/centre_core.png",
+      "rect": [
+        844,
+        802,
+        138,
+        269
+      ]
+    },
+    {
+      "kind": 133,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/boss04.png",
+      "output": "assets/bosses/stage04/classic/centre_core.png",
+      "rect": [
+        250,
+        10,
+        50,
+        80
+      ],
+      "mask": [
+        250,
+        110
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 201,
+      "mode": "crop",
+      "source": "assets/renewed/carrier-v20.png",
+      "output": "assets/enemies/supply_approach.png",
+      "rect": null
+    },
+    {
+      "kind": 201,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_sm.png",
+      "output": "assets/enemies/classic/supply_approach.png",
+      "rect": [
+        2450,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        2450,
+        50
+      ],
+      "frames": 2
+    },
+    {
+      "kind": 20,
+      "mode": "crop",
+      "source": "assets/renewed/carrier-v20.png",
+      "output": "assets/enemies/health_supply_open.png",
+      "rect": null
+    },
+    {
+      "kind": 20,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_sm.png",
+      "output": "assets/enemies/classic/health_supply_open.png",
+      "rect": [
+        2400,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        2400,
+        50
+      ],
+      "frames": 1
+    },
+    {
+      "kind": 202,
+      "mode": "crop",
+      "source": "assets/renewed/carrier-v20.png",
+      "output": "assets/enemies/health_supply_approach.png",
+      "rect": null
+    },
+    {
+      "kind": 202,
+      "mode": "classic_mask",
+      "source": "art_source/entity-sheets/original/enemy_sm.png",
+      "output": "assets/enemies/classic/health_supply_approach.png",
+      "rect": [
+        2450,
+        0,
+        50,
+        50
+      ],
+      "mask": [
+        2450,
+        50
+      ],
+      "frames": 2
+    }
+  ]
+}

@@ -2,21 +2,15 @@ extends RefCounted
 ## One source of truth for the old frame selectors and the renewed projected attitude.
 const STATION_PHASE_STEP: float = TAU/240.0
 const TURN_STEP: float = PI/10.0
-static func sprite_x(kind: int, v: Vector2, cycle: int, y: float = 0) -> int:
+static func frame_index(kind: int, v: Vector2, cycle: int, y: float = 0) -> int:
+	# Indices are local to one entity's own animation strip.
 	match kind:
-		1: return 0 if v.y>(66.66666666666667 + 0.0001) else (50 if v.y>=0 else (100 if v.y> (-133.33333333333334 + 0.0001) else 150))
-		2,6,7:
-			var base: int = 200 if kind==2 else (1100 if kind==6 else 1400)
-			return base+(150 if (v.y>(0 + 0.0001))==(kind==7) else 0)+(100 if v.x>(66.66666666666667 + 0.0001) else (50 if v.x< (-66.66666666666667 - 0.0001) else 0))
-		3: return 500+cycle*50
-		4: return 700+cycle*50
-		5: return 900+cycle*50
-		8: return 1700+(100 if v.x>(33.333333333333336 + 0.0001) else (50 if v.x< (-33.333333333333336 - 0.0001) else 0))
-		9: return 1850+cycle*50
-		10: return 2050+sprite_x(1,v,cycle)
-		11: return 2250+(100 if v.x>(66.66666666666667 + 0.0001) else (50 if v.x< (-66.66666666666667 - 0.0001) else 0))
-		19,20: return 2400
-		201,202: return 2500 if y>290 else 2450
+		1,10: return 0 if v.y>(66.66666666666667+0.0001) else (1 if v.y>=0 else (2 if v.y> (-133.33333333333334+0.0001) else 3))
+		2,6,7: return (3 if (v.y>0.0001)==(kind==7) else 0)+(2 if v.x>(66.66666666666667+0.0001) else (1 if v.x< (-66.66666666666667+0.0001) else 0))
+		3,4,5,9: return posmod(cycle,4)
+		8: return 2 if v.x>(33.333333333333336+0.0001) else (1 if v.x< (-33.333333333333336+0.0001) else 0)
+		11: return 2 if v.x>(66.66666666666667+0.0001) else (1 if v.x< (-66.66666666666667+0.0001) else 0)
+		201,202: return 1 if y>290 else 0
 	return 0
 static func pitch_target(kind: int, velocity: Vector2) -> float:
 	if kind==1 or kind==10:

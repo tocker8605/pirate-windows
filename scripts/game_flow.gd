@@ -1,6 +1,7 @@
 extends RefCounted
 ## Owns game-state changes and their input/time/audio effects. Combat owns its timers.
 const Clock = preload("res://scripts/timing.gd")
+const Campaign = preload("res://scripts/campaign_rules.gd")
 const MENU: StringName = &"menu"
 const LOADING: StringName = &"loading"
 const PLAYING: StringName = &"playing"
@@ -11,11 +12,10 @@ const RANKING_ENTRY: StringName = &"ranking_entry"
 const ACTIVE_STATES: Array = [PLAYING,DYING,BOSS_DYING]
 var state: StringName = MENU
 var resume_state: StringName = PLAYING
-var loading_image: String = "loading2"
+var loading_image: String = "loading"
 var loading_target: int = 1
 var loading_preserve: bool = false
 var loading_remaining_seconds: float = 0
-var legend_elapsed: float = 0
 func _enter(g: Node, next: StringName, reset_time: bool = false) -> void:
 	state = next
 	g.title.clear_input()
@@ -36,14 +36,12 @@ func load_stage(g: Node, target: int, preserve: bool, image: String, delay: floa
 	loading_preserve = preserve
 	loading_image = image
 	loading_remaining_seconds = delay
-	# Loading legends retain their last stage-time pose, as before.
-	legend_elapsed = g.stage_elapsed_seconds
 	_enter(g,LOADING,true)
 	g._stop_music()
 func play_stage(g: Node) -> void:
 	_enter(g,PLAYING,true)
 	if g.run_settings.boss_rush: g._stop_music()
-	else: g._play_music("bgm%02d"%g.stage)
+	else: g._play_music(Campaign.music(g.stage))
 func advance_loading(g: Node, seconds: float) -> void:
 	if loading_remaining_seconds>0:
 		loading_remaining_seconds = Clock.countdown(loading_remaining_seconds,seconds)

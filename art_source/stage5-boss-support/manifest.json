@@ -1,0 +1,31 @@
+{
+  "description": "Boss5 floor cables and support turret variants; images generated independently with builtin imagegen. Existing hatch/wreck reused.",
+  "entries": [
+    {
+      "output": "assets/enemies/stage05/supercomputer-floor-cables.png",
+      "source": "exec-ade18faa-507f-4399-b421-8189bcfe74a0.png",
+      "references": [
+        "supercomputer-mainframe.png"
+      ],
+      "intent": "240x240 floor cable network; true transparent gaps, matched charcoal/ivory/violet/amber/cyan palette"
+    },
+    {
+      "output": "assets/enemies/stage05/supercomputer-autocannon-turret.png",
+      "source": "exec-c8ef25e2-9028-4268-9c40-de4016a7fde7.png",
+      "references": [
+        "autocannon-turret.png",
+        "supercomputer-mainframe.png"
+      ],
+      "intent": "Same twin-barrel silhouette and boss palette; existing hatch unchanged"
+    },
+    {
+      "output": "assets/enemies/stage05/supercomputer-energy-turret.png",
+      "source": "exec-9f724cd0-d12c-48e7-a9c6-f1f378f1c1ed.png",
+      "references": [
+        "energy-turret.png",
+        "supercomputer-mainframe.png"
+      ],
+      "intent": "Same energy lens silhouette and boss palette; existing hatch unchanged"
+    }
+  ]
+}

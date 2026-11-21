@@ -1,11 +1,13 @@
 extends RefCounted
+const Campaign = preload("res://scripts/campaign_rules.gd")
 const StageEvents = preload("res://scripts/stage_events.gd")
+const Stages=preload("res://scripts/stage_catalog.gd")
 const Pilot = preload("res://scripts/pilot_geometry.gd")
 static func load_stage(g: Node, number: int, preserve_run: bool = false) -> void:
 	var saved_hp: float = g.hp
 	var saved_power: int = g.power
 	var saved_score: int = g.score
-	g.stage = clampi(number,1,4)
+	g.stage = clampi(number,1,Campaign.stage_count(g.run_settings.boss_rush))
 	g.events = StageEvents.load_stage(g.stage,g.run_settings.boss_rush)
 	g.checkpoint_stage = g.stage
 	g.checkpoint_settings = g.run_settings
@@ -35,14 +37,11 @@ static func load_stage(g: Node, number: int, preserve_run: bool = false) -> void
 	g.laser_contacts.clear()
 	g.shield_contacts.clear()
 	g.scenery_distance = 0.0
-	g.background_y = 3360
-	g.scroll_speed = 666.6666666666667
-	g.scroll_target = 66.66666666666667
-	g.map_mode = 1
-	# frmtmrs.fload Case 4 overrides the normal takeoff; Case 14 does not.
-	if g.stage==4 and not g.run_settings.boss_rush:
-		g.map_mode = 2
-		g.scroll_speed = 66.66666666666667
+	var initial: Dictionary=Stages.initial(g.stage,g.run_settings.boss_rush)
+	g.background_y = initial.background_y
+	g.scroll_speed = initial.scroll_speed
+	g.scroll_target = initial.scroll_target
+	g.map_mode = int(initial.map_mode)
 	g.banner = ""
 	g.banner_remaining_seconds = 0
 	g.enemies.clear()
@@ -50,6 +49,7 @@ static func load_stage(g: Node, number: int, preserve_run: bool = false) -> void
 	g.bullets.clear()
 	g.items.clear()
 	g.explosions.clear()
+	g.ground_wrecks.clear()
 	g.boss.clear()
 	g.accumulator = 0
 	g.stats = {"spawned":0,"killed":0,"shots":0,"hits":0,"boss_spawned":false,"supply_spawned":0}

@@ -1,0 +1,110 @@
+{
+  "generator": "built-in imagegen",
+  "note": "Native-resolution faithful repaint. Original palettes/geometry retained; arm shoulder holes filled with matching rounded metal. No gameplay/display-size changes. Stage5 untouched.",
+  "entries": [
+    {
+      "name": "boss1_body",
+      "source": "art_source/boss-high-resolution/boss1_body.png",
+      "outputs": [
+        "assets/bosses/stage01/body.png"
+      ],
+      "generated_source": "C:\\Users\\전명종\\.codex\\generated_images\\01a17194-e644-7cf1-b506-6c1a20515e70\\exec-477a24cf-849d-47fe-9674-239ceca3a264.png",
+      "prompt": "Use case: precise-object-edit. Faithful HIGH-RESOLUTION REMASTER of this ONE exact existing boss body sprite. Blue and ivory torso, amber visor and cyan lower chest light; keep both hollow shoulder sockets because separate arms are not part of this BODY image. Preserve source's exact recognizable silhouette, orientation, viewing angle, proportions and all color placements. No extra parts, no pose change, no new design. Render fine clean metallic panel modeling at quality comparable to the project's stage5 boss. Request a genuinely high-resolution PNG:2048px canvas with native opaque subject long edge at least1500px; portrait canvas for long arm/core, square for torso/fist/orb. Do not merely interpolate pixelated source edges. Repaint details clearly while preserving overall design. Restrained painted arcade mecha style, subtle metal shading and material-colored edges rather than thick black ink outlines; no photorealistic noise, cartoon/chibi deformation, excessive grunge, bloom, halos, shadow backdrop or particles. Exact source shapes/colors matter. ONE complete isolated sprite, small transparent margins, true transparent alpha background. No text, grid, extra objects or torso attached to arm."
+    },
+    {
+      "name": "boss2_body",
+      "source": "art_source/boss-high-resolution/boss2_body.png",
+      "outputs": [
+        "assets/bosses/stage02/body.png"
+      ],
+      "generated_source": "C:\\Users\\전명종\\.codex\\generated_images\\01a17194-e644-7cf1-b506-6c1a20515e70\\exec-83446acc-5f21-4481-8bd8-ffbbc390cdf2.png",
+      "prompt": "Use case: precise-object-edit. Faithful HIGH-RESOLUTION REMASTER of this ONE exact existing boss body sprite. Red and white torso, gold horns, amber accents; keep shoulder sockets hollow as in the reference BODY. Preserve source's exact recognizable silhouette, orientation, viewing angle, proportions and all color placements. No extra parts, no pose change, no new design. Render fine clean metallic panel modeling at quality comparable to the project's stage5 boss. Request a genuinely high-resolution PNG:2048px canvas with native opaque subject long edge at least1500px; portrait canvas for long arm/core, square for torso/fist/orb. Do not merely interpolate pixelated source edges. Repaint details clearly while preserving overall design. Restrained painted arcade mecha style, subtle metal shading and material-colored edges rather than thick black ink outlines; no photorealistic noise, cartoon/chibi deformation, excessive grunge, bloom, halos, shadow backdrop or particles. Exact source shapes/colors matter. ONE complete isolated sprite, small transparent margins, true transparent alpha background. No text, grid, extra objects or torso attached to arm."
+    },
+    {
+      "name": "boss3_body",
+      "source": "art_source/boss-high-resolution/boss3_body.png",
+      "outputs": [
+        "assets/bosses/stage03/body.png"
+      ],
+      "generated_source": "C:\\Users\\전명종\\.codex\\generated_images\\01a17194-e644-7cf1-b506-6c1a20515e70\\exec-2811bf24-1aa6-45cb-a508-05eac32b5d07.png",
+      "prompt": "Use case: precise-object-edit. Faithful HIGH-RESOLUTION REMASTER of this ONE exact existing boss body sprite. Ivory and blue torso with red chest core and red lower side plates; preserve the central core and empty shoulder sockets. Preserve source's exact recognizable silhouette, orientation, viewing angle, proportions and all color placements. No extra parts, no pose change, no new design. Render fine clean metallic panel modeling at quality comparable to the project's stage5 boss. Request a genuinely high-resolution PNG:2048px canvas with native opaque subject long edge at least1500px; portrait canvas for long arm/core, square for torso/fist/orb. Do not merely interpolate pixelated source edges. Repaint details clearly while preserving overall design. Restrained painted arcade mecha style, subtle metal shading and material-colored edges rather than thick black ink outlines; no photorealistic noise, cartoon/chibi deformation, excessive grunge, bloom, halos, shadow backdrop or particles. Exact source shapes/colors matter. ONE complete isolated sprite, small transparent margins, true transparent alpha background. No text, grid, extra objects or torso attached to arm."
+    },
+    {
+      "name": "boss4_body",
+      "source": "art_source/boss-high-resolution/boss4_body.png",
+      "outputs": [
+        "assets/bosses/stage04/body.png"
+      ],
+      "generated_source": "C:\\Users\\전명종\\.codex\\generated_images\\01a17194-e644-7cf1-b506-6c1a20515e70\\exec-c366ef6e-6a1d-45a2-abde-fd9a58cb3aea.png",
+      "prompt": "Use case: precise-object-edit. Faithful HIGH-RESOLUTION REMASTER of this ONE exact existing boss body sprite. White, charcoal and red torso with gray circular chest recess; keep the precise chest circle and hollow shoulder sockets. Preserve source's exact recognizable silhouette, orientation, viewing angle, proportions and all color placements. No extra parts, no pose change, no new design. Render fine clean metallic panel modeling at quality comparable to the project's stage5 boss. Request a genuinely high-resolution PNG:2048px canvas with native opaque subject long edge at least1500px; portrait canvas for long arm/core, square for torso/fist/orb. Do not merely interpolate pixelated source edges. Repaint details clearly while preserving overall design. Restrained painted arcade mecha style, subtle metal shading and material-colored edges rather than thick black ink outlines; no photorealistic noise, cartoon/chibi deformation, excessive grunge, bloom, halos, shadow backdrop or particles. Exact source shapes/colors matter. ONE complete isolated sprite, small transparent margins, true transparent alpha background. No text, grid, extra objects or torso attached to arm."
+    },
+    {
+      "name": "boss1_fist",
+      "source": "art_source/boss-high-resolution/boss1_fist.png",
+      "outputs": [
+        "assets/bosses/stage01/left_fist.png",
+        "assets/bosses/stage01/right_fist.png"
+      ],
+      "generated_source": "C:\\Users\\전명종\\.codex\\generated_images\\01a17194-e644-7cf1-b506-6c1a20515e70\\exec-30a576fa-4f22-4010-a433-53632b00fa59.png",
+      "prompt": "Use case: precise-object-edit. Faithful HIGH-RESOLUTION REMASTER of this ONE exact existing boss fist sprite. Red mechanical fist, gray/black finger joints, amber dorsal status light. Preserve all fingers and exact fist shape. Fill ONLY circular connection-socket holes in the wrist/side joints with matching solid rounded metal faces. Preserve source's exact recognizable silhouette, orientation, viewing angle, proportions and all color placements. No extra parts, no pose change, no new design. Render fine clean metallic panel modeling at quality comparable to the project's stage5 boss. Request a genuinely high-resolution PNG:2048px canvas with native opaque subject long edge at least1500px; portrait canvas for long arm/core, square for torso/fist/orb. Do not merely interpolate pixelated source edges. Repaint details clearly while preserving overall design. Restrained painted arcade mecha style, subtle metal shading and material-colored edges rather than thick black ink outlines; no photorealistic noise, cartoon/chibi deformation, excessive grunge, bloom, halos, shadow backdrop or particles. Exact source shapes/colors matter. ONE complete isolated sprite, small transparent margins, true transparent alpha background. No text, grid, extra objects or torso attached to arm."
+    },
+    {
+      "name": "boss2_arm",
+      "source": "art_source/boss-high-resolution/boss2_arm.png",
+      "outputs": [
+        "assets/bosses/stage02/left_arm.png",
+        "assets/bosses/stage02/right_arm.png"
+      ],
+      "generated_source": "C:\\Users\\전명종\\.codex\\generated_images\\01a17194-e644-7cf1-b506-6c1a20515e70\\exec-df790e7b-24ce-4ab9-a5f1-5002135a63cc.png",
+      "prompt": "Use case: precise-object-edit. Faithful HIGH-RESOLUTION REMASTER of this ONE exact existing boss arm sprite. Red and charcoal arm, gold shoulder horn and amber piston, downward gray cannon barrel. Fill ONLY the large black circular SHOULDER CONNECTION HOLE with a smooth convex red/gray metal surface matching the existing rounded outer shoulder housing. Keep the existing horn, shoulder shape, elbow, forearm and cannon MUZZLE opening unchanged. Preserve source's exact recognizable silhouette, orientation, viewing angle, proportions and all color placements. No extra parts, no pose change, no new design. The user's ONLY design change is closing the shoulder connection hole; do not replace the shoulder with a peg, axle, screw or different joint. Repaint the hole as a continuous curved solid metal surface, never as an inset stopper surrounded by a thick ring. Render fine clean metallic panel modeling at quality comparable to the project's stage5 boss. Request a genuinely high-resolution PNG:2048px canvas with native opaque subject long edge at least1500px; portrait canvas for long arm/core, square for torso/fist/orb. Do not merely interpolate pixelated source edges. Repaint details clearly while preserving overall design. Restrained painted arcade mecha style, subtle metal shading and material-colored edges rather than thick black ink outlines; no photorealistic noise, cartoon/chibi deformation, excessive grunge, bloom, halos, shadow backdrop or particles. Exact source shapes/colors matter. ONE complete isolated sprite, small transparent margins, true transparent alpha background. No text, grid, extra objects or torso attached to arm."
+    },
+    {
+      "name": "boss3_arm",
+      "source": "art_source/boss-high-resolution/boss3_arm.png",
+      "outputs": [
+        "assets/bosses/stage03/left_arm.png",
+        "assets/bosses/stage03/right_arm.png"
+      ],
+      "generated_source": "C:\\Users\\전명종\\.codex\\generated_images\\01a17194-e644-7cf1-b506-6c1a20515e70\\exec-833c15d8-2883-4a40-ba72-0421132e02c9.png",
+      "prompt": "Use case: precise-object-edit. Faithful HIGH-RESOLUTION REMASTER of this ONE exact existing boss arm sprite. White rounded shoulder with thin blue trim, blue and white forearm, amber piston, downward dark cannon. Fill ONLY the hollow upper shoulder socket with a smooth convex ivory/blue metal face within the existing shoulder shell. Preserve cannon muzzle hole and every other shape. Preserve source's exact recognizable silhouette, orientation, viewing angle, proportions and all color placements. No extra parts, no pose change, no new design. The user's ONLY design change is closing the shoulder connection hole; do not replace the shoulder with a peg, axle, screw or different joint. Repaint the hole as a continuous curved solid metal surface, never as an inset stopper surrounded by a thick ring. Render fine clean metallic panel modeling at quality comparable to the project's stage5 boss. Request a genuinely high-resolution PNG:2048px canvas with native opaque subject long edge at least1500px; portrait canvas for long arm/core, square for torso/fist/orb. Do not merely interpolate pixelated source edges. Repaint details clearly while preserving overall design. Restrained painted arcade mecha style, subtle metal shading and material-colored edges rather than thick black ink outlines; no photorealistic noise, cartoon/chibi deformation, excessive grunge, bloom, halos, shadow backdrop or particles. Exact source shapes/colors matter. ONE complete isolated sprite, small transparent margins, true transparent alpha background. No text, grid, extra objects or torso attached to arm."
+    },
+    {
+      "name": "boss4_arm",
+      "source": "art_source/boss-high-resolution/boss4_arm.png",
+      "outputs": [
+        "assets/bosses/stage04/left_claw.png",
+        "assets/bosses/stage04/right_claw.png"
+      ],
+      "generated_source": "C:\\Users\\전명종\\.codex\\generated_images\\01a17194-e644-7cf1-b506-6c1a20515e70\\exec-9b664e9c-2da0-4ef0-8397-995e89f0cab7.png",
+      "prompt": "Use case: precise-object-edit. Faithful HIGH-RESOLUTION REMASTER of this ONE exact existing boss arm sprite. White and charcoal arm with red accents and mechanical pincer hand. Fill ONLY black circular CONNECTION HOLE at the UPPER shoulder with matching smooth convex ivory/charcoal metal. Keep the existing angular shoulder armor silhouette, elbow and claw unchanged. CRITICAL: retain the large fully transparent gap between the claw fingers at the lower end, since projectiles fire through this gap. This is NOT a gatling or cannon hand. Preserve source's exact recognizable silhouette, orientation, viewing angle, proportions and all color placements. No extra parts, no pose change, no new design. The user's ONLY design change is closing the shoulder connection hole; do not replace the shoulder with a peg, axle, screw or different joint. Repaint the hole as a continuous curved solid metal surface, never as an inset stopper surrounded by a thick ring. Render fine clean metallic panel modeling at quality comparable to the project's stage5 boss. Request a genuinely high-resolution PNG:2048px canvas with native opaque subject long edge at least1500px; portrait canvas for long arm/core, square for torso/fist/orb. Do not merely interpolate pixelated source edges. Repaint details clearly while preserving overall design. Restrained painted arcade mecha style, subtle metal shading and material-colored edges rather than thick black ink outlines; no photorealistic noise, cartoon/chibi deformation, excessive grunge, bloom, halos, shadow backdrop or particles. Exact source shapes/colors matter. ONE complete isolated sprite, small transparent margins, true transparent alpha background. No text, grid, extra objects or torso attached to arm."
+    },
+    {
+      "name": "boss2_centre",
+      "source": "art_source/boss-high-resolution/boss2_centre.png",
+      "outputs": [
+        "assets/bosses/stage02/centre_module.png"
+      ],
+      "generated_source": "C:\\Users\\전명종\\.codex\\generated_images\\01a17194-e644-7cf1-b506-6c1a20515e70\\exec-4230d029-5b69-42dd-a2a3-19f2054d6f76.png",
+      "prompt": "Use case: precise-object-edit. Faithful HIGH-RESOLUTION REMASTER of this ONE exact existing boss part sprite. Red winged/fin four-point center module with cyan circular core; preserve its exact shape and red/white/gold/cyan placement. Preserve source's exact recognizable silhouette, orientation, viewing angle, proportions and all color placements. No extra parts, no pose change, no new design. Render fine clean metallic panel modeling at quality comparable to the project's stage5 boss. Request a genuinely high-resolution PNG:2048px canvas with native opaque subject long edge at least1500px; portrait canvas for long arm/core, square for torso/fist/orb. Do not merely interpolate pixelated source edges. Repaint details clearly while preserving overall design. Restrained painted arcade mecha style, subtle metal shading and material-colored edges rather than thick black ink outlines; no photorealistic noise, cartoon/chibi deformation, excessive grunge, bloom, halos, shadow backdrop or particles. Exact source shapes/colors matter. ONE complete isolated sprite, small transparent margins, true transparent alpha background. No text, grid, extra objects or torso attached to arm."
+    },
+    {
+      "name": "boss3_orb",
+      "source": "art_source/boss-high-resolution/boss3_orb.png",
+      "outputs": [
+        "assets/bosses/stage03/orb_a.png",
+        "assets/bosses/stage03/orb_b.png"
+      ],
+      "generated_source": "C:\\Users\\전명종\\.codex\\generated_images\\01a17194-e644-7cf1-b506-6c1a20515e70\\exec-c200f6d3-05ab-47ca-8a45-a0b4f2ff880e.png",
+      "prompt": "Use case: precise-object-edit. Faithful HIGH-RESOLUTION REMASTER of this ONE exact existing boss part sprite. White and blue hovering spherical robot module with amber horizontal visor and blue lower face; preserve exact round silhouette and panel/color arrangement. Preserve source's exact recognizable silhouette, orientation, viewing angle, proportions and all color placements. No extra parts, no pose change, no new design. Render fine clean metallic panel modeling at quality comparable to the project's stage5 boss. Request a genuinely high-resolution PNG:2048px canvas with native opaque subject long edge at least1500px; portrait canvas for long arm/core, square for torso/fist/orb. Do not merely interpolate pixelated source edges. Repaint details clearly while preserving overall design. Restrained painted arcade mecha style, subtle metal shading and material-colored edges rather than thick black ink outlines; no photorealistic noise, cartoon/chibi deformation, excessive grunge, bloom, halos, shadow backdrop or particles. Exact source shapes/colors matter. ONE complete isolated sprite, small transparent margins, true transparent alpha background. No text, grid, extra objects or torso attached to arm."
+    },
+    {
+      "name": "boss4_core",
+      "source": "art_source/boss-high-resolution/boss4_core.png",
+      "outputs": [
+        "assets/bosses/stage04/centre_core.png"
+      ],
+      "generated_source": "C:\\Users\\전명종\\.codex\\generated_images\\01a17194-e644-7cf1-b506-6c1a20515e70\\exec-9880ee8a-b4d7-4d28-ba15-44b6f0775f30.png",
+      "prompt": "Use case: precise-object-edit. Faithful HIGH-RESOLUTION REMASTER of this ONE exact existing boss part sprite. Red and white vertical center core with red circular HOLLOW OPENING at top. This top hole is a core design feature, NOT an arm connector: KEEP it fully transparent exactly as in source. Preserve white central plates and amber/red lights. Preserve source's exact recognizable silhouette, orientation, viewing angle, proportions and all color placements. No extra parts, no pose change, no new design. Render fine clean metallic panel modeling at quality comparable to the project's stage5 boss. Request a genuinely high-resolution PNG:2048px canvas with native opaque subject long edge at least1500px; portrait canvas for long arm/core, square for torso/fist/orb. Do not merely interpolate pixelated source edges. Repaint details clearly while preserving overall design. Restrained painted arcade mecha style, subtle metal shading and material-colored edges rather than thick black ink outlines; no photorealistic noise, cartoon/chibi deformation, excessive grunge, bloom, halos, shadow backdrop or particles. Exact source shapes/colors matter. ONE complete isolated sprite, small transparent margins, true transparent alpha background. No text, grid, extra objects or torso attached to arm."
+    }
+  ]
+}
