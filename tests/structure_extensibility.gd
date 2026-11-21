@@ -17,8 +17,10 @@ func _initialize() -> void:
 	check(Stages.validate(registry).is_empty(),"stage registry is valid")
 	var stage6: Dictionary=registry.stages[-1].duplicate(true)
 	stage6.id=6
+	stage6.boss_rush=false
 	registry.stages.append(stage6)
 	check(Stages.validate(registry).is_empty(),"a sixth ordinary stage requires no parallel code arrays")
+	registry.stages[4].boss_rush=false
 	stage6.boss_rush=true
 	check(not Stages.validate(registry).is_empty(),"discontinuous Boss Rush membership is rejected")
 	stage6.boss_rush=false

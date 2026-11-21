@@ -27,6 +27,10 @@ static func validate_document(document: Variant) -> PackedStringArray:
 			if not classic is Dictionary: errors.append(prefix+"classic_sprite must be an object")
 			elif not classic.get("path") is String or not str(classic.path).begins_with("res://assets/") or not Check.vector(classic.get("frame_size"),2): errors.append(prefix+"invalid classic sprite metadata")
 		Visual.validate(d,prefix,errors)
+		var hatch: Variant=d.get("ground_turret",{}).get("boss_hatch",{}) if d.get("ground_turret",{}) is Dictionary else {}
+		if hatch is Dictionary and Check.number(hatch.get("boss_id")):
+			var parent: Variant=document.entities.get(str(int(hatch.boss_id)),{})
+			if not parent is Dictionary or parent.get("role")!="boss":errors.append(prefix+"boss hatch must reference a boss definition")
 		Check.nested_fields(d.get("collision",{}),["beam_bounds", "contact_bounds", "shot_bounds"],prefix+"collision.",errors)
 		Check.nested_fields(d.get("motion",{}),["type", "upper_center", "lower_center", "lower_below_ratio", "speed", "lower_follow"],prefix+"motion.",errors)
 		Check.nested_fields(d.get("fire_channels",{}),["name", "gate", "interval_seconds", "projectile_kind", "part_id", "part_ids", "count", "initial_degrees", "rotation_direction", "rotation_step_degrees", "spacing_degrees", "speed", "window_seconds", "volley"],prefix+"fire_channels.",errors)
@@ -35,13 +39,14 @@ static func validate_document(document: Variant) -> PackedStringArray:
 		Check.nested_fields(d.get("drop",{}),["cargo_release", "item", "offset"],prefix+"drop.",errors)
 		Check.nested_fields(d.get("boss_rush_drop",{}),["cargo_release", "item", "offset"],prefix+"boss_rush_drop.",errors)
 		Check.nested_fields(d.get("on_defeat",{}),["action", "definition_id", "pattern"],prefix+"on_defeat.",errors)
-		Check.nested_fields(d.get("attachment",{}),["offset", "follow_y"],prefix+"attachment.",errors)
+		Check.nested_fields(d.get("attachment",{}),["offset", "follow_x", "follow_y"],prefix+"attachment.",errors)
 		Check.nested_fields(d.get("core_motion",{}),["detach_hp", "speed", "launch_speed", "launch_deceleration", "target_center", "vertical_margin", "pattern"],prefix+"core_motion.",errors)
 		if d.get("motion",{} ) is Dictionary and d.get("motion",{}).get("lower_follow") is Dictionary:
 			Check.unknown_fields(d.motion.lower_follow,["x_offset","speed","acceleration_seconds"],prefix+"motion.lower_follow.",errors)
 		if d.has("attachment"):
 			var attachment: Variant = d.attachment
 			if not attachment is Dictionary or not Check.vector(attachment.get("offset"),2) or not attachment.get("follow_y") is bool: errors.append(prefix+"invalid attachment")
+			if attachment is Dictionary and attachment.has("follow_x") and not attachment.follow_x is bool:errors.append(prefix+"attachment.follow_x must be boolean")
 		if d.has("core_motion"):
 			var core: Variant = d.core_motion
 			if not core is Dictionary: errors.append(prefix+"core_motion must be an object")

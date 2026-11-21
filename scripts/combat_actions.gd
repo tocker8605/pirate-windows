@@ -1,14 +1,16 @@
 extends RefCounted
+const ProjectileGeometry=preload("res://scripts/player_projectile_geometry.gd")
 const Weapons = preload("res://scripts/player_weapons.gd")
 const Effects = preload("res://scripts/special_effects.gd")
 const Combat = preload("res://scripts/combat.gd")
 static func apply_beam(g: Node) -> void:
 	if g.beam_remaining_seconds<=0.000001: return
+	var origin: Vector2=ProjectileGeometry.beam_origin(g.player)
 	for e in g.enemies:
-		if Combat.beam_hits(g.player,e):
+		if Combat.beam_origin_hits(origin,e):
 			e.hp -= 133.33333333333334*g.delta_seconds
 			g.laser_contacts.append(Vector2(g.player.x+10,e.pos.y+25))
-	if Combat.beam_hits_boss(g.player,g.boss):
+	if Combat.beam_origin_hits(origin,g.boss):
 		g._damage_boss(66.66666666666667*g.delta_seconds)
 		g.laser_contacts.append(Vector2(g.player.x+10,g.boss.pos.y+45))
 	g.beam_remaining_seconds = maxf(0,g.beam_remaining_seconds-g.delta_seconds)
@@ -16,14 +18,15 @@ static func apply_beam(g: Node) -> void:
 static func resolve_shots(g: Node) -> void:
 	for shot in g.shots:
 		if float(shot.get("impact_remaining_seconds",-1))>=0: continue
+		var point: Vector2=ProjectileGeometry.shot_centre(shot.pos)
 		var hit: bool = false
 		for e in g.enemies:
-			if Combat.shot_hits(shot.pos,e):
+			if Combat.shot_point_hits(point,e):
 				e.hp -= 3
 				hit = true
 				g.stats.hits += 1
 		# Original outer cw>0 guard is evaluated once: overlapping units AND body can be hit.
-		if Combat.shot_hits_boss(shot.pos,g.boss):
+		if Combat.shot_point_hits(point,g.boss):
 			g._damage_boss(3)
 			hit = true
 			g.stats.hits += 1

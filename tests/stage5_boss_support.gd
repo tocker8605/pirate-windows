@@ -21,13 +21,15 @@ func run() -> void:
 	for pair in [[145,51],[146,52]]:
 		var special: Dictionary=Catalog.definition(pair[0])
 		var original: Dictionary=Catalog.definition(pair[1])
-		check(special.role=="part" and special.hp==original.hp and special.score==original.score,"special turret%d retains ordinary turret HP and score but is a boss part"%pair[0])
-		check(special.fire_channels==original.fire_channels and special.ground_turret==original.ground_turret,"special turret%d reuses the same hatch, wreck, deployment and firing settings"%pair[0])
+		check(special.role=="part" and special.hp==800 and special.score==original.score,"special turret%d has800HP and retains ordinary turret score but is a boss part"%pair[0])
+		check(special.ground_turret.hatch==original.ground_turret.hatch and special.ground_turret.wreck==original.ground_turret.wreck,"special turret%d reuses the same hatch and wreck assets"%pair[0])
 		check(special.sprite_path!=original.sprite_path and Geometry.layer(special)=="floor","special turret%d has independent boss-colour artwork on the floor layer"%pair[0])
 		var e: Dictionary=Catalog.create(pair[0],Vector2(100,200))
 		Ground.initialize(e,0,false)
 		check(not Ground.ready(e) and not Combat.shot_hits(e.pos+Vector2(25,25),e) and Fire.advance(e,2,Vector2(175,380)).is_empty(),"special turret%d stays invulnerable and silent under its hatch"%pair[0])
-		Ground.initialize(e,0,true)
+		var gate_boss: Dictionary=Catalog.create(95,Vector2(200,80))
+		gate_boss.hp=1000
+		Ground.initialize(e,0,true,gate_boss)
 		check(Combat.shot_hits(e.pos+Vector2(25,25),e) and Combat.beam_hits(Vector2(100,380),e),"special turret%d can be hit by shots and laser when exposed"%pair[0])
 		check(not Combat.touches_player(e.pos+Vector2(25,25)-Combat.Pilot.COCKPIT,e),"special turret%d never collides with the player hull"%pair[0])
 	var g=Game.new()
@@ -50,11 +52,17 @@ func run() -> void:
 			support.append(e)
 	check(kinds[145]==2 and kinds[146]==2,"boss front row contains two autocannon and two energy turrets")
 	for e in support:
-		check(e.pos.y>g.boss.pos.y+body.draw_size.y and not Ground.ready(e),"part%d starts concealed just in front of the boss"%e.kind)
+		check(is_equal_approx(e.pos.y,g.boss.pos.y+float(Catalog.definition(e.kind).attachment.offset[1])) and not Ground.ready(e),"part%d starts concealed at its boss-relative Y offset"%e.kind)
 	g.events=[]
 	g.invulnerability_seconds=999
 	for frame in range(60):g._tick(Vector2.ZERO,false,false,false)
-	check(support.all(func(e):return Ground.ready(e)) and not g.bullets.is_empty(),"allfour turrets open through the existing hatch animation and attack")
+	check(support.all(func(e):return not Ground.ready(e)) and g.bullets.is_empty(),"allfour turrets remain closed while the boss is healthy")
+	g.boss.hp=2000
+	for frame in range(90):g._tick(Vector2.ZERO,false,false,false)
+	check(support.all(func(e):return Ground.ready(e)==(e.kind==146)),"only energy turrets open at two-thirds bossHP")
+	g.boss.hp=1000
+	for frame in range(90):g._tick(Vector2.ZERO,false,false,false)
+	check(support.all(func(e):return Ground.ready(e)) and not g.bullets.is_empty(),"allfour turrets are exposed and attack at one-third bossHP")
 	var score: int=g.score
 	g.boss.hp=0
 	for frame in range(3):g._tick(Vector2.ZERO,false,false,false)

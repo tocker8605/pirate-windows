@@ -30,8 +30,9 @@ static func validate(d: Dictionary,prefix: String,errors: PackedStringArray) -> 
 		var policy: Variant=d.boss_scroll
 		if not policy is Dictionary:errors.append(prefix+"boss_scroll must be an object")
 		else:
-			Check.unknown_fields(policy,["stop_on_spawn","defeat_speed"],prefix+"boss_scroll.",errors)
+			Check.unknown_fields(policy,["stop_on_spawn","defeat_speed","stop_after_y"],prefix+"boss_scroll.",errors)
 			if not policy.get("stop_on_spawn") is bool or not Check.number(policy.get("defeat_speed")):errors.append(prefix+"invalid boss scroll policy")
+			if policy.has("stop_after_y") and not Check.number(policy.stop_after_y):errors.append(prefix+"invalid boss scroll stop Y")
 	if d.has("floor_decoration"):
 		var decoration: Variant=d.floor_decoration
 		if not decoration is Dictionary:errors.append(prefix+"floor_decoration must be an object")
@@ -43,10 +44,27 @@ static func validate(d: Dictionary,prefix: String,errors: PackedStringArray) -> 
 	if d.has("ground_turret"):
 		var ground: Variant=d.ground_turret
 		if not ground is Dictionary:errors.append(prefix+"ground_turret must be an object");return
-		Check.unknown_fields(ground,["body_size","ports","reveal_y","raise_seconds","center","hatch","wreck"],prefix+"ground_turret.",errors)
+		Check.unknown_fields(ground,["body_size","ports","reveal_y","raise_seconds","center","hatch","wreck","boss_hatch","projectile_kinds","parallel","rotation"],prefix+"ground_turret.",errors)
 		for field in ["body_size","center"]:
 			if not Check.vector(ground.get(field),2):errors.append(prefix+"invalid turret "+field)
 		for field in ["hatch","wreck"]:asset(ground.get(field),prefix+field+".",errors)
 		if not ground.get("ports") is Array or ground.ports.is_empty() or not ground.ports.all(func(port):return Check.vector(port,2)):errors.append(prefix+"invalid ground ports")
 		if not Check.number(ground.get("reveal_y")) or not Check.number(ground.get("raise_seconds")) or float(ground.get("raise_seconds",0))<=0:errors.append(prefix+"invalid deployment timing")
 		if not d.has("sprite_path") or d.get("movement_mode")!="scenery":errors.append(prefix+"turret requires a sprite and scenery movement")
+
+		if ground.has("parallel") and not ground.parallel is bool:errors.append(prefix+"invalid parallel fire flag")
+		if ground.has("projectile_kinds"):
+			if not ground.projectile_kinds is Array or not ground.get("ports") is Array:errors.append(prefix+"projectile kinds require ports")
+			elif ground.projectile_kinds.size()!=ground.ports.size() or not ground.projectile_kinds.all(func(k):return Check.number(k) and float(k)==int(k) and int(k) in range(1,9)):errors.append(prefix+"invalid per-port projectile kinds")
+		if ground.has("boss_hatch"):
+			var hatch: Variant=ground.boss_hatch
+			if not hatch is Dictionary:errors.append(prefix+"invalid boss hatch")
+			else:
+				Check.unknown_fields(hatch,["boss_id","hp_ratio"],prefix+"boss_hatch.",errors)
+				if not Check.number(hatch.get("boss_id")) or float(hatch.boss_id)!=int(hatch.boss_id) or not Check.number(hatch.get("hp_ratio")) or float(hatch.hp_ratio)<=0 or float(hatch.hp_ratio)>1:errors.append(prefix+"invalid boss hatch threshold")
+		if ground.has("rotation"):
+			var rotation: Variant=ground.rotation
+			if not rotation is Dictionary:errors.append(prefix+"invalid turret rotation")
+			else:
+				Check.unknown_fields(rotation,["initial_degrees","period_seconds"],prefix+"rotation.",errors)
+				if not Check.number(rotation.get("initial_degrees")) or not Check.number(rotation.get("period_seconds")) or float(rotation.period_seconds)<=0:errors.append(prefix+"invalid turret rotation angle")

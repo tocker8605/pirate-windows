@@ -1,6 +1,8 @@
 class_name PirateBoss
 extends RefCounted
 const Volleys=preload("res://scripts/projectile_volley.gd")
+const Attachment=preload("res://scripts/entity_attachment.gd")
+const SceneryMotion=preload("res://scripts/scenery_motion.gd")
 const Movement = preload("res://scripts/movement.gd")
 const AttackTimer = preload("res://scripts/attack_timer.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
@@ -17,7 +19,7 @@ static func has_part(enemies: Variant, kind: int) -> bool:
 	return false
 
 static func steer(b: Dictionary, player: Vector2, enemies: Variant, seconds: float = 1.0/60.0) -> void:
-	if Catalog.for_actor(b).get("movement_mode","pattern")=="stationary":
+	if Catalog.for_actor(b).get("movement_mode","pattern") in ["stationary","scenery"]:
 		b.velocity = Vector2.ZERO
 		return
 	if seconds<=0: return
@@ -62,13 +64,10 @@ static func steer(b: Dictionary, player: Vector2, enemies: Variant, seconds: flo
 
 static func attach(e: Dictionary, b: Dictionary) -> void:
 	if b.is_empty(): return
-	var p: Vector2 = b.pos
 	var attachment: Dictionary = Catalog.definition(int(e.kind)).get("attachment",{})
 	if attachment.is_empty(): return
 	if int(e.kind)==CoreMotion.KIND and e.pattern!=0: return
-	var offset := Vector2(attachment.offset[0],attachment.offset[1])
-	e.pos.x = p.x+offset.x
-	if attachment.follow_y: e.pos.y = p.y+offset.y
+	Attachment.apply(e,b)
 	if int(e.kind)==CoreMotion.KIND and e.hp<CoreMotion.settings().detach_hp:
 		CoreMotion.detach(e)
 
@@ -99,19 +98,15 @@ static func advance(b: Dictionary,enemies: Variant,seconds: float,player: Vector
 	var attack: Dictionary = definition.get("attack",{})
 	if attack.get("type")!="spiral":return result
 	if attack.is_empty() or not attack.has("ports"): return result
-	if not parts_alive(enemies) or b.pos.y<=float(attack.get("min_y",-INF)):
-		b.body_attack_elapsed = 0.0
-		return result
-	var elapsed: float = float(b.get("body_attack_elapsed",0.0))+seconds
+	var sweep_enabled: bool=parts_alive(enemies) and b.pos.y>float(attack.get("min_y",-INF))
+	var sweep_events: Array=AttackTimer.periodic(b,"body_spiral",seconds,attack.interval_seconds,sweep_enabled)
 	var sweep: float = float(b.get("body_sweep",0.0))
-	while elapsed>=float(attack.interval_seconds)-0.0000001:
-		elapsed = maxf(0,elapsed-float(attack.interval_seconds))
+	for _event in sweep_events:
 		for i in range(attack.ports.size()):
 			var port: Array = attack.ports[i]
 			var angle: float = deg_to_rad(attack.initial_degrees)+sweep*float(attack.rotation_directions[i])
 			_add(result,b.pos+Vector2(port[0],port[1]),Vector2.from_angle(angle)*float(attack.speed),int(attack.projectile_kind))
 		sweep = fposmod(sweep+deg_to_rad(attack.step_degrees),TAU)
-	b.body_attack_elapsed = elapsed
 	b.body_sweep = sweep
 	return result
 
@@ -120,18 +115,11 @@ static func _advance_first(b: Dictionary,enemies: Variant,seconds: float) -> Arr
 	var result: Array = []
 	if attack.is_empty(): return result
 	var interval: float = attack.interval_seconds if parts_alive(enemies) else attack.enraged_interval_seconds
-	# Start a fresh half-length interval when the final fist goes away; no backlog burst.
-	if not is_equal_approx(float(b.get("body_attack_period",interval)),interval): b.body_attack_elapsed = 0.0
-	b.body_attack_period = interval
-	var age: float = float(b.get("body_attack_age",0.0))+seconds
-	b.body_attack_age = age
-	var elapsed: float = float(b.get("body_attack_elapsed",0.0))+seconds
-	while elapsed>=interval-0.0000001:
-		elapsed = maxf(0,elapsed-interval)
-		var side: float = 1 if fposmod(age-elapsed,float(attack.side_hold_seconds)*2)>=float(attack.side_hold_seconds)-0.0000001 else -1
+	# The last fist disappearing starts a fresh half-length interval without a backlog burst.
+	for event in AttackTimer.periodic(b,"body_alternating",seconds,interval,true,true):
+		var side: float = 1 if fposmod(float(event.at),float(attack.side_hold_seconds)*2)>=float(attack.side_hold_seconds)-0.0000001 else -1
 		var port: Array = attack.ports[1 if side>0 else 0]
 		_add(result,b.pos+Vector2(port[0],port[1]),Vector2(side*(float(attack.horizontal_base)+b.velocity.y),float(attack.speed_y)),int(attack.projectile_kind))
-	b.body_attack_elapsed = elapsed
 	return result
 
 static func _add(result: Array, pos: Vector2, velocity: Vector2, kind: int) -> void:
@@ -143,3 +131,23 @@ static func claw_muzzle(e: Dictionary) -> Vector2:
 	var volley: Dictionary=Catalog.fire_channel(int(e.kind),"plasma").get("volley",{})
 	var ports: Array=volley.get("ports",[[25,25]])
 	return e.pos+Vector2(ports[0][0],ports[0][1])
+
+static func bind_scenery(b: Dictionary,distance: float) -> void:
+	b.scenery_anchor_y=b.pos.y
+	b.scenery_anchor_distance=distance
+	b.scenery_stop_triggered=false
+static func advance_position(b: Dictionary,seconds: float,distance: float) -> bool:
+	b.age+=seconds
+	var definition: Dictionary=Catalog.for_actor(b)
+	if definition.get("movement_mode","pattern")!="scenery":
+		b.pos+=Movement.displacement(b.velocity,seconds)
+		return false
+	if not b.has("scenery_anchor_distance"):bind_scenery(b,distance)
+	var previous_y: float=b.pos.y
+	b.pos.y=SceneryMotion.y(b.scenery_anchor_y,b.scenery_anchor_distance,distance)
+	b.velocity=Vector2(0,(b.pos.y-previous_y)/seconds if seconds>0 else 0)
+	var policy: Dictionary=definition.get("boss_scroll",{})
+	if policy.has("stop_after_y") and b.pos.y>float(policy.stop_after_y) and not b.get("scenery_stop_triggered",false):
+		b.scenery_stop_triggered=true
+		return true
+	return false

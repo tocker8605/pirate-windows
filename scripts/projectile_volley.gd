@@ -48,7 +48,15 @@ static func emit(e: Dictionary,player: Vector2,channel: Dictionary,boss: Diction
 		"pod_twin":
 			add(result,p+vector(ports[0]),Vector2(-e.velocity.x/2,300),7)
 			add(result,p+vector(ports[0]),Vector2(-e.velocity.x/3,200),5)
-		"energy":add(result,p+vector(ports[0]),direction*float(v.speed)+Vector2((3-int(p.y)%7)*33.333333333333336,0),kind)
+		"aimed_sequence":
+			# One sequence per actor and named channel, advancing only when a volley fires.
+			var steps: Dictionary=e.get("volley_steps",{})
+			var key: String=channel.name
+			var index: int=int(steps.get(key,0))
+			var angle: float=deg_to_rad(float(v.angles_degrees[index%v.angles_degrees.size()]))
+			for port in ports:add(result,p+vector(port),direction.rotated(angle)*float(v.speed),kind)
+			steps[key]=(index+1)%v.angles_degrees.size()
+			e.volley_steps=steps
 		"sweeping_pair":
 			var angle: float=heavy_cannon_angle(float(e.get("fire_age",0)) if fired_at<0 else fired_at)
 			add(result,p+vector(ports[0]),direction.rotated(angle)*float(v.speed),kind)

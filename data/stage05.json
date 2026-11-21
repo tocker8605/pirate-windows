@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "time_unit": "seconds",
-  "comment": "임시 5면: 월면 심부 → 금속 터널 → 슈퍼컴퓨터 챔버. 보스 HP2000, 이동/공격 없음.",
+  "comment": "임시 5면: 월면 심부 → 금속 터널 → 슈퍼컴퓨터 챔버. 보스 본체 HP3000, 이동/공격 없음.",
   "events": [
     {"comment": "시작 안내 / start_exposed: true=처음부터 노출, false 또는 생략=숨김 상태로 등장 후 Y>80에서 전개"},
     {"at": 1, "action": "banner", "name": "mission"},

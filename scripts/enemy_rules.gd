@@ -47,4 +47,5 @@ static func release_and_escape(e: Dictionary) -> bool:
 	e.pattern = int(action.pattern)
 	return true
 static func out_of_bounds(e: Dictionary) -> bool:
+	if Catalog.for_actor(e).get("role","") in ["boss","part"]: return false
 	return e.pos.x< -100 or e.pos.x>480 or e.pos.y< -100 or e.pos.y>580

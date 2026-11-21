@@ -1,6 +1,7 @@
 class_name PirateCombat
 extends RefCounted
 ## Collision geometry is explicit metadata; preserve strict authored point edges.
+const ProjectileGeometry=preload("res://scripts/player_projectile_geometry.gd")
 const Ground = preload("res://scripts/ground_turret.gd")
 const Depth = preload("res://scripts/enemy_depth.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
@@ -8,23 +9,29 @@ const Pilot = preload("res://scripts/pilot_geometry.gd")
 static func incoming_damage(difficulty: int) -> float:
 	return 6+clampi(difficulty,1,5)*6
 static func between(value: float, low: float, high: float) -> bool: return value>low and value<high
-static func _shot_hits(pos: Vector2, actor: Dictionary, definition: Dictionary) -> bool:
-	if not definition.get("damageable",false) or not Ground.ready(actor): return false
-	var bounds: Array = definition.collision.shot_bounds
-	var local: Vector2 = pos-actor.pos
+## Point/origin inputs below are world coordinates, shared by every entity definition.
+static func shot_point_hits(point: Vector2,actor: Dictionary) -> bool:
+	if actor.is_empty():return false
+	var definition: Dictionary=Catalog.for_actor(actor)
+	if not definition.get("damageable",false) or not Ground.ready(actor):return false
+	var bounds: Array=definition.collision.shot_bounds
+	var local: Vector2=point-actor.pos
 	return between(local.x,bounds[0],bounds[2]) and between(local.y,bounds[1],bounds[3])
-static func shot_hits(pos: Vector2, e: Dictionary) -> bool:
-	return _shot_hits(pos,e,Catalog.definition(int(e.kind)))
-static func shot_hits_boss(pos: Vector2, boss: Dictionary) -> bool:
-	return not boss.is_empty() and _shot_hits(pos,boss,Catalog.for_actor(boss))
-static func _beam_hits(player: Vector2, actor: Dictionary, definition: Dictionary) -> bool:
-	if actor.pos.y>=player.y or not definition.get("damageable",false) or not Ground.ready(actor): return false
-	var bounds: Array = definition.collision.beam_bounds
-	return between(actor.pos.x,player.x+bounds[0],player.x+bounds[1])
-static func beam_hits(player: Vector2, e: Dictionary) -> bool:
-	return _beam_hits(player,e,Catalog.definition(int(e.kind)))
-static func beam_hits_boss(player: Vector2, boss: Dictionary) -> bool:
-	return not boss.is_empty() and _beam_hits(player,boss,Catalog.for_actor(boss))
+static func beam_origin_hits(origin: Vector2,actor: Dictionary) -> bool:
+	if actor.is_empty() or actor.pos.y>=origin.y:return false
+	var definition: Dictionary=Catalog.for_actor(actor)
+	if not definition.get("damageable",false) or not Ground.ready(actor):return false
+	var bounds: Array=definition.collision.beam_bounds
+	return between(origin.x-actor.pos.x,bounds[0],bounds[1])
+# Stored-position convenience adapters for tools and existing callers. No entity-specific offsets.
+static func shot_hits(pos: Vector2,e: Dictionary) -> bool:
+	return shot_point_hits(ProjectileGeometry.shot_centre(pos),e)
+static func shot_hits_boss(pos: Vector2,boss: Dictionary) -> bool:
+	return shot_point_hits(ProjectileGeometry.shot_centre(pos),boss)
+static func beam_hits(player: Vector2,e: Dictionary) -> bool:
+	return beam_origin_hits(ProjectileGeometry.beam_origin(player),e)
+static func beam_hits_boss(player: Vector2,boss: Dictionary) -> bool:
+	return beam_origin_hits(ProjectileGeometry.beam_origin(player),boss)
 static func hurts_player(player: Vector2, point: Vector2) -> bool:
 	return Pilot.hits(player,point)
 static func touches_player(player: Vector2, actor: Dictionary) -> bool:

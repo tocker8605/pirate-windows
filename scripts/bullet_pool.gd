@@ -9,6 +9,6 @@ static func group(g: Node, projectiles: Array) -> void:
 static func single(g: Node, pos: Vector2, velocity: Vector2, kind: int) -> void:
 	write(g,{"pos":pos,"velocity":velocity,"kind":kind})
 static func enemy(g: Node, e: Dictionary, seconds: float) -> void:
-	group(g,Fire.advance(e,seconds,g.player,g.boss))
+	group(g,Fire.advance_prepared(e,seconds,g.player,g.boss))
 static func body(g: Node, seconds: float) -> void:
 	if not g.boss.is_empty(): group(g,Boss.advance(g.boss,g.enemies,seconds,g.player))

@@ -80,6 +80,10 @@ func run() -> void:
 	g.events = []
 	g.score = 8765432
 	g._complete_stage()
+	check(g.state==Flow.LOADING and g.flow.loading_target==5,"Boss Rush stage4 continues to the new fifth boss")
+	g._load_stage(5,true)
+	g.events=[]
+	g._complete_stage()
 	check(g.state==Flow.MENU and g.last_score==8765432 and g.score==0 and g.rankings.entries.is_empty(),"Boss Rush final clear also bypasses rankings")
 	g.run_settings = Settings.new(2,3,false)
 	for stage in range(1,5):

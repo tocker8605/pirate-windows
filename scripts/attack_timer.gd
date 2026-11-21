@@ -48,3 +48,15 @@ static func segments(channel: Dictionary, age: float, seconds: float) -> Array:
 		result.append({"start":cursor,"duration":next-cursor,"enabled":in_window(channel,cursor)})
 		cursor = next
 	return result
+
+## Special volleys use the same scheduler, with their own named owner-local clock.
+## Disabling discards partial intervals. Optional period changes restart the interval.
+static func periodic(owner: Dictionary,key: String,seconds: float,interval: float,enabled: bool = true,restart_on_change: bool = false) -> Array:
+	var states: Dictionary=owner.get("periodic_attacks",{})
+	var state: Dictionary=states.get(key,{})
+	if restart_on_change and not is_equal_approx(float(state.get("period",interval)),interval):state.fire_timers={}
+	state.period=interval
+	var events: Array=advance(state,[{"name":key,"interval_seconds":interval}],seconds,func(_channel):return enabled)
+	states[key]=state
+	owner.periodic_attacks=states
+	return events

@@ -1,4 +1,5 @@
 extends RefCounted
+const Boss=preload("res://scripts/boss.gd")
 const Ground = preload("res://scripts/ground_turret.gd")
 const MissionBanner = preload("res://scripts/mission_banner.gd")
 ## Named timeline events, validated before play. No per-frame legacy actor quota.
@@ -90,10 +91,14 @@ static func consume(g: Node) -> void:
 				var kind: int = int(event.definition_id)
 				if Catalog.definition(kind).get("role","")=="supply": continue
 				var actor: Dictionary = Catalog.create(kind,Vector2(event.position[0],event.position[1]),int(event.get("pattern",0)),event.get("overrides",{}))
-				if Ground.active(actor): Ground.initialize(actor,g.scenery_distance,event.get("start_exposed",false))
+				if Ground.active(actor):
+					Boss.attach(actor,g.boss)
+					Ground.initialize(actor,g.scenery_distance,event.get("start_exposed",false),g.boss)
 				if Catalog.definition(kind).role=="boss":
 					g.boss = actor
-					if Catalog.definition(kind).get("boss_scroll",{}).get("stop_on_spawn",false):
+					if Catalog.definition(kind).get("movement_mode")=="scenery":Boss.bind_scenery(actor,g.scenery_distance)
+					# Boss Rush scroll timing belongs to its timeline, including delayed stops.
+					if not g.run_settings.boss_rush and Catalog.definition(kind).get("boss_scroll",{}).get("stop_on_spawn",false):
 						g.scroll_speed = 0
 						g.scroll_target = 0
 					g.stats.boss_spawned = true

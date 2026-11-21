@@ -281,7 +281,9 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 		if OrbMotion.active(e): OrbMotion.prepare(e,boss)
 	if boss_death_remaining_seconds==0:
 		BulletPool.body(self,delta_seconds)
-		for e in enemies: _enemy_fire(e,delta_seconds)
+		for e in enemies:
+			if e.hp>0 and Ground.active(e):Ground.begin_step(e,delta_seconds,boss)
+			_enemy_fire(e,delta_seconds)
 	_update_scenery()
 	Ground.advance_wrecks(self)
 	for blast in explosions:
@@ -293,11 +295,11 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 	_update_boss()
 	for e in enemies:
 		var previous_y: float = e.pos.y
-		if Ground.active(e): Ground.advance(e,self,seconds)
+		if Ground.active(e): Ground.finish_step(e,self,seconds)
 		elif CoreMotion.active(e): CoreMotion.advance(e,seconds)
 		elif OrbMotion.active(e): OrbMotion.advance(e,seconds)
 		else: e.pos += Movement.displacement(e.velocity,seconds)
-		Boss.attach(e,boss)
+		if not Ground.active(e):Boss.attach(e,boss)
 		e.render_kind = e.kind
 		e.render_hp = e.hp
 		EnemyRules.carrier(e,previous_y)
@@ -377,8 +379,8 @@ func _boss_steer() -> void:
 
 func _update_boss() -> void:
 	if boss.is_empty(): return
-	boss.age += delta_seconds
-	boss.pos += Movement.displacement(boss.velocity,delta_seconds)
+	if Boss.advance_position(boss,delta_seconds,scenery_distance):
+		scroll_target=0
 
 func _damage_boss(amount: float) -> void:
 	CombatActions.damage_boss(self, amount)

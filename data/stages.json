@@ -123,7 +123,7 @@
     },
     {
       "id": 5,
-      "boss_rush": false,
+      "boss_rush": true,
       "music": "bgm04",
       "regions": [
         {
@@ -147,7 +147,11 @@
         "scroll_target": 60
       },
       "cloud_texture": "",
-      "classic_background": ""
+      "classic_background": "",
+      "boss_rush_initial": {
+        "background_y": 480,
+        "map_mode": 3
+      }
     }
   ]
 }

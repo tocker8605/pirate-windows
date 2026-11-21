@@ -71,7 +71,7 @@ func run() -> void:
 		g.enemies.append(Catalog.create(kind,g.boss.pos+Vector2(offset[0],offset[1])))
 	var boss: Image=await capture(g)
 	boss.save_png("res://preview-stage5-mainframe.png")
-	check(hash(boss.get_data())!=regions[2] and g.boss.hp==2000,"floor-mounted2000HP supercomputer is rendered independently of chamber terrain")
+	check(hash(boss.get_data())!=regions[2] and g.boss.hp==3000,"floor-mounted3000HP supercomputer is rendered independently of chamber terrain")
 	g.audio.stop_all()
 	g.queue_free()
 	await process_frame

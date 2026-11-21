@@ -1,0 +1,22 @@
+{
+  "schema_version": 2,
+  "time_unit": "seconds",
+  "events": [
+    {"comment": "보스러시 5면 / 슈퍼컴퓨터 챔버(3구간)부터 시작. 일반 포대·정기 보급기 없음."},
+    {"at": 0, "action": "scroll", "mode": 3, "speed": 30},
+    {"at": 0.9, "action": "banner", "name": "warning"},
+
+    {"comment": "슈퍼컴퓨터 본체와 기존 양팔·양날개 / 특수 기관포2기·에너지포2기"},
+    {"at": 5.4, "action": "spawn", "definition_id": 95, "position": [200, -400]},
+    {"at": 5.4, "action": "spawn", "definition_id": 141, "position": [168, -400]},
+    {"at": 5.4, "action": "spawn", "definition_id": 142, "position": [232, -400]},
+    {"at": 5.4, "action": "spawn", "definition_id": 143, "position": [168, -400]},
+    {"at": 5.4, "action": "spawn", "definition_id": 144, "position": [232, -400]},
+    {"at": 5.4, "action": "spawn", "definition_id": 145, "position": [140, -400], "start_exposed": false},
+    {"at": 5.4, "action": "spawn", "definition_id": 145, "position": [210, -400], "start_exposed": false},
+    {"at": 5.4, "action": "spawn", "definition_id": 146, "position": [70, -400], "start_exposed": false},
+    {"at": 5.4, "action": "spawn", "definition_id": 146, "position": [280, -400], "start_exposed": false},
+
+    {"at": 6.3, "action": "banner", "name": "mission"}
+  ]
+}

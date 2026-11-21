@@ -20,8 +20,8 @@ func check(ok: bool, message: String) -> void:
 		push_error("FAIL: "+message)
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
-	check(Campaign.stage_count(false)==5 and Campaign.stage_count(true)==4,"normal campaign includes stage5 while Boss Rush ends at stage4")
-	check(Catalog.boss_definition(5).hp==2000 and Catalog.boss_definition(5).fire_channels.is_empty(),"supercomputer has2000HP and no attack channels")
+	check(Campaign.stage_count(false)==5 and Campaign.stage_count(true)==5,"normal campaign and Boss Rush both include stage5")
+	check(Catalog.boss_definition(5).hp==3000 and Catalog.boss_definition(5).fire_channels.is_empty(),"supercomputer has3000HP and no attack channels")
 	for stage in range(1,6):
 		var body: Dictionary=Catalog.create(90+stage,Vector2(200,100))
 		for local_y in [-26.0,-24.0,59.0,61.0]:
@@ -122,7 +122,10 @@ func run() -> void:
 	g.events=[{"at":0,"action":"spawn","definition_id":95,"position":[200,100]}]
 	g.stage_elapsed_seconds=0.001
 	g._read_events()
-	check(g.boss.hp==2000 and g.scroll_speed==0 and g.scroll_target==0,"supercomputer arrival stops the floor and creates the2000HP mainframe")
+	check(g.boss.hp==3000 and g.scroll_speed>0,"mainframe spawn preserves floor scrolling")
+	g._tick(Vector2.ZERO,false,false,false)
+	check(g.boss.pos.y>100 and g.scroll_speed>0 and g.scroll_target==0,"crossingY100 starts gentle floor deceleration")
+	for frame in range(60):g._tick(Vector2.ZERO,false,false,false)
 	var pos: Vector2=g.boss.pos
 	for frame in range(120):g._tick(Vector2.ZERO,false,false,false)
 	check(g.boss.pos==pos and g.bullets.is_empty(),"floor-mounted mainframe neither moves nor attacks")
@@ -164,7 +167,10 @@ func run() -> void:
 	g.run_settings=g.run_settings.with_boss_rush(true)
 	g._load_stage(4)
 	g._complete_stage()
-	check(g.state=="menu","Boss Rush still completes after stage4 without name entry")
+	check(g.state=="loading" and g.flow.loading_target==5,"Boss Rush advances from stage4 to stage5")
+	g._load_stage(5,true)
+	g._complete_stage()
+	check(g.state=="menu","Boss Rush completes after stage5 without name entry")
 	g.audio.stop_all()
 	g.queue_free()
 	await process_frame
