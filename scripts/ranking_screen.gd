@@ -56,7 +56,6 @@ static func row(canvas: Node2D, y: float, number: int, result: Dictionary, name_
 	SpriteFont.text(canvas,Vector2(305,y),"MISSION")
 	SpriteFont.text(canvas,Vector2(375,y),str(result.get("mission",0)),true)
 static func board(canvas: Node2D, records: Array) -> void:
-	SpriteFont.centered(canvas,55,"RANKING")
 	for i in range(Ranking.LIMIT): row(canvas,105+i*28,i+1,records[i] if i<records.size() else {})
 func render(canvas: Node2D) -> void:
 	canvas.draw_rect(Rect2(0,0,400,480),Color.BLACK)
