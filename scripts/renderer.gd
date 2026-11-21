@@ -4,6 +4,7 @@ const Depth = preload("res://scripts/enemy_depth.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Weapons = preload("res://scripts/player_weapons.gd")
 const HUD = preload("res://scripts/hud.gd")
+const MissionBanner = preload("res://scripts/mission_banner.gd")
 const Particles = preload("res://scripts/combat_vfx.gd")
 const Scenery = preload("res://scripts/scenery.gd")
 const Renewed = preload("res://scripts/renewed_art.gd")
@@ -156,7 +157,7 @@ func _draw() -> void:
 		if g.banner.begins_with("WARNING"):
 			draw_texture(g.art.sprite("picwarn",Rect2i(0,0,250,60),Vector2i(0,60)),Vector2(75,200))
 		elif not g.banner.is_empty():
-			draw_texture(g.art.sprite("mis%02d"%(g.stage+10 if g.run_settings.boss_rush else g.stage),Rect2i(0,0,250,30),Vector2i(0,30)),Vector2(75,200))
+			MissionBanner.draw(self,g.banner,g.banner_remaining_seconds)
 	if g.state=="paused":
 		draw_rect(Rect2(0,0,400,480),Color(0.01,0.02,0.05,0.7))
 		_center(202,"PAUSED",28,Color(0.7,0.92,1))

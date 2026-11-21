@@ -65,7 +65,7 @@ func run()->void:
 	g.events=[{"action":"memo","comment":"Runtime note"}]+ordered
 	g.stage_elapsed_seconds=2.1
 	g._read_events()
-	check(g.event_cursor==5 and g.map_mode==2 and g.scroll_target==100 and g.banner=="MISSION 01 / TAKE OFF","comments never change scheduling or control-event effects")
+	check(g.event_cursor==5 and g.map_mode==2 and g.scroll_target==100 and g.banner=="MISSION 1","comments never change scheduling or control-event effects")
 	check(g.enemies.size()==2 and g.enemies.at(0).pos.x==100 and g.enemies.at(1).pos.x==200,"comments never spawn actors or change same-time actor order")
 	g.audio.stop_all()
 	g.queue_free()

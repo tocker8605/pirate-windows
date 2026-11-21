@@ -568,6 +568,7 @@
     },
     "91": {
       "name": "boss_stage1",
+      "display_name": "MARVELOHAMMER",
       "role": "boss",
       "hp": 1000,
       "score": 3000,
@@ -619,6 +620,7 @@
         }
       ],
       "name": "boss_stage2",
+      "display_name": "VRMILION",
       "role": "boss",
       "hp": 1250,
       "score": 5000,
@@ -678,6 +680,7 @@
         ]
       },
       "name": "boss_stage3",
+      "display_name": "JUGGRNAUT",
       "role": "boss",
       "hp": 1500,
       "score": 7000,
@@ -724,6 +727,7 @@
         }
       ],
       "name": "boss_stage4",
+      "display_name": "DEVILCLAW",
       "role": "boss",
       "hp": 1500,
       "score": 10000,

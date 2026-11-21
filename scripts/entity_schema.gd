@@ -1,6 +1,6 @@
 extends RefCounted
 const Check = preload("res://scripts/data_validation.gd")
-const FIELDS: Array = ["name","role","hp","score","score_scales_with_difficulty","damageable","explosion_seconds","death_sound","draw_size","draw_offset","part_side","collision","damage_smoke","boss_rush_drop","drop","stage","music","open_at_y","open_kind","on_defeat","attack","fire_channels","motion","attachment","core_motion"]
+const FIELDS: Array = ["name","display_name","role","hp","score","score_scales_with_difficulty","damageable","explosion_seconds","death_sound","draw_size","draw_offset","part_side","collision","damage_smoke","boss_rush_drop","drop","stage","music","open_at_y","open_kind","on_defeat","attack","fire_channels","motion","attachment","core_motion"]
 static func validate_document(document: Variant) -> PackedStringArray:
 	var errors := PackedStringArray()
 	if not document is Dictionary or document.get("schema_version",0)!=2 or not document.get("entities") is Dictionary:
@@ -39,6 +39,7 @@ static func validate_document(document: Variant) -> PackedStringArray:
 					if not Check.number(core.get(field)) or float(core.get(field,0))<=0: errors.append(prefix+"invalid core "+field)
 				if not Check.vector(core.get("target_center"),2): errors.append(prefix+"invalid core target")
 		if not d.get("name") is String or d.get("name","").is_empty(): errors.append(prefix+"name is required")
+		if d.has("display_name") and (not d.display_name is String or str(d.display_name).strip_edges().is_empty()): errors.append(prefix+"display_name must be nonempty text")
 		if d.get("role")=="boss":
 			if int(d.get("stage",0)) in boss_stages: errors.append(prefix+"duplicate boss stage")
 			boss_stages.append(int(d.get("stage",0)))
