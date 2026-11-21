@@ -1,5 +1,6 @@
 class_name PirateEnemyRules
 extends RefCounted
+const Geometry=preload("res://scripts/entity_geometry.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 # Approach and open states resolve the same payload definition.
 static func cargo_settings(e: Dictionary) -> Dictionary:
@@ -32,7 +33,7 @@ static func drop(e: Dictionary, boss_rush: bool) -> Dictionary:
 	var reward: Dictionary = d.get("drop",{})
 	if boss_rush and d.has("boss_rush_drop"): reward = d.boss_rush_drop
 	if reward.is_empty(): return {}
-	var item := {"pos":e.pos+reward.offset,"kind":int(reward.item)}
+	var item := {"pos":Geometry.world_point(e,reward.offset),"kind":int(reward.item)}
 	if reward.get("cargo_release",false):
 		item.age = 0.0
 		item.cargo_release = true
