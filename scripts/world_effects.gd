@@ -1,5 +1,6 @@
 class_name PirateWorldEffects
 extends RefCounted
+const Geometry=preload("res://scripts/entity_geometry.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const EnemyRules = preload("res://scripts/enemy_rules.gd")
 static func sprite(sheet: String, rect: Rect2i, mask: Vector2i, pos: Vector2) -> Dictionary:
@@ -10,7 +11,7 @@ static func enemy_smoke(e: Dictionary, frame: int, speed: float) -> Array:
 	var commands: Array = []
 	speed *= 0.03
 	if not Catalog.smoking(e): return commands
-	var offsets: Array = Catalog.smoke_settings(e).ports.map(func(p): return p-Vector2(25,25))
+	var offsets: Array = Catalog.smoke_settings(e).ports.map(func(p): return Geometry.world_point(e,p)-e.pos-Vector2(25,25))
 	for offset in offsets:
 		smoke(commands,e.pos+offset-Vector2(e.velocity.x*0.03*8,e.velocity.y*0.03*6)+Vector2(0,speed*2),frame)
 		smoke(commands,e.pos+offset-Vector2(e.velocity.x*0.03*5,e.velocity.y*0.03*4)+Vector2(0,speed),frame+1)

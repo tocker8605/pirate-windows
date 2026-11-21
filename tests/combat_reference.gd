@@ -64,7 +64,7 @@ func run() -> void:
 	check(a.size()==3 and a[0].velocity.distance_to((Vector2(-1,-1))/0.03)<0.001 and a[1].velocity.distance_to((Vector2(1,-1))/0.03)<0.001,"type 21 original dual missiles plus aimed bullet")
 	check(Fire.burst(enemy(22,Vector2(100,100)),player,2,0).is_empty(),"type 22 Y=100 firing boundary")
 	a = Fire.burst(enemy(22,Vector2(100,101)),player,2,0)
-	check(a.size()==2 and near(a[0].velocity,Vector2(70,279).normalized()*9/0.03),"type22 retains plasma geometry with normalized aim")
+	check(a.size()==2 and near(a[0].velocity,Vector2(70,279).normalized().rotated(deg_to_rad(12))*300),"type22 plasma starts the requested12degree aimed sweep")
 	check(Fire.burst(enemy(22,Vector2(100,150)),player,2,0).is_empty(),"type 22 Y=150 firing boundary")
 	a = Fire.burst(enemy(41,Vector2(100,100)),player,3,1)
 	b = Fire.burst(enemy(41,Vector2(100,100)),player,3,2)
@@ -87,8 +87,8 @@ func run() -> void:
 		var bounded: bool = true
 		for channel in RuntimeFire.Catalog.definition(kind).fire_channels:
 			var attack: String=channel.name
-			var close_shots: Array = RuntimeFire.emit(actor,Vector2(100.01,80),attack)
-			var far_shots: Array = RuntimeFire.emit(actor,actor.pos+(Vector2(100.01,80)-actor.pos)*10,attack)
+			var close_shots: Array = RuntimeFire.emit(actor.duplicate(true),Vector2(100.01,80),attack)
+			var far_shots: Array = RuntimeFire.emit(actor.duplicate(true),actor.pos+(Vector2(100.01,80)-actor.pos)*10,attack)
 			bounded = bounded and close_shots.size()>0 and close_shots.size()==far_shots.size()
 			for i in range(close_shots.size()):
 				bounded = bounded and close_shots[i].velocity.distance_to(far_shots[i].velocity)<0.01 and close_shots[i].velocity.length()<401

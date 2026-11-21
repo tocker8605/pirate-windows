@@ -136,6 +136,9 @@ func run() -> void:
 		g._tick(Vector2.ZERO,false,false,false)
 		visited[g.map_mode]=true
 	check(g.stats.spawned-g.stats.supply_spawned==27 and g.boss.get("kind",0)==95,"complete stage5 timeline deploys19 ordinary turrets, eight boss parts and the mainframe alongside automatic supplies")
+	# Authored entry Y/speed may change; allow the scenery-mounted boss to reach its stop.
+	while not g.boss.is_empty() and g.scroll_speed>0 and g.stage_elapsed_seconds<150:
+		g._tick(Vector2.ZERO,false,false,false)
 	check(visited.has(1) and visited.has(2) and visited.has(3) and g.scroll_speed==0,"stage5 traverses allthree regions and stops on the chamber floor")
 	var parts_correct: bool=true
 	for kind in [141,142,143,144]:
@@ -144,9 +147,9 @@ func run() -> void:
 			if int(e.kind)==kind:
 				found=true
 				var offset: Array=Catalog.definition(kind).attachment.offset
-				parts_correct=parts_correct and e.pos.is_equal_approx(g.boss.pos+Vector2(offset[0],offset[1])) and Fire.advance(e,1,g.player,g.boss).is_empty()
+				parts_correct=parts_correct and e.pos.is_equal_approx(g.boss.pos+Vector2(offset[0],offset[1])) and not Catalog.definition(e.kind).fire_channels.is_empty()
 		parts_correct=parts_correct and found
-	check(parts_correct,"allfour stationary boss parts attach correctly without adding an attack pattern")
+	check(parts_correct,"allfour stationary boss parts attach correctly; wings have missile attacks and arms have gatling attacks")
 	var hinges_aligned: bool=true
 	for kind in [141,142,143,144]:
 		var definition: Dictionary=Catalog.definition(kind)

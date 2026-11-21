@@ -54,7 +54,7 @@ func draw_wreck(c: Node2D, remains: Dictionary, pos: Vector2) -> void:
 func draw_floor_actor(c: Node2D, actor: Dictionary, pos: Vector2) -> void:
 	var d: Dictionary=Catalog.for_actor(actor)
 	var texture: Texture2D=textures.for_definition(d)
-	c.draw_set_transform_matrix(Geometry.transform(d,pos,texture.get_size()))
+	c.draw_set_transform_matrix(Geometry.sprite_transform(actor,d,texture.get_size(),pos))
 	var rect: Rect2=Geometry.image_rect(d,texture.get_size())
 	rect.position-=d.draw_size/2
 	c.draw_texture_rect(texture,rect,false)

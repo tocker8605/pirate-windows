@@ -31,3 +31,21 @@ static func transform(d: Dictionary, pos: Vector2, native: Vector2 = Vector2.ZER
 static func image_point(d: Dictionary,pos: Vector2,uv: Vector2,native: Vector2 = Vector2.ZERO) -> Vector2:
 	var rect: Rect2=image_rect(d,native)
 	return transform(d,pos,native)*(rect.position+rect.size*uv-vector(d.draw_size)/2)
+
+## Local metadata is authored after sprite mirroring, relative to the actor's logical anchor.
+## The same rigid frame drives collisions, muzzles, smoke and sprite placement.
+static func local_frame(actor: Dictionary,position: Variant = null,angle_override: Variant = null) -> Transform2D:
+	var pos: Vector2=actor.pos if position==null else position
+	var pivot: Vector2=actor.get("pose_pivot",Vector2.ZERO)
+	var angle: float=float(actor.get("pose_angle",0)) if angle_override==null else float(angle_override)
+	return Transform2D(angle,pos+pivot-pivot.rotated(angle))
+static func world_point(actor: Dictionary,local: Vector2,angle_override: Variant = null) -> Vector2:
+	var angle: float=float(actor.get("pose_angle",0)) if angle_override==null else float(angle_override)
+	if angle==0:return actor.pos+local
+	return local_frame(actor,null,angle)*local
+static func sprite_transform(actor: Dictionary,d: Dictionary,native: Vector2,position: Variant = null) -> Transform2D:
+	return local_frame(actor,position)*transform(d,Vector2.ZERO,native)
+
+static func local_point(actor: Dictionary,world: Vector2) -> Vector2:
+	if float(actor.get("pose_angle",0))==0:return world-actor.pos
+	return local_frame(actor).affine_inverse()*world

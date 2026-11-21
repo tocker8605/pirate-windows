@@ -134,7 +134,7 @@ func _draw() -> void:
 		if Depth.is_below(e): _draw_enemy_actor(e)
 	if not g.boss.is_empty() and not Geometry.layer(Catalog.for_actor(g.boss))=="floor":
 		if g.renewed_art:
-			renewal.draw_boss(self,g.stage,g.presentation.position(g.boss))
+			renewal.draw_boss(self,g.stage,g.presentation.position(g.boss),g.boss)
 		else: draw_texture(g.art.boss_body(g.stage),g.boss.pos+Vector2(-75,0))
 	if (int(ceil(g.invulnerability_render_seconds*33.333333333333336-0.000001))%2==0):
 		if g.renewed_art: pilot.draw(self,g.presentation.player(g),g.player_bank)

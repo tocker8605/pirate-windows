@@ -1,5 +1,6 @@
 class_name PirateEnemyFire
 extends RefCounted
+const PoseMotion=preload("res://scripts/entity_pose_motion.gd")
 const Geometry=preload("res://scripts/entity_geometry.gd")
 const Volleys=preload("res://scripts/projectile_volley.gd")
 const Ground = preload("res://scripts/ground_turret.gd")
@@ -50,6 +51,7 @@ static func emit(e: Dictionary, player: Vector2, attack: String, boss: Dictionar
 # Elapsed seconds avoids quantizing the 100ms cadence to the legacy 60ms fire clock.
 # Bullets fly straight; sequential emission angles form the expanding spiral.
 static func advance(e: Dictionary, seconds: float, player: Vector2 = Vector2.ZERO, boss: Dictionary = {}) -> Array:
+	PoseMotion.advance(e,seconds)
 	if e.hp>0 and Ground.active(e):Ground.begin_step(e,seconds,boss)
 	return advance_prepared(e,seconds,player,boss)
 

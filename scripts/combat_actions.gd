@@ -1,4 +1,5 @@
 extends RefCounted
+const ProjectileMotion=preload("res://scripts/projectile_motion.gd")
 const ProjectileGeometry=preload("res://scripts/player_projectile_geometry.gd")
 const Weapons = preload("res://scripts/player_weapons.gd")
 const Effects = preload("res://scripts/special_effects.gd")
@@ -39,12 +40,7 @@ static func damage_boss(g: Node, amount: float) -> void:
 
 static func update_bullets(g: Node) -> void:
 	for bullet in g.bullets:
-		bullet.render_pos = bullet.pos
-		bullet.render_velocity = bullet.velocity
-		if int(bullet.kind)==2: bullet.velocity.y = minf(500.0,bullet.velocity.y+333.33333333333337*g.delta_seconds)
-		if int(bullet.kind)==8: bullet.velocity.y = minf(333.33333333333337,bullet.velocity.y+222.222222222222*g.delta_seconds)
-		bullet.pos.x += bullet.velocity.x*g.delta_seconds
-		bullet.pos.y = bullet.pos.y+bullet.velocity.y*g.delta_seconds
+		ProjectileMotion.advance(bullet,g.delta_seconds)
 		if bullet.velocity==Vector2.ZERO or bullet.pos.x<0 or bullet.pos.x>400 or bullet.pos.y<0 or bullet.pos.y>480:
 			bullet.alive = false
 			continue

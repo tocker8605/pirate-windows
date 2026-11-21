@@ -3,7 +3,7 @@ const Campaign = preload("res://scripts/campaign_rules.gd")
 const Visual=preload("res://scripts/entity_visual_schema.gd")
 const Volleys=preload("res://scripts/projectile_volley_schema.gd")
 const Check = preload("res://scripts/data_validation.gd")
-const FIELDS: Array = ["name","display_name","role","hp","score","score_scales_with_difficulty","damageable","explosion_seconds","death_sound","draw_size","draw_offset","part_side","collision","damage_smoke","boss_rush_drop","drop","stage","music","open_at_y","open_kind","on_defeat","attack","fire_channels","motion","attachment","core_motion","movement_mode","boss_scroll","floor_decoration","visual","sprite_region","ground_turret","sprite_path","sprite_fit","classic_sprite"]
+const FIELDS: Array = ["name","display_name","role","hp","score","score_scales_with_difficulty","damageable","explosion_seconds","death_sound","draw_size","draw_offset","part_side","collision","damage_smoke","boss_rush_drop","drop","stage","music","open_at_y","open_kind","on_defeat","attack","fire_channels","motion","pose_motion","attachment","core_motion","movement_mode","boss_scroll","floor_decoration","visual","sprite_region","ground_turret","sprite_path","sprite_fit","classic_sprite"]
 static func validate_document(document: Variant) -> PackedStringArray:
 	var errors := PackedStringArray()
 	if not document is Dictionary or document.get("schema_version",0)!=2 or not document.get("entities") is Dictionary:
@@ -31,7 +31,7 @@ static func validate_document(document: Variant) -> PackedStringArray:
 		if hatch is Dictionary and Check.number(hatch.get("boss_id")):
 			var parent: Variant=document.entities.get(str(int(hatch.boss_id)),{})
 			if not parent is Dictionary or parent.get("role")!="boss":errors.append(prefix+"boss hatch must reference a boss definition")
-		Check.nested_fields(d.get("collision",{}),["beam_bounds", "contact_bounds", "shot_bounds"],prefix+"collision.",errors)
+		Check.nested_fields(d.get("collision",{}),["beam_bounds", "beam_rect", "contact_bounds", "shot_bounds"],prefix+"collision.",errors)
 		Check.nested_fields(d.get("motion",{}),["type", "upper_center", "lower_center", "lower_below_ratio", "speed", "lower_follow"],prefix+"motion.",errors)
 		Check.nested_fields(d.get("fire_channels",{}),["name", "gate", "interval_seconds", "projectile_kind", "part_id", "part_ids", "count", "initial_degrees", "rotation_direction", "rotation_step_degrees", "spacing_degrees", "speed", "window_seconds", "volley"],prefix+"fire_channels.",errors)
 		Check.nested_fields(d.get("attack",{}),["count", "enraged_interval_seconds", "horizontal_base", "initial_degrees", "interval_seconds", "max_spread_degrees", "max_vertical_speed", "min_y", "opposed", "ports", "projectile_kind", "requires_stationary_x", "rotation_directions", "side_hold_seconds", "speed", "speed_y", "spread_degrees", "spread_directions", "step_degrees", "type"],prefix+"attack.",errors)
@@ -71,6 +71,9 @@ static func validate_document(document: Variant) -> PackedStringArray:
 		if not Check.vector(collision.get("shot_bounds"),4) or not Check.vector(collision.get("beam_bounds"),2): errors.append(prefix+"invalid collision bounds")
 		if Check.vector(collision.get("shot_bounds"),4) and (collision.shot_bounds[0]>=collision.shot_bounds[2] or collision.shot_bounds[1]>=collision.shot_bounds[3]): errors.append(prefix+"shot bounds must have increasing edges")
 		if Check.vector(collision.get("beam_bounds"),2) and collision.beam_bounds[0]>=collision.beam_bounds[1]: errors.append(prefix+"beam bounds must have increasing edges")
+		if collision.has("beam_rect"):
+			if not Check.vector(collision.beam_rect,4):errors.append(prefix+"invalid beam rectangle")
+			elif collision.beam_rect[0]>=collision.beam_rect[2] or collision.beam_rect[1]>=collision.beam_rect[3]:errors.append(prefix+"beam rectangle must have increasing edges")
 		if not Check.vector(collision.get("contact_bounds"),4): errors.append(prefix+"invalid contact bounds")
 		elif collision.contact_bounds[0]>=collision.contact_bounds[2] or collision.contact_bounds[1]>=collision.contact_bounds[3]: errors.append(prefix+"contact bounds must have increasing edges")
 		if d.has("motion"):

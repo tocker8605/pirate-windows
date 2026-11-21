@@ -33,24 +33,20 @@
     {"at": 65, "action": "spawn", "definition_id": 52, "position": [275, -60], "start_exposed": true},
     {"at": 68, "action": "spawn", "definition_id": 52, "position": [75, -60], "start_exposed": true},
 
+    {"at": 78, "action": "scroll", "mode": 3, "speed": 30},
+
     {"comment": "보스 등장 경고"},
     {"at": 79.6, "action": "banner", "name": "warning"},
 
-    {"comment": "슈퍼컴퓨터 본체"},
-    {"at": 82, "action": "spawn", "definition_id": 95, "position": [200, 80]},
-
-    {"comment": "보스 양팔 / 게틀링 파츠"},
-    {"at": 82, "action": "spawn", "definition_id": 141, "position": [168, 117]},
-    {"at": 82, "action": "spawn", "definition_id": 142, "position": [232, 117]},
-
-    {"comment": "보스 양날개 / 미사일 파츠"},
-    {"at": 82, "action": "spawn", "definition_id": 143, "position": [168, 117]},
-    {"at": 82, "action": "spawn", "definition_id": 144, "position": [232, 117]},
-
-    {"comment": "보스 전방 특수 포대 임시 배치 / 기관포145 두 기, 에너지포146 두 기"},
-    {"at": 82, "action": "spawn", "definition_id": 145, "position": [70, 215], "start_exposed": false},
-    {"at": 82, "action": "spawn", "definition_id": 146, "position": [140, 215], "start_exposed": false},
-    {"at": 82, "action": "spawn", "definition_id": 146, "position": [210, 215], "start_exposed": false},
-    {"at": 82, "action": "spawn", "definition_id": 145, "position": [280, 215], "start_exposed": false}
+    {"comment": "보스"},
+    {"at": 82, "action": "spawn", "definition_id": 95, "position": [200, -400]},
+    {"at": 82, "action": "spawn", "definition_id": 141, "position": [168, -400]},
+    {"at": 82, "action": "spawn", "definition_id": 142, "position": [232, -400]},
+    {"at": 82, "action": "spawn", "definition_id": 143, "position": [168, -400]},
+    {"at": 82, "action": "spawn", "definition_id": 144, "position": [232, -400]},
+    {"at": 82, "action": "spawn", "definition_id": 145, "position": [140, -400], "start_exposed": false},
+    {"at": 82, "action": "spawn", "definition_id": 145, "position": [210, -400], "start_exposed": false},
+    {"at": 82, "action": "spawn", "definition_id": 146, "position": [70, -400], "start_exposed": false},
+    {"at": 82, "action": "spawn", "definition_id": 146, "position": [280, -400], "start_exposed": false}
   ]
 }

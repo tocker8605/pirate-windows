@@ -26,6 +26,23 @@ static func validate(d: Dictionary,prefix: String,errors: PackedStringArray) -> 
 				if v.has(field) and not Check.number(v[field]):errors.append(prefix+"invalid visual "+field)
 			if v.has("painted_size") and (not Check.vector(v.painted_size,2) or v.painted_size.any(func(n):return n<=0)):errors.append(prefix+"invalid painted_size")
 			if v.get("anchor")=="hinge" and (not Check.vector(v.get("hinge_uv"),2) or v.hinge_uv.any(func(n):return n<0 or n>1)):errors.append(prefix+"invalid hinge UV")
+	if d.has("pose_motion"):
+		var motion: Variant=d.pose_motion
+		if not motion is Dictionary:errors.append(prefix+"pose_motion must be an object")
+		else:
+			Check.unknown_fields(motion,["type","period_seconds","angle_degrees","pivot","min_degrees","max_degrees","initial_degrees","initial_direction"],prefix+"pose_motion.",errors)
+			if motion.get("type") not in ["swing","swing_range"]:errors.append(prefix+"unknown pose motion")
+			if not Check.number(motion.get("period_seconds")) or float(motion.get("period_seconds",0))<=0:errors.append(prefix+"pose period must be positive")
+			if motion.get("type")=="swing" and not Check.number(motion.get("angle_degrees")):errors.append(prefix+"invalid pose angle")
+			if motion.get("type")=="swing_range":
+				var valid: bool=true
+				for field in ["min_degrees","max_degrees","initial_degrees","initial_direction"]:
+					if not Check.number(motion.get(field)):valid=false;errors.append(prefix+"invalid pose "+field)
+				if valid:
+					if motion.min_degrees>=motion.max_degrees or motion.initial_degrees<motion.min_degrees or motion.initial_degrees>motion.max_degrees:errors.append(prefix+"invalid pose range or initial angle")
+					if absf(float(motion.initial_direction))!=1:errors.append(prefix+"pose initial direction must be1or-1")
+			if not Check.vector(motion.get("pivot"),2):errors.append(prefix+"invalid pose pivot")
+			if not d.get("collision") is Dictionary or not d.collision.has("beam_rect"):errors.append(prefix+"pose motion requires a beam rectangle")
 	if d.has("boss_scroll"):
 		var policy: Variant=d.boss_scroll
 		if not policy is Dictionary:errors.append(prefix+"boss_scroll must be an object")

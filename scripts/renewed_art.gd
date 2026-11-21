@@ -40,7 +40,7 @@ func observe(g: Node) -> void:
 func draw_enemy(c: Node2D, e: Dictionary, pos: Vector2, _frame: int) -> void:
 	var size: Vector2 = dimensions(int(e.kind))
 	var sprite: Texture2D = enemy_texture(int(e.kind))
-	var center: Vector2 = Geometry.transform(Catalog.definition(int(e.kind)),pos,sprite.get_size()).origin
+	var center: Vector2 = Geometry.sprite_transform(e,Catalog.definition(int(e.kind)),sprite.get_size(),pos).origin
 	var id: int = e.get("entity_id",-1)
 	var pose: Dictionary = poses[id] if poses.has(id) else Pose.target(int(e.kind),e.velocity,0)
 	var pitch: float = lerpf(pose.previous_pitch,pose.pitch,render_fraction)
@@ -58,9 +58,9 @@ func draw_enemy(c: Node2D, e: Dictionary, pos: Vector2, _frame: int) -> void:
 	if e.kind==10: tint *= Color(0.72,0.72,0.72)
 	if Geometry.visual(Catalog.definition(int(e.kind))).get("flip_h",false): projected.x *= -1
 	if e.kind==3:
-		draw_station(c,center,projected,spin,tint)
+		draw_station(c,center,projected,spin+float(e.get("pose_angle",0)),tint)
 		return
-	var yaw: float = Pose.bank_yaw(bank,projected.y,int(e.kind))+Geometry.rotation(Catalog.definition(int(e.kind)))+(spin if e.kind==9 else 0.0)
+	var yaw: float = Pose.bank_yaw(bank,projected.y,int(e.kind))+Geometry.rotation(Catalog.definition(int(e.kind)))+(spin if e.kind==9 else 0.0)+float(e.get("pose_angle",0))
 	c.draw_set_transform(center,yaw,projected)
 	var definition: Dictionary=Catalog.definition(int(e.kind))
 	var painted_size: Vector2=Geometry.image_rect(definition,sprite.get_size()).size
@@ -99,10 +99,10 @@ func draw_hinged_wings(c: Node2D, center: Vector2, yaw: float, scale: Vector2, f
 	c.draw_set_transform_matrix(base)
 	c.draw_texture_rect(wing_textures[1],Rect2(-7.5,-25,15,50),false,tint)
 
-func draw_boss(c: Node2D, stage: int, pos: Vector2) -> void:
+func draw_boss(c: Node2D, stage: int, pos: Vector2, actor: Dictionary = {}) -> void:
 	var definition: Dictionary=Catalog.boss_definition(stage)
 	var sprite: Texture2D=enemy_texture(int(definition.id))
-	c.draw_set_transform_matrix(Geometry.transform(definition,pos,sprite.get_size()))
+	c.draw_set_transform_matrix(Geometry.transform(definition,pos,sprite.get_size()) if actor.is_empty() else Geometry.sprite_transform(actor,definition,sprite.get_size(),pos))
 	var rect: Rect2=Geometry.image_rect(definition,sprite.get_size())
 	rect.position-=definition.draw_size/2
 	c.draw_texture_rect(sprite,rect,false)

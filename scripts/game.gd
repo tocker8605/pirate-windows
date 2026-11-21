@@ -1,6 +1,7 @@
 extends Node2D
 ## Fixed60Hz orchestration. Gameplay time is seconds and velocity is pixels/second.
 const Campaign = preload("res://scripts/campaign_rules.gd")
+const PoseMotion=preload("res://scripts/entity_pose_motion.gd")
 const Ground = preload("res://scripts/ground_turret.gd")
 const Art = preload("res://scripts/art.gd")
 const Movement = preload("res://scripts/movement.gd")
@@ -279,6 +280,7 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 	_boss_steer()
 	for e in enemies:
 		if OrbMotion.active(e): OrbMotion.prepare(e,boss)
+		PoseMotion.advance(e,delta_seconds)
 	if boss_death_remaining_seconds==0:
 		BulletPool.body(self,delta_seconds)
 		for e in enemies:

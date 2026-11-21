@@ -1,5 +1,6 @@
 class_name PirateBoss
 extends RefCounted
+const PoseMotion=preload("res://scripts/entity_pose_motion.gd")
 const Volleys=preload("res://scripts/projectile_volley.gd")
 const Attachment=preload("res://scripts/entity_attachment.gd")
 const SceneryMotion=preload("res://scripts/scenery_motion.gd")
@@ -90,6 +91,7 @@ static func emit(b: Dictionary, attack: String, player: Vector2 = Vector2.ZERO) 
 static func advance(b: Dictionary,enemies: Variant,seconds: float,player: Vector2 = Vector2.ZERO) -> Array:
 	var result: Array = []
 	if b.is_empty() or b.hp<=0: return result
+	PoseMotion.advance(b,seconds)
 	var definition: Dictionary=Catalog.for_actor(b)
 	if definition.get("attack",{}).get("type")=="alternating": return _advance_first(b,enemies,seconds)
 	var channels: Array = Catalog.boss_definition(int(b.stage)).get("fire_channels",[])

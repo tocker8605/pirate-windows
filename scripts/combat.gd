@@ -1,6 +1,8 @@
 class_name PirateCombat
 extends RefCounted
 ## Collision geometry is explicit metadata; preserve strict authored point edges.
+const Geometry=preload("res://scripts/entity_geometry.gd")
+const Shapes=preload("res://scripts/collision_geometry.gd")
 const ProjectileGeometry=preload("res://scripts/player_projectile_geometry.gd")
 const Ground = preload("res://scripts/ground_turret.gd")
 const Depth = preload("res://scripts/enemy_depth.gd")
@@ -15,12 +17,14 @@ static func shot_point_hits(point: Vector2,actor: Dictionary) -> bool:
 	var definition: Dictionary=Catalog.for_actor(actor)
 	if not definition.get("damageable",false) or not Ground.ready(actor):return false
 	var bounds: Array=definition.collision.shot_bounds
-	var local: Vector2=point-actor.pos
-	return between(local.x,bounds[0],bounds[2]) and between(local.y,bounds[1],bounds[3])
+	return Shapes.point_inside(Geometry.local_point(actor,point),bounds)
 static func beam_origin_hits(origin: Vector2,actor: Dictionary) -> bool:
-	if actor.is_empty() or actor.pos.y>=origin.y:return false
+	if actor.is_empty():return false
 	var definition: Dictionary=Catalog.for_actor(actor)
 	if not definition.get("damageable",false) or not Ground.ready(actor):return false
+	if definition.collision.has("beam_rect"):
+		return Shapes.ray_hits(origin,Vector2.UP,definition.collision.beam_rect,Geometry.local_frame(actor))
+	if actor.pos.y>=origin.y:return false
 	var bounds: Array=definition.collision.beam_bounds
 	return between(origin.x-actor.pos.x,bounds[0],bounds[1])
 # Stored-position convenience adapters for tools and existing callers. No entity-specific offsets.
@@ -39,8 +43,6 @@ static func touches_player(player: Vector2, actor: Dictionary) -> bool:
 	var definition: Dictionary = Catalog.for_actor(actor)
 	if definition.has("ground_turret") or definition.get("role","")=="supply" or Depth.is_below(actor): return false
 	var bounds: Array = definition.collision.contact_bounds
-	var local: Vector2 = player+Pilot.COCKPIT-actor.pos
-	var closest := Vector2(clampf(local.x,bounds[0],bounds[2]),clampf(local.y,bounds[1],bounds[3]))
-	return local.distance_squared_to(closest)<Pilot.HIT_RADIUS*Pilot.HIT_RADIUS
+	return Shapes.circle_inside(Geometry.local_point(actor,player+Pilot.COCKPIT),Pilot.HIT_RADIUS,bounds)
 static func collects_item(player: Vector2, point: Vector2) -> bool:
 	return between(point.x,player.x-5,player.x+55) and between(point.y,player.y-5,player.y+55)

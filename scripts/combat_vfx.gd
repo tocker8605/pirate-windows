@@ -1,5 +1,6 @@
 extends RefCounted
 ## Presentation-only CPU particles. Never consumes the original game's VB random stream.
+const Geometry=preload("res://scripts/entity_geometry.gd")
 const PlayerStyle = preload("res://scripts/player_weapon_style.gd")
 const PlayerShotArt = preload("res://scripts/player_shot_art.gd")
 const OriginalArt = preload("res://scripts/art.gd")
@@ -177,7 +178,7 @@ static func boss_smoking(b: Dictionary) -> bool:
 func emit_actor_smoke(actor: Dictionary) -> void:
 	if not Catalog.smoking(actor): return
 	var settings: Dictionary = Catalog.smoke_settings(actor)
-	for offset in settings.ports: emit_smoke(actor.pos+offset,float(settings.size))
+	for offset in settings.ports: emit_smoke(Geometry.world_point(actor,offset),float(settings.size))
 
 func emit_smoke(pos: Vector2, size: float) -> void:
 	for i in range(2):

@@ -3603,7 +3603,7 @@
     "141": {
       "name": "supercomputer_gatling_left",
       "role": "part",
-      "hp": 400,
+      "hp": 1000,
       "score": 0,
       "score_scales_with_difficulty": true,
       "damageable": true,
@@ -3640,6 +3640,12 @@
           -7.431238,
           9.226804,
           84.235362
+        ],
+        "beam_rect": [
+          -31.89433,
+          3.402062000000001,
+          11.726804000000001,
+          103.402062
         ]
       },
       "damage_smoke": {
@@ -3653,7 +3659,28 @@
         "size": 5.0
       },
       "explosion_seconds": 0.8,
-      "fire_channels": [],
+      "fire_channels": [
+        {
+          "name": "gatling",
+          "interval_seconds": 0.48,
+          "gate": "always",
+          "volley": {
+            "type": "expanding_ring",
+            "ports": [
+              [
+                -13.015464,
+                76.997423
+              ]
+            ],
+            "speed": 200,
+            "projectile_kind": 5,
+            "count": 6,
+            "start_radius": 10,
+            "end_radius": 30,
+            "expand_seconds": 3
+          }
+        }
+      ],
       "sprite_path": "res://assets/enemies/stage05/supercomputer-gatling-arm.png",
       "sprite_region": [
         107,
@@ -3672,12 +3699,24 @@
           0.7311669128508124,
           0.11597938144329897
         ]
+      },
+      "pose_motion": {
+        "type": "swing_range",
+        "period_seconds": 10,
+        "min_degrees": -10,
+        "max_degrees": 30,
+        "initial_degrees": 0,
+        "initial_direction": 1,
+        "pivot": [
+          0,
+          0
+        ]
       }
     },
     "142": {
       "name": "supercomputer_gatling_right",
       "role": "part",
-      "hp": 400,
+      "hp": 1000,
       "score": 0,
       "score_scales_with_difficulty": true,
       "damageable": true,
@@ -3714,6 +3753,12 @@
           -7.431238,
           29.39433,
           84.235362
+        ],
+        "beam_rect": [
+          -11.726804,
+          3.402062000000001,
+          31.894329999999997,
+          103.402062
         ]
       },
       "damage_smoke": {
@@ -3727,7 +3772,28 @@
         "size": 5.0
       },
       "explosion_seconds": 0.8,
-      "fire_channels": [],
+      "fire_channels": [
+        {
+          "name": "gatling",
+          "interval_seconds": 0.48,
+          "gate": "always",
+          "volley": {
+            "type": "expanding_ring",
+            "ports": [
+              [
+                13.015464,
+                76.997423
+              ]
+            ],
+            "speed": 200,
+            "projectile_kind": 5,
+            "count": 6,
+            "start_radius": 10,
+            "end_radius": 30,
+            "expand_seconds": 3
+          }
+        }
+      ],
       "sprite_path": "res://assets/enemies/stage05/supercomputer-gatling-arm.png",
       "sprite_region": [
         107,
@@ -3746,12 +3812,24 @@
           0.7311669128508124,
           0.11597938144329897
         ]
+      },
+      "pose_motion": {
+        "type": "swing_range",
+        "period_seconds": 10,
+        "min_degrees": -30,
+        "max_degrees": 10,
+        "initial_degrees": 0,
+        "initial_direction": -1,
+        "pivot": [
+          0,
+          0
+        ]
       }
     },
     "143": {
       "name": "supercomputer_missile_wing_left",
       "role": "part",
-      "hp": 400,
+      "hp": 800,
       "score": 0,
       "score_scales_with_difficulty": true,
       "damageable": true,
@@ -3788,6 +3866,12 @@
           -37.211519,
           3.646475,
           4.788481
+        ],
+        "beam_rect": [
+          -55.958292,
+          -26.211519000000003,
+          7.646474999999999,
+          23.788481
         ]
       },
       "damage_smoke": {
@@ -3801,7 +3885,34 @@
         "size": 5
       },
       "explosion_seconds": 0.8,
-      "fire_channels": [],
+      "fire_channels": [
+        {
+          "name": "missiles",
+          "interval_seconds": 0.12,
+          "gate": "always",
+          "window_seconds": [
+            12,
+            0,
+            4
+          ],
+          "volley": {
+            "type": "random",
+            "ports": [
+              [
+                -26.067527,
+                -10.675273
+              ]
+            ],
+            "x_random": {
+              "base": -5,
+              "step": -1,
+              "count": 46
+            },
+            "speed_y": -33.333333333333336,
+            "projectile_kind": 2
+          }
+        }
+      ],
       "sprite_path": "res://assets/enemies/stage05/supercomputer-missile-wing.png",
       "sprite_region": [
         68,
@@ -3820,12 +3931,21 @@
           0.8797814207650273,
           0.8242303872889771
         ]
+      },
+      "pose_motion": {
+        "type": "swing",
+        "period_seconds": 6,
+        "angle_degrees": 15,
+        "pivot": [
+          0,
+          0
+        ]
       }
     },
     "144": {
       "name": "supercomputer_missile_wing_right",
       "role": "part",
-      "hp": 400,
+      "hp": 800,
       "score": 0,
       "score_scales_with_difficulty": true,
       "damageable": true,
@@ -3862,6 +3982,12 @@
           -37.211519,
           51.958292,
           4.788481
+        ],
+        "beam_rect": [
+          -7.646475,
+          -26.211519000000003,
+          55.958292,
+          23.788481
         ]
       },
       "damage_smoke": {
@@ -3875,7 +4001,34 @@
         "size": 5
       },
       "explosion_seconds": 0.8,
-      "fire_channels": [],
+      "fire_channels": [
+        {
+          "name": "missiles",
+          "interval_seconds": 0.12,
+          "gate": "always",
+          "window_seconds": [
+            12,
+            6,
+            10
+          ],
+          "volley": {
+            "type": "random",
+            "ports": [
+              [
+                26.067527,
+                -10.675273
+              ]
+            ],
+            "x_random": {
+              "base": 5,
+              "step": 1,
+              "count": 46
+            },
+            "speed_y": -33.333333333333336,
+            "projectile_kind": 2
+          }
+        }
+      ],
       "sprite_path": "res://assets/enemies/stage05/supercomputer-missile-wing.png",
       "sprite_region": [
         68,
@@ -3893,6 +4046,15 @@
         "hinge_uv": [
           0.8797814207650273,
           0.8242303872889771
+        ]
+      },
+      "pose_motion": {
+        "type": "swing",
+        "period_seconds": 6,
+        "angle_degrees": -15,
+        "pivot": [
+          0,
+          0
         ]
       }
     },

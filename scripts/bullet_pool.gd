@@ -3,7 +3,11 @@ extends RefCounted
 const Fire = preload("res://scripts/enemy_fire.gd")
 const Boss = preload("res://scripts/boss.gd")
 static func write(g: Node, projectile: Dictionary) -> void:
-	g.bullets.append({"pos":projectile.pos,"velocity":projectile.velocity,"kind":projectile.kind,"alive":true})
+	var bullet: Dictionary=projectile.duplicate()
+	# Copy mutable runtime state while retaining the immutable shared profile reference.
+	if projectile.has("formation"):bullet.formation=projectile.formation.duplicate()
+	bullet.alive=true
+	g.bullets.append(bullet)
 static func group(g: Node, projectiles: Array) -> void:
 	for projectile in projectiles: write(g,projectile)
 static func single(g: Node, pos: Vector2, velocity: Vector2, kind: int) -> void:

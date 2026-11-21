@@ -49,6 +49,9 @@ func _initialize() -> void:
     var unchanged_plasma: Callable=func(row):return not (row.size()>4 and int(row[0]) in [22,131,132] and int(row[3])==5)
     reference=reference.filter(unchanged_plasma)
     rows=rows.filter(unchanged_plasma)
+    # Stage5 arms/wings now have authored attacks; their new volleys/RNG are tested separately.
+    reference=reference.filter(func(row):return int(row[0]) not in [141,142,143,144])
+    rows=rows.filter(func(row):return int(row[0]) not in [141,142,143,144])
     checks+=1
     if rows.size()!=reference.size():failures+=1;push_error("FAIL: volley record count differs")
     for i in range(mini(rows.size(),reference.size())):

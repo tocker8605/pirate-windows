@@ -64,7 +64,9 @@ func run() -> void:
 		if not g.boss.is_empty():row.append_array([g.boss.pos.x,g.boss.pos.y])
 		for e in g.enemies:row.append_array([e.kind,e.pos.x,e.pos.y,e.get("deployment_progress",0),e.get("ground_angle",0)])
 		rows.append(row)
-		for bullet in g.bullets:rows.append(["bullet",tick,bullet.kind,bullet.pos.x,bullet.pos.y,bullet.velocity.x,bullet.velocity.y])
+		for bullet in g.bullets:
+			if bullet.has("formation"):continue # New gatling formation has dedicated tests.
+			rows.append(["bullet",tick,bullet.kind,bullet.pos.x,bullet.pos.y,bullet.velocity.x,bullet.velocity.y])
 	g.free()
 	if "--capture" in OS.get_cmdline_user_args():
 		var f=FileAccess.open(PATH,FileAccess.WRITE)
@@ -77,6 +79,10 @@ func run() -> void:
 	var unchanged_plasma: Callable=func(row):return not (row.size()==7 and str(row[0]).get_slice("/",0) in ["e22","e131","e132"] and row[2]==5)
 	expected=expected.filter(unchanged_plasma)
 	rows=rows.filter(unchanged_plasma)
+	# The new wing volleys and their in-world missiles have dedicated phase/trajectory tests.
+	var unchanged_wings: Callable=func(row):return not (str(row[0]).get_slice("/",0) in ["e141","e142","e143","e144"] or (row[0]=="bullet" and row[2]==2))
+	expected=expected.filter(unchanged_wings)
+	rows=rows.filter(unchanged_wings)
 	var failures: int=0 if expected.size()==rows.size() else 1
 	for i in range(mini(expected.size(),rows.size())):
 		var same: bool=expected[i].size()==rows[i].size()
