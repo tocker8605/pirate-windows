@@ -1,0 +1,101 @@
+{
+  "generator": "built-in image_gen",
+  "minimum_dimensions": [
+    960,
+    960
+  ],
+  "note": "Each image was generated separately at native resolution from the previous concept references; not cropped or upscaled from the old atlas.",
+  "assets": [
+    {
+      "file": "stage01/region01-ocean.png",
+      "prompt": "Use case: stylized-concept. Production asset: ONE standalone high-resolution 1024x1024 opaque background tile for a vertical-scrolling sci-fi shooter, stage 1 region 1 OCEAN. Reference image is a 3-column/4-row old background atlas. Use ONLY its upper-left cell as concept/style/color reference; do not reproduce the atlas. Repaint fresh fine detail at native 1024x1024, not an upscale or collage. Directly overhead aerial view of uninterrupted deep navy and teal ocean, irregular small wave ridges and restrained seafoam. Match the reference's realistic textured game-background style, subdued contrast and cool colors. Consistent overhead scale and no horizon, land, ships, characters, HUD, lettering, borders, grid, or panels. Edge-to-edge single square image. Seamless vertical repetition: top and bottom continue the same water pattern; avoid a central focal point and avoid baked vignette. Keep readable as a background beneath small bright combat sprites.",
+      "generated_source": "exec-cba2cfde-95fe-47ac-a050-1dd733238a6b.png",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "file": "stage01/region02-coast.png",
+      "prompt": "Use case: stylized-concept. Create ONE standalone opaque square high-resolution game background, native 1024x1024 or larger, stage 1 region 2 COAST. The reference is an old 3x4 background atlas; use ONLY row1 column2 as concept, palette and terrain-layout reference. Repaint with genuinely new crisp detail, not an upscale. Full-frame directly overhead aerial view: irregular rocky forested coast running approximately vertically through the image, lush dark green forest and grey cliffs on the LEFT, pale narrow beach and scattered rocks at the shoreline near the middle, turquoise shallow water transitioning to deep teal ocean on the RIGHT. Realistic painterly textured game-background style matched to reference; consistent fine overhead scale, restrained highlights. Top and bottom edges should continue the same coast smoothly for vertical scrolling, not a coastline that terminates. No horizon, perspective skyline, text, panels, grid, characters, vessels, game UI, border or vignette. Exactly one square scene, no atlas.",
+      "generated_source": "exec-e4e574e5-8911-4cae-96bd-3740d526eb78.png",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "file": "stage01/region03-forest.png",
+      "prompt": "Use case: stylized-concept. Make ONE standalone opaque 1024x1024 or larger square background texture, stage1 region3 FOREST, for a vertical-scrolling shooter. Reference is an old3x4 background atlas: use ONLY first row third column as reference for concept and scale. Freshly paint detailed dense green forest canopy over undulating grey rocky ridges, small exposed stone patches and occasional narrow shadowed ravines; dark moss-green / olive palette with restrained sunlit foliage, matching the old forest concept. Directly overhead aerial viewpoint, no horizon, no perspective skyline. Rich natural tree detail at high native resolution, subtle game-background realism, distributed detail and subdued contrast to support bright sprites. Full edge-to-edge single terrain scene, top/bottom terrain should continue seamlessly when scrolled vertically. No buildings, large road, ships, aircraft, people, text, labels, watermark, grid, border, or atlas layout. Do not just enlarge the reference.",
+      "generated_source": "exec-4cc34e90-4eae-4f5a-af24-fee51870b937.png",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "file": "stage02/region01-green-valleys.png",
+      "prompt": "Use case: stylized-concept. ONE full-frame opaque square high-resolution 1024x1024 or larger terrain image, for stage2 region1 GREEN VALLEYS of a vertical shooter. Reference is an old3-column4-row atlas, use ONLY second row first cell as palette/concept reference. Fresh high-detail native painting, not resize. Direct overhead high-altitude aerial view of expansive green alpine valleys, branching narrow blue-grey rivers in the lowlands, exposed angular grey rocky mountain ridges, patchy conifer forests and small low mist wisps. Emphasize the branching valley/river network of reference, rather than an all-forest canopy. Daylight moss/olive green and slate rock, natural subdued realistic game-background style matching reference. Fine readable terrain detail; consistent scale. Single scene without a horizon, labels, aircraft, characters, frames, grid, watermark, UI or atlas. Vertical top/bottom edges continue terrain without obvious termination, suitable for repeated downward scrolling. No baked vignette.",
+      "generated_source": "exec-7f9bd6af-7a8f-4768-92bd-654b5570faaf.png",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "file": "stage02/region02-snow-peaks.png",
+      "prompt": "Use case: stylized-concept. Produce ONE standalone opaque square 1024x1024 or larger native-resolution background for vertical scrolling shooter stage2 region2 SNOW PEAKS. Reference image is a3x4 atlas: use ONLY second row middle cell, not the other regions. New detailed painting, not enlarged old pixels. High-altitude directly overhead aerial view of a dense alpine mountain range, sharp dark slate ridges, intricate white snow fields, cold blue shadowed gullies, occasional narrow rocky valleys, pale snow evenly across the terrain. Match original cool white/grey palette and realistic textured game-art rendering, with distributed detail and no singular central mountain. Top and bottom terrain continues for seamless vertical scrolling. Entire image is terrain, no horizon/sky, sun disc, aircraft, characters, structures, text, watermark, frame, grid or collage. No baked vignette or heavy atmospheric blur. Crisp detail suitable for displaying at twice original game resolution.",
+      "generated_source": "exec-24042052-c34a-4f04-903d-1a8fafd16a66.png",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "file": "stage02/region03-forest-ridges.png",
+      "prompt": "Use case: stylized-concept. Create ONE square native high-resolution1024x1024 or larger opaque vertical-shooter background, stage2 region3 FOREST RIDGES. Old reference atlas is3columns4rows; use ONLY row2 column3 as concept/color/composition reference. Fresh detailed repaint rather than upscale. Direct overhead aerial terrain of rugged elongated grey rock ridges and deep steep gullies with dense green pine and broadleaf forest clinging to slopes; occasional thin low white mist tracing valleys. Distinct from stage1 broad forest: stronger jagged mountain relief, visible grey stone spines, darker conifer clusters. Moss green, slate grey, natural cool daylight; realistic detailed game-background painting matched to reference. Continuous terrain fills all edges, top-bottom suitable for seamless vertical scrolling, consistent high-altitude scale. No horizon, text, frame, grid, atlas panels, vehicles, large buildings or dramatic focal objects, no vignette. Single standalone scene.",
+      "generated_source": "exec-2d92f47a-092d-46bc-bcc9-80ccc8184729.png",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "file": "stage03/region01-night-snow.png",
+      "prompt": "Use case: stylized-concept. ONE standalone opaque square native1024x1024 or larger background for vertical-scrolling shooter stage3 region1 NIGHT SNOW. Reference old3x4 atlas: use ONLY third row first column as exact concept/palette guide. Repaint new high-frequency detail at high resolution. Direct overhead aerial view of cold rugged snow-covered mountain ridges and deep ravines under dim blue moonlight, steel blue snow, almost black rock shadow, restrained faint silver highlights. The same terrain scale as the original, dark nighttime game background, not a bright daytime snow landscape. Complex distributed terrain with no central focal peak. Top-bottom edges should connect naturally for vertical repetition. Full-frame single scene, no horizon, visible moon, sky, stars, buildings, lamps, vehicles, characters, text, UI, grid or borders. Do not enlarge old pixels or introduce an atlas. No strong baked vignette.",
+      "generated_source": "exec-a5e44ff3-a09f-442c-9d5b-4b90bb891138.png",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "file": "stage03/region02-night-outpost.png",
+      "prompt": "Use case: stylized-concept. Create ONE standalone high-native-resolution opaque square1024x1024 or larger background for stage3 region2 NIGHT OUTPOST, a vertical scrolling shooter. Old atlas reference has3columns4rows; use ONLY third row center cell as concept/palette guide. Newly paint detailed aerial terrain, not an enlarged tile. High-altitude directly overhead view of moonlit blue-black snow mountains around a narrow dark river or fjord, a SMALL industrial military outpost nestled along the right-side valley: compact angular buildings, a few landing/utility pads, connecting paths and restrained warm amber lights. Maintain the reference's tiny installation scale, mostly natural mountain terrain, no giant city or central centerpiece. Snow and black rock in dim steel-blue night light, subtle realistic textured game art. Continuous terrain at top/bottom, buildings away from cut edges for vertical repetition. Single scene, no horizon, sky, aircraft, people, weapons, explosions, lettering, HUD, watermark, panels, border or grid. High detail, dark enough for readable combat.",
+      "generated_source": "exec-0ce25439-d568-4de9-80c8-6cc532f139c6.png",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "file": "stage03/region03-night-ocean.png",
+      "prompt": "Create ONE SQUARE high-resolution opaque ocean game background. Canvas must be square, same width and height, at least1024x1024, NOT portrait. First image is the composition/texture style reference: preserve its overhead small-scale water pattern and square framing. Second image is palette reference only: the new image should be nearly black navy-blue night ocean with dim steel-blue foam, like second image, rather than teal daylight. Repaint new wave details at native high resolution. Continuous dark ocean from edge to edge, seamless top/bottom repeat for vertical-scrolling shooter stage3. No horizon, land, vessels, moon reflection, text, panels, grid, borders or vignette. Single SQUARE tile.",
+      "generated_source": "exec-71c89534-3838-4e69-bbf6-1d02b5ddb431.png",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "file": "stage04/region01-earth.png",
+      "prompt": "Use case: stylized-concept. Repaint this reference as ONE new native-high-resolution opaque portrait1024x1536 (or larger portrait2:3) background panorama for stage4 region1 EARTH DEPARTURE in a vertical-scrolling shooter. Preserve concept, palette, viewpoint and broad composition: almost-black starfield in the top approximately18 percent, curved blue atmospheric horizon just below that, and the cloud-covered blue Earth filling the lower image, with small green/brown landmasses and intricate thin white cloud belts. Re-create surface and cloud details freshly at high resolution rather than just resizing. Realistic detailed game environment art matching the reference; restrained atmospheric glow, fine stars, crisp cloud structure and ocean depth. Earth extends beyond left,right,bottom edges, no complete centered globe; no lens flare, spacecraft, HUD, logo, text, borders or grid. Keep the horizon position and Earth curvature close to the reference so existing one-shot scroll and title reveal remain suitable. One uninterrupted full-canvas panorama, NOT an atlas or square thumbnail.",
+      "generated_source": "exec-c6b5488e-f908-41c6-87ba-42704906f8f3.png",
+      "width": 1024,
+      "height": 1536
+    },
+    {
+      "file": "stage04/region02-space.png",
+      "prompt": "Use case: stylized-concept. Create ONE standalone opaque SQUARE1024x1024 or larger square native-resolution image for stage4 region2 SPACE, a vertical scrolling shooter background. Reference old3x4 atlas: use ONLY fourth row middle cell as color and concept reference. Fresh detailed repaint rather than enlarged image. Deep almost-black outer space with fine restrained scattered white stars, faint distributed olive-green and muted gold interstellar dust and nebula wisps, matching reference. No strong bright central nebula, no planets, Earth, moon, sun, ships or foreground objects. Evenly distributed subtle astronomical texture with dark negative space so bullets remain visible. Top and bottom edges continue smoothly for seamless vertical repetition. Full-frame ONE SQUARE image, no collage, no atlas, no text, labels, UI, frames, grid or vignette. High-resolution fine star pinpoints with no exaggerated glow.",
+      "generated_source": "exec-c3de41b8-ff91-4cb2-b4ec-95dc840b2c21.png",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "file": "stage04/region03-moon-surface.png",
+      "prompt": "Use case: stylized-concept. ONE standalone opaque SQUARE1024x1024 or larger native-resolution image for stage4 region3 MOON SURFACE in a vertical shooter. Reference old3x4 atlas: use ONLY fourth row third cell as concept, grey palette and composition reference. Repaint freshly with detailed grey lunar dust, many small overlapping impact craters and fractured ridges; a few small angular industrial outpost structures, connecting tracks and octagonal landing pads primarily on the RIGHT side as in reference. High-altitude DIRECT OVERHEAD view, no horizon or perspective sky. The lunar ground fills every edge. Keep installation scale subordinate to terrain, monochrome cool grey and charcoal, realistic finely textured game environment art with subdued highlights, no colored neon. This is a single one-shot surface traversal, not multiple panels. No spacecraft, characters, moon disc, Earth, text, insignia, watermark, grid, frame, or baked vignette. Native detail, not upscaled old pixels.",
+      "generated_source": "exec-183773aa-32ae-4f40-bb31-c729daad699b.png",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "file": "stage04/region04-lunar-cavern.png",
+      "prompt": "Use case: stylized-concept. Repaint this as ONE new opaque SQUARE1024x1024 or larger native-resolution background for stage4 region4 LUNAR CAVERN in a vertical scrolling shooter. Reference image is an existing cave floor texture; preserve its concept, scale and subdued palette. Directly overhead view of a broad dark-grey/brown rocky tunnel floor, cracked dusty slabs, small scattered rubble; uneven dark jagged cave walls confined to both LEFT and RIGHT edges; a few restrained aged industrial steel support ribs, narrow conduits and tiny amber utility lamps embedded into the side walls. Keep a wide open central passage, no central obstruction and no strong spotlight. Fresh crisp fine rock detail, realistic textured game background art, not enlargement. Top and bottom should continue the same tunnel for seamless vertical repetition. No perspective vanishing point, no horizon, no lava, crystals, creatures, people, text, UI, grid, border or extra scene panels. No baked vignette beyond natural dark side walls. Single full-frame square game tile.",
+      "generated_source": "exec-51b82d96-0e53-4f7a-b81d-512108b0e88a.png",
+      "width": 1254,
+      "height": 1254
+    }
+  ]
+}

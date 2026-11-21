@@ -1,5 +1,7 @@
 shader_type canvas_item;
-uniform sampler2D atlas_texture : filter_linear, repeat_disable;
+uniform sampler2D region1_texture : filter_linear, repeat_disable;
+uniform sampler2D region2_texture : filter_linear, repeat_disable;
+uniform sampler2D region3_texture : filter_linear, repeat_disable;
 uniform float source_top = 3360.0;
 uniform int stage = 1;
 uniform sampler2D earth_texture : filter_linear, repeat_disable;
@@ -8,11 +10,11 @@ uniform float earth_uv_width = 0.625;
 uniform vec4 region_edges = vec4(960.0,1440.0,2400.0,2880.0);
 uniform float screen_height = 480.0;
 vec3 tile(vec2 uv, float phase, int region) {
- vec2 cell_size=vec2(1.0/3.0,1.0/4.0);
- vec2 origin=vec2(float(region),float(clamp(stage-1,0,3)))*cell_size;
- // Square source tiles map to 480x480 world pixels; crop the 400px viewport horizontally.
- vec2 local=vec2(0.5+(uv.x-0.5)*(400.0/screen_height),phase);
- return texture(atlas_texture,origin+clamp(local,vec2(0.002),vec2(0.998))*cell_size).rgb;
+ // Independent square textures keep the original480px world scale and horizontal crop.
+ vec2 local=clamp(vec2(0.5+(uv.x-0.5)*(400.0/screen_height),phase),vec2(0.002),vec2(0.998));
+ if(region==0) return texture(region1_texture,local).rgb;
+ if(region==1) return texture(region2_texture,local).rgb;
+ return texture(region3_texture,local).rgb;
 }
 vec3 terrain(vec2 uv, float source_y, int region) {
  float y=fract(source_y/screen_height);
@@ -40,8 +42,8 @@ vec3 stage_four(vec2 uv,float y) {
  // The surface occupies only this 480px traversal; it never becomes a loop.
  float phase=(y-region_edges.x)/screen_height;
  vec3 surface=tile(uv,phase,2);
- float horizon=region_edges.y-100.0-45.0*pow((uv.x-0.5)*2.0,2.0);
- surface=mix(space(uv,y),surface,1.0-smoothstep(horizon-18.0,horizon+18.0,y));
+ float horizon=region_edges.y-100.0-13.5*pow((uv.x-0.5)*2.0,2.0);
+ surface=mix(space(uv,y),surface,1.0-smoothstep(horizon-6.0,horizon+6.0,y));
  surface=mix(cave(uv,y),surface,smoothstep(region_edges.x,region_edges.x+72.0,y));
  // Original stage4 has a dark industrial entrance at the surface's upper edge.
  float depth=y-region_edges.x;

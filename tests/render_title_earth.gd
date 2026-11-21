@@ -34,7 +34,7 @@ func run() -> void:
 	g.title.advance(1.175)
 	var opening: Image = await capture(g)
 	opening.save_png("res://preview-opening-earth-v17.png")
-	check(g.view.background.visible and g.view.background.material.get_shader_parameter("earth_texture")==g.view.renewal.earth,"Space reveals the exact shared stage4 Earth texture")
+	check(g.view.background.visible and g.view.background.material.get_shader_parameter("earth_texture")==g.view.background_textures[0],"Space reveals the exact shared stage4 Earth texture")
 	check(g.view.background.material.get_shader_parameter("stage")==4,"opening uses normal-stage4 Earth shader mode")
 	var source_top: float = 3360.0-g.title.background_scroll()
 	var dx: int = int(round(g.title.background_scroll()/3.5))

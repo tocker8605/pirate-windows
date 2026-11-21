@@ -10,12 +10,15 @@ const Scenery = preload("res://scripts/scenery.gd")
 const Renewed = preload("res://scripts/renewed_art.gd")
 const Clock = preload("res://scripts/timing.gd")
 const Regions = preload("res://scripts/background_regions.gd")
+const BackgroundAssets = preload("res://scripts/background_assets.gd")
 const Supply = preload("res://scripts/supply_visual.gd")
 const Pilot = preload("res://scripts/pilot_art.gd")
 var pilot = Pilot.new()
 
 var vfx = Particles.new()
 var renewal = Renewed.new()
+var background_stage: int = 0
+var background_textures: Array[Texture2D] = []
 var background: Sprite2D
 var old_cloud_shader = preload("res://scripts/cloud_rop.gdshader")
 var new_cloud_shader = preload("res://scripts/renewed_cloud.gdshader")
@@ -31,14 +34,10 @@ func _ready() -> void:
 	background = Sprite2D.new()
 	background.centered = false
 	background.z_index = -1
-	background.texture = renewal.environments
+	background.texture = vfx.glow
 	background.scale = Vector2(400.0/background.texture.get_width(),480.0/background.texture.get_height())
 	var background_material := ShaderMaterial.new()
 	background_material.shader = preload("res://scripts/renewed_background.gdshader")
-	background_material.set_shader_parameter("atlas_texture",renewal.environments)
-	background_material.set_shader_parameter("earth_texture",renewal.earth)
-	background_material.set_shader_parameter("cavern_texture",renewal.cavern)
-	background_material.set_shader_parameter("earth_uv_width",400.0/(Regions.SCREEN*2)*renewal.earth.get_height()/renewal.earth.get_width())
 	background_material.set_shader_parameter("region_edges",Regions.EDGES)
 	background_material.set_shader_parameter("screen_height",Regions.SCREEN)
 	background.material = background_material
@@ -78,7 +77,13 @@ func refresh() -> void:
 		background.position = Vector2(-g.title.background_offset(),0) if title_earth else Vector2.ZERO
 		background.visible = (in_game or title_earth) and g.renewed_art
 		if background.visible:
-			background.material.set_shader_parameter("stage",4 if title_earth else g.stage)
+			var next_stage: int = 4 if title_earth else g.stage
+			if next_stage!=background_stage:
+				background_textures = BackgroundAssets.load_stage(next_stage)
+				BackgroundAssets.bind(background.material,next_stage,background_textures)
+				background.texture = background_textures[0]
+				background.scale = Vector2(400.0/background.texture.get_width(),480.0/background.texture.get_height())
+				background_stage = next_stage
 			background.material.set_shader_parameter("source_top",3360.0-g.title.background_scroll() if title_earth else g.presentation.background(g))
 		for i in range(cloud_nodes.size()):
 			var cloud: Sprite2D = cloud_nodes[i]
