@@ -155,14 +155,21 @@ func observe(g: Node) -> void:
 			for x in [17,33]: emit(g.player+Pilot.visual_point(Vector2(x,43)),Vector2(0,2.5),6,2.8,CYAN)
 
 func player_sparks(pos: Vector2, weapon: int, impact: bool) -> void:
-	var count: int = 10 if impact else 4
+	var count: int = 13 if impact else 4
 	for i in range(count):
-		var direction: Vector2 = Vector2.from_angle(rng.randf()*TAU) if impact else Vector2(rng.randf_range(-0.6,0.6),-1).normalized()
-		var color: Color = PlayerStyle.highlight(weapon) if i==0 else player_color(weapon)
+		var core: bool = impact and i==0
+		var direction: Vector2 = Vector2.from_angle((i-1)*TAU/12+rng.randf_range(-0.12,0.12)) if impact else Vector2(rng.randf_range(-0.6,0.6),-1).normalized()
+		var color: Color = PlayerStyle.highlight(weapon) if i==0 or (impact and i%3==0) else player_color(weapon)
+		if core: color = PlayerStyle.highlight(weapon).lightened(0.65)
 		var before: int = particles.size()
-		emit(pos,direction*rng.randf_range(1.2 if impact else 0.6,3.0 if impact else 1.4),rng.randf_range(4 if impact else 3,8 if impact else 5),rng.randf_range(0.9 if impact else 0.7,1.5 if impact else 1.1),color)
+		if core:
+			# A short, bright particle core makes contact readable over detailed hulls.
+			emit(pos,Vector2.ZERO,3,3,color)
+		else:
+			emit(pos,direction*rng.randf_range(2.0 if impact else 0.6,4.0 if impact else 1.4),rng.randf_range(5 if impact else 3,8 if impact else 5),rng.randf_range(1.2 if impact else 0.7,2.0 if impact else 1.1),color)
 		if particles.size()==before: break
 		particles[-1].player_effect = "impact" if impact else "launch"
+		if core: particles[-1].impact_core = true
 
 static func boss_smoking(b: Dictionary) -> bool:
 	return b.get("max_hp",0)>0 and Catalog.smoking(b)
@@ -205,12 +212,19 @@ func draw_particles(c: Node2D, fraction: float = 0, layer: int = 0) -> void:
 		if part.smoke: continue
 		var t: float = part.age/part.life
 		var p: Vector2 = part.get("previous_pos",part.p).lerp(part.p,fraction)
-		halo(c,p,part.size*3,part.color,(1-t)*0.85*0.65)
+		var hit: bool = part.get("player_effect","")=="impact"
+		var fade: float = pow(1-t,0.65) if hit else 1-t
+		halo(c,p,part.size*3,part.color,fade*(0.85 if hit else 0.85*0.65))
 	for part in particles:
 		if part.smoke: continue
 		var t: float = part.age/part.life
 		var p: Vector2 = part.get("previous_pos",part.p).lerp(part.p,fraction)
-		c.draw_line(p-part.v*PARTICLE_STREAK_SECONDS,p,Color(part.color,(1-t)*0.85),maxf(0.6,part.size*(1-t)),true)
+		var hit: bool = part.get("player_effect","")=="impact"
+		var opacity: float = pow(1-t,0.65) if hit else (1-t)*0.85
+		if part.get("impact_core",false):
+			c.draw_circle(p,part.size*(1-t*0.5)*0.8,Color(part.color,opacity),true,-1,true)
+		else:
+			c.draw_line(p-part.v*PARTICLE_STREAK_SECONDS,p,Color(part.color,opacity),maxf(0.6,part.size*(1-t)),true)
 
 func draw_bullet(c: Node2D, b: Dictionary, position: Variant = null, phase: float = 0) -> void:
 	var p: Vector2 = position if position!=null else b.get("render_pos",b.pos)

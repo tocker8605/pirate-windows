@@ -36,11 +36,11 @@ func run()->void:
 		g.shots.at(0).impact_remaining_seconds=0.27
 		g.frame=2
 		fx.observe(g)
-		check(fx.particles.filter(func(p):return p.get("player_effect","")=="impact").size()==10,"type%d impact emits ten stronger sparks once"%weapon)
-		check(fx.particles.all(func(p):return p.size<=1.5 and p.life<=0.241 and p.color in [Style.color(weapon),Style.highlight(weapon)]),"type%d player effects keep bounded sizes/lifetimes and shared body tones"%weapon)
+		check(fx.particles.filter(func(p):return p.get("player_effect","")=="impact").size()==13,"type%d impact emits a bright core and twelve stronger sparks once"%weapon)
+		check(fx.particles.all(func(p):return p.size<=(3.0 if p.get("impact_core",false) else 2.0) and p.life<=0.241 and p.color in [Style.color(weapon),Style.highlight(weapon),Style.highlight(weapon).lightened(0.65)]),"type%d player effects keep bounded sizes/lifetimes and shared body tones"%weapon)
 		g.frame=3
 		fx.observe(g)
-		check(fx.particles.filter(func(p):return p.get("player_effect","")=="impact").size()==10,"impact state cannot re-emit every tick")
+		check(fx.particles.filter(func(p):return p.get("player_effect","")=="impact").size()==13,"impact state cannot re-emit every tick")
 		g.shots.clear()
 		g.frame=4
 		fx.observe(g)
