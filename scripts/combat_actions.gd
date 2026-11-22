@@ -14,7 +14,7 @@ static func apply_beam(g: Node) -> void:
 		if contact!=null:
 			e.hp -= 133.33333333333334*g.delta_seconds
 			g.laser_contacts.append(contact)
-	var body_contact: Variant=Combat.beam_contact(origin,g.boss,60)
+	var body_contact: Variant=Combat.beam_contact(origin,g.boss)
 	if body_contact!=null:
 		g._damage_boss(66.66666666666667*g.delta_seconds)
 		g.laser_contacts.append(body_contact)

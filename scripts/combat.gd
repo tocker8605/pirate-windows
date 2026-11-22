@@ -8,6 +8,7 @@ const Ground = preload("res://scripts/ground_turret.gd")
 const Depth = preload("res://scripts/enemy_depth.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Pilot = preload("res://scripts/pilot_geometry.gd")
+const MIN_PLAYER_BEAM_CONTACT_Y: float=-50.0
 static func incoming_damage(difficulty: int) -> float:
 	return 6+clampi(difficulty,1,5)*6
 static func between(value: float, low: float, high: float) -> bool: return value>low and value<high
@@ -19,6 +20,8 @@ static func shot_point_hits(point: Vector2,actor: Dictionary) -> bool:
 	var bounds: Array=definition.collision.shot_bounds
 	return Shapes.point_inside(Geometry.local_point(actor,point),bounds)
 static func beam_origin_hits(origin: Vector2,actor: Dictionary) -> bool:
+	return beam_contact(origin,actor)!=null
+static func _beam_geometry_hits(origin: Vector2,actor: Dictionary) -> bool:
 	if actor.is_empty():return false
 	var definition: Dictionary=Catalog.for_actor(actor)
 	if not definition.get("damageable",false) or not Ground.ready(actor):return false
@@ -27,16 +30,20 @@ static func beam_origin_hits(origin: Vector2,actor: Dictionary) -> bool:
 	if actor.pos.y>=origin.y:return false
 	var bounds: Array=definition.collision.beam_bounds
 	return between(origin.x-actor.pos.x,bounds[0],bounds[1])
-## Contact is presentation-only: the gameplay hit rectangle remains authoritative.
-static func beam_contact(origin: Vector2,actor: Dictionary,legacy_y: float = 40) -> Variant:
-	if not beam_origin_hits(origin,actor):return null
+## A geometrically valid contact must also be within the player's upward hit limit.
+static func beam_contact(origin: Vector2,actor: Dictionary) -> Variant:
+	if not _beam_geometry_hits(origin,actor):return null
+	var point: Variant=_beam_contact_point(origin,actor)
+	return point if point!=null and point.y>=MIN_PLAYER_BEAM_CONTACT_Y else null
+static func _beam_contact_point(origin: Vector2,actor: Dictionary) -> Variant:
 	var definition: Dictionary=Catalog.for_actor(actor)
 	if definition.collision.has("beam_rect"):
 		if Geometry.visual(definition).get("anchor")=="hinge":
 			var painted: Variant=Geometry.sprite_ray_contact(actor,definition,origin,Vector2.UP)
 			if painted!=null:return painted
 		return Shapes.ray_contact(origin,Vector2.UP,definition.collision.beam_rect,Geometry.local_frame(actor))
-	return Vector2(origin.x,actor.pos.y+legacy_y)
+	var offset_y: float=60 if definition.get("role")=="boss" else 40
+	return Vector2(origin.x,actor.pos.y+offset_y)
 # Stored-position convenience adapters for tools and existing callers. No entity-specific offsets.
 static func shot_hits(pos: Vector2,e: Dictionary) -> bool:
 	return shot_point_hits(ProjectileGeometry.shot_centre(pos),e)

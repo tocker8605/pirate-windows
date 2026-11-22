@@ -138,3 +138,5 @@
 - stage_resources.gd는 검증·정렬된 타임라인의 spawn 정의에서 각 스테이지의 리소스 목록을 수집합니다. StageSession은 play_stage 전에 렌더러의 실제 텍스처/아틀라스 캐시와 음악 캐시, 보스 HUD/경고 이미지를 준비합니다. 스테이지 번호별 분기 없이 일반/보스러시에 공통 적용되며 이벤트 소비·배치·난수·공격 타이머는 변경하지 않습니다.
 - EntityTextures.prepare_definition은 카탈로그에 지정된 본체/파츠, 지상 포대 해치/잔해와 바닥 장식 에셋을 준비합니다. Audio.prepare_music은 트랙을 재생하지 않고 보관하며 stop 후에도 재사용합니다. stage_resource_loading 검사는 모든 스테이지·모드와 원본 스프라이트 옵션의 캐시 준비, 등장 시 추가 로딩 없음, 음악 시점을 검증합니다.
 - 보스 로딩 측정: Godot --headless --audio-driver Dummy --path . --script tools/profile_boss_loading.gd. 출력은 스테이지 초기화 및 보스 에셋 접근의 CPU 경과시간이며 GPU 프레임 시간 전체를 의미하지 않습니다.
+
+- 주인공 X레이저의 대미지/피격 파티클/공통 beam_hits API는 Combat.beam_contact의 최종 월드 피격 지점Y가-50 이상일 때에만 허용합니다. 회전 파츠는 기존 스프라이트 경계 교차점, 나머지는 기존 역할별 피격 연출 지점을 사용하며 주인공 레이저 이외의 공격 판정은 유지합니다.
