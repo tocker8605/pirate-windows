@@ -36,8 +36,12 @@ try {
  if(($exportOutput -join [Environment]::NewLine) -match 'SCRIPT ERROR|ERROR:'){throw 'PCK export reported errors'}
  if($LASTEXITCODE -ne 0){throw 'PCK export failed'}
  $exe=Join-Path $buildRoot 'Pirate-II.exe'
- Copy-Item -LiteralPath $guiEngine -Destination $exe -Force
- if((Get-FileHash -LiteralPath $exe).Hash -ne (Get-FileHash -LiteralPath $guiEngine).Hash){throw 'Runtime copy does not match official executable'}
+ $runtimeHash=(Get-FileHash -LiteralPath $guiEngine).Hash
+ # An identical signed runtime needs no rewrite, even when a game instance holds it open.
+ if(-not(Test-Path -LiteralPath $exe) -or (Get-FileHash -LiteralPath $exe).Hash -ne $runtimeHash){
+  Copy-Item -LiteralPath $guiEngine -Destination $exe -Force
+ }
+ if((Get-FileHash -LiteralPath $exe).Hash -ne $runtimeHash){throw 'Runtime copy does not match official executable'}
  Write-Output 'Portable build ready: keep Pirate-II.exe and Pirate-II.pck together.'
 } finally {
  $env:APPDATA=$previousAppData
