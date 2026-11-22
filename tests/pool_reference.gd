@@ -64,9 +64,19 @@ func run() -> void:
 	check(g.hp==7,"30HP repair pickups still resolve before24incoming damage")
 	g.bullets.clear()
 	g._bullet(Vector2(100,100),(Vector2.ZERO)/0.03)
-	g._bullet(Vector2(399,100),(Vector2(4,0))/0.03)
+	g._bullet(Vector2(419,100),(Vector2(4,0))/0.03)
 	g._update_bullets()
 	check(g.bullets.is_empty() and g.bullets.valid(),"stationary and offscreen bullets unlink without leaving stale records")
+	g.delta_seconds = 0
+	for point in [Vector2(-20,100),Vector2(420,100),Vector2(100,-20),Vector2(100,500)]:
+		g._bullet(point,Vector2.DOWN)
+	g._update_bullets()
+	check(g.bullets.size()==4,"enemy bullets survive at all four inclusive screen margins")
+	g.bullets.clear()
+	for point in [Vector2(-20.01,100),Vector2(420.01,100),Vector2(100,-20.01),Vector2(100,500.01)]:
+		g._bullet(point,Vector2.DOWN)
+	g._update_bullets()
+	check(g.bullets.is_empty() and g.bullets.valid(),"enemy bullets are removed beyond each expanded screen margin")
 	g._load_stage(4)
 	g.delta_seconds = 0.03
 	check(g.enemies.is_empty() and g.bullets.is_empty() and g.items.is_empty(),"stage transition releases all three independent stores")

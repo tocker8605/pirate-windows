@@ -45,7 +45,7 @@ static func damage_boss(g: Node, amount: float) -> void:
 static func update_bullets(g: Node) -> void:
 	for bullet in g.bullets:
 		ProjectileMotion.advance(bullet,g.delta_seconds)
-		if bullet.velocity==Vector2.ZERO or bullet.pos.x<0 or bullet.pos.x>400 or bullet.pos.y<0 or bullet.pos.y>480:
+		if bullet.velocity==Vector2.ZERO or bullet.pos.x< -20 or bullet.pos.x>420 or bullet.pos.y< -20 or bullet.pos.y>500:
 			bullet.alive = false
 			continue
 		if Effects.shield_contains(g.shield_center,bullet.pos,g.shield_remaining_seconds):
