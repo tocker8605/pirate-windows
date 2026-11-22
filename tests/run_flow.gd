@@ -31,7 +31,7 @@ func run() -> void:
 	g.title.difficulty = 5
 	g.title.boss_rush = false
 	g._title_accept(g.title.confirm())
-	check(g.state==Flow.LOADING and g.flow.loading_image=="loading1" and g.flow.loading_remaining_seconds==0.03,"new run enters loading through the shared transition")
+	check(g.state==Flow.LOADING and g.flow.loading_image=="loading" and g.flow.loading_remaining_seconds==0.03,"new run uses the same loading.png as stage transitions")
 	g.title.difficulty = 1
 	g.title.settings_selection = 3
 	g.title.boss_rush = true

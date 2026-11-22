@@ -464,4 +464,4 @@ func _quit() -> void:
 	get_tree().quit()
 
 func _begin_run() -> void:
-	flow.load_stage(self,selected_stage,false,"loading1",0.03)
+	flow.load_stage(self,selected_stage,false,"loading",0.03)
