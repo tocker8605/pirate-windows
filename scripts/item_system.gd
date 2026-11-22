@@ -5,7 +5,7 @@ const DEFINITIONS: Dictionary = {
 	Kind.POWER: {"power":1,"energy":50.0,"score":200},
 	Kind.HEALTH: {"health":30.0,"score":200},
 }
-const FALL_SPEED: float = 100.0
+const FALL_SPEED: float = 50.0
 const REMOVE_Y: float = 520.0
 static func apply_pickup(g: Node, kind: int) -> bool:
 	var effect: Dictionary = DEFINITIONS.get(kind,{})

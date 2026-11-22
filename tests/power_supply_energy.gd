@@ -57,6 +57,18 @@ func run()->void:
 	check(g.items.size()==2 and g.items.contains(unknown_id) and g.items.contains(retained_id) and g.items.valid(),"collection and offscreen cleanup preserve following entries and store integrity")
 	g._update_items()
 	check(g.score==400 and g.hp==80 and g.energy==70,"removed pickups cannot grant duplicate rewards")
+	for kind in [Items.Kind.POWER,Items.Kind.HEALTH]:
+		for rate in [30,60,120]:
+			g._load_stage(1)
+			g.delta_seconds=1.0/rate
+			g._drop_item({"kind":kind,"pos":Vector2(50,100)})
+			var falling: Dictionary=g.items.at(0)
+			g._update_items()
+			check(falling.pos==Vector2(50,100),"item%d does not move on its release frame at%dHz"%[kind,rate])
+			for i in range(rate):
+				g.frame+=1
+				g._update_items()
+			check(absf(falling.pos.y-150)<0.002 and falling.pos.x==50,"item%d falls50px per second at%dHz"%[kind,rate])
 	g.audio.stop_all()
 	g.queue_free()
 	await process_frame
