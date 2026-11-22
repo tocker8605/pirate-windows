@@ -4,7 +4,12 @@ const Catalog=preload("res://scripts/enemy_catalog.gd")
 const Geometry=preload("res://scripts/entity_geometry.gd")
 const Shapes=preload("res://scripts/collision_geometry.gd")
 const EPSILON: float=0.0000001
-static func sample(owner: Dictionary,spec: Dictionary,age: float) -> Array:
+static func sweeps_for(owner: Dictionary,spec: Dictionary) -> Array:
+	var low: Dictionary=spec.get("low_health",{})
+	var maximum: float=float(owner.get("max_hp",0))
+	if not low.is_empty() and maximum>0 and float(owner.hp)/maximum<=float(low.at_or_below_ratio):return low.beams
+	return spec.beams
+static func sample(owner: Dictionary,spec: Dictionary,age: float,sweeps: Array = []) -> Array:
 	if owner.get("hp",0)<=0:return []
 	var phase: float=fposmod(age+EPSILON,float(spec.period_seconds))
 	var telegraph: bool=phase<float(spec.telegraph_seconds)
@@ -18,7 +23,7 @@ static func sample(owner: Dictionary,spec: Dictionary,age: float) -> Array:
 		visible_width=lerpf(float(spec.telegraph_width),float(spec.width),smoothstep(0,transition,edge_time))
 	var origin: Vector2=Geometry.world_point(owner,spec.origin)
 	var result: Array=[]
-	for sweep in spec.beams:
+	for sweep in (sweeps_for(owner,spec) if sweeps.is_empty() else sweeps):
 		# Do not wrap/shortest-path interpolate: the signed span specifies the sweep direction.
 		var angle: float=lerpf(float(sweep.from_radians),float(sweep.to_radians),progress)
 		var direction: Vector2=Vector2.UP.rotated(angle+float(owner.get("pose_angle",0)))
@@ -38,8 +43,12 @@ static func advance(owner: Dictionary,seconds: float,scroll_stopped: bool) -> Ar
 			if spec.gate=="scroll_stopped" and not scroll_stopped:continue
 			clock.started=true # One-shot start gate; later scroll changes do not reset the cycle.
 		else:clock.age=float(clock.age)+seconds
+		var cycle: int=floori((float(clock.age)+EPSILON)/float(spec.period_seconds))
+		if not clock.has("cycle") or int(clock.cycle)!=cycle:
+			clock.cycle=cycle
+			clock.sweeps=sweeps_for(owner,spec) # Lock prediction and live sweep to the same path for this cycle.
 		states[spec.name]=clock
-		result.append_array(sample(owner,spec,float(clock.age)))
+		result.append_array(sample(owner,spec,float(clock.age),clock.sweeps))
 	owner.beam_states=states
 	return result
 static func advance_world(g: Node,seconds: float) -> void:

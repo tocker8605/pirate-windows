@@ -10,12 +10,14 @@ static func apply_beam(g: Node) -> void:
 	if g.beam_remaining_seconds<=0.000001: return
 	var origin: Vector2=ProjectileGeometry.beam_origin(g.player)
 	for e in g.enemies:
-		if Combat.beam_origin_hits(origin,e):
+		var contact: Variant=Combat.beam_contact(origin,e)
+		if contact!=null:
 			e.hp -= 133.33333333333334*g.delta_seconds
-			g.laser_contacts.append(Vector2(g.player.x+10,e.pos.y+25))
-	if Combat.beam_origin_hits(origin,g.boss):
+			g.laser_contacts.append(contact)
+	var body_contact: Variant=Combat.beam_contact(origin,g.boss,60)
+	if body_contact!=null:
 		g._damage_boss(66.66666666666667*g.delta_seconds)
-		g.laser_contacts.append(Vector2(g.player.x+10,g.boss.pos.y+45))
+		g.laser_contacts.append(body_contact)
 	g.beam_remaining_seconds = maxf(0,g.beam_remaining_seconds-g.delta_seconds)
 
 static func resolve_shots(g: Node) -> void:

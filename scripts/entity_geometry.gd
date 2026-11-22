@@ -1,5 +1,6 @@
 extends RefCounted
 ## Actor position stays authoritative for collision and movement. Drawing uses this transform.
+const Shapes=preload("res://scripts/collision_geometry.gd")
 static func vector(value: Variant) -> Vector2:
 	return value if value is Vector2 else Vector2(value[0],value[1])
 static func visual(d: Dictionary) -> Dictionary: return d.get("visual",{})
@@ -49,3 +50,17 @@ static func sprite_transform(actor: Dictionary,d: Dictionary,native: Vector2,pos
 static func local_point(actor: Dictionary,world: Vector2) -> Vector2:
 	if float(actor.get("pose_angle",0))==0:return world-actor.pos
 	return local_frame(actor).affine_inverse()*world
+
+## Centre of the displayed sprite, including crop aspect, mirroring and rigid pose.
+static func sprite_native_size(d: Dictionary) -> Vector2:
+	var region: Array=d.get("sprite_region",[])
+	return Vector2(region[2],region[3]) if region.size()==4 else Vector2.ZERO
+static func sprite_center(actor: Dictionary,d: Dictionary) -> Vector2:
+	return sprite_transform(actor,d,sprite_native_size(d)).origin
+## Visual contact may differ from the forgiving gameplay collider. It never changes damage.
+static func sprite_ray_contact(actor: Dictionary,d: Dictionary,origin: Vector2,direction: Vector2) -> Variant:
+	var native: Vector2=sprite_native_size(d)
+	var rect: Rect2=image_rect(d,native)
+	var start: Vector2=rect.position-vector(d.draw_size)/2
+	var end: Vector2=start+rect.size
+	return Shapes.ray_contact(origin,direction,[start.x,start.y,end.x,end.y],sprite_transform(actor,d,native))

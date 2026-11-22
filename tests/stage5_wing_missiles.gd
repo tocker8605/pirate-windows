@@ -36,8 +36,8 @@ func _initialize() -> void:
 		var side: int=-1 if kind==143 else 1
 		Rng.state=0x50000
 		var seen: Dictionary={}
-		var launch_events: Array=Scheduler.advance({},[channel],120,func(_c):return true)
-		var shots: Array=Fire.advance(e,120,Vector2(175,380))
+		var launch_events: Array=Scheduler.advance({},[channel],1200,func(_c):return true)
+		var shots: Array=Fire.advance(e,1200,Vector2(175,380))
 		for i in range(shots.size()):
 			var shot: Dictionary=shots[i]
 			var at: float=launch_events[i].at
@@ -46,9 +46,9 @@ func _initialize() -> void:
 			check(shot.kind==2 and is_equal_approx(shot.velocity.y,-33.333333333333336),"existing missile type and initial upward speed are used")
 			check(shot.pos.distance_to(expected_muzzle)<0.001,"missile emerges at the actual mirrored artwork pod centre")
 			var speed_x: float=shot.velocity.x*side
-			check(speed_x>=5 and speed_x<=50,"missile Xspeed stays within the requested outward5to50px/s range")
+			check(speed_x>=5 and speed_x<=100,"missile Xspeed stays within the requested outward5to100px/s range")
 			seen[roundi(speed_x)]=true
-		check(seen.size()==46 and seen.has(5) and seen.has(50),"random launch samples cover all46integer speeds including endpoints")
+		check(seen.size()==96 and seen.has(5) and seen.has(100),"random launch samples cover all96integer speeds including endpoints")
 		e.hp=0
 		check(Fire.advance(e,12).is_empty(),"destroyed wing stops firing")
 	var left: Dictionary=Catalog.create(143,Vector2(168,107))

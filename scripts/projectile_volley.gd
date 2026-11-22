@@ -32,7 +32,9 @@ static func emit(e: Dictionary,player: Vector2,channel: Dictionary,boss: Diction
 	match str(v.type):
 		"aimed":
 			for port in ports:
-				for degrees in v.get("angles_degrees",[0]):add(result,Geometry.world_point(e,vector(port),pose_angle),direction.rotated(deg_to_rad(degrees))*float(v.speed),kind)
+				var origin: Vector2=Geometry.world_point(e,vector(port),pose_angle)
+				var heading: Vector2=(player+Pilot.COCKPIT-origin).normalized() if v.get("aim_from_muzzle",false) else direction
+				for degrees in v.get("angles_degrees",[0]):add(result,origin,heading.rotated(deg_to_rad(degrees))*float(v.speed),kind)
 		"expanding_ring":
 			var heading: Vector2=Vector2.DOWN.rotated(pose_angle)
 			for port in ports:
@@ -81,11 +83,13 @@ static func emit(e: Dictionary,player: Vector2,channel: Dictionary,boss: Diction
 			add(result,Geometry.world_point(e,vector(ports[0]),pose_angle),Vector2(vx,vy),kind)
 			add(result,Geometry.world_point(e,vector(ports[0]),pose_angle),Vector2(-vx,vy),kind)
 		"rotating":
-			var angle: float=float(e.get("radial_angle",deg_to_rad(channel.initial_degrees)))
+			var angles: Dictionary=e.get("radial_angles",{})
+			var angle: float=float(angles.get(channel.name,deg_to_rad(channel.initial_degrees)))
 			for i in range(int(channel.count)):
 				var heading: float=angle+deg_to_rad(float(channel.spacing_degrees)*i)
 				add(result,Geometry.world_point(e,vector(ports[0]),pose_angle),Vector2.from_angle(heading)*float(channel.speed),int(channel.projectile_kind))
-			e.radial_angle=wrapf(angle+deg_to_rad(channel.rotation_step_degrees)*float(channel.get("rotation_direction",1)),-PI,PI)
+			angles[channel.name]=wrapf(angle+deg_to_rad(channel.rotation_step_degrees)*float(channel.get("rotation_direction",1)),-PI,PI)
+			e.radial_angles=angles
 		"shoulder_fan":
 			var port: Array=body_attack.ports[int(v.port_index)]
 			result=aimed_fan(Geometry.world_point(e,vector(port),pose_angle),player+Pilot.COCKPIT,int(body_attack.count),deg_to_rad(body_attack.spread_degrees),body_attack.speed,int(body_attack.projectile_kind))

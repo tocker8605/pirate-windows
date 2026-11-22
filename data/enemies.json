@@ -3567,7 +3567,87 @@
         ]
       },
       "explosion_seconds": 1.05,
-      "fire_channels": [],
+      "fire_channels": [
+        {
+          "name": "chest_fan",
+          "interval_seconds": 0.4,
+          "gate": "always",
+          "window_seconds": [
+            5,
+            0,
+            2
+          ],
+          "volley": {
+            "type": "aimed",
+            "ports": [
+              [
+                0.079745,
+                46.735075
+              ]
+            ],
+            "projectile_kind": 3,
+            "speed": 250,
+            "angles_degrees": [
+              -6,
+              -3,
+              0,
+              3,
+              6
+            ],
+            "aim_from_muzzle": true
+          }
+        },
+        {
+          "name": "left_hinge_ring",
+          "interval_seconds": 0.8,
+          "gate": "parts_missing",
+          "part_ids": [
+            141,
+            143
+          ],
+          "speed": 200,
+          "count": 30,
+          "spacing_degrees": 12,
+          "rotation_step_degrees": 1,
+          "rotation_direction": -1,
+          "initial_degrees": 90,
+          "projectile_kind": 6,
+          "volley": {
+            "type": "rotating",
+            "ports": [
+              [
+                -32,
+                37
+              ]
+            ]
+          }
+        },
+        {
+          "name": "right_hinge_ring",
+          "interval_seconds": 0.8,
+          "gate": "parts_missing",
+          "part_ids": [
+            142,
+            144
+          ],
+          "speed": 200,
+          "count": 30,
+          "spacing_degrees": 12,
+          "rotation_step_degrees": 1,
+          "rotation_direction": 1,
+          "initial_degrees": 90,
+          "projectile_kind": 6,
+          "volley": {
+            "type": "rotating",
+            "ports": [
+              [
+                32,
+                37
+              ]
+            ]
+          }
+        }
+      ],
       "damage_smoke": {
         "below_ratio": 0.4,
         "ports": [
@@ -3641,7 +3721,20 @@
               "to_degrees": -170
             }
           ],
-          "width_transition_seconds": 0.2
+          "width_transition_seconds": 0.2,
+          "low_health": {
+            "at_or_below_ratio": 0.5,
+            "beams": [
+              {
+                "from_degrees": 165,
+                "to_degrees": 15
+              },
+              {
+                "from_degrees": 195,
+                "to_degrees": 345
+              }
+            ]
+          }
         }
       ]
     },
@@ -3965,7 +4058,7 @@
             "x_random": {
               "base": -5,
               "step": -1,
-              "count": 46
+              "count": 96
             },
             "speed_y": -33.333333333333336,
             "projectile_kind": 2
@@ -4088,7 +4181,7 @@
             "x_random": {
               "base": 5,
               "step": 1,
-              "count": 46
+              "count": 96
             },
             "speed_y": -33.333333333333336,
             "projectile_kind": 2

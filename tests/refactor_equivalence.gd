@@ -56,6 +56,9 @@ func _initialize() -> void:
     var unchanged_stage3: Callable=func(row):return not (row.size()>4 and (int(row[0]) in [121,122] or (int(row[0])==93 and int(row[3])==6)))
     reference=reference.filter(unchanged_stage3)
     rows=rows.filter(unchanged_stage3)
+    # Stage5 body patterns are intentionally new; preserve its RNG checkpoint.
+    reference=reference.filter(func(row):return not (int(row[0])==95 and row.size()>4))
+    rows=rows.filter(func(row):return not (int(row[0])==95 and row.size()>4))
     checks+=1
     if rows.size()!=reference.size():failures+=1;push_error("FAIL: volley record count differs")
     for i in range(mini(rows.size(),reference.size())):

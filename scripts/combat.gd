@@ -27,6 +27,16 @@ static func beam_origin_hits(origin: Vector2,actor: Dictionary) -> bool:
 	if actor.pos.y>=origin.y:return false
 	var bounds: Array=definition.collision.beam_bounds
 	return between(origin.x-actor.pos.x,bounds[0],bounds[1])
+## Contact is presentation-only: the gameplay hit rectangle remains authoritative.
+static func beam_contact(origin: Vector2,actor: Dictionary,legacy_y: float = 40) -> Variant:
+	if not beam_origin_hits(origin,actor):return null
+	var definition: Dictionary=Catalog.for_actor(actor)
+	if definition.collision.has("beam_rect"):
+		if Geometry.visual(definition).get("anchor")=="hinge":
+			var painted: Variant=Geometry.sprite_ray_contact(actor,definition,origin,Vector2.UP)
+			if painted!=null:return painted
+		return Shapes.ray_contact(origin,Vector2.UP,definition.collision.beam_rect,Geometry.local_frame(actor))
+	return Vector2(origin.x,actor.pos.y+legacy_y)
 # Stored-position convenience adapters for tools and existing callers. No entity-specific offsets.
 static func shot_hits(pos: Vector2,e: Dictionary) -> bool:
 	return shot_point_hits(ProjectileGeometry.shot_centre(pos),e)

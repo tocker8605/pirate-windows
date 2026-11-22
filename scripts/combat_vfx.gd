@@ -131,7 +131,7 @@ func observe(g: Node) -> void:
 			carrier_releases[id] = true
 			burst(Rules.cargo_position(e),24,Supply.cargo_color(Rules.cargo_item(e)),2.8)
 	for p in g.shield_contacts: burst(p,9,CYAN,2.8)
-	for p in g.laser_contacts: burst(p+Vector2(15,15),3,MINT,3)
+	for p in g.laser_contacts: burst(p,3,MINT,3)
 	# Projectile tails have their own reduced cadence. Damage smoke and engines
 	# keep the original60ms emission rhythm independently.
 	projectile_trail_clock += g.delta_seconds
@@ -349,7 +349,7 @@ func draw_special(c: Node2D, g: Node, player: Variant = null, shield_position: V
 			var angle: float = i*TAU/18-time*0.025
 			halo(c,p+Vector2.from_angle(angle)*40,3,CYAN,field_opacity*0.7)
 		_draw_shield_lifetime(c,p,remaining,time,fade)
-	for point in g.laser_contacts: halo(c,point+Vector2(15+ship.x-g.player.x,15),19,MINT)
+	for point in g.laser_contacts: halo(c,point+Vector2(ship.x-g.player.x,0),19,MINT)
 	for point in g.shield_contacts: halo(c,point,17,CYAN)
 	if g.hit_flash_render_seconds>0:
 		var opacity: float = float(g.hit_flash_render_seconds)/0.57

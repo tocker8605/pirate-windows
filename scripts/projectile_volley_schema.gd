@@ -3,11 +3,12 @@ const Check=preload("res://scripts/data_validation.gd")
 const TYPES: Array=["aimed","expanding_ring","fixed","fixed_pair","motion_deflection","height_sweep","motion_or_aim","random","pod_twin","aimed_sequence","sweeping_pair","inherited_fan","diving_pair","rotating","shoulder_fan"]
 static func validate(v: Variant,prefix: String,errors: PackedStringArray) -> void:
 	if not v is Dictionary:errors.append(prefix+"expected volley object");return
-	Check.unknown_fields(v,["type","ports","speed","projectile_kind","angles_degrees","velocity","velocities","down_speed","speed_y","x_random","y_random","abs_x_factor","origin_x_random","velocity_offsets","port_index","count","start_radius","end_radius","expand_seconds"],prefix,errors)
+	Check.unknown_fields(v,["type","ports","aim_from_muzzle","speed","projectile_kind","angles_degrees","velocity","velocities","down_speed","speed_y","x_random","y_random","abs_x_factor","origin_x_random","velocity_offsets","port_index","count","start_radius","end_radius","expand_seconds"],prefix,errors)
 	if v.get("type") not in TYPES:errors.append(prefix+"unknown volley type")
 	if v.get("type")!="shoulder_fan" and (not v.get("ports") is Array or v.ports.is_empty() or not v.ports.all(func(p):return Check.vector(p,2))):errors.append(prefix+"invalid ports")
 	for field in ["speed","down_speed","speed_y","abs_x_factor","port_index"]:
 		if v.has(field) and not Check.number(v[field]):errors.append(prefix+"invalid "+field)
+	if v.has("aim_from_muzzle") and (not v.aim_from_muzzle is bool or v.get("type")!="aimed"):errors.append(prefix+"aim_from_muzzle requires an aimed volley and boolean value")
 	if v.has("projectile_kind") and (not Check.number(v.projectile_kind) or float(v.projectile_kind)!=int(v.projectile_kind) or int(v.projectile_kind) not in range(1,9)):errors.append(prefix+"invalid projectile_kind")
 	for field in ["x_random","y_random","origin_x_random"]:
 		if not v.has(field):continue

@@ -50,3 +50,8 @@ static func release_and_escape(e: Dictionary) -> bool:
 static func out_of_bounds(e: Dictionary) -> bool:
 	if Catalog.for_actor(e).get("role","") in ["boss","part"]: return false
 	return e.pos.x< -100 or e.pos.x>480 or e.pos.y< -100 or e.pos.y>580
+
+static func destruction_center(e: Dictionary) -> Vector2:
+	var definition: Dictionary=Catalog.for_actor(e)
+	if Geometry.visual(definition).get("anchor")=="hinge":return Geometry.sprite_center(e,definition)
+	return e.pos+Vector2(25,25)

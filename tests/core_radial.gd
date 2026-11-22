@@ -49,7 +49,7 @@ func run() -> void:
 	var count := 0
 	for i in range(600): count += Fire.advance(e,1.0/60,player).size()
 	check(count==1200,"ten seconds emits40complete rings at250ms without drift")
-	check(is_equal_approx(angle_difference(deg_to_rad(90),e.radial_angle),deg_to_rad(40)),"rotation advances once per volley rather than once per tick or bullet")
+	check(is_equal_approx(angle_difference(deg_to_rad(90),e.radial_angles["radial"]),deg_to_rad(40)),"rotation advances once per volley rather than once per tick or bullet")
 	check(Fire.advance(settled(),0.75,player).size()==90,"large time step retains three whole rotated rings")
 	e = settled()
 	var round_trip: Array = []

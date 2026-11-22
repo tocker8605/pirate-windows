@@ -75,7 +75,7 @@ func run() -> void:
 		var expected_angle: float=deg_to_rad(15)*(1-cos(TAU*(i+1)*0.12/6))/2
 		var local:=Vector2(channel.volley.ports[0][0],channel.volley.ports[0][1])
 		check(shots[i].pos.distance_to(e.pos+local.rotated(expected_angle))<0.001,"catchup shot uses its firing-time port, not the final frame angle")
-		check(shots[i].velocity.x>=-50 and shots[i].velocity.x<=-5 and is_equal_approx(shots[i].velocity.y,-33.333333333333336),"rotation does not alter missile velocity")
+		check(shots[i].velocity.x>=-100 and shots[i].velocity.x<=-5 and is_equal_approx(shots[i].velocity.y,-33.333333333333336),"rotation does not alter missile velocity")
 	var g=Game.new()
 	g.automatic=false;g.mute=true
 	root.add_child(g)

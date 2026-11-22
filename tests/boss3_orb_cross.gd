@@ -46,6 +46,6 @@ func _initialize() -> void:
 	var b: Dictionary = stationary(124)
 	Fire.advance(a,0.6)
 	Fire.advance(b,0.3)
-	check(is_equal_approx(angle_difference(deg_to_rad(90),a.radial_angle),deg_to_rad(20)) and is_equal_approx(angle_difference(deg_to_rad(90),b.radial_angle),deg_to_rad(-10)),"both orbs own independent opposite rotation states")
+	check(is_equal_approx(angle_difference(deg_to_rad(90),a.radial_angles[Catalog.for_actor(a).fire_channels[0].name]),deg_to_rad(20)) and is_equal_approx(angle_difference(deg_to_rad(90),b.radial_angles[Catalog.for_actor(b).fire_channels[0].name]),deg_to_rad(-10)),"both orbs own independent opposite rotation states")
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	quit(0 if failures==0 else 1)

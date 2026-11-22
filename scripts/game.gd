@@ -411,7 +411,7 @@ func _destroy_enemy(e: Dictionary) -> void:
 	var item: Dictionary = EnemyRules.drop(e,run_settings.boss_rush)
 	if not item.is_empty(): _drop_item(item)
 	if EnemyRules.release_and_escape(e): return
-	_explosion(e.pos,EnemyRules.explosion_seconds(kind))
+	_explosion(EnemyRules.destruction_center(e)-Vector2(25,25),EnemyRules.explosion_seconds(kind))
 	explosions[-1].owner_id = e.get("entity_id",-1)
 	stats.killed += 1
 

@@ -87,6 +87,10 @@ func run() -> void:
 	var unchanged_stage3: Callable=func(row):return not (row.size()==7 and (str(row[0]).get_slice("/",0) in ["e121","e122"] or (row[0]=="b3" and row[2]==6)))
 	expected=expected.filter(unchanged_stage3)
 	rows=rows.filter(unchanged_stage3)
+	# New stage5 body volleys and their world projectiles have dedicated pattern tests.
+	var old_body: Callable=func(row):return not ((row.size()==7 and row[0]=="b5") or (row[0]=="bullet" and row[2] in [3,6]))
+	expected=expected.filter(old_body)
+	rows=rows.filter(old_body)
 	var failures: int=0 if expected.size()==rows.size() else 1
 	for i in range(mini(expected.size(),rows.size())):
 		var same: bool=expected[i].size()==rows[i].size()

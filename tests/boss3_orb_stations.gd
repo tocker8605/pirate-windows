@@ -30,7 +30,7 @@ func run() -> void:
 		Motion.advance(e,(1000)*0.03)
 		check(e.pos==Vector2(centre_x-25,75) and e.orb_stationary and e.velocity==(Vector2.ZERO)/0.03,"orb%d stops exactly at upper station without overshoot"%id)
 		check(Fire.advance(e,0.299,player,boss).is_empty() and Fire.advance(e,0.001,player,boss).size()==4,"orb%d waits300ms after upper arrival then emits complete cross"%id)
-		var rotation: float = e.radial_angle
+		var rotation: float = e.radial_angles[Catalog.for_actor(e).fire_channels[0].name]
 		Fire.advance(e,0.15,player,boss)
 		boss.hp = 750.01
 		Motion.prepare(e,boss)
@@ -41,7 +41,7 @@ func run() -> void:
 		check(Fire.advance(e,0.01,player,boss).is_empty() and e.fire_timers.rotating_cross==0,"orb%d lower transition clears partial firing interval before emission"%id)
 		Motion.advance(e,(14)*0.03)
 		check(e.pos.y==145 and not e.orb_y_stationary and is_equal_approx(e.pos.x,centre_x-25+(22.0/3 if id==123 else -22.0/3)),"orb%d lower transfer keeps originalYspeed and slower independentXspeed"%id)
-		check(Fire.advance(e,1,player,boss).is_empty() and e.radial_angle==rotation,"orb%d transfer pauses fire and preserves last rotation angle"%id)
+		check(Fire.advance(e,1,player,boss).is_empty() and e.radial_angles[Catalog.for_actor(e).fire_channels[0].name]==rotation,"orb%d transfer pauses fire and preserves last rotation angle"%id)
 		Motion.advance(e,(1000)*0.03)
 		check(e.pos==Vector2(follow_x-25,215) and e.velocity==(Vector2.ZERO)/0.03 and e.orb_stationary,"orb%d lower station centres sprite at(%s,240)"%[id,follow_x])
 		check(Fire.advance(e,0.299,player,boss).is_empty() and Fire.advance(e,0.001,player,boss).size()==4,"orb%d lower arrival starts a fresh300ms interval"%id)

@@ -34,9 +34,9 @@ func run() -> void:
 				for i in range(1,events.size()): uniform = uniform and is_equal_approx(events[i].at-events[i-1].at,float(channel.interval_seconds))
 				check(uniform,"entity%d/%s has constant event spacing"%[id,channel.name])
 			else:
-				var expected: int = (16 if channel.name=="left_enrage" else 13) if id==93 else {111:49,112:8,121:6,122:9,143:33,144:25}[id]
+				var expected: int = 8 if id==95 else (16 if channel.name=="left_enrage" else 13) if id==93 else {111:49,112:8,121:6,122:9,143:33,144:25}[id]
 				check(events.size()==expected and events.all(func(e): return Scheduler.in_window(channel,e.at)),"entity%d preserves intentional local burst/rest windows without banking shots"%id)
-	check(channel_count==49,"all49independent attack channels including both boss-support turret types are audited")
+	check(channel_count==52,"all52independent attack channels including both boss-support turret types are audited")
 	var a: Dictionary = Catalog.create(1,Vector2(100,100))
 	var b: Dictionary = Catalog.create(1,Vector2(100,100))
 	var player := Vector2(175,380)

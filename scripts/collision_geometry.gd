@@ -10,24 +10,26 @@ static func circle_inside(local: Vector2,radius: float,bounds: Array) -> bool:
 	var closest:=Vector2(clampf(local.x,bounds[0],bounds[2]),clampf(local.y,bounds[1],bounds[3]))
 	return local.distance_squared_to(closest)<radius*radius
 static func ray_hits(origin: Vector2,direction: Vector2,bounds: Array,frame: Transform2D,max_distance: float = INF) -> bool:
+	return ray_contact(origin,direction,bounds,frame,max_distance)!=null
+static func ray_contact(origin: Vector2,direction: Vector2,bounds: Array,frame: Transform2D,max_distance: float = INF) -> Variant:
 	var inverse: Transform2D=frame.affine_inverse()
 	var local: Vector2=inverse*origin
 	var heading: Vector2=inverse.basis_xform(direction)
 	var entry: float=0
 	var exit: float=max_distance
-	if heading==Vector2.ZERO or max_distance<=0:return false
+	if heading==Vector2.ZERO or max_distance<=0:return null
 	for axis in range(2):
 		var lo: float=bounds[axis]
 		var hi: float=bounds[axis+2]
 		if absf(heading[axis])<0.0000001:
-			if local[axis]<=lo or local[axis]>=hi:return false
+			if local[axis]<=lo or local[axis]>=hi:return null
 			continue
 		var a: float=(lo-local[axis])/heading[axis]
 		var b: float=(hi-local[axis])/heading[axis]
 		entry=maxf(entry,minf(a,b))
 		exit=minf(exit,maxf(a,b))
-		if entry>=exit:return false
-	return exit>entry
+		if entry>=exit:return null
+	return origin+direction*entry if exit>entry else null
 
 ## Circle versus a finite thick segment (capsule), reusable for beams and contact hazards.
 static func circle_segment_hits(center: Vector2,radius: float,start: Vector2,end: Vector2,width: float) -> bool:
