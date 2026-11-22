@@ -103,3 +103,24 @@
 - pose_curve.gd는 pose_motion을 카탈로그 로딩 시 실행용 pose_curve로 변환합니다. 범위 회전의 중심각/진폭/시작 위상, 단순 왕복의 라디안 각도와 회전 중심을 미리 계산합니다. 매 프레임 및 발사 시각 샘플링에서는 준비된 곡선과 경과 시간만 사용합니다.
 - JSON은 기존 pose_motion/volley 필드로 계속 편집합니다. pose_curve와 formation_profile은 실행 중에만 존재하는 파생 값이므로 JSON에 추가하지 않습니다. 도구에서 각도만 확인하려면 Motion.angle(Catalog.definition(id).pose_curve,seconds)를 사용합니다.
 - tests/fixtures/motion_before_refactor.json은 이번 이동/고정값 분리 이전에 기록한 회전·발사·물리 결과입니다. 공유 설정/상태 독립성은 shared_motion_state, 수치 동등성은 motion_refactor_equivalence에서 검증합니다.
+
+
+공통 지속형 레이저 공격
+- enemies.json의 beam_attacks는 일반 탄환 발사 채널과 분리된 지속형 공격입니다. 각 기체에 name이 다른 공격을 여러 개 지정할 수 있습니다. gate는 immediate 또는 scroll_stopped이며, 후자는 처음 스크롤이 멈춘 시점에 시작하여 이후 독립 주기를 유지합니다.
+- origin은 기체 로컬 발사점, period_seconds/telegraph_seconds/active_seconds는 전체/예고/공격 시간입니다. 나머지 시간은 쿨타임이며 선분을 생성하지 않습니다. beams 배열의 from_degrees/to_degrees는12시 기준이며 양수가 시계 방향입니다. 각도는 최단 경로로 보정하지 않고 명시한 부호와 범위를 그대로 보간합니다.
+- width는 실제 공격 폭, telegraph_width는 예고 폭입니다. color와 damage_scale을 지정합니다. 표시와 피격 판정이 beam_attack.gd의 동일한 선분/폭 스냅샷을 사용합니다. 예고 선분은 damaging:false라서 판정에 들어가지 않습니다.
+- beam_attack_schema.gd는 설정 검증, beam_attack.gd는 기체별 시작 조건/시간/선분 생성, enemy_beam_art.gd는 표시를 담당합니다. collision_geometry.gd의 circle_segment_hits는 두께가 있는 유한 선분과 원의 충돌 검사로 다른 지속형 공격에서도 사용할 수 있습니다. combat_actions.gd가 기존 난이도 대미지와 무적시간을 적용합니다.
+- 보스 사망 즉시 목록을 비우며, 이미 만들어진 선분도 소유자의 생존 여부를 검사합니다. 스테이지 로딩 시 상태를 초기화하고, 일시정지 중에는 시뮬레이션이 진행되지 않습니다. 미래의 다른 적/파츠도 같은 데이터와 모듈을 사용할 수 있으며,5면 ID 분기는 없습니다.
+
+- BeamMuzzleEffect.emitters는 여러 광선이 같은 소유자/공격 이름에서 출발할 때 하나의 발사점으로 묶습니다. CombatVFX는 전용 발사점 효과 모듈을 사용해 예고 단계의 작은 충전 효과와 발사 단계의 강화된 코어/스파크를 구분합니다. 쿨타임/사망 시에는 생성하지 않으며, 기존 표시 전용 난수와 파티클 예산을 사용합니다. 프레임 지연 후 누적 생성하지 않습니다.
+
+- width_transition_seconds는 표시 폭의 생성/소멸 시간입니다. beam_attack이 visual_width만 보간하고, width는 공격 중 고정되어 피격 판정이 달라지지 않습니다. 현재1→5→1px 전환 시간은 각각0.2초입니다.
+- 레이저 관련 파티클은 전용 표시 레이어3으로 분리되어 레이저 본체 뒤에 가려지지 않습니다. 단계2의 중심 코어는 후속 코어가 생성될 때까지 불투명도를 유지하여 V자 이음 부분을 덮습니다. 기존 연기/탄환/일반 파티클의 상대 순서는 유지합니다.
+
+
+레이저 시각효과 모듈과 실행용 설정
+- beam_muzzle_effect.gd가 발사점 묶기, CHARGE/FIRING 단계별 생성 주기, 코어 표시를 담당합니다. 인스턴스별 시계만 보유하며 공통 CombatVFX의 파티클 저장소/예산/표시용 난수를 그대로 사용합니다. 난수 호출 순서와 레이저 위에 코어를 그리는 순서를 유지합니다.
+- particle_layers.gd의 Layer.ALL/SMOKE/GENERAL/BEAM_FOREGROUND로 표시 그룹을 구분합니다. 각 비연기 배치를 한 번 선택한 뒤 글로우/스파크를 순서대로 그리고 코어를 마지막에 그립니다. 기존 정수값은 그대로여서 기존 도구 호출도 유지됩니다.
+- beam_profile.gd는 카탈로그 로딩 시 JSON의 beam_attacks를 읽기 전용 beam_profiles로 변환합니다. origin은 Vector2, color는 Color, 회전 시작/끝은 라디안으로 준비됩니다. beam_attack.gd는 실행용 설정으로 시간/기하/피격만 처리하고 시각효과의 발사점 묶기는 담당하지 않습니다.
+- JSON에는 기존 beam_attacks를 그대로 편집합니다. 독립 도구가 원시 설정으로 샘플을 만들려면 BeamProfile.prepare(raw_spec) 이후 BeamAttack.sample(owner,prepared_spec,time)를 호출합니다. 카탈로그 설정을 사용하면 definition.beam_profiles에 이미 준비되어 있습니다.
+- tests/fixtures/beam_before_visual_refactor.json은 이번 정리 이전에 기록한 기준입니다. beam_visual_equivalence가 레이저와 파티클 생성/상태/난수 순서를 대조하고, beam_refactor_contracts가 설정 불변성과 레이어·예산·시계 독립성을 검사합니다.

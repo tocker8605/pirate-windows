@@ -21,7 +21,7 @@ func check(ok: bool, message: String) -> void:
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	check(Campaign.stage_count(false)==5 and Campaign.stage_count(true)==5,"normal campaign and Boss Rush both include stage5")
-	check(Catalog.boss_definition(5).hp==3000 and Catalog.boss_definition(5).fire_channels.is_empty(),"supercomputer has3000HP and no attack channels")
+	check(Catalog.boss_definition(5).hp==3000 and Catalog.boss_definition(5).fire_channels.is_empty(),"supercomputer has3000HP; beam hazards are independent from projectile channels")
 	for stage in range(1,6):
 		var body: Dictionary=Catalog.create(90+stage,Vector2(200,100))
 		for local_y in [-26.0,-24.0,59.0,61.0]:
@@ -128,7 +128,7 @@ func run() -> void:
 	for frame in range(60):g._tick(Vector2.ZERO,false,false,false)
 	var pos: Vector2=g.boss.pos
 	for frame in range(120):g._tick(Vector2.ZERO,false,false,false)
-	check(g.boss.pos==pos and g.bullets.is_empty(),"floor-mounted mainframe neither moves nor attacks")
+	check(g.boss.pos==pos and g.bullets.is_empty(),"floor-mounted mainframe remains stopped without spawning projectile bullets")
 	g._load_stage(5)
 	g.invulnerability_seconds=999
 	var visited: Dictionary={}

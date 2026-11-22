@@ -1,6 +1,7 @@
 extends RefCounted
 ## Shared, immutable entity defaults. Runtime HP lives only on created actors.
 const PATH = "res://data/enemies.json"
+const BeamProfile=preload("res://scripts/beam_profile.gd")
 const PoseCurve=preload("res://scripts/pose_curve.gd")
 const Formation=preload("res://scripts/projectile_formation.gd")
 const Schema = preload("res://scripts/entity_schema.gd")
@@ -29,6 +30,7 @@ static func _load_definitions() -> Dictionary:
 		d.id = int(key)
 		d.draw_size = Vector2(d.draw_size[0],d.draw_size[1])
 		d.draw_offset = Vector2(d.draw_offset[0],d.draw_offset[1])
+		if d.has("beam_attacks"):d.beam_profiles=d.beam_attacks.map(func(spec):return BeamProfile.prepare(spec))
 		if d.has("pose_motion"):d.pose_curve=PoseCurve.prepare(d.pose_motion)
 		for channel in d.get("fire_channels",[]):
 			var volley: Dictionary=channel.get("volley",{})

@@ -1,5 +1,7 @@
 extends RefCounted
 ## Presentation-only CPU particles. Never consumes the original game's VB random stream.
+const BeamMuzzle=preload("res://scripts/beam_muzzle_effect.gd")
+const ParticleLayers=preload("res://scripts/particle_layers.gd")
 const Geometry=preload("res://scripts/entity_geometry.gd")
 const PlayerStyle = preload("res://scripts/player_weapon_style.gd")
 const PlayerShotArt = preload("res://scripts/player_shot_art.gd")
@@ -36,6 +38,7 @@ var last_stage: int = -1
 var last_hit: float = 0
 var trail_clock: float = 0
 var projectile_trail_clock: float = 0
+var beam_muzzle=BeamMuzzle.new()
 var smoke_puff: Texture2D
 var fire_puff: Texture2D
 var glow: Texture2D
@@ -70,6 +73,7 @@ func reset() -> void:
 	last_hit = 0
 	trail_clock = 0
 	projectile_trail_clock = 0
+	beam_muzzle.reset()
 
 func emit(p: Vector2, v: Vector2, life: float, size: float, color: Color, smoke: bool = false) -> void:
 	if particles.size()>=LIMIT: return
@@ -95,6 +99,7 @@ func observe(g: Node) -> void:
 		part.p += (part.v+flow)*g.delta_seconds
 		part.v *= pow(0.96 if not part.smoke else 0.99,g.delta_seconds*33.333333333333336)
 	particles = particles.filter(func(p): return p.age<p.life)
+	emit_enemy_beam_sources(g.enemy_beams,g.delta_seconds)
 	blasts = blasts.filter(func(b): return g.explosions.has(b.source))
 	for blast in g.explosions:
 		if blast.get("delay_seconds",0)>0 or _blast_record(blast)!={}: continue
@@ -198,34 +203,38 @@ func streak(c: Node2D, p: Vector2, direction: Vector2, length: float, width: flo
 	c.draw_line(p-direction*length,p,color,width,true)
 	c.draw_line(p-direction*length*0.7,p,Color("fff6ec"),maxf(0.7,width*0.36),true)
 
-func draw_particles(c: Node2D, fraction: float = 0, layer: int = 0) -> void:
-	if layer!=2:
+func draw_particles(c: Node2D, fraction: float = 0, layer: int = ParticleLayers.Layer.ALL) -> void:
+	if ParticleLayers.shows_smoke(layer):
 		for part in particles:
 			if not part.smoke: continue
 			var t: float = part.age/part.life
 			var p: Vector2 = part.get("previous_pos",part.p).lerp(part.p,fraction)
 			var radius: float = part.size*SMOKE_SIZE_SCALE*(1+t*1.1)
 			c.draw_texture_rect(smoke_puff,Rect2(p-Vector2.ONE*radius,Vector2.ONE*radius*2),false,Color(part.color,pow(1-t,0.7)*0.92))
-	if layer==1: return
+	if layer==ParticleLayers.Layer.SMOKE:return
 	# Keep all textured glows together, then all line geometry together. Alternating
 	# a glow texture with a line per particle broke the CanvasItem batching each time.
-	for part in particles:
-		if part.smoke: continue
+	var batch: Array=ParticleLayers.select_non_smoke(particles,layer)
+	for part in batch:
 		var t: float = part.age/part.life
 		var p: Vector2 = part.get("previous_pos",part.p).lerp(part.p,fraction)
 		var hit: bool = part.get("player_effect","")=="impact"
 		var fade: float = pow(1-t,0.65) if hit else 1-t
-		halo(c,p,part.size*3,part.color,fade*(0.85 if hit else 0.85*0.65))
-	for part in particles:
-		if part.smoke: continue
+		halo(c,p,part.size*float(part.get("halo_scale",3)),part.color,fade*(0.85 if hit else 0.85*0.65))
+	var beam_cores: Array=[]
+	for part in batch:
 		var t: float = part.age/part.life
 		var p: Vector2 = part.get("previous_pos",part.p).lerp(part.p,fraction)
 		var hit: bool = part.get("player_effect","")=="impact"
 		var opacity: float = pow(1-t,0.65) if hit else (1-t)*0.85
-		if part.get("impact_core",false):
+		if part.get("enemy_beam_core",false):
+			beam_cores.append(part)
+		elif part.get("impact_core",false):
 			c.draw_circle(p,part.size*(1-t*0.5)*0.8,Color(part.color,opacity),true,-1,true)
 		else:
 			c.draw_line(p-part.v*PARTICLE_STREAK_SECONDS,p,Color(part.color,opacity),maxf(0.6,part.size*(1-t)),true)
+
+	beam_muzzle.draw_cores(c,beam_cores,fraction)
 
 func draw_bullet(c: Node2D, b: Dictionary, position: Variant = null, phase: float = 0) -> void:
 	var p: Vector2 = position if position!=null else b.get("render_pos",b.pos)
@@ -345,3 +354,6 @@ func draw_special(c: Node2D, g: Node, player: Variant = null, shield_position: V
 	if g.hit_flash_render_seconds>0:
 		var opacity: float = float(g.hit_flash_render_seconds)/0.57
 		halo(c,ship+Vector2(25,25),28,HOT,opacity*0.6)
+
+func emit_enemy_beam_sources(segments: Array,seconds: float) -> void:
+	beam_muzzle.advance(segments,seconds,self)

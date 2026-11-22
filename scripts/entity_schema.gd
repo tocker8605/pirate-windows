@@ -1,9 +1,10 @@
 extends RefCounted
+const Beams=preload("res://scripts/beam_attack_schema.gd")
 const Campaign = preload("res://scripts/campaign_rules.gd")
 const Visual=preload("res://scripts/entity_visual_schema.gd")
 const Volleys=preload("res://scripts/projectile_volley_schema.gd")
 const Check = preload("res://scripts/data_validation.gd")
-const FIELDS: Array = ["name","display_name","role","hp","score","score_scales_with_difficulty","damageable","explosion_seconds","death_sound","draw_size","draw_offset","part_side","collision","damage_smoke","boss_rush_drop","drop","stage","music","open_at_y","open_kind","on_defeat","attack","fire_channels","motion","pose_motion","attachment","core_motion","movement_mode","boss_scroll","floor_decoration","visual","sprite_region","ground_turret","sprite_path","sprite_fit","classic_sprite"]
+const FIELDS: Array = ["name","display_name","role","hp","score","score_scales_with_difficulty","damageable","explosion_seconds","death_sound","draw_size","draw_offset","part_side","collision","damage_smoke","boss_rush_drop","drop","stage","music","open_at_y","open_kind","on_defeat","attack","beam_attacks","fire_channels","motion","pose_motion","attachment","core_motion","movement_mode","boss_scroll","floor_decoration","visual","sprite_region","ground_turret","sprite_path","sprite_fit","classic_sprite"]
 static func validate_document(document: Variant) -> PackedStringArray:
 	var errors := PackedStringArray()
 	if not document is Dictionary or document.get("schema_version",0)!=2 or not document.get("entities") is Dictionary:
@@ -27,6 +28,7 @@ static func validate_document(document: Variant) -> PackedStringArray:
 			if not classic is Dictionary: errors.append(prefix+"classic_sprite must be an object")
 			elif not classic.get("path") is String or not str(classic.path).begins_with("res://assets/") or not Check.vector(classic.get("frame_size"),2): errors.append(prefix+"invalid classic sprite metadata")
 		Visual.validate(d,prefix,errors)
+		if d.has("beam_attacks"):Beams.validate(d.beam_attacks,prefix+"beam_attacks.",errors)
 		var hatch: Variant=d.get("ground_turret",{}).get("boss_hatch",{}) if d.get("ground_turret",{}) is Dictionary else {}
 		if hatch is Dictionary and Check.number(hatch.get("boss_id")):
 			var parent: Variant=document.entities.get(str(int(hatch.boss_id)),{})

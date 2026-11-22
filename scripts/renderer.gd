@@ -1,5 +1,7 @@
 extends Node2D
 ## Rendering consumes game state; input, simulation and audio live elsewhere.
+const ParticleLayers=preload("res://scripts/particle_layers.gd")
+const BeamArt=preload("res://scripts/enemy_beam_art.gd")
 const Ground = preload("res://scripts/ground_turret.gd")
 const Geometry=preload("res://scripts/entity_geometry.gd")
 const Stages=preload("res://scripts/stage_catalog.gd")
@@ -144,7 +146,7 @@ func _draw() -> void:
 		if not Depth.is_below(e): _draw_enemy_actor(e)
 
 	for blast in g.explosions: vfx.draw_explosion(self,blast,g.presentation.position(blast))
-	vfx.draw_particles(self,clampf(fraction,0,1),2)
+	vfx.draw_particles(self,clampf(fraction,0,1),ParticleLayers.Layer.GENERAL)
 	for e in g.enemies:
 		if Catalog.definition(int(e.kind)).get("role","")=="supply" and not Depth.is_below(e):
 			Supply.draw_mount(self,g.art,e,g.presentation.position(e),g.animation,g.presentation.phase(g))
@@ -153,9 +155,11 @@ func _draw() -> void:
 		_draw_shot(shot)
 	vfx.draw_special(self,g,g.presentation.player(g),g.presentation.shield_position(g),g.presentation.phase(g))
 	# Back to front: player weapons -> black smoke -> enemy bullets. HUD stays above.
-	vfx.draw_particles(self,clampf(fraction,0,1),1)
+	vfx.draw_particles(self,clampf(fraction,0,1),ParticleLayers.Layer.SMOKE)
 	for bullet in g.bullets:
 		_draw_bullet(bullet)
+	BeamArt.draw(self,g.enemy_beams)
+	vfx.draw_particles(self,clampf(fraction,0,1),ParticleLayers.Layer.BEAM_FOREGROUND)
 	if g.slow_movement_active and g.hp>0 and g.death_remaining_seconds<=0:
 		vfx.draw_player_focus(self,g.presentation.player(g),g.timeline())
 	if g.death_remaining_seconds>0:

@@ -1,4 +1,6 @@
 extends RefCounted
+const EnemyBeams=preload("res://scripts/beam_attack.gd")
+const Pilot=preload("res://scripts/pilot_geometry.gd")
 const ProjectileMotion=preload("res://scripts/projectile_motion.gd")
 const ProjectileGeometry=preload("res://scripts/player_projectile_geometry.gd")
 const Weapons = preload("res://scripts/player_weapons.gd")
@@ -73,3 +75,10 @@ static func resolve_body_contacts(g: Node) -> void:
 		if Combat.touches_player(g.player,e):
 			g._hurt_player(Combat.incoming_damage(g.run_settings.difficulty))
 			return
+
+static func resolve_enemy_beams(g: Node) -> void:
+	if g.hp<=0 or g.invulnerability_seconds>0 or g.death_remaining_seconds>0:return
+	for beam in g.enemy_beams:
+		if EnemyBeams.hits(beam,g.player+Pilot.COCKPIT,Pilot.HIT_RADIUS):
+			g._hurt_player(Combat.incoming_damage(g.run_settings.difficulty)*float(beam.damage_scale))
+			return # Overlapping beams use the existing single-hit invulnerability policy.

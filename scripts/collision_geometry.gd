@@ -28,3 +28,11 @@ static func ray_hits(origin: Vector2,direction: Vector2,bounds: Array,frame: Tra
 		exit=minf(exit,maxf(a,b))
 		if entry>=exit:return false
 	return exit>entry
+
+## Circle versus a finite thick segment (capsule), reusable for beams and contact hazards.
+static func circle_segment_hits(center: Vector2,radius: float,start: Vector2,end: Vector2,width: float) -> bool:
+	var delta: Vector2=end-start
+	var length_squared: float=delta.length_squared()
+	var progress: float=clampf((center-start).dot(delta)/length_squared,0,1) if length_squared>0 else 0
+	var combined: float=radius+width/2
+	return center.distance_squared_to(start+delta*progress)<combined*combined
