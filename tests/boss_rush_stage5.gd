@@ -38,7 +38,7 @@ func run() -> void:
 	for event in doc.events:
 		if event.get("action")=="spawn":last_spawn=maxf(last_spawn,float(event.at))
 	while g.stage_elapsed_seconds<last_spawn+0.1:g._tick(Vector2.ZERO,false,false,false)
-	check(g.boss.get("kind",0)==95 and g.boss.hp==3000,"supercomputer appears after5.4seconds with3000HP")
+	check(g.boss.get("kind",0)==95 and g.boss.hp==3600,"supercomputer appears after5.4seconds with3600HP")
 	check(g.enemies.size()==8 and g.enemies.all(func(e):return Catalog.is_part(int(e.kind))),"only the eight boss parts appear; no ordinary ground turrets")
 	var expected_speed: float=60
 	for event in Events.sorted_events(doc.events):

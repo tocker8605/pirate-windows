@@ -21,14 +21,14 @@ func run() -> void:
 	for pair in [[145,51],[146,52]]:
 		var special: Dictionary=Catalog.definition(pair[0])
 		var original: Dictionary=Catalog.definition(pair[1])
-		check(special.role=="part" and special.hp==800 and special.score==original.score,"special turret%d has800HP and retains ordinary turret score but is a boss part"%pair[0])
+		check(special.role=="part" and special.hp==800 and special.score==2000,"special turret%d has800HP and awards2000base points but is a boss part"%pair[0])
 		check(special.ground_turret.hatch==original.ground_turret.hatch and special.ground_turret.wreck==original.ground_turret.wreck,"special turret%d reuses the same hatch and wreck assets"%pair[0])
 		check(special.sprite_path!=original.sprite_path and Geometry.layer(special)=="floor","special turret%d has independent boss-colour artwork on the floor layer"%pair[0])
 		var e: Dictionary=Catalog.create(pair[0],Vector2(100,200))
 		Ground.initialize(e,0,false)
 		check(not Ground.ready(e) and not Combat.shot_hits(e.pos+Vector2(25,25),e) and Fire.advance(e,2,Vector2(175,380)).is_empty(),"special turret%d stays invulnerable and silent under its hatch"%pair[0])
 		var gate_boss: Dictionary=Catalog.create(95,Vector2(200,80))
-		gate_boss.hp=1000
+		gate_boss.hp=1200
 		Ground.initialize(e,0,true,gate_boss)
 		check(Combat.shot_hits(e.pos+Vector2(25,25),e) and Combat.beam_hits(Vector2(100,380),e),"special turret%d can be hit by shots and laser when exposed"%pair[0])
 		check(not Combat.touches_player(e.pos+Vector2(25,25)-Combat.Pilot.COCKPIT,e),"special turret%d never collides with the player hull"%pair[0])
@@ -57,10 +57,10 @@ func run() -> void:
 	g.invulnerability_seconds=999
 	for frame in range(60):g._tick(Vector2.ZERO,false,false,false)
 	check(support.all(func(e):return not Ground.ready(e)) and g.bullets.is_empty(),"allfour turrets remain closed while the boss is healthy")
-	g.boss.hp=2000
+	g.boss.hp=2400
 	for frame in range(90):g._tick(Vector2.ZERO,false,false,false)
 	check(support.all(func(e):return Ground.ready(e)==(e.kind==146)),"only energy turrets open at two-thirds bossHP")
-	g.boss.hp=1000
+	g.boss.hp=1200
 	for frame in range(90):g._tick(Vector2.ZERO,false,false,false)
 	check(support.all(func(e):return Ground.ready(e)) and not g.bullets.is_empty(),"allfour turrets are exposed and attack at one-third bossHP")
 	var score: int=g.score

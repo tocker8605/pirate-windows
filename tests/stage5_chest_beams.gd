@@ -72,7 +72,7 @@ func run() -> void:
 	fx.reset()
 	owner.hp=0;fx.emit_enemy_beam_sources(live,1)
 	check(fx.particles.is_empty(),"dead laser sources emit no new particles")
-	owner.hp=3000
+	owner.hp=owner.max_hp
 	var peak: int=0
 	for frame in range(240):
 		for particle in fx.particles:particle.age+=1.0/60
@@ -130,20 +130,20 @@ func run() -> void:
 
 func check_health_paths(spec: Dictionary) -> void:
 	var owner: Dictionary=Catalog.create(95,Vector2(200,70))
-	for hp in [1501,1500,1499]:
+	for hp in [2401,2400,2399]:
 		owner.hp=hp
 		for age in [0.0,1.999,2.0,3.0,4.0,5.999]:
 			var progress: float=0 if age<2 else (age-2)/4
 			var shots: Array=Beams.sample(owner,spec,age)
 			for i in range(2):
-				var start: float=([165,195] if hp<=1500 else [-10,10])[i]
-				var finish: float=([15,345] if hp<=1500 else [170,-170])[i]
+				var start: float=([165,195] if hp<=2400 else [-10,10])[i]
+				var finish: float=([15,345] if hp<=2400 else [170,-170])[i]
 				var expected: Vector2=Vector2.UP.rotated(deg_to_rad(lerpf(start,finish,progress)))
 				check((shots[i].end-shots[i].origin).normalized().distance_to(expected)<0.00001,"HP%d uses correct signed sweep at age%.3f"%[hp,age])
 				check(shots[i].damaging==(age>=2) and shots[i].width==(5 if age>=2 else 1),"HP change preserves telegraph and collision widths")
-	owner.hp=3000
+	owner.hp=owner.max_hp
 	Beams.advance(owner,0,true)
-	owner.hp=1500
+	owner.hp=2400
 	var during: Array=Beams.advance(owner,1,true)
 	check((during[0].end-during[0].origin).normalized().distance_to(Vector2.UP.rotated(deg_to_rad(-10)))<0.00001,"HP crossing during telegraph does not change the predicted path")
 	during=Beams.advance(owner,1,true)
@@ -152,15 +152,15 @@ func check_health_paths(spec: Dictionary) -> void:
 	check(not during[0].damaging and (during[0].end-during[0].origin).normalized().distance_to(Vector2.UP.rotated(deg_to_rad(165)))<0.00001,"next15second cycle adopts low-health prediction")
 	during=Beams.advance(owner,2,true)
 	check(during[0].damaging and (during[0].end-during[0].origin).normalized().distance_to(Vector2.UP.rotated(deg_to_rad(165)))<0.00001,"low-health live beam starts at its predicted six-oclock offset")
-	owner.hp=1501
+	owner.hp=2401
 	during=Beams.advance(owner,2,true)
 	check((during[0].end-during[0].origin).normalized().distance_to(Vector2.UP.rotated(deg_to_rad(90)))<0.00001,"healing during active sweep cannot jump its path")
-	check(spec.low_health.is_read_only() and spec.low_health.beams.is_read_only() and spec.low_health.beams[0].is_read_only(),"low-health paths share immutable prepared settings")
+	check(spec.health_phases[1].is_read_only() and spec.health_phases[1].beams.is_read_only() and spec.health_phases[1].beams[0].is_read_only(),"low-health paths share immutable prepared settings")
 	for ratio in [0,-0.1,1.1,"0.5",null]:
 		var doc: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(Catalog.PATH))
-		doc.entities["95"].beam_attacks[0].low_health.at_or_below_ratio=ratio
+		doc.entities["95"].beam_attacks[0].health_phases[1].at_or_below_ratio=ratio
 		check(not Catalog.validate_document(doc).is_empty(),"invalid low-health threshold is rejected")
 	for sweeps in [[],null,[{"from_degrees":0,"to_degrees":"bad"}]]:
 		var doc: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(Catalog.PATH))
-		doc.entities["95"].beam_attacks[0].low_health.beams=sweeps
+		doc.entities["95"].beam_attacks[0].health_phases[1].beams=sweeps
 		check(not Catalog.validate_document(doc).is_empty(),"invalid alternate beam geometry is rejected")

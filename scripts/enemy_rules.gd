@@ -53,5 +53,5 @@ static func out_of_bounds(e: Dictionary) -> bool:
 
 static func destruction_center(e: Dictionary) -> Vector2:
 	var definition: Dictionary=Catalog.for_actor(e)
-	if Geometry.visual(definition).get("anchor")=="hinge":return Geometry.sprite_center(e,definition)
+	if definition.get("role")=="boss" or Geometry.visual(definition).get("anchor")=="hinge":return Geometry.sprite_center(e,definition)
 	return e.pos+Vector2(25,25)

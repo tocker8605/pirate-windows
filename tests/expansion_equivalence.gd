@@ -25,7 +25,7 @@ func run() -> void:
 				e.velocity=Vector2(0 if phase%2==0 else 80,-100+phase*60)
 				e.orb_y_stationary=phase%2==0
 				e.orb_stationary=phase%2==0
-				boss.hp=[3000,2000,1000,2001,800,0][phase]
+				boss.hp=[3000,2000,1000,2001,800,0][phase]*(boss.max_hp/3000.0)
 				if Ground.active(e):e.deployment_progress=1.0
 				volley("e%d/%d"%[kind,scenario],tick,Fire.advance(e,[1.0/60,0.013,0.071][tick%3],Vector2(175,380),boss))
 	for stage in range(1,6):
@@ -58,7 +58,7 @@ func run() -> void:
 	g.supply_director.schedule.clear()
 	g.invulnerability_seconds=999
 	for tick in range(1200):
-		if not g.boss.is_empty():g.boss.hp=3000 if tick<650 else (2000 if tick<800 else 1000)
+		if not g.boss.is_empty():g.boss.hp=(3000 if tick<650 else (2000 if tick<800 else 1000))*(g.boss.max_hp/3000.0)
 		g._tick(Vector2.ZERO,false,false,false)
 		var row: Array=["world",tick,g.scroll_speed,g.scenery_distance]
 		if not g.boss.is_empty():row.append_array([g.boss.pos.x,g.boss.pos.y])
@@ -91,6 +91,16 @@ func run() -> void:
 	var old_body: Callable=func(row):return not ((row.size()==7 and row[0]=="b5") or (row[0]=="bullet" and row[2] in [3,6]))
 	expected=expected.filter(old_body)
 	rows=rows.filter(old_body)
+	# Boss autocannon rotation and its bullets intentionally replace the old aimed volley.
+	var old_autocannon: Callable=func(row):return not ((row.size()==7 and str(row[0]).get_slice("/",0)=="e145") or (row[0]=="bullet" and row[2]==1))
+	expected=expected.filter(old_autocannon)
+	rows=rows.filter(old_autocannon)
+	for records in [expected,rows]:
+		for row in records:
+			if row[0]!="world":continue
+			var start: int=6 if (row.size()-4)%5==2 else 4
+			for i in range(start,row.size(),5):
+				if row[i]==145:row[i+4]=0 # Keep all movement/hatch checks; new rotation has dedicated coverage.
 	var failures: int=0 if expected.size()==rows.size() else 1
 	for i in range(mini(expected.size(),rows.size())):
 		var same: bool=expected[i].size()==rows[i].size()

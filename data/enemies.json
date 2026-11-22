@@ -3534,8 +3534,8 @@
       "role": "boss",
       "stage": 5,
       "music": "boss01",
-      "hp": 3000,
-      "score": 0,
+      "hp": 3600,
+      "score": 25000,
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
@@ -3722,19 +3722,39 @@
             }
           ],
           "width_transition_seconds": 0.2,
-          "low_health": {
-            "at_or_below_ratio": 0.5,
-            "beams": [
-              {
-                "from_degrees": 165,
-                "to_degrees": 15
+          "health_phases": [
+            {
+              "at_or_below_ratio": 0.3333333333333333,
+              "continuous": true,
+              "swing": {
+                "amplitude_degrees": 30,
+                "period_seconds": 8
               },
-              {
-                "from_degrees": 195,
-                "to_degrees": 345
-              }
-            ]
-          }
+              "beams": [
+                {
+                  "from_degrees": 165,
+                  "to_degrees": 165
+                },
+                {
+                  "from_degrees": 195,
+                  "to_degrees": 195
+                }
+              ]
+            },
+            {
+              "at_or_below_ratio": 0.6666666666666666,
+              "beams": [
+                {
+                  "from_degrees": 165,
+                  "to_degrees": 15
+                },
+                {
+                  "from_degrees": 195,
+                  "to_degrees": 345
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -3742,7 +3762,7 @@
       "name": "supercomputer_gatling_left",
       "role": "part",
       "hp": 1000,
-      "score": 0,
+      "score": 2500,
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
@@ -3862,7 +3882,7 @@
       "name": "supercomputer_gatling_right",
       "role": "part",
       "hp": 1000,
-      "score": 0,
+      "score": 2500,
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
@@ -3982,7 +4002,7 @@
       "name": "supercomputer_missile_wing_left",
       "role": "part",
       "hp": 800,
-      "score": 0,
+      "score": 2000,
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
@@ -4105,7 +4125,7 @@
       "name": "supercomputer_missile_wing_right",
       "role": "part",
       "hp": 800,
-      "score": 0,
+      "score": 2000,
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
@@ -4228,7 +4248,7 @@
       "name": "supercomputer_autocannon_turret",
       "role": "part",
       "hp": 800,
-      "score": 120,
+      "score": 2000,
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
@@ -4302,7 +4322,12 @@
         "boss_hatch": {
           "boss_id": 95,
           "hp_ratio": 0.3333333333333333
-        }
+        },
+        "rotation": {
+          "initial_degrees": 90,
+          "period_seconds": 6
+        },
+        "parallel": true
       },
       "damage_smoke": {
         "below_ratio": 0.4,
@@ -4317,7 +4342,7 @@
       "fire_channels": [
         {
           "name": "ground_shot",
-          "interval_seconds": 0.24,
+          "interval_seconds": 0.18,
           "gate": "ground_ready",
           "projectile_kind": 1,
           "speed": 210
@@ -4354,7 +4379,7 @@
       "name": "supercomputer_energy_turret",
       "role": "part",
       "hp": 800,
-      "score": 180,
+      "score": 2000,
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",

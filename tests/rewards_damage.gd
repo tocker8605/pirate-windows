@@ -82,7 +82,17 @@ func run() -> void:
 					check(g.score==expected and g.enemies.is_empty(),"stage%d difficulty%d rush%s cleanup grants only body and direct-part rewards"%[stage,difficulty,rush])
 					g._tick(Vector2.ZERO,false,false,false)
 					check(g.score==expected,"repeated boss cleanup cannot award automatic part points")
-	var part_scores: Dictionary = {101:500,102:500,111:750,112:750,113:1000,121:1200,122:1200,123:1200,124:1200,131:1500,132:1500,133:2000}
+	for difficulty in range(1,6):
+		for rush in [false,true]:
+			g.run_settings=g.run_settings.with_difficulty(difficulty).with_boss_rush(rush)
+			g._load_stage(5);g.events=[];g.score=0
+			g.boss=Catalog.create(95,Vector2(200,100))
+			check(g.boss.hp==3600 and g.boss.max_hp==3600,"stage5 body has3600current and maximumHP")
+			g._damage_boss(3600)
+			check(g.score==25000*difficulty,"stage5 body awards25000base points at death in both modes")
+			g._finish_stage()
+			check(g.score==25000*difficulty,"stage5 body reward cannot repeat")
+	var part_scores: Dictionary = {101:500,102:500,111:750,112:750,113:1000,121:1200,122:1200,123:1200,124:1200,131:1500,132:1500,133:2000,141:2500,142:2500,143:2000,144:2000,145:2000,146:2000}
 	g.run_settings = g.run_settings.with_boss_rush(false)
 	g._load_stage(1)
 	for kind in part_scores:

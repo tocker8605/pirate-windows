@@ -16,9 +16,9 @@ func check(ok: bool,message: String) -> void:
 	if ok:print("PASS: "+message)
 	else:failures+=1;push_error("FAIL: "+message)
 func _initialize() -> void:
-	check(Catalog.boss_definition(5).hp==3000,"stage5 boss has3000HP")
+	check(Catalog.boss_definition(5).hp==3600,"stage5 boss has3600HP")
 	for kind in [51,52,145,146]:check(Catalog.definition(kind).hp==(200 if kind<100 else 800),"turret%d has the requested HP"%kind)
-	for kind in [51,145]:check(Catalog.fire_channel(kind,"ground_shot").interval_seconds==0.24,"autocannon%d fires every240ms"%kind)
+	for kind in [51,145]:check(Catalog.fire_channel(kind,"ground_shot").interval_seconds==(0.24 if kind==51 else 0.18),"autocannon%d uses its configured240or180ms interval"%kind)
 	check(Catalog.fire_channel(52,"ground_shot").interval_seconds==0.48 and Catalog.fire_channel(146,"ground_shot").interval_seconds==0.24,"energy turret cadences are480ms and240ms")
 	var normal: Dictionary=Catalog.create(52,Vector2(150,150))
 	Ground.initialize(normal,0,true)
@@ -32,11 +32,11 @@ func _initialize() -> void:
 	world.boss=Catalog.create(95,Vector2(200,80))
 	for kind in [145,146]:
 		var e: Dictionary=Catalog.create(kind,Vector2(100,215))
-		world.boss.hp=3000
+		world.boss.hp=world.boss.max_hp
 		Ground.initialize(e,0,true,world.boss)
 		Ground.advance(e,world,2)
 		check(not Ground.ready(e) and e.deployment_progress==0,"turret%d stays closed despite start_exposed/Y position above bossHP gate"%kind)
-		var threshold: float=1000 if kind==145 else 2000
+		var threshold: float=1200 if kind==145 else 2400
 		world.boss.hp=threshold+0.01
 		Ground.advance(e,world,1)
 		check(e.deployment_progress==0,"turret%d stays closed just above its threshold"%kind)

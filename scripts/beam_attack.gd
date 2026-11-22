@@ -3,29 +3,27 @@ extends RefCounted
 const Catalog=preload("res://scripts/enemy_catalog.gd")
 const Geometry=preload("res://scripts/entity_geometry.gd")
 const Shapes=preload("res://scripts/collision_geometry.gd")
-const EPSILON: float=0.0000001
-static func sweeps_for(owner: Dictionary,spec: Dictionary) -> Array:
-	var low: Dictionary=spec.get("low_health",{})
-	var maximum: float=float(owner.get("max_hp",0))
-	if not low.is_empty() and maximum>0 and float(owner.hp)/maximum<=float(low.at_or_below_ratio):return low.beams
-	return spec.beams
-static func sample(owner: Dictionary,spec: Dictionary,age: float,sweeps: Array = []) -> Array:
+const Timeline=preload("res://scripts/beam_timeline.gd")
+static func sample(owner: Dictionary,spec: Dictionary,age: float,selected: Dictionary = {}) -> Array:
 	if owner.get("hp",0)<=0:return []
-	var phase: float=fposmod(age+EPSILON,float(spec.period_seconds))
-	var telegraph: bool=phase<float(spec.telegraph_seconds)
-	if not telegraph and phase>=float(spec.telegraph_seconds)+float(spec.active_seconds):return []
-	var progress: float=0.0 if telegraph else clampf((phase-float(spec.telegraph_seconds))/float(spec.active_seconds),0,1)
+	var pattern: Dictionary=Timeline.phase_for(owner,spec) if selected.is_empty() else selected
+	var exposure: Dictionary=Timeline.exposure(spec,pattern,age)
+	if exposure.is_empty():return []
+	var continuous: bool=pattern.continuous
+	var telegraph: bool=exposure.telegraph
+	var active_age: float=exposure.active_age
+	var progress: float=exposure.progress
 	var visible_width: float=float(spec.telegraph_width) if telegraph else float(spec.width)
 	var transition: float=float(spec.width_transition_seconds)
 	if not telegraph and transition>0:
-		var active_age: float=phase-float(spec.telegraph_seconds)
-		var edge_time: float=minf(active_age,float(spec.active_seconds)-active_age)
+		var edge_time: float=active_age if continuous else minf(active_age,float(spec.active_seconds)-active_age)
 		visible_width=lerpf(float(spec.telegraph_width),float(spec.width),smoothstep(0,transition,edge_time))
 	var origin: Vector2=Geometry.world_point(owner,spec.origin)
 	var result: Array=[]
-	for sweep in (sweeps_for(owner,spec) if sweeps.is_empty() else sweeps):
+	var swing: float=0 if telegraph else sin(TAU*active_age/float(pattern.swing_period_seconds))*float(pattern.swing_radians)
+	for sweep in pattern.beams:
 		# Do not wrap/shortest-path interpolate: the signed span specifies the sweep direction.
-		var angle: float=lerpf(float(sweep.from_radians),float(sweep.to_radians),progress)
+		var angle: float=lerpf(float(sweep.from_radians),float(sweep.to_radians),progress)+swing
 		var direction: Vector2=Vector2.UP.rotated(angle+float(owner.get("pose_angle",0)))
 		result.append({"source":owner,"name":spec.name,"origin":origin,"end":origin+direction*float(spec.length),
 			"width":float(spec.telegraph_width) if telegraph else float(spec.width),"visual_width":visible_width,"damaging":not telegraph,
@@ -38,23 +36,16 @@ static func advance(owner: Dictionary,seconds: float,scroll_stopped: bool) -> Ar
 	var states: Dictionary=owner.get("beam_states",{})
 	var result: Array=[]
 	for spec in specs:
-		var clock: Dictionary=states.get(spec.name,{"started":false,"age":0.0})
-		if not clock.started:
-			if spec.gate=="scroll_stopped" and not scroll_stopped:continue
-			clock.started=true # One-shot start gate; later scroll changes do not reset the cycle.
-		else:clock.age=float(clock.age)+seconds
-		var cycle: int=floori((float(clock.age)+EPSILON)/float(spec.period_seconds))
-		if not clock.has("cycle") or int(clock.cycle)!=cycle:
-			clock.cycle=cycle
-			clock.sweeps=sweeps_for(owner,spec) # Lock prediction and live sweep to the same path for this cycle.
+		var clock: Dictionary=states.get(spec.name,Timeline.new_clock())
+		if not Timeline.advance(clock,owner,spec,seconds,scroll_stopped):continue
 		states[spec.name]=clock
-		result.append_array(sample(owner,spec,float(clock.age),clock.sweeps))
+		result.append_array(sample(owner,spec,Timeline.sample_age(clock),clock.phase))
 	owner.beam_states=states
 	return result
 static func advance_world(g: Node,seconds: float) -> void:
 	g.enemy_beams.clear()
 	if g.boss_death_remaining_seconds>0:return
-	var stopped: bool=absf(g.scroll_speed)<EPSILON
+	var stopped: bool=absf(g.scroll_speed)<Timeline.EPSILON
 	if not g.boss.is_empty():g.enemy_beams.append_array(advance(g.boss,seconds,stopped))
 	for actor in g.enemies:g.enemy_beams.append_array(advance(actor,seconds,stopped))
 static func alive(beam: Dictionary) -> bool:return beam.source.get("hp",0)>0

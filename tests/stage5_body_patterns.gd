@@ -13,6 +13,12 @@ func parts(ids: Array) -> Array:return ids.map(func(id):return Catalog.create(id
 func _initialize() -> void:
 	var player:=Vector2(125,390)
 	var b: Dictionary=body()
+	check(b.hp==3600 and b.max_hp==3600,"stage5 body has3600HP")
+	b.hp=1440
+	check(not Catalog.smoking(b),"damage smoke stays off at exactly40percentHP")
+	b.hp=1439
+	check(Catalog.smoking(b),"damage smoke starts below40percent of3600HP")
+	b.hp=b.max_hp
 	var origin: Vector2=b.pos+Vector2(0.079745,46.735075)
 	for target in [player,Vector2(200,50),origin-Pilot.COCKPIT+Vector2(0.01,-0.01)]:
 		var fan: Array=Boss.emit(b,"chest_fan",target)

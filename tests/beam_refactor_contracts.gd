@@ -14,11 +14,15 @@ func _initialize() -> void:
 	var raw: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(Catalog.PATH)).entities["95"].beam_attacks[0]
 	var prepared: Dictionary=Profile.prepare(raw)
 	check(prepared.origin is Vector2 and prepared.color is Color,"beam origin and color are prepared as native values")
-	check(prepared.is_read_only() and prepared.beams.is_read_only() and prepared.beams[0].is_read_only(),"prepared beam settings are immutable through nested sweeps")
-	check(is_equal_approx(prepared.beams[0].from_radians,deg_to_rad(-10)) and is_equal_approx(prepared.beams[1].to_radians,deg_to_rad(-170)),"signed sweep radians are prepared once")
+	check(prepared.is_read_only() and prepared.default_phase.beams.is_read_only() and prepared.default_phase.beams[0].is_read_only(),"prepared beam settings are immutable through nested sweeps")
+	check(is_equal_approx(prepared.default_phase.beams[0].from_radians,deg_to_rad(-10)) and is_equal_approx(prepared.default_phase.beams[1].to_radians,deg_to_rad(-170)),"signed sweep radians are prepared once")
+	check(prepared.default_phase.is_read_only(),"default pattern is immutable like health-selected patterns")
+	for phase in prepared.health_phases:
+		check(phase.keys()==prepared.default_phase.keys(),"default and HP-selected patterns have identical prepared fields")
+		check(phase.is_read_only() and phase.beams.is_read_only(),"health-selected patterns are immutable")
 	var original_origin: Vector2=prepared.origin
 	raw.origin[0]+=100;raw.color="#ff0000";raw.beams[0].from_degrees=50
-	check(prepared.origin==original_origin and prepared.color!=Color.RED and is_equal_approx(prepared.beams[0].from_radians,deg_to_rad(-10)),"prepared settings do not alias mutable authoring arrays")
+	check(prepared.origin==original_origin and prepared.color!=Color.RED and is_equal_approx(prepared.default_phase.beams[0].from_radians,deg_to_rad(-10)),"prepared settings do not alias mutable authoring arrays")
 	var shared: Dictionary=Catalog.definition(95).beam_profiles[0]
 	var actor: Dictionary=Catalog.create(95,Vector2(200,70))
 	for tick in range(60):Beams.advance(actor,1.0/60,true)

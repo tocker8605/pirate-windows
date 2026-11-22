@@ -7,6 +7,7 @@ const Rules=preload("res://scripts/enemy_rules.gd")
 const Actions=preload("res://scripts/combat_actions.gd")
 const Game=preload("res://scripts/game.gd")
 const PilotShots=preload("res://scripts/player_projectile_geometry.gd")
+const Lifecycle=preload("res://scripts/lifecycle.gd")
 class Recorder extends "res://scripts/combat_vfx.gd":
 	var centres: Array=[]
 	func burst(p: Vector2,_count: int,_color: Color,_force: float = 4.0) -> void:centres.append(p)
@@ -52,6 +53,18 @@ func run() -> void:
 			check(g.explosions.size()==1 and (g.explosions[0].pos+Vector2(25,25)).distance_to(expected)<0.001,"destruction record resolves to painted centre instead of hinge")
 			var fx=Recorder.new();g.frame+=1;fx.observe(g)
 			check(fx.centres.size()==1 and fx.centres[0].distance_to(expected)<0.001,"explosion particle source matches the corrected destruction record")
+	for stage in range(1,6):
+		g.boss=Catalog.create(90+stage,Vector2(200,80));g.boss.hp=0
+		g.boss_defeated=true;g.boss_death_remaining_seconds=7.2;g.delta_seconds=0.31
+		g.death_remaining_seconds=0;g.hp=100;g.explosions.clear();g.enemies.clear()
+		var d: Dictionary=Catalog.boss_definition(stage)
+		var expected: Vector2=Geometry.sprite_center(g.boss,d)
+		check(Rules.destruction_center(g.boss)==expected,"stage%d boss uses actual painted centre"%stage)
+		for burst in range(4):
+			Lifecycle.update(g)
+			var point: Vector2=g.explosions[-1].pos+Vector2(25,25)
+			check(is_equal_approx(point.y,expected.y) and absf(point.x-expected.x)<=29.5,"stage%d repeated explosion stays centred with symmetric horizontal scatter"%stage)
+		check(g.explosions.size()==4 and g.explosions.all(func(blast):return blast.remaining_seconds==0.6 and blast.pending_sound),"boss blast cadence, duration and audio remain unchanged")
 	var legacy: Dictionary=Catalog.create(1,Vector2(100,100))
 	check(Rules.destruction_center(legacy)==Vector2(125,125),"existing non-hinge destruction anchor remains unchanged")
 	check(Combat.beam_contact(Vector2(125,400),legacy)==Vector2(125,140),"existing non-rotating beam effect placement remains unchanged")

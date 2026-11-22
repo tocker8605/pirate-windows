@@ -34,6 +34,6 @@ func _initialize() -> void:
 		if definition.role=="enemy" and kind<90:
 			check(maxi(image.get_width(),image.get_height())>=832,"regular enemy%d meets ring_rotor's832px source resolution"%kind)
 	check(count==35,"all35 non-floor entity definitions use independent modern and classic images")
-	check(Catalog.boss_definition(5).hp==3000,"stage5 body and gameplay remain unchanged by sprite separation")
+	check(Catalog.boss_definition(5).hp==3600,"stage5 body and gameplay remain unchanged by sprite separation")
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	quit(0 if failures==0 else 1)

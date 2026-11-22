@@ -5,7 +5,7 @@ static func validate(value: Variant,prefix: String,errors: PackedStringArray) ->
 	var names: Array=[]
 	for spec in value:
 		if not spec is Dictionary:errors.append(prefix+"invalid beam attack");continue
-		Check.unknown_fields(spec,["name","gate","origin","period_seconds","telegraph_seconds","active_seconds","length","width","telegraph_width","color","damage_scale","width_transition_seconds","beams","low_health"],prefix,errors)
+		Check.unknown_fields(spec,["name","gate","origin","period_seconds","telegraph_seconds","active_seconds","length","width","telegraph_width","color","damage_scale","width_transition_seconds","beams","health_phases"],prefix,errors)
 		if not spec.get("name") is String or spec.name.is_empty() or spec.name in names:errors.append(prefix+"invalid/duplicate beam attack name")
 		names.append(spec.get("name"))
 		if spec.get("gate") not in ["immediate","scroll_stopped"]:errors.append(prefix+"unknown beam start gate")
@@ -21,12 +21,25 @@ static func validate(value: Variant,prefix: String,errors: PackedStringArray) ->
 		if spec.has("damage_scale") and (not Check.number(spec.damage_scale) or float(spec.damage_scale)<=0):errors.append(prefix+"invalid beam damage scale")
 		if not spec.get("color") is String or not Color.html_is_valid(spec.get("color","")):errors.append(prefix+"invalid beam color")
 		validate_sweeps(spec.get("beams"),prefix,errors)
-		if spec.has("low_health"):
-			var low: Variant=spec.low_health
-			if not low is Dictionary:errors.append(prefix+"invalid low-health beam variant");continue
-			Check.unknown_fields(low,["at_or_below_ratio","beams"],prefix+"low_health.",errors)
-			if not Check.number(low.get("at_or_below_ratio")) or float(low.get("at_or_below_ratio",0))<=0 or float(low.get("at_or_below_ratio",0))>1:errors.append(prefix+"invalid low-health ratio")
-			validate_sweeps(low.get("beams"),prefix+"low_health.",errors)
+		if spec.has("health_phases"):validate_phases(spec.health_phases,prefix+"health_phases.",errors)
+static func validate_phases(phases: Variant,prefix: String,errors: PackedStringArray) -> void:
+	if not phases is Array:errors.append(prefix+"expected phase array");return
+	var thresholds: Array=[]
+	for phase in phases:
+		if not phase is Dictionary:errors.append(prefix+"invalid phase");continue
+		Check.unknown_fields(phase,["at_or_below_ratio","beams","continuous","swing"],prefix,errors)
+		var ratio: Variant=phase.get("at_or_below_ratio")
+		if not Check.number(ratio) or float(ratio)<=0 or float(ratio)>1:errors.append(prefix+"invalid health ratio")
+		elif ratio in thresholds:errors.append(prefix+"duplicate health threshold")
+		else:thresholds.append(ratio)
+		if phase.has("continuous") and not phase.continuous is bool:errors.append(prefix+"continuous must be boolean")
+		validate_sweeps(phase.get("beams"),prefix,errors)
+		if phase.has("swing"):
+			var swing: Variant=phase.swing
+			if not swing is Dictionary:errors.append(prefix+"invalid swing");continue
+			Check.unknown_fields(swing,["amplitude_degrees","period_seconds"],prefix+"swing.",errors)
+			if not Check.number(swing.get("amplitude_degrees")) or float(swing.get("amplitude_degrees",0))<0:errors.append(prefix+"invalid swing amplitude")
+			if not Check.number(swing.get("period_seconds")) or float(swing.get("period_seconds",0))<=0:errors.append(prefix+"invalid swing period")
 static func validate_sweeps(beams: Variant,prefix: String,errors: PackedStringArray) -> void:
 	if not beams is Array or beams.is_empty():errors.append(prefix+"beam attack needs sweep definitions");return
 	for sweep in beams:

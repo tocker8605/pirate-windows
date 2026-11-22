@@ -7,14 +7,24 @@ static func prepare_sweeps(beams: Array) -> Array:
 		sweep.make_read_only();sweeps.append(sweep)
 	sweeps.make_read_only()
 	return sweeps
+static func prepare_phase(authored: Dictionary) -> Dictionary:
+	var swing: Dictionary=authored.get("swing",{})
+	var phase: Dictionary={
+		"at_or_below_ratio":float(authored.get("at_or_below_ratio",1)),
+		"beams":prepare_sweeps(authored.beams),
+		"continuous":bool(authored.get("continuous",false)),
+		"swing_radians":deg_to_rad(float(swing.get("amplitude_degrees",0))),
+		"swing_period_seconds":float(swing.get("period_seconds",1))}
+	phase.make_read_only()
+	return phase
 static func prepare(spec: Dictionary) -> Dictionary:
-	var sweeps: Array=prepare_sweeps(spec.beams)
-	var profile: Dictionary={"name":spec.name,"gate":spec.gate,"origin":Vector2(spec.origin[0],spec.origin[1]),"color":Color(spec.color),"beams":sweeps}
+	var profile: Dictionary={"name":spec.name,"gate":spec.gate,"origin":Vector2(spec.origin[0],spec.origin[1]),"color":Color(spec.color),"default_phase":prepare_phase(spec)}
 	for field in ["period_seconds","telegraph_seconds","active_seconds","length","width","telegraph_width"]:profile[field]=float(spec[field])
 	profile.damage_scale=float(spec.get("damage_scale",1))
 	profile.width_transition_seconds=float(spec.get("width_transition_seconds",0))
-	if spec.has("low_health"):
-		var low: Dictionary={"at_or_below_ratio":float(spec.low_health.at_or_below_ratio),"beams":prepare_sweeps(spec.low_health.beams)}
-		low.make_read_only();profile.low_health=low
+	var phases: Array=[]
+	for authored in spec.get("health_phases",[]):phases.append(prepare_phase(authored))
+	phases.sort_custom(func(a,b):return a.at_or_below_ratio<b.at_or_below_ratio)
+	phases.make_read_only();profile.health_phases=phases
 	profile.make_read_only()
 	return profile

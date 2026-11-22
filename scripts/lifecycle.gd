@@ -21,7 +21,9 @@ static func update(g: Node) -> void:
 		g.bullets.clear()
 		g.items.clear()
 		if int(ceil(previous/0.3))!=int(ceil(g.boss_death_remaining_seconds/0.3)):
-			g._explosion(g.boss.pos+Vector2(20-VisualRandom.legacy_event().between(0,59),-30),0.6,true)
+			var center: Vector2=Rules.destruction_center(g.boss)
+			var scatter:=Vector2(29.5-VisualRandom.legacy_event().between(0,59),0)
+			g._explosion(center+scatter-Vector2(25,25),0.6,true)
 		if g.boss_death_remaining_seconds==0 and g.death_remaining_seconds==0:
 			g._complete_stage()
 			return
