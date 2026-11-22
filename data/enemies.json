@@ -3378,7 +3378,8 @@
         "center": [
           25,
           25
-        ]
+        ],
+        "parallel": true
       },
       "damage_smoke": {
         "below_ratio": 0.4,
@@ -3393,7 +3394,7 @@
       "fire_channels": [
         {
           "name": "ground_shot",
-          "interval_seconds": 0.24,
+          "interval_seconds": 0.36,
           "gate": "ground_ready",
           "projectile_kind": 1,
           "speed": 210,
@@ -3511,7 +3512,7 @@
       "fire_channels": [
         {
           "name": "ground_shot",
-          "interval_seconds": 0.48,
+          "interval_seconds": 0.72,
           "gate": "ground_ready",
           "projectile_kind": 4,
           "speed": 160,

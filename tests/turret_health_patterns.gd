@@ -3,6 +3,7 @@ const Catalog=preload("res://scripts/enemy_catalog.gd")
 const Ground=preload("res://scripts/ground_turret.gd")
 const Fire=preload("res://scripts/enemy_fire.gd")
 const Combat=preload("res://scripts/combat.gd")
+const Motion=preload("res://scripts/projectile_motion.gd")
 const Pool=preload("res://scripts/bullet_pool.gd")
 class World extends Node:
 	var boss: Dictionary={}
@@ -18,16 +19,29 @@ func check(ok: bool,message: String) -> void:
 func _initialize() -> void:
 	check(Catalog.boss_definition(5).hp==3600,"stage5 boss has3600HP")
 	for kind in [51,52,145,146]:check(Catalog.definition(kind).hp==(120 if kind<100 else 800),"turret%d has the requested HP"%kind)
-	for kind in [51,145]:check(Catalog.fire_channel(kind,"ground_shot").interval_seconds==(0.24 if kind==51 else 0.18),"autocannon%d uses its configured240or180ms interval"%kind)
-	check(Catalog.fire_channel(52,"ground_shot").interval_seconds==0.48 and Catalog.fire_channel(146,"ground_shot").interval_seconds==0.24,"energy turret cadences are480ms and240ms")
+	for kind in [51,145]:check(Catalog.fire_channel(kind,"ground_shot").interval_seconds==(0.36 if kind==51 else 0.18),"autocannon%d uses its configured360or180ms interval"%kind)
+	check(Catalog.fire_channel(52,"ground_shot").interval_seconds==0.72 and Catalog.fire_channel(146,"ground_shot").interval_seconds==0.24,"energy turret cadences are720ms and240ms")
 	var normal: Dictionary=Catalog.create(52,Vector2(150,150))
 	Ground.initialize(normal,0,true)
-	check(Fire.advance(normal,0.479,Vector2(275,350)).is_empty(),"normal energy turret waits a complete480ms")
+	check(Fire.advance(normal,0.719,Vector2(275,350)).is_empty(),"normal energy turret waits a complete720ms")
 	var shots: Array=Fire.advance(normal,0.001,Vector2(275,350))
 	check(shots.size()==3 and shots.map(func(s):return s.kind)==[5,4,5],"small pink, large pink, small pink use existing distinct projectile sprites")
 	check(shots[0].pos.distance_to(shots[1].pos)>7.999 and shots[1].pos.distance_to(shots[2].pos)>7.999 and shots[0].pos.distance_to(shots[1].pos)<8.001,"normal triplet has8px adjacent spacing")
 	check(shots.all(func(s):return s.velocity.distance_to(shots[1].velocity)<0.001 and absf(s.velocity.length()-160)<0.001),"allthree bullets fly parallel at160px/s")
 	check((Vector2(275,350)+Combat.Pilot.COCKPIT-shots[1].pos).normalized().distance_to(shots[1].velocity.normalized())<0.001,"the middle bullet aims at the current cockpit")
+	for target in [Vector2(275,350),Vector2(0,180),Vector2(300,30)]:
+		var cannon: Dictionary=Catalog.create(51,Vector2(150,150))
+		Ground.initialize(cannon,0,true)
+		check(Fire.advance(cannon,0.359,target).is_empty(),"normal autocannon waits full360ms")
+		var twin: Array=Fire.advance(cannon,0.001,target)
+		check(twin.size()==2 and twin.all(func(s):return s.kind==1 and is_equal_approx(s.velocity.length(),210.0)),"autocannon fires original twin type at210px/s")
+		check(twin[0].velocity.is_equal_approx(twin[1].velocity),"both autocannon bullets share exactly the same aim angle")
+		check(absf(twin[0].pos.distance_to(twin[1].pos)-10)<0.001,"original autocannon muzzle separation stays10px")
+		var spaced: bool=true
+		for frame in range(120):
+			for shot in twin:Motion.advance(shot,1.0/60)
+			spaced=spaced and absf(twin[0].pos.distance_to(twin[1].pos)-10)<0.001
+		check(spaced,"parallel autocannon bullets retain initial spacing throughout flight")
 	var world=World.new()
 	world.boss=Catalog.create(95,Vector2(200,80))
 	for kind in [145,146]:

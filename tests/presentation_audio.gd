@@ -203,6 +203,14 @@ func run() -> void:
 			game.enemies.clear()
 			game._read_events()
 		check(game.run_settings.boss_rush and game.event_cursor==[0,6,7,8,7][number] and game.boss.get("stage",0)==number and game.music_track=="boss01","Boss Rush stage %d reads complete original alternate events and music"%number)
+	game.run_settings=game.run_settings.with_boss_rush(false)
+	game._load_stage(5)
+	check(game.music_track=="title" and game.music.playing,"stage5 uses the same title BGM")
+	check(is_same(game.music.stream,game.audio.music_stream("title")),"stage5 reuses the prepared title audio resource")
+	var boss_at: float=game.events.filter(func(e):return e.action=="spawn" and e.definition_id==95)[0].at
+	game.events=game.events.filter(func(e):return is_equal_approx(float(e.at),boss_at))
+	game.event_cursor=0;game.stage_elapsed_seconds=boss_at+0.001;game._read_events()
+	check(game.music_track=="boss01" and game.music.playing,"stage5 boss still switches to its existing boss BGM")
 	print("RESULT: %d checks, %d failures"%[count,failures])
 	game._stop_music()
 	await create_timer(0.15).timeout

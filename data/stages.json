@@ -124,7 +124,7 @@
     {
       "id": 5,
       "boss_rush": true,
-      "music": "bgm04",
+      "music": "title",
       "regions": [
         {
           "name": "DEEP LUNAR TUNNEL",
