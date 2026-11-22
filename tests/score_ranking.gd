@@ -29,7 +29,7 @@ func run() -> void:
 	var store = Ranking.new(PATH)
 	check(store.entries.size()==10 and store.initialization_error==OK and FileAccess.file_exists(PATH),"missing file creates and saves ten initial ranking records")
 	for i in range(10):
-		check(store.entries[i]=={"score":10000-i*1000,"name":"      ","weapon":1,"level":1,"mission":1},"initial rank%d has the requested score, blank name and default run fields"%(i+1))
+		check(store.entries[i]=={"score":10000-i*1000,"name":"      ","weapon":[1,2,3,1,2,3,1,2,3,1][i],"level":1,"mission":1},"initial rank%d has the requested score, blank name and cycling weapon type"%(i+1))
 	check(Ranking.new(PATH).entries==store.entries,"initial ranking survives reload")
 	check(store.insertion_index(999)==-1 and store.insertion_index(1000)==-1 and store.insertion_index(1001)==9,"initial full board requires a score above the last-place1000")
 	store.entries.clear()

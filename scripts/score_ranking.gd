@@ -32,7 +32,7 @@ static func normalized_record(value: Dictionary) -> Dictionary:
 func _load() -> void:
 	if not FileAccess.file_exists(path):
 		for i in range(LIMIT):
-			entries.append({"score":(LIMIT-i)*1000,"name":" ".repeat(NAME_LENGTH),"weapon":1,"level":1,"mission":1})
+			entries.append({"score":(LIMIT-i)*1000,"name":" ".repeat(NAME_LENGTH),"weapon":i%3+1,"level":1,"mission":1})
 		initialization_error = _save(entries)
 		return
 	var parser := JSON.new()
