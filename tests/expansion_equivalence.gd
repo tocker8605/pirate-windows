@@ -6,6 +6,7 @@ const Ground=preload("res://scripts/ground_turret.gd")
 const Combat=preload("res://scripts/combat.gd")
 const Game=preload("res://scripts/game.gd")
 const Rng=preload("res://scripts/random.gd")
+const Events=preload("res://scripts/stage_events.gd")
 const PATH="res://tests/fixtures/expansion_before_refactor.json"
 var rows: Array=[]
 func volley(label: String,tick: int,shots: Array) -> void:
@@ -53,8 +54,10 @@ func run() -> void:
 	g.mute=true
 	root.add_child(g)
 	await process_frame
-	g.run_settings.boss_rush=true
+	g.run_settings=g.run_settings.with_boss_rush(false) # The historical world sample used normal-stage initial conditions.
 	g._load_stage(5)
+	# Freeze authored inputs separately from the old simulation output, so editing the live timeline is supported.
+	g.events=Events.sorted_events(JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/stage05_before_turret_tuning.json")).events)
 	g.supply_director.schedule.clear()
 	g.invulnerability_seconds=999
 	for tick in range(1200):
@@ -100,7 +103,21 @@ func run() -> void:
 			if row[0]!="world":continue
 			var start: int=6 if (row.size()-4)%5==2 else 4
 			for i in range(start,row.size(),5):
-				if row[i]==145:row[i+4]=0 # Keep all movement/hatch checks; new rotation has dedicated coverage.
+				if row[i]==145:row[i+4]=0 # New rotation has dedicated coverage.
+				if int(row[i]) in [51,52]:row[i+3]=0 # The new Y50 hatch trigger has explicit boundary tests.
+	# Ordinary turret bursts now stop belowY360; their new gate has boundary tests.
+	var original_turret_fire: Callable=func(row):return not (row.size()==7 and str(row[0]).get_slice("/",0) in ["e51","e52"])
+	expected=expected.filter(original_turret_fire)
+	rows=rows.filter(original_turret_fire)
+	# HeavyB fan speed now250px/s, verified by heavy_aimed_fan.
+	var old_heavy_fan: Callable=func(row):return not (row.size()==7 and str(row[0]).get_slice("/",0)=="e42" and row[2]==6)
+	expected=expected.filter(old_heavy_fan)
+	rows=rows.filter(old_heavy_fan)
+	# The historical 20-second world sample only has ordinary energy turrets;
+	# their old shots are intentionally replaced by the Y360 cutoff behavior tests.
+	var old_energy_shots: Callable=func(row):return not (row[0]=="bullet" and int(row[2]) in [4,5])
+	expected=expected.filter(old_energy_shots)
+	rows=rows.filter(old_energy_shots)
 	var failures: int=0 if expected.size()==rows.size() else 1
 	for i in range(mini(expected.size(),rows.size())):
 		var same: bool=expected[i].size()==rows[i].size()

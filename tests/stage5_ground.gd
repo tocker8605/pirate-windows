@@ -69,18 +69,18 @@ func run() -> void:
 	g.stage_elapsed_seconds=0
 	check(g.stage==5 and g.view.background_textures.size()==3 and g.scroll_speed==60,"stage5 enters with three local backgrounds and a steady floor scroll")
 	for kind in [51,52]:
-		var hidden: Dictionary=Catalog.create(kind,Vector2(175,80))
+		var hidden: Dictionary=Catalog.create(kind,Vector2(175,49.99))
 		Ground.initialize(hidden,g.scenery_distance,false)
 		check(not Combat.shot_hits(hidden.pos+Vector2(25,25),hidden),"hidden turret%d ignores normal shots"%kind)
 		check(not Combat.beam_hits(Vector2(175,300),hidden),"hidden turret%d ignores the laser"%kind)
 		check(not Combat.touches_player(Vector2(175,87),hidden),"hidden turret%d has no body collision"%kind)
 		check(Fire.advance(hidden,10,g.player).is_empty(),"hidden turret%d cannot bank or emit shots"%kind)
 		Ground.advance(hidden,g,0.1)
-		check(hidden.deployment_progress==0,"turret%d stays concealed at exactlyY80"%kind)
-		hidden.pos.y=80.01
-		hidden.ground_anchor_y=80.01
+		check(hidden.deployment_progress==0,"turret%d stays concealed belowY50"%kind)
+		hidden.pos.y=50
+		hidden.ground_anchor_y=50
 		Ground.advance(hidden,g,0.1)
-		check(hidden.deployment_progress>0 and not Ground.ready(hidden),"turret%d starts rising only afterY80"%kind)
+		check(hidden.deployment_progress>0 and not Ground.ready(hidden),"turret%d starts rising at exactlyY50"%kind)
 		check(not Combat.shot_hits(hidden.pos+Vector2(25,25),hidden),"rising turret%d stays invulnerable until fully exposed"%kind)
 		Ground.advance(hidden,g,0.8)
 		check(Ground.ready(hidden) and Combat.shot_hits(hidden.pos+Vector2(25,25),hidden),"fully exposed turret%d becomes damageable"%kind)
@@ -132,10 +132,12 @@ func run() -> void:
 	g._load_stage(5)
 	g.invulnerability_seconds=999
 	var visited: Dictionary={}
-	for frame in range(5100):
+	var boss_at: float=g.events.filter(func(e):return e.action=="spawn" and Catalog.definition(int(e.definition_id)).role=="boss")[0].at
+	for frame in range(ceili((boss_at+3)*60)):
 		g._tick(Vector2.ZERO,false,false,false)
 		visited[g.map_mode]=true
-	check(g.stats.spawned-g.stats.supply_spawned==27 and g.boss.get("kind",0)==95,"complete stage5 timeline deploys19 ordinary turrets, eight boss parts and the mainframe alongside automatic supplies")
+	var expected_spawns: int=g.events.filter(func(e):return e.action=="spawn" and Catalog.definition(int(e.definition_id)).role!="boss" and float(e.at)+0.000000003<g.stage_elapsed_seconds).size()
+	check(g.stats.spawned-g.stats.supply_spawned==expected_spawns and g.boss.get("kind",0)==95,"stage5 deploys every currently authored non-boss entity alongside automatic supplies")
 	# Authored entry Y/speed may change; allow the scenery-mounted boss to reach its stop.
 	while not g.boss.is_empty() and g.scroll_speed>0 and g.stage_elapsed_seconds<150:
 		g._tick(Vector2.ZERO,false,false,false)

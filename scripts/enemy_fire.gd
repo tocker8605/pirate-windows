@@ -21,6 +21,7 @@ static func enabled(e: Dictionary, channel: Dictionary, boss: Dictionary = {}) -
 	var v: Vector2 = e.velocity
 	var y: float = e.pos.y
 	var by: float = boss.get("pos",Vector2.ZERO).y
+	if channel.has("max_y") and y>float(channel.max_y):return false
 	match str(channel.gate):
 		"ground_ready": return Ground.ready(e) and y>=0 and y<430
 		"aim_window": return v.y<(133.33333333333334 - 0.0001) and v.y> (-166.66666666666669 + 0.0001)

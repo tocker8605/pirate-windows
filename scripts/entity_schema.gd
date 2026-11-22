@@ -35,7 +35,7 @@ static func validate_document(document: Variant) -> PackedStringArray:
 			if not parent is Dictionary or parent.get("role")!="boss":errors.append(prefix+"boss hatch must reference a boss definition")
 		Check.nested_fields(d.get("collision",{}),["beam_bounds", "beam_rect", "contact_bounds", "shot_bounds"],prefix+"collision.",errors)
 		Check.nested_fields(d.get("motion",{}),["type", "upper_center", "lower_center", "lower_below_ratio", "speed", "lower_follow"],prefix+"motion.",errors)
-		Check.nested_fields(d.get("fire_channels",{}),["name", "gate", "interval_seconds", "projectile_kind", "part_id", "part_ids", "count", "initial_degrees", "rotation_direction", "rotation_step_degrees", "spacing_degrees", "speed", "window_seconds", "volley"],prefix+"fire_channels.",errors)
+		Check.nested_fields(d.get("fire_channels",{}),["name", "gate", "interval_seconds", "projectile_kind", "part_id", "part_ids", "count", "initial_degrees", "rotation_direction", "rotation_step_degrees", "spacing_degrees", "speed", "window_seconds", "max_y", "volley"],prefix+"fire_channels.",errors)
 		Check.nested_fields(d.get("attack",{}),["count", "enraged_interval_seconds", "horizontal_base", "initial_degrees", "interval_seconds", "max_spread_degrees", "max_vertical_speed", "min_y", "opposed", "ports", "projectile_kind", "requires_stationary_x", "rotation_directions", "side_hold_seconds", "speed", "speed_y", "spread_degrees", "spread_directions", "step_degrees", "type"],prefix+"attack.",errors)
 		Check.nested_fields(d.get("damage_smoke",{}),["below_hp", "below_ratio", "ports", "size"],prefix+"damage_smoke.",errors)
 		Check.nested_fields(d.get("drop",{}),["cargo_release", "item", "offset"],prefix+"drop.",errors)
@@ -107,6 +107,7 @@ static func validate_document(document: Variant) -> PackedStringArray:
 					names.append(channel.get("name"))
 					if channel.has("volley"): Volleys.validate(channel.volley,prefix+"volley.",errors)
 					if not Check.number(channel.get("interval_seconds")) or float(channel.interval_seconds)<=0: errors.append(prefix+"invalid fire channel interval")
+					if channel.has("max_y") and not Check.number(channel.max_y):errors.append(prefix+"invalid fire channel max_y")
 					if channel.has("projectile_kind") and (not Check.number(channel.projectile_kind) or float(channel.projectile_kind)!=int(channel.projectile_kind) or int(channel.projectile_kind) not in range(1,9)): errors.append(prefix+"invalid channel projectile kind")
 					if channel.get("gate","") not in ["always","ground_ready","aim_window","moving","stationary_aim","sweep_y","descent_or_stationary","descending","flame_y","charge_y","fist_y","pod_y","orb_y","orb_y_stationary","orb_stationary","left_claw_y","right_claw_y","detached","core_settled","no_parts","part_missing","parts_missing"]: errors.append(prefix+"unknown fire gate")
 					if channel.get("gate") in ["part_missing","parts_missing"]:

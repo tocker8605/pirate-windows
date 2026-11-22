@@ -61,6 +61,10 @@ func _initialize() -> void:
     rows=rows.filter(func(row):return not (int(row[0])==95 and row.size()>4))
     reference=reference.filter(func(row):return not (int(row[0])==145 and row.size()>4))
     rows=rows.filter(func(row):return not (int(row[0])==145 and row.size()>4))
+    # HeavyB fan speed is deliberately250px/s; preserve missile and RNG comparisons.
+    var old_heavy_fan: Callable=func(row):return not (row.size()>4 and int(row[0])==42 and int(row[3])==6)
+    reference=reference.filter(old_heavy_fan)
+    rows=rows.filter(old_heavy_fan)
     checks+=1
     if rows.size()!=reference.size():failures+=1;push_error("FAIL: volley record count differs")
     for i in range(mini(rows.size(),reference.size())):

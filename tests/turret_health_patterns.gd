@@ -17,7 +17,7 @@ func check(ok: bool,message: String) -> void:
 	else:failures+=1;push_error("FAIL: "+message)
 func _initialize() -> void:
 	check(Catalog.boss_definition(5).hp==3600,"stage5 boss has3600HP")
-	for kind in [51,52,145,146]:check(Catalog.definition(kind).hp==(200 if kind<100 else 800),"turret%d has the requested HP"%kind)
+	for kind in [51,52,145,146]:check(Catalog.definition(kind).hp==(120 if kind<100 else 800),"turret%d has the requested HP"%kind)
 	for kind in [51,145]:check(Catalog.fire_channel(kind,"ground_shot").interval_seconds==(0.24 if kind==51 else 0.18),"autocannon%d uses its configured240or180ms interval"%kind)
 	check(Catalog.fire_channel(52,"ground_shot").interval_seconds==0.48 and Catalog.fire_channel(146,"ground_shot").interval_seconds==0.24,"energy turret cadences are480ms and240ms")
 	var normal: Dictionary=Catalog.create(52,Vector2(150,150))
@@ -80,6 +80,34 @@ func _initialize() -> void:
 			var outside: float=x+(-0.01 if edge==0 else 0.01)
 			check(Combat.shot_hits(part.pos+Vector2(inside-15,middle_y-15),part) and not Combat.shot_hits(part.pos+Vector2(outside-15,middle_y-15),part),"part%d visible bullet aligns with painted edge%d"%[kind,edge])
 			check(Combat.beam_hits(Vector2(part.pos.x+inside-25,400),part) and not Combat.beam_hits(Vector2(part.pos.x+outside-25,400),part),"part%d visible laser aligns with painted edge%d"%[kind,edge])
+	world.boss.hp=1000
+	for kind in [51,52,145,146]:
+		var channel: Dictionary=Catalog.fire_channel(kind,"ground_shot")
+		var e: Dictionary=Catalog.create(kind,Vector2(150,360))
+		Ground.initialize(e,0,true,world.boss)
+		check(not Fire.advance(e,channel.interval_seconds,world.player,world.boss).is_empty(),"turret%d still fires at exactlyY360"%kind)
+		e.pos.y=360.01
+		var beyond: Array=Fire.advance(e,channel.interval_seconds,world.player,world.boss)
+		check(beyond.is_empty() if kind<100 else not beyond.is_empty(),"Y360cutoff affects ordinary turrets only")
+		e.pos.y=400
+		check(Fire.advance(e,2,world.player,world.boss).is_empty() if kind<100 else not Fire.advance(e,2,world.player,world.boss).is_empty(),"ordinary turret stays silent while boss turret preserves oldY400fire eligibility")
+		if kind<100:
+			e.pos.y=360
+			check(Fire.advance(e,channel.interval_seconds-0.001,world.player,world.boss).is_empty(),"disabled ordinary turret never banks shots")
+			check(not Fire.advance(e,0.001,world.player,world.boss).is_empty(),"re-enabled ordinary turret waits full existing interval")
+	var invalid: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(Catalog.PATH))
+	invalid.entities["51"].fire_channels[0].max_y="360"
+	check(not Catalog.validate_document(invalid).is_empty(),"nonnumeric firingYlimit rejected")
+	for kind in [51,52]:
+		var hidden: Dictionary=Catalog.create(kind,Vector2(150,49.99))
+		Ground.initialize(hidden,0,false)
+		Ground.advance(hidden,world,0.4)
+		check(hidden.deployment_progress==0,"ordinary turret stays hidden belowY50")
+		hidden.pos.y=50;hidden.ground_anchor_y=50
+		Ground.advance(hidden,world,0.4)
+		check(is_equal_approx(hidden.deployment_progress,0.5) and not Ground.ready(hidden),"ordinary turret opens atY50 and remains invulnerable halfway through deployment")
+		Ground.advance(hidden,world,0.4)
+		check(Ground.ready(hidden),"ordinary turret completes deployment in unchanged800ms")
 	world.free()
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	quit(0 if failures==0 else 1)

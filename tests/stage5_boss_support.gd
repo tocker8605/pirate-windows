@@ -39,9 +39,10 @@ func run() -> void:
 	await process_frame
 	g.set_process(false)
 	g._load_stage(5)
-	g.events=g.events.filter(func(e):return e.has("at") and is_equal_approx(float(e.at),82))
+	var boss_at: float=g.events.filter(func(e):return e.action=="spawn" and Catalog.definition(int(e.definition_id)).role=="boss")[0].at
+	g.events=g.events.filter(func(e):return is_equal_approx(float(e.at),boss_at))
 	g.supply_director.schedule.clear()
-	g.stage_elapsed_seconds=82.001
+	g.stage_elapsed_seconds=boss_at+0.001
 	g._read_events()
 	check(g.boss.kind==95 and g.enemies.size()==8,"boss timeline spawns the torso and eight parts simultaneously")
 	var support: Array=[]

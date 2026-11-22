@@ -1315,7 +1315,7 @@
       "attack": {
         "type": "aimed_fan",
         "interval_seconds": 0.2,
-        "speed": 333.33333333333337,
+        "speed": 250,
         "count": 7,
         "spread_degrees": 180,
         "projectile_kind": 6
@@ -3307,8 +3307,8 @@
     "51": {
       "name": "autocannon_turret",
       "role": "enemy",
-      "hp": 200,
-      "score": 120,
+      "hp": 120,
+      "score": 240,
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
@@ -3355,7 +3355,7 @@
             31
           ]
         ],
-        "reveal_y": 80,
+        "reveal_y": 50,
         "raise_seconds": 0.8,
         "hatch": {
           "path": "res://assets/enemies/stage05/retractable-hatch.png",
@@ -3396,7 +3396,8 @@
           "interval_seconds": 0.24,
           "gate": "ground_ready",
           "projectile_kind": 1,
-          "speed": 210
+          "speed": 210,
+          "max_y": 360
         }
       ],
       "sprite_path": "res://assets/enemies/stage05/autocannon-turret.png",
@@ -3414,8 +3415,8 @@
     "52": {
       "name": "energy_turret",
       "role": "enemy",
-      "hp": 200,
-      "score": 180,
+      "hp": 120,
+      "score": 240,
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
@@ -3466,7 +3467,7 @@
             29
           ]
         ],
-        "reveal_y": 80,
+        "reveal_y": 50,
         "raise_seconds": 0.8,
         "hatch": {
           "path": "res://assets/enemies/stage05/retractable-hatch.png",
@@ -3513,7 +3514,8 @@
           "interval_seconds": 0.48,
           "gate": "ground_ready",
           "projectile_kind": 4,
-          "speed": 160
+          "speed": 160,
+          "max_y": 360
         }
       ],
       "sprite_path": "res://assets/enemies/stage05/energy-turret.png",

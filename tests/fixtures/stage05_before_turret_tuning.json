@@ -1,0 +1,52 @@
+{
+  "schema_version": 2,
+  "time_unit": "seconds",
+  "comment": "임시 5면: 월면 심부 → 금속 터널 → 슈퍼컴퓨터 챔버. 보스 본체 HP3000, 이동/공격 없음.",
+  "events": [
+    {"comment": "시작 안내 / start_exposed: true=처음부터 노출, false 또는 생략=숨김 상태로 등장 후 Y>80에서 전개"},
+    {"at": 1, "action": "banner", "name": "mission"},
+
+    {"comment": "1구간: 월면 심층 터널 포대"},
+    {"at": 2, "action": "spawn", "definition_id": 51, "position": [75, -60], "start_exposed": false},
+    {"at": 2, "action": "spawn", "definition_id": 52, "position": [275, -60], "start_exposed": true},
+    {"at": 7, "action": "spawn", "definition_id": 52, "position": [75, -60], "start_exposed": true},
+    {"at": 12, "action": "spawn", "definition_id": 51, "position": [275, -60], "start_exposed": true},
+    {"at": 17, "action": "spawn", "definition_id": 51, "position": [75, -60], "start_exposed": true},
+    {"at": 17, "action": "spawn", "definition_id": 52, "position": [275, -60], "start_exposed": false},
+
+    {"comment": "2구간: 금속 터널 진입 / 포대"},
+    {"at": 20, "action": "scroll", "mode": 2, "speed": 60},
+    {"at": 23, "action": "spawn", "definition_id": 52, "position": [75, -60], "start_exposed": false},
+    {"at": 28, "action": "spawn", "definition_id": 51, "position": [275, -60], "start_exposed": false},
+    {"at": 33, "action": "spawn", "definition_id": 51, "position": [75, -60], "start_exposed": false},
+    {"at": 33, "action": "spawn", "definition_id": 52, "position": [275, -60], "start_exposed": true},
+    {"at": 38, "action": "spawn", "definition_id": 52, "position": [75, -60], "start_exposed": true},
+    {"at": 43, "action": "spawn", "definition_id": 51, "position": [275, -60], "start_exposed": true},
+    {"at": 48, "action": "spawn", "definition_id": 51, "position": [75, -60], "start_exposed": true},
+    {"at": 48, "action": "spawn", "definition_id": 52, "position": [275, -60], "start_exposed": false},
+
+    {"comment": "3구간: 슈퍼컴퓨터 챔버 진입 / 포대"},
+    {"at": 52, "action": "scroll", "mode": 3, "speed": 60},
+    {"at": 55, "action": "spawn", "definition_id": 52, "position": [75, -60], "start_exposed": false},
+    {"at": 60, "action": "spawn", "definition_id": 51, "position": [275, -60], "start_exposed": false},
+    {"at": 65, "action": "spawn", "definition_id": 51, "position": [75, -60], "start_exposed": false},
+    {"at": 65, "action": "spawn", "definition_id": 52, "position": [275, -60], "start_exposed": true},
+    {"at": 68, "action": "spawn", "definition_id": 52, "position": [75, -60], "start_exposed": true},
+
+    {"at": 78, "action": "scroll", "mode": 3, "speed": 30},
+
+    {"comment": "보스 등장 경고"},
+    {"at": 79.6, "action": "banner", "name": "warning"},
+
+    {"comment": "보스"},
+    {"at": 82, "action": "spawn", "definition_id": 95, "position": [200, -400]},
+    {"at": 82, "action": "spawn", "definition_id": 141, "position": [168, -400]},
+    {"at": 82, "action": "spawn", "definition_id": 142, "position": [232, -400]},
+    {"at": 82, "action": "spawn", "definition_id": 143, "position": [168, -400]},
+    {"at": 82, "action": "spawn", "definition_id": 144, "position": [232, -400]},
+    {"at": 82, "action": "spawn", "definition_id": 145, "position": [140, -400], "start_exposed": false},
+    {"at": 82, "action": "spawn", "definition_id": 145, "position": [210, -400], "start_exposed": false},
+    {"at": 82, "action": "spawn", "definition_id": 146, "position": [70, -400], "start_exposed": false},
+    {"at": 82, "action": "spawn", "definition_id": 146, "position": [280, -400], "start_exposed": false}
+  ]
+}

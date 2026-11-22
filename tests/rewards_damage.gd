@@ -92,7 +92,7 @@ func run() -> void:
 			check(g.score==25000*difficulty,"stage5 body awards25000base points at death in both modes")
 			g._finish_stage()
 			check(g.score==25000*difficulty,"stage5 body reward cannot repeat")
-	var part_scores: Dictionary = {101:500,102:500,111:750,112:750,113:1000,121:1200,122:1200,123:1200,124:1200,131:1500,132:1500,133:2000,141:2500,142:2500,143:2000,144:2000,145:2000,146:2000}
+	var part_scores: Dictionary = {101:500,102:500,111:750,112:750,113:1000,121:1200,122:1200,123:1200,124:1200,131:1500,132:1500,133:2000,51:240,52:240,141:2500,142:2500,143:2000,144:2000,145:2000,146:2000}
 	g.run_settings = g.run_settings.with_boss_rush(false)
 	g._load_stage(1)
 	for kind in part_scores:

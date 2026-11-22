@@ -60,7 +60,7 @@ static func finish_step(actor: Dictionary, g: Node, seconds: float) -> void:
 	else:actor.pos.y=SceneryMotion.y(actor.ground_anchor_y,actor.ground_anchor_distance,g.scenery_distance)
 	actor.velocity = Vector2(0,g.scroll_speed)
 	if settings.has("boss_hatch"):actor.deployment_started=actor.hatch_enabled
-	elif actor.pos.y>float(settings.reveal_y):actor.deployment_started=true
+	elif actor.pos.y>=float(settings.reveal_y):actor.deployment_started=true
 	actor.deployment_progress=move_toward(float(actor.deployment_progress),1.0 if actor.deployment_started else 0.0,seconds/float(settings.raise_seconds))
 	if not settings.has("rotation"):
 		actor.ground_angle = (g.player+Pilot.COCKPIT-actor.pos-Geometry.vector(settings.center)).angle()-PI/2
