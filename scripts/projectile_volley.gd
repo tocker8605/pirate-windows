@@ -80,10 +80,6 @@ static func emit(e: Dictionary,player: Vector2,channel: Dictionary,boss: Diction
 			var vy: float=-floorf((500-p.y)/12)*33.333333333333336
 			add(result,Geometry.world_point(e,vector(ports[0]),pose_angle),Vector2(vx,vy),kind)
 			add(result,Geometry.world_point(e,vector(ports[0]),pose_angle),Vector2(-vx,vy),kind)
-		"biased_aim":
-			add(result,Geometry.world_point(e,vector(ports[0]),pose_angle),direction*266.6666666666667+Vector2(-33.333333333333336,0),kind)
-			add(result,Geometry.world_point(e,vector(ports[0]),pose_angle),direction*300,kind)
-			add(result,Geometry.world_point(e,vector(ports[0]),pose_angle),direction*266.6666666666667+Vector2(33.333333333333336,0),kind)
 		"rotating":
 			var angle: float=float(e.get("radial_angle",deg_to_rad(channel.initial_degrees)))
 			for i in range(int(channel.count)):

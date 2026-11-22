@@ -1601,28 +1601,32 @@
         {
           "name": "left_enrage",
           "interval_seconds": 0.3,
-          "gate": "parts_missing",
-          "part_ids": [
-            121,
-            122
-          ],
+          "gate": "part_missing",
           "volley": {
             "type": "shoulder_fan",
             "port_index": 0
-          }
+          },
+          "part_id": 121,
+          "window_seconds": [
+            8,
+            0,
+            4
+          ]
         },
         {
           "name": "right_enrage",
           "interval_seconds": 0.3,
-          "gate": "parts_missing",
-          "part_ids": [
-            121,
-            122
-          ],
+          "gate": "part_missing",
           "volley": {
             "type": "shoulder_fan",
             "port_index": 1
-          }
+          },
+          "part_id": 122,
+          "window_seconds": [
+            8,
+            4,
+            8
+          ]
         }
       ],
       "attack": {
@@ -2388,14 +2392,20 @@
             3.6
           ],
           "volley": {
-            "type": "biased_aim",
+            "type": "aimed",
             "ports": [
               [
                 5,
                 50
               ]
             ],
-            "projectile_kind": 5
+            "projectile_kind": 5,
+            "speed": 300.0,
+            "angles_degrees": [
+              -8,
+              0,
+              8
+            ]
           }
         }
       ],
@@ -2480,14 +2490,20 @@
             1.8
           ],
           "volley": {
-            "type": "biased_aim",
+            "type": "aimed",
             "ports": [
               [
                 45,
                 50
               ]
             ],
-            "projectile_kind": 5
+            "projectile_kind": 5,
+            "speed": 300.0,
+            "angles_degrees": [
+              -8,
+              0,
+              8
+            ]
           }
         }
       ],

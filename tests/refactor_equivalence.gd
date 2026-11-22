@@ -52,6 +52,10 @@ func _initialize() -> void:
     # Stage5 arms/wings now have authored attacks; their new volleys/RNG are tested separately.
     reference=reference.filter(func(row):return int(row[0]) not in [141,142,143,144])
     rows=rows.filter(func(row):return int(row[0]) not in [141,142,143,144])
+    # Stage3 angular arms and alternating shoulder fans have dedicated behavior coverage.
+    var unchanged_stage3: Callable=func(row):return not (row.size()>4 and (int(row[0]) in [121,122] or (int(row[0])==93 and int(row[3])==6)))
+    reference=reference.filter(unchanged_stage3)
+    rows=rows.filter(unchanged_stage3)
     checks+=1
     if rows.size()!=reference.size():failures+=1;push_error("FAIL: volley record count differs")
     for i in range(mini(rows.size(),reference.size())):

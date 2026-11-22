@@ -34,7 +34,7 @@ func run() -> void:
 				for i in range(1,events.size()): uniform = uniform and is_equal_approx(events[i].at-events[i-1].at,float(channel.interval_seconds))
 				check(uniform,"entity%d/%s has constant event spacing"%[id,channel.name])
 			else:
-				var expected: int = {111:49,112:8,121:6,122:9,143:33,144:25}[id]
+				var expected: int = (16 if channel.name=="left_enrage" else 13) if id==93 else {111:49,112:8,121:6,122:9,143:33,144:25}[id]
 				check(events.size()==expected and events.all(func(e): return Scheduler.in_window(channel,e.at)),"entity%d preserves intentional local burst/rest windows without banking shots"%id)
 	check(channel_count==49,"all49independent attack channels including both boss-support turret types are audited")
 	var a: Dictionary = Catalog.create(1,Vector2(100,100))
@@ -77,7 +77,7 @@ func run() -> void:
 	check(Boss.advance(Catalog.create(92,Vector2(200,100)),[],0.27).size()==6,"large stage2 time step retains all three due volleys")
 	body = Catalog.create(93,Vector2(200,100))
 	shots = Boss.advance(body,[],9,player)
-	check(shots.filter(func(s): return s.kind==6).size()==240 and shots.filter(func(s): return s.kind==2).size()==36,"stage3 independent300ms fan and480ms missile channels retain both rates")
+	check(shots.filter(func(s): return s.kind==6).size()==116 and shots.filter(func(s): return s.kind==2).size()==36,"stage3 alternating300ms fans and480ms missiles retain their configured rates")
 	var window_channel: Dictionary = Catalog.definition(121).fire_channels[0]
 	check(Scheduler.advance({},[window_channel],1.8,func(_c): return true).is_empty(),"left arm rests before its local firing window opens")
 	var invalid: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Catalog.PATH))

@@ -83,6 +83,10 @@ func run() -> void:
 	var unchanged_wings: Callable=func(row):return not (str(row[0]).get_slice("/",0) in ["e141","e142","e143","e144"] or (row[0]=="bullet" and row[2]==2))
 	expected=expected.filter(unchanged_wings)
 	rows=rows.filter(unchanged_wings)
+	# Only redesigned stage3 arm shots and body fans are excluded from old snapshots.
+	var unchanged_stage3: Callable=func(row):return not (row.size()==7 and (str(row[0]).get_slice("/",0) in ["e121","e122"] or (row[0]=="b3" and row[2]==6)))
+	expected=expected.filter(unchanged_stage3)
+	rows=rows.filter(unchanged_stage3)
 	var failures: int=0 if expected.size()==rows.size() else 1
 	for i in range(mini(expected.size(),rows.size())):
 		var same: bool=expected[i].size()==rows[i].size()

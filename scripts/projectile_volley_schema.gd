@@ -1,6 +1,6 @@
 extends RefCounted
 const Check=preload("res://scripts/data_validation.gd")
-const TYPES: Array=["aimed","expanding_ring","fixed","fixed_pair","motion_deflection","height_sweep","motion_or_aim","random","pod_twin","aimed_sequence","sweeping_pair","inherited_fan","diving_pair","biased_aim","rotating","shoulder_fan"]
+const TYPES: Array=["aimed","expanding_ring","fixed","fixed_pair","motion_deflection","height_sweep","motion_or_aim","random","pod_twin","aimed_sequence","sweeping_pair","inherited_fan","diving_pair","rotating","shoulder_fan"]
 static func validate(v: Variant,prefix: String,errors: PackedStringArray) -> void:
 	if not v is Dictionary:errors.append(prefix+"expected volley object");return
 	Check.unknown_fields(v,["type","ports","speed","projectile_kind","angles_degrees","velocity","velocities","down_speed","speed_y","x_random","y_random","abs_x_factor","origin_x_random","velocity_offsets","port_index","count","start_radius","end_radius","expand_seconds"],prefix,errors)
@@ -20,7 +20,7 @@ static func validate(v: Variant,prefix: String,errors: PackedStringArray) -> voi
 		if v.has(field) and (not v[field] is Array or v[field].is_empty() or not v[field].all(func(p):return Check.vector(p,2))):errors.append(prefix+"invalid "+field)
 	if v.has("velocity") and not Check.vector(v.velocity,2):errors.append(prefix+"invalid velocity")
 	if v.has("angles_degrees") and (not v.angles_degrees is Array or v.angles_degrees.is_empty() or not v.angles_degrees.all(func(n):return Check.number(n))):errors.append(prefix+"invalid fan angles")
-	var required: Dictionary={"expanding_ring":["speed","projectile_kind","count","start_radius","end_radius","expand_seconds"],"aimed":["speed","projectile_kind"],"fixed":["velocity","projectile_kind"],"fixed_pair":["velocities","projectile_kind"],"motion_deflection":["down_speed","projectile_kind"],"height_sweep":["speed_y","projectile_kind"],"motion_or_aim":["speed","speed_y","projectile_kind"],"random":["x_random","projectile_kind"],"inherited_fan":["velocity_offsets","projectile_kind"],"aimed_sequence":["speed","projectile_kind","angles_degrees"],"sweeping_pair":["speed","projectile_kind"],"pod_twin":["projectile_kind"],"diving_pair":["projectile_kind"],"biased_aim":["projectile_kind"],"shoulder_fan":["port_index"]}
+	var required: Dictionary={"expanding_ring":["speed","projectile_kind","count","start_radius","end_radius","expand_seconds"],"aimed":["speed","projectile_kind"],"fixed":["velocity","projectile_kind"],"fixed_pair":["velocities","projectile_kind"],"motion_deflection":["down_speed","projectile_kind"],"height_sweep":["speed_y","projectile_kind"],"motion_or_aim":["speed","speed_y","projectile_kind"],"random":["x_random","projectile_kind"],"inherited_fan":["velocity_offsets","projectile_kind"],"aimed_sequence":["speed","projectile_kind","angles_degrees"],"sweeping_pair":["speed","projectile_kind"],"pod_twin":["projectile_kind"],"diving_pair":["projectile_kind"],"shoulder_fan":["port_index"]}
 	for field in required.get(v.get("type"),[]):
 		if not v.has(field):errors.append(prefix+"missing "+field)
 	if v.get("type")=="random" and not v.has("y_random") and not v.has("speed_y"):errors.append(prefix+"random volley needs vertical speed")
