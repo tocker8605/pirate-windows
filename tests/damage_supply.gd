@@ -13,7 +13,8 @@ func seed_for(success: bool) -> int:
 	var probe := RandomNumberGenerator.new()
 	for seed_value in range(1000):
 		probe.seed = seed_value
-		if (probe.randf()<0.3)==success: return seed_value
+		var roll: float = probe.randf()
+		if (success and roll<0.2) or (not success and roll>=0.5): return seed_value
 	return -1
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
@@ -23,6 +24,27 @@ func run() -> void:
 	root.add_child(g)
 	await process_frame
 	g.set_process(false)
+	for rush in [false,true]:
+		g.run_settings = g.run_settings.with_boss_rush(rush)
+		for used in range(3):
+			for band in range(4):
+				g._load_stage(1)
+				g.supply_director.damage_supply_count = used
+				var probe := RandomNumberGenerator.new()
+				var lower: float = [0.0,0.2,0.35,0.5][band]
+				var upper: float = [0.2,0.35,0.5,1.0][band]
+				var chosen: int = -1
+				for seed_value in range(1000):
+					probe.seed = seed_value
+					var roll: float = probe.randf()
+					if roll>=lower and roll<upper:
+						chosen = seed_value
+						break
+				g.supply_director.rng.seed = chosen
+				g._hurt_player(1)
+				var expected: int = 1 if band<3-used else 0
+				check(chosen>=0 and g.enemies.size()==expected and g.supply_director.damage_supply_count==used+expected,"rush%s remaining%d roll band%d uses50/35/20percent and only successes consume allowance"%[rush,3-used,band])
+	g.run_settings = g.run_settings.with_boss_rush(false)
 	var win: int = seed_for(true)
 	var miss: int = seed_for(false)
 	check(win>=0 and miss>=0,"deterministic success and failure seeds exist")

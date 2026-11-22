@@ -12,7 +12,7 @@ static func update_items(g: Node) -> void:
 				g.power = mini(7,g.power+1)
 				g.energy = minf(100,g.energy+POWER_ENERGY_RECOVERY)
 			else: g.hp = minf(100,g.hp+HEALTH_RECOVERY)
-			g.score += 1000
+			g.score += 200
 			item.pos.y = 600
 			g._sound("get")
 	for item in g.items:

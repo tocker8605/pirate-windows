@@ -17,6 +17,9 @@ func check(ok: bool,message: String) -> void:
 		push_error("FAIL: "+message)
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
+	for kind in [19,20]:
+		for difficulty in range(1,6):
+			check(Rules.score(kind,difficulty)==100,"supply%d release score remains100 at difficulty%d"%[kind,difficulty])
 	for id in [21,41,42]:
 		for rush in [false,true]: check(Rules.drop(Catalog.create(id,Vector2.ZERO),rush).is_empty(),"enemy%d no HP drop in rush%s"%[id,rush])
 	for id in [20,202]:
@@ -99,11 +102,12 @@ func run() -> void:
 	for i in range(20): g._tick(Vector2.ZERO,false,false,false,Clock.FIXED_STEP_SECONDS)
 	check(g.items.size()==1 and g.stats.supply_spawned==1,"release and scheduled delivery cannot repeat")
 	g.player = g.items.at(0).pos-Vector2(25,25)
+	var score_before_pickup: int = g.score
 	g.hp = 40
 	g.energy = 42
 	g.power = 3
 	g._update_items()
-	check(g.hp==70 and g.energy==42 and g.power==3 and g.items.is_empty(),"HP payload heals30 without changing power or energy")
+	check(g.score==score_before_pickup+200 and g.hp==70 and g.energy==42 and g.power==3 and g.items.is_empty(),"HP payload heals30 without changing power or energy")
 	g.hp = 95
 	g._drop_item({"pos":g.player+Vector2(25,25),"kind":2})
 	g._update_items()

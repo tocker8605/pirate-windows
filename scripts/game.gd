@@ -251,7 +251,7 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 		player_bank = 1 if direction.x<0 else (2 if direction.x>0 else 0)
 		if automatic and Input.is_physical_key_pressed(KEY_RIGHT): player_bank = 2
 	player.x = PilotGeometry.clamp_horizontal(player.x)
-	player.y = clampf(player.y,0,470)
+	player.y = clampf(player.y,0,440)
 	hp = minf(100,hp)
 	energy = clampf(energy,0,100)
 	power = mini(7,power)

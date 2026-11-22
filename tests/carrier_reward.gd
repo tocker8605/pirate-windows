@@ -51,10 +51,10 @@ func run() -> void:
 		g._tick(Vector2.ZERO,false,false,false,units)
 		check(found.kind==201 and found.get("rescued",false) and g.items.size()==1 and g.items.at(0).kind==1,"speed%d rescue produces exactly one power item"%speed)
 		for i in range(int(ceil(0.6/units))): g._tick(Vector2.ZERO,false,false,false,units)
-		check(found.kind==201 and g.items.size()==1 and g.score==500,"speed%d escaping carrier does not reopen or duplicate rewards"%speed)
+		check(found.kind==201 and g.items.size()==1 and g.score==100,"speed%d escaping carrier does not reopen or duplicate rewards"%speed)
 		g.player = g.items.at(0).pos-Vector2(25,25)
 		g._update_items()
-		check(g.power==2 and g.energy==100 and g.items.is_empty(),"speed%d power item is collectible and raises weapon power"%speed)
+		check(g.power==2 and g.energy==100 and g.items.is_empty() and g.score==300,"speed%d power item is collectible and raises weapon power"%speed)
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	g.audio.stop_all()
 	await create_timer(0.15).timeout
