@@ -130,7 +130,7 @@ func run() -> void:
 			check(game.hp==61 and game.power==4 and game.run_settings.weapon==2 and game.score==cumulative and game.energy==100,"campaign retains original carried state")
 			check(game.enemies.is_empty() and game.shots.is_empty() and game.bullets.is_empty() and game.beam_render_seconds==0,"stage load removes stale entities and effects")
 		else:
-			check(game.stage==5 and game.state=="ranking_entry" and game.last_score==50000*game.run_settings.difficulty and game.score==0,"final boss offers name registration with completed campaign score")
+			check(game.stage==5 and game.state=="clear" and game.last_score==50000*game.run_settings.difficulty and game.score==0,"final boss shows clear screen with completed campaign score")
 	# Stage selection starts a fresh practice run, rather than keeping campaign state.
 	game.selected_stage = 3
 	game.start_game()

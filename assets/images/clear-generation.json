@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "prompt": "Use case: illustration-story. Create a finished ending background for Pirate II, portrait EXACT 5:6 aspect ratio, intended 400x480 logical pixels (prefer 1200x1440 actual output). No text, letters, numbers, logos, UI or border. Reference image 1 is the ASSEMBLED boss and floor cable/turret layout: preserve its assembled silhouette and proportions, not a floating head or unassembled parts. Boss is CORE SYNAPSE: stationary mechanical humanoid upper torso, ivory/white armor over violet metal, orange eye slits, cyan round chest core, round shoulders, two long downward gatling arms, two slightly raised missile-pod wings, thick floor cable bundles attached to the base and spread around it, four octagonal floor turrets. Reference 2 is the hero craft: retain distinctive curved crescent semicircle white wings, cobalt blue central hull, violet cockpit and cyan highlights; do not replace it with a generic airplane. Remaining refs clarify boss components and chamber art. Scene: hero spaceship escaping from a deep lunar cave supercomputer chamber while the assembled boss behind it is being destroyed. A dynamic oblique aerial camera looks toward a rocky chamber exit with mechanical framing. Hero craft clearly readable near foreground upper/middle left flying OUT from the collapsing chamber, showing its distinctive upper surface, cyan engine exhaust. The assembled torso boss behind the ship in the middle background is still recognizable while its cracked cyan chest erupts with orange flames, sparks and heavy smoke; both gatling arms and missile wings visible and damaged. Thick floor cable bundle is torn, sparking, burning; several octagonal floor turrets around it exploding, broken barrels, local debris. Mechanical cave interior and dark metal chamber walls with pipes and wiring like the reference. Match game's detailed painted 2D sci-fi sprite style, restrained dark outlines, moderate realism, no photorealism, no chibi. Warm explosions contrast with blue/white hero, violet/ivory boss. Upper and middle area tell story; keep bottom 25% darker and quieter with shadowed floor/smoke for later text overlay, but NO built-in text or panels. Full bleed opaque background. This is a scene painting based on references, not a sprite sheet.",
+  "display_size": [
+    400,
+    480
+  ],
+  "references": [
+    "art_source/clear-assembled-reference.png",
+    "assets/renewed/pilot-white-wings.png",
+    "assets/enemies/stage05/supercomputer-mainframe.png",
+    "assets/enemies/stage05/supercomputer-gatling-arm.png",
+    "assets/backgrounds/stage05/region03-supercomputer-chamber.png"
+  ]
+}

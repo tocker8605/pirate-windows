@@ -61,7 +61,7 @@ func run() -> void:
 		check(not event.is_empty() and is_equal_approx(e.pos.x,float(event.position[0])) and is_equal_approx(e.pos.y,g.boss.pos.y+float(Catalog.definition(e.kind).attachment.offset[1])),"support part%d preserves JSON X and follows its boss-relative Y"%e.kind)
 	var rankings: Array=g.rankings.entries.duplicate(true)
 	g._complete_stage()
-	check(g.state=="menu" and g.rankings.entries==rankings and g.last_score==12345,"final Boss Rush clear returns to title without ranking registration")
+	check(g.state=="clear" and g.rankings.entries==rankings and g.last_score==12345 and not g.flow.completed_run.ranking_eligible,"final Boss Rush clear shows ending without ranking registration")
 	g.audio.stop_all()
 	g.queue_free()
 	await process_frame

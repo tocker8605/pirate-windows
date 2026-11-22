@@ -36,6 +36,8 @@ const ItemSystem = preload("res://scripts/item_system.gd")
 const SupplyDirector = preload("res://scripts/supply_director.gd")
 const ScoreRanking = preload("res://scripts/score_ranking.gd")
 const RankingScreen = preload("res://scripts/ranking_screen.gd")
+const ClearScreen = preload("res://scripts/clear_screen.gd")
+const ScreenTextures = preload("res://scripts/entity_textures.gd")
 const RunSettings = preload("res://scripts/run_settings.gd")
 const GameFlow = preload("res://scripts/game_flow.gd")
 var run_settings = RunSettings.new()
@@ -43,6 +45,8 @@ var checkpoint_settings = RunSettings.new()
 var flow = GameFlow.new()
 var rankings = ScoreRanking.new()
 var ranking_entry = RankingScreen.new()
+var clear_screen = ClearScreen.new()
+var screen_textures = ScreenTextures.new()
 const PLAYER_MOVE_SPEED: float = 200.0
 const PLAYER_SLOW_MOVE_SPEED: float = PLAYER_MOVE_SPEED*0.5
 var slow_movement_active: bool = false
@@ -150,6 +154,11 @@ func _unhandled_key_input(event: InputEvent) -> void:
 			if ranking_entry.handle_key(event): _submit_ranking(event.keycode)
 			_redraw()
 			return
+		if state==GameFlow.CLEAR:
+			if clear_screen.accepts(event):
+				flow.confirm_clear(self,event.keycode)
+			_redraw()
+			return
 	if not event is InputEventKey or not event.pressed or event.echo: return
 	var key: int = event.keycode
 	if key==KEY_F11:
@@ -172,28 +181,19 @@ func _return_title() -> void:
 	_remember_score()
 	flow.show_menu(self)
 
-func _finish_run() -> void:
-	_remember_score()
-	var position: int = rankings.insertion_index(last_score) if run_settings.qualifies_for_ranking() else -1
-	if position>=0:
-		ranking_entry.begin(position,{"score":clampi(last_score,0,ScoreRanking.MAX_SCORE),"weapon":run_settings.weapon,"level":run_settings.difficulty,"mission":stage})
-		flow.show_ranking(self)
-	else: flow.show_menu(self)
-	score = 0
+func _finish_run(cleared: bool = false) -> void:
+	flow.finish_run(self,cleared)
 
 func _submit_ranking(confirm_key: int) -> void:
-	if rankings.submit(ranking_entry.record,ranking_entry.player_name)!=OK:
-		ranking_entry.save_failed = true
-		return
-	flow.show_menu(self,confirm_key)
+	flow.submit_ranking(self,confirm_key)
 
 func _sync_audio() -> void:
 	if audio!=null: audio.sync(mute,state=="paused")
 
-func _play_music(track: String) -> void:
+func _play_music(track: String, from_seconds: float = 0, restart: bool = false, looping: bool = true) -> void:
 	if audio==null: return
 	music_track = track
-	audio.play(track)
+	audio.play(track,from_seconds,restart,looping)
 	_sync_audio()
 
 func _stop_music() -> void:
@@ -323,7 +323,7 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 		shield_remaining_seconds = Clock.countdown(shield_remaining_seconds,seconds)
 	_apply_beam()
 	_update_lifecycle()
-	if state=="ranking_entry": return
+	if state in [GameFlow.RANKING_ENTRY,GameFlow.CLEAR]: return
 	if state in ["menu","loading"]:
 		if clock.recover(death_remaining_seconds==0,seconds) and not firing: energy = minf(100,energy+1)
 		return

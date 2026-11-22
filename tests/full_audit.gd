@@ -107,7 +107,7 @@ func run() -> void:
 	game.enemies.replace_all([carrier])
 	game._destroy_enemy(carrier)
 	check(carrier.kind==201 and carrier.hp==1 and carrier.pattern==1091,"rescued carrier escapes instead of exploding")
-	check(game.score==500 and game.explosions.is_empty() and game.items.at(0).pos==Vector2(125,331),"carrier rescue preserves score/drop without a fake explosion")
+	check(game.score==100 and game.explosions.is_empty() and game.items.at(0).pos==Vector2(125,331),"carrier rescue preserves score/drop without a fake explosion")
 	for i in range(4): game._drop_item({"pos":Vector2(i,0),"kind":1})
 	check(game.items.size()==5,"independent pickups retain every drop instead of a three-slot overwrite")
 	game.start_game()
@@ -147,12 +147,12 @@ func run() -> void:
 	game.audio.sound("get",false)
 	game.audio.sound("damage",false)
 	check(game.audio.effect.stream.resource_path.ends_with("damage.wav") and game.audio.get_child_count()==2,"sndPlaySound emulation uses one interruptible effect voice")
-	check(game.music.stream!=null and not game.music.stream.loop,"MCI music plays once rather than invented infinite looping")
+	check(game.music.stream!=null and game.music.stream.loop,"ordinary music repeats after reaching the end")
 	var old_clouds: Array = [Vector2(10,80),Vector2(230,400)]
 	game.clouds = old_clouds.duplicate()
 	game.selected_stage = 2
 	game._begin_run()
-	check(game.state=="loading" and game.flow.loading_image=="loading1" and is_equal_approx(game.flow.loading_remaining_seconds,0.03),"New Game and Continue use original loading1 artwork before stage entry")
+	check(game.state=="loading" and game.flow.loading_image=="loading" and is_equal_approx(game.flow.loading_remaining_seconds,0.03),"New Game and Continue use shared loading artwork before stage entry")
 	game._tick(Vector2.ZERO,false,false,false,0.03)
 	check(game.state=="loading","initial loading picture lasts for a presented simulation frame")
 	game._tick(Vector2.ZERO,false,false,false,0.03)

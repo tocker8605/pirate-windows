@@ -9,14 +9,21 @@ var player_name: String = "      "
 var cursor: int = 0
 var elapsed: float = 0
 var save_failed: bool = false
-func begin(index: int, result: Dictionary) -> void:
+var background: Texture2D
+var blocked_confirmation_key: int = 0
+func begin(index: int, result: Dictionary, backdrop: Texture2D = null, confirm_key: int = 0) -> void:
 	rank = index+1
 	record = result.duplicate()
 	player_name = " ".repeat(Ranking.NAME_LENGTH)
 	cursor = 0
 	elapsed = 0
 	save_failed = false
+	background = backdrop
+	blocked_confirmation_key = confirm_key
 func handle_key(event: InputEventKey) -> bool:
+	if event.keycode==blocked_confirmation_key:
+		if not event.pressed: blocked_confirmation_key = 0
+		return false
 	if not event.pressed: return false
 	if event.keycode in CONFIRM_KEYS: return not event.echo
 	if event.keycode in NEXT_KEYS: return not event.echo and advance_cursor()
@@ -59,6 +66,7 @@ static func board(canvas: Node2D, records: Array) -> void:
 	for i in range(Ranking.LIMIT): row(canvas,105+i*28,i+1,records[i] if i<records.size() else {})
 func render(canvas: Node2D) -> void:
 	canvas.draw_rect(Rect2(0,0,400,480),Color.BLACK)
+	if background!=null: canvas.draw_texture_rect(background,Rect2(0,0,400,480),false,Color(1,1,1,0.5))
 	SpriteFont.centered(canvas,145,"ENTER YOUR NAME")
 	row(canvas,230,rank,record,player_name,cursor if fmod(elapsed,0.8)<0.55 else -1)
 	SpriteFont.centered(canvas,295,"UP DOWN CHANGE CHARACTER")

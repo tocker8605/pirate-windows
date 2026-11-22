@@ -56,7 +56,7 @@ func run() -> void:
 	g.rankings.entries.clear()
 	Rng.state = 0x50000
 	g._complete_stage()
-	check(g.state=="ranking_entry" and Rng.state==11837123,"final clear opens ranking entry without changing gameplay RNG consumption")
+	check(g.state=="clear" and Rng.state==11837123,"final clear opens ending screen without changing gameplay RNG consumption")
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	g.audio.stop_all()
 	await create_timer(0.15).timeout

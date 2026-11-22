@@ -19,19 +19,22 @@ func sync(muted: bool, paused: bool) -> void:
 func music_stream(track_id: String) -> AudioStreamOggVorbis:
 	if not music_streams.has(track_id):
 		stream_loads+=1
-		var stream: AudioStreamOggVorbis=load("res://assets/music/%s.ogg"%track_id)
+		# Loop policy belongs to this audio owner, not the global ResourceLoader cache.
+		var stream: AudioStreamOggVorbis=load("res://assets/music/%s.ogg"%track_id).duplicate()
 		# Retain prepared tracks across stop()/play(), including the boss transition.
 		stream.loop=false
 		music_streams[track_id]=stream
 	return music_streams[track_id]
 func prepare_music(tracks: Array) -> void:
 	for id in tracks:music_stream(id)
-func play(track_id: String) -> void:
-	if track==track_id and music.playing: return
-	# MCI play in the original runs once; it does not request repeat/notify looping.
-	music.stream = music_stream(track_id)
+func play(track_id: String, from_seconds: float = 0, restart: bool = false, looping: bool = true) -> void:
+	var stream: AudioStreamOggVorbis=music_stream(track_id)
+	stream.loop=looping
+	stream.loop_offset=0
+	if track==track_id and music.playing and not restart: return
+	music.stream = stream
 	track = track_id
-	music.play()
+	music.play(maxf(0,from_seconds))
 func stop() -> void:
 	track = ""
 	music.stop()

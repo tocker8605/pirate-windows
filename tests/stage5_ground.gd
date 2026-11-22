@@ -168,14 +168,14 @@ func run() -> void:
 	g.rankings.entries.clear()
 	g.score=456
 	g._complete_stage()
-	check(g.state=="ranking_entry" and g.ranking_entry.record.mission==5 and g.last_score==456,"stage5 completion records mission5 in the normal ranking")
+	check(g.state=="clear" and g.clear_screen.record.mission==5 and g.last_score==456,"stage5 completion preserves mission5 on the clear screen")
 	g.run_settings=g.run_settings.with_boss_rush(true)
 	g._load_stage(4)
 	g._complete_stage()
 	check(g.state=="loading" and g.flow.loading_target==5,"Boss Rush advances from stage4 to stage5")
 	g._load_stage(5,true)
 	g._complete_stage()
-	check(g.state=="menu","Boss Rush completes after stage5 without name entry")
+	check(g.state=="clear" and not g.flow.completed_run.ranking_eligible,"Boss Rush completes after stage5 with ending screen and no ranking eligibility")
 	g.audio.stop_all()
 	g.queue_free()
 	await process_frame

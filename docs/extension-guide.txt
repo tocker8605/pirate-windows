@@ -13,6 +13,14 @@
 - 4면의 지구/우주/월면/지하 구성은 layout: earth_lunar, 나머지는 three_region입니다.
 - boss_rush_initial은 해당 모드에서만 초기 스크롤 값을 덮어씁니다.
 
+클리어 화면과 랭킹
+- 마지막 스테이지 파괴 연출이 끝나면 game_flow.gd의 CLEAR 상태로 전환합니다. run_result.gd가 종료 시 점수/설정/랭킹 대상 여부를 한 번 캡처하고, game_flow.gd가 이 읽기 전용 결과로 이후 전환을 결정합니다. clear_screen.gd는 결과 표시만 맡습니다.
+- assets/images/clear.png는400×480 게임 화면에 맞춰 표시합니다. 안내는 menu_sprite_font.gd를 사용하며 숫자만 초록색입니다.
+- Enter/Space 확인 후 일반 모드의 순위권 기록만 이름 입력으로 이동합니다. 보스러시와 순위권 밖 기록은 초기 랭킹 목록으로 돌아갑니다.
+- ranking_screen.gd의 선택적 background는 클리어 랭킹 입력에만50% 투명도로 표시합니다. 일반 게임오버는 기존 검정 배경입니다. 배경과 관계없이 game_flow.gd의 MusicPolicy.STOP/KEEP가 음악 정지/유지를 명시적으로 결정합니다.
+- 클리어 시 타이틀 음악을189초부터 새로 재생합니다. 클리어 랭킹 입력으로 넘어갈 때는 같은 재생을 유지하고 초기화면 복귀 시 정지합니다. 배경 경로와 음악은 stage_resources.gd의 공통 manifest에 포함되어 최종 스테이지 로딩 시 함께 준비됩니다. 화면 텍스처도 EntityTextures 캐시를 사용합니다.
+- 스테이지/타이틀/보스 음악은 종료 시 처음부터 반복합니다. 클리어와 클리어 랭킹 음악은 looping=false로 지정하여 한 번만 재생합니다. Audio는 소유자별로 Ogg 설정을 복제하여 다른 재생기의 반복 설정을 바꾸지 않습니다.
+
 기체 좌표와 그림
 - actor.pos는 이동/발사/충돌의 기존 논리 좌표입니다. 리팩토링 때문에 그 기준을 바꾸지 않았습니다.
 - scripts/entity_geometry.gd가 실제 이미지 사각형, 표시 중심, 반전, 회전, 힌지 좌표를 계산합니다.

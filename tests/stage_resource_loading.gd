@@ -10,7 +10,7 @@ func check(ok: bool,message: String) -> void:
 	checks+=1
 	if not ok:failures+=1;push_error("FAIL: "+message)
 func loads(g: Node) -> Array:
-	return [g.view.renewal.texture_cache.source_loads,g.view.ground_art.textures.source_loads if g.view.ground_art!=null else 0,g.audio.stream_loads,g.art.textures.size()]
+	return [g.view.renewal.texture_cache.source_loads,g.view.ground_art.textures.source_loads if g.view.ground_art!=null else 0,g.audio.stream_loads,g.art.textures.size(),g.screen_textures.source_loads]
 func _initialize() -> void:call_deferred("run")
 func run() -> void:
 	var g=Game.new();g.automatic=false;g.mute=true;root.add_child(g);await process_frame;g.set_process(false)
@@ -21,6 +21,9 @@ func run() -> void:
 			await process_frame;await process_frame # Ordinary first-stage HUD/player rendering precedes the boss.
 			var manifest: Dictionary=Resources.manifest(stage,g.events,rush)
 			check(int(Catalog.boss_definition(stage).id) in manifest.entities,"stage%d rush%s prepares its own boss from the timeline"%[stage,rush])
+			var is_final: bool=stage==Campaign.stage_count(rush)
+			check(manifest.screen_textures==([g.ClearScreen.BACKGROUND_PATH] if is_final else []),"ending background is listed only for the final stage")
+			check(not is_final or g.ClearScreen.MUSIC_TRACK in manifest.music,"ending music is listed in the common stage music manifest")
 			check(g.frame==0 and g.stage_elapsed_seconds==0 and g.boss.is_empty() and g.enemies.is_empty(),"preparing stage assets never spawns entities or advances the timeline")
 			check(g.music_track==("" if rush else Campaign.music(stage)),"preparing boss audio does not play it ahead of its event")
 			var before: Array=loads(g)
@@ -37,10 +40,17 @@ func run() -> void:
 			g.event_cursor=0;g.stage_elapsed_seconds=at+0.01
 			g._read_events();g._redraw();await process_frame;await process_frame
 			check(loads(g)==before,"stage%d rush%s boss appearance and initial drawing perform zero texture/music cache misses %s -> %s"%[stage,rush,before,loads(g)])
-			check(g.music_track==Catalog.boss_definition(stage).music and not g.music.stream.loop,"boss music still starts at its spawn and does not loop")
+			check(g.music_track==Catalog.boss_definition(stage).music and g.music.stream.loop,"boss music still starts at its spawn and repeats")
 			var stream=g.music.stream
 			g._stop_music();g._play_music(Catalog.boss_definition(stage).music)
 			check(is_same(stream,g.music.stream) and loads(g)==before,"music remains prepared across stop and replay")
+			if is_final:
+				g.score=1234567
+				g._complete_stage()
+				g._redraw()
+				check(loads(g)==before and is_same(g.clear_screen.background,g.screen_textures.get_texture(g.ClearScreen.BACKGROUND_PATH)),"final clear reuses preloaded background and music without cache misses")
+				g.flow.confirm_clear(g,KEY_ENTER)
+				check(loads(g)==before,"clear ranking or title transition introduces no resource cache misses")
 	# Keep the original sprite option on the same preparation path.
 	g.run_settings=g.run_settings.with_boss_rush(false);g.renewed_art=false
 	for stage in range(1,Campaign.stage_count()+1):

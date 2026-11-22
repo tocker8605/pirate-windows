@@ -52,4 +52,4 @@ static func complete_stage(g: Node) -> void:
 		g._remember_score()
 		g.flow.load_stage(g,g.stage+1,true,"loading")
 	else:
-		g._finish_run()
+		g._finish_run(true)

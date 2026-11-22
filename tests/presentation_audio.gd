@@ -147,7 +147,7 @@ func run() -> void:
 		game._load_stage(stage)
 		game.delta_seconds = 0.03
 		check(game.music_track=="bgm%02d"%stage and game.music.playing,"stage %d starts its original MIDI arrangement"%stage)
-		check(game.music.stream.get_length()>120 and not game.music.stream.loop,"stage %d has original once-through Ogg music"%stage)
+		check(game.music.stream.get_length()>120 and game.music.stream.loop,"stage %d repeats its Ogg music from the beginning"%stage)
 		for row in game.events:
 			if int(row.get("definition_id",0)) in [91,92,93,94]:
 				game.frame = roundi(float(row.at)/0.03)+1

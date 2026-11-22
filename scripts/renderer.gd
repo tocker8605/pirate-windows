@@ -93,7 +93,7 @@ func refresh() -> void:
 		vfx.observe(g)
 		renewal.observe(g)
 		renewal.render_fraction = g.presentation.alpha
-		var in_game: bool = g.state not in ["menu","loading","ranking_entry"]
+		var in_game: bool = g.state not in g.GameFlow.NON_GAMEPLAY_STATES
 		var title_earth: bool = g.state=="menu" and g.title.shows_background()
 		background.position = Vector2(-g.title.background_offset(),0) if title_earth else Vector2.ZERO
 		background.visible = (in_game or title_earth) and (g.renewed_art or Stages.definition(g.stage).classic_background.is_empty())
@@ -133,12 +133,15 @@ func _draw() -> void:
 		if g.state=="menu": _draw_menu()
 		elif g.state=="loading":
 			draw_texture(g.art.texture(g.flow.loading_image),Vector2.ZERO)
-		elif g.state=="ranking_entry": draw_rect(Rect2(0,0,400,480),Color.BLACK)
+		elif g.state in [g.GameFlow.RANKING_ENTRY,g.GameFlow.CLEAR]: draw_rect(Rect2(0,0,400,480),Color.BLACK)
 		elif not g.renewed_art and not Stages.definition(g.stage).classic_background.is_empty(): draw_texture_rect_region(g.art.texture(Stages.definition(g.stage).classic_background),Rect2(0,0,400,480),Rect2(0,g.background_y,400,480))
-		if g.state not in ["menu","loading","ranking_entry"]: _draw_floor_actors()
+		if g.state not in g.GameFlow.NON_GAMEPLAY_STATES: _draw_floor_actors()
 		return
 	if g.state=="ranking_entry":
 		g.ranking_entry.render(self)
+		return
+	if g.state==g.GameFlow.CLEAR:
+		g.clear_screen.render(self)
 		return
 	if g.state in ["menu","loading"]: return
 	var fraction: float = g.presentation.alpha

@@ -115,7 +115,13 @@ func run() -> void:
 	g.events = []
 	g.score = 7654321
 	g._complete_stage()
-	check(g.state=="ranking_entry" and g.ranking_entry.record.mission==5 and g.ranking_entry.record.score==7654321,"fifth-boss clear opens registration instead of discarding the run")
+	check(g.state=="clear" and g.clear_screen.record.mission==5 and g.clear_screen.record.score==7654321,"fifth-boss clear preserves the final run on the clear screen")
+	key(g,KEY_SPACE)
+	var released := InputEventKey.new()
+	released.keycode=KEY_SPACE
+	released.pressed=false
+	g._unhandled_key_input(released)
+	check(g.state=="ranking_entry" and g.ranking_entry.background==g.clear_screen.background,"clear confirmation opens ranking with the ending background")
 	for code in Screen.CONFIRM_KEYS:
 		g.ranking_entry.begin(0,result(8000000+code%100))
 		g.flow.state = "ranking_entry"

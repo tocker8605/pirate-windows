@@ -84,7 +84,12 @@ func run() -> void:
 	g._load_stage(5,true)
 	g.events=[]
 	g._complete_stage()
-	check(g.state==Flow.MENU and g.last_score==8765432 and g.score==0 and g.rankings.entries.is_empty(),"Boss Rush final clear also bypasses rankings")
+	check(g.state==Flow.CLEAR and g.last_score==8765432 and g.score==0 and not g.flow.completed_run.ranking_eligible,"Boss Rush final clear pauses on the clear screen without ranking eligibility")
+	var confirmation := InputEventKey.new()
+	confirmation.keycode=KEY_ENTER
+	confirmation.pressed=true
+	g._unhandled_key_input(confirmation)
+	check(g.state==Flow.MENU and g.rankings.entries.is_empty(),"Boss Rush clear confirmation bypasses rankings")
 	g.run_settings = Settings.new(2,3,false)
 	for stage in range(1,5):
 		g._load_stage(stage)
@@ -93,7 +98,7 @@ func run() -> void:
 	g._load_stage(5)
 	g.score = 8765432
 	g._complete_stage()
-	check(g.state==Flow.RANKING_ENTRY and g.last_score==8765432,"normal final clear remains eligible for ranking")
+	check(g.state==Flow.CLEAR and g.last_score==8765432 and g.flow.completed_run.ranking_eligible,"normal final clear retains ranking eligibility after the clear screen")
 	check(Preview.displayed_age(0)==0 and Preview.displayed_age(0.3)==18 and Preview.displayed_age(0.6)==36,"legend animation follows the native60Hz trajectory using seconds")
 	check(Preview.displayed_age(0.7)==36 and Preview.displayed_age(0.8)==0,"legend pauses at the end and repeats on its established0.8-second cycle")
 	check(Preview.displayed_power(2.49)==4 and Preview.displayed_power(2.5)==7 and Preview.displayed_power(5)==4,"legend power changes every2.5 seconds")
