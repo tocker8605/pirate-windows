@@ -1,7 +1,7 @@
 extends RefCounted
 const Combat = preload("res://scripts/combat.gd")
 const POWER_ENERGY_RECOVERY: float = 50.0
-const HEALTH_RECOVERY: float = 30.0
+const HEALTH_RECOVERY: float = 40.0
 static func update_items(g: Node) -> void:
 	for item in g.items:
 		item.render_pos = item.pos

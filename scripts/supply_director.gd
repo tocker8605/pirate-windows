@@ -7,19 +7,20 @@ const BOSS_MARGIN_SECONDS: float = 10.0
 const POWER_COUNT: int = 3
 const POWER_COUNTS_BY_START_LEVEL: Array[int] = [6,5,4,3,3,3,3]
 const HEALTH_COUNT: int = 3
+const DAMAGE_HEALTH_LIMIT: int = 2
 const DAMAGE_HEALTH_CHANCE: float = 0.3
-const SPAWN_X := Vector2(100,300)
+const SPAWN_X := Vector2(75,275)
 var rng := RandomNumberGenerator.new()
 var schedule: Array = []
 var cursor: int = 0
 var window_end: float = 0.0
-var damage_supply_used: bool = false
+var damage_supply_count: int = 0
 func _init() -> void: rng.randomize()
 func plan(stage: int, starting_power: int, events: Array, boss_rush: bool = false) -> void:
 	schedule.clear()
 	cursor = 0
 	window_end = 0
-	damage_supply_used = false
+	damage_supply_count = 0
 	if boss_rush: return
 	for event in events:
 		if event.action=="spawn" and Catalog.definition(int(event.definition_id)).get("role","")=="boss":
@@ -53,11 +54,11 @@ func advance(g: Node) -> void:
 		cursor += 1
 		_spawn(g,delivery)
 func on_player_hit(g: Node) -> void:
-	# Extra delivery: only a successful roll consumes the once-per-stage allowance.
+	# Extra delivery: only successful rolls consume the per-stage allowance.
 	# Unlike scheduled deliveries this also applies during BossRush fights.
-	if g.state!="playing" or g.hp<=0 or damage_supply_used: return
+	if g.state!="playing" or g.hp<=0 or damage_supply_count>=DAMAGE_HEALTH_LIMIT: return
 	if rng.randf()>=DAMAGE_HEALTH_CHANCE: return
-	damage_supply_used = true
+	damage_supply_count += 1
 	_spawn(g,_delivery(g.stage_elapsed_seconds,202))
 func _spawn(g: Node, delivery: Dictionary) -> void:
 	g.enemies.append(Catalog.create(int(delivery.kind),delivery.pos,int(delivery.pattern)))

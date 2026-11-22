@@ -30,7 +30,7 @@ func run() -> void:
 	protected.pos.y = 290
 	Rules.carrier(protected,292)
 	check(protected.kind==20 and Combat.shot_hits(protected.pos,protected),"crossing291opens HP carrier to normal fire")
-	for stage in range(1,5):
+	for stage in range(1,6):
 		var events: Array = Timeline.load_stage(stage)
 		check(events.all(func(e): return int(e.get("definition_id",0)) not in [19,20,201,202]),"stage%d timeline contains no supply carrier"%stage)
 		var boss_time := 0.0
@@ -43,7 +43,7 @@ func run() -> void:
 			director.plan(stage,power,events)
 			var expected_power: int = ([6,5,4,3,3,3,3][power-1] if stage>=2 else 3)
 			check(director.schedule.filter(func(e): return e.kind==201).size()==expected_power and director.schedule.filter(func(e): return e.kind==202).size()==3,"stage%d startingPower%d gives%d power and3HP deliveries"%[stage,power,expected_power])
-			check(director.schedule.all(func(e): return ((e.at>10 and e.at<boss_time-10) or (stage>=2 and e.kind==201 and e.at==1.0)) and e.pos.x>=100 and e.pos.x<=300 and e.pos.y==480 and e.pattern==1074),"stage%d supplies obey requested time/X bounds and existing approach motion"%stage)
+			check(director.schedule.all(func(e): return ((e.at>10 and e.at<boss_time-10) or (stage>=2 and e.kind==201 and e.at==1.0)) and e.pos.x>=75 and e.pos.x<=275 and e.pos.y==480 and e.pattern==1074),"stage%d supplies obey requested time/X bounds and existing approach motion"%stage)
 			var early: Array = director.schedule.filter(func(e): return e.at<10)
 			var expected_early: int = (2 if power==1 else 1) if stage>=2 else 0
 			check(early.size()==expected_early and early.all(func(e): return e.kind==201 and e.at==1.0),"stage%d startingPower%d has exactly the requested1second power allocation within total budget"%[stage,power])
@@ -103,7 +103,7 @@ func run() -> void:
 	g.energy = 42
 	g.power = 3
 	g._update_items()
-	check(g.hp==70 and g.energy==42 and g.power==3 and g.items.is_empty(),"HP payload heals30 without changing power or energy")
+	check(g.hp==80 and g.energy==42 and g.power==3 and g.items.is_empty(),"HP payload heals40 without changing power or energy")
 	g.hp = 95
 	g._drop_item({"pos":g.player+Vector2(25,25),"kind":2})
 	g._update_items()

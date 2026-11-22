@@ -30,7 +30,7 @@ func run() -> void:
 	var planned: Array = g.supply_director.schedule.duplicate(true)
 	g.supply_director.rng.seed = miss
 	g._hurt_player(15)
-	check(g.hp==85 and g.enemies.is_empty() and not g.supply_director.damage_supply_used,"failed real-hit roll preserves stage allowance")
+	check(g.hp==85 and g.enemies.is_empty() and g.supply_director.damage_supply_count==0,"failed real-hit roll preserves stage allowance")
 	g.supply_director.rng.seed = win
 	var before: int = g.supply_director.rng.state
 	g._hurt_player(15)
@@ -38,18 +38,23 @@ func run() -> void:
 	g.invulnerability_seconds = 0
 	var gameplay_before: int = Rng.state
 	g._hurt_player(15)
-	check(g.hp==70 and g.enemies.size()==1 and g.supply_director.damage_supply_used,"next successful actual hit spawns one extra health carrier")
+	check(g.hp==70 and g.enemies.size()==1 and g.supply_director.damage_supply_count==1,"next successful actual hit spawns one extra health carrier")
 	var carrier: Dictionary = g.enemies.at(0)
-	check(carrier.kind==202 and carrier.pos.x>=100 and carrier.pos.x<=300 and carrier.pos.y==480 and carrier.pattern==1074,"emergency carrier uses standard approach and random X100..300")
+	check(carrier.kind==202 and carrier.pos.x>=75 and carrier.pos.x<=275 and carrier.pos.y==480 and carrier.pattern==1074,"emergency carrier uses standard approach and random X75..275")
 	check(g.stats.spawned==1 and g.stats.supply_spawned==1 and Rng.state==gameplay_before,"spawn accounting is correct without consuming combat RNG")
-	check(g.supply_director.schedule==planned and planned.filter(func(e): return e.kind==202).size()==3,"emergency supply is additional to unchanged three scheduled HP carriers")
+	check(g.supply_director.schedule==planned and planned.filter(func(e): return e.kind==202).size()==3,"emergency supply is additional to three scheduled HP carriers")
 	g.invulnerability_seconds = 0
 	g.supply_director.rng.seed = win
 	before = g.supply_director.rng.state
 	g._hurt_player(15)
-	check(g.hp==55 and g.enemies.size()==1 and g.supply_director.rng.state==before,"later hits cannot roll or spawn after allowance consumed")
+	check(g.hp==55 and g.enemies.size()==2 and g.supply_director.damage_supply_count==2,"second successful hit uses the second emergency allowance")
+	g.invulnerability_seconds = 0
+	g.supply_director.rng.seed = win
+	before = g.supply_director.rng.state
+	g._hurt_player(15)
+	check(g.hp==40 and g.enemies.size()==2 and g.supply_director.rng.state==before,"third hit cannot roll or spawn after both allowances consumed")
 	g._load_stage(2)
-	check(not g.supply_director.damage_supply_used,"stage load resets emergency allowance")
+	check(g.supply_director.damage_supply_count==0,"stage load resets emergency allowance")
 	g.boss = {"hp":100}
 	g.stage_elapsed_seconds = 200
 	g.supply_director.rng.seed = win
@@ -60,22 +65,27 @@ func run() -> void:
 	g.supply_director.rng.seed = win
 	before = g.supply_director.rng.state
 	g._hurt_player(15)
-	check(g.enemies.size()==1 and g.enemies.at(0).kind==202 and g.supply_director.damage_supply_used and g.supply_director.schedule.is_empty(),"BossRush successful hit spawns emergency HP carrier without scheduled supplies")
+	check(g.enemies.size()==1 and g.enemies.at(0).kind==202 and g.supply_director.damage_supply_count==1 and g.supply_director.schedule.is_empty(),"BossRush successful hit spawns emergency HP carrier without scheduled supplies")
 	g.invulnerability_seconds = 0
 	g.supply_director.rng.seed = win
 	before = g.supply_director.rng.state
 	g._hurt_player(15)
-	check(g.enemies.size()==1 and before==g.supply_director.rng.state,"BossRush emergency HP is limited to one successful delivery per stage")
+	check(g.enemies.size()==2 and g.supply_director.damage_supply_count==2,"BossRush permits two successful emergency deliveries per stage")
+	g.invulnerability_seconds = 0
+	g.supply_director.rng.seed = win
+	before = g.supply_director.rng.state
+	g._hurt_player(15)
+	check(g.enemies.size()==2 and before==g.supply_director.rng.state,"BossRush cannot exceed two emergency deliveries per stage")
 	g._load_stage(3)
 	g.supply_director.rng.seed = win
 	g._hurt_player(15)
-	check(g.enemies.size()==1 and g.supply_director.damage_supply_used,"next BossRush stage resets emergency HP allowance")
+	check(g.enemies.size()==1 and g.supply_director.damage_supply_count==1,"next BossRush stage resets emergency HP allowance")
 	g.run_settings = g.run_settings.with_boss_rush(false)
 	g._load_stage(1)
 	g.hp = 15
 	g.supply_director.rng.seed = win
 	g._hurt_player(15)
-	check(g.hp==0 and g.enemies.is_empty() and not g.supply_director.damage_supply_used,"fatal hit does not spawn an unusable supply")
+	check(g.hp==0 and g.enemies.is_empty() and g.supply_director.damage_supply_count==0,"fatal hit does not spawn an unusable supply")
 	g._load_stage(1)
 	g.supply_director.rng.seed = win
 	before = g.supply_director.rng.state
