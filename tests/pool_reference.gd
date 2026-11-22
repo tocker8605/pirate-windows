@@ -61,7 +61,7 @@ func run() -> void:
 	g._bullet(g.player+Vector2(25,18),(Vector2(0,0.1))/0.03)
 	g._drop_item({"pos":g.player+Vector2(25,25),"kind":2})
 	g._tick(Vector2.ZERO,false,false,false,0.03)
-	check(g.hp==17,"40HP repair pickups still resolve before24incoming damage")
+	check(g.hp==7,"30HP repair pickups still resolve before24incoming damage")
 	g.bullets.clear()
 	g._bullet(Vector2(100,100),(Vector2.ZERO)/0.03)
 	g._bullet(Vector2(399,100),(Vector2(4,0))/0.03)

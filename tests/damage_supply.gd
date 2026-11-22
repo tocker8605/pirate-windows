@@ -52,7 +52,12 @@ func run() -> void:
 	g.supply_director.rng.seed = win
 	before = g.supply_director.rng.state
 	g._hurt_player(15)
-	check(g.hp==40 and g.enemies.size()==2 and g.supply_director.rng.state==before,"third hit cannot roll or spawn after both allowances consumed")
+	check(g.hp==40 and g.enemies.size()==3 and g.supply_director.damage_supply_count==3,"third successful hit uses the third emergency allowance")
+	g.invulnerability_seconds = 0
+	g.supply_director.rng.seed = win
+	before = g.supply_director.rng.state
+	g._hurt_player(15)
+	check(g.hp==25 and g.enemies.size()==3 and g.supply_director.rng.state==before,"fourth hit cannot roll or spawn after three allowances consumed")
 	g._load_stage(2)
 	check(g.supply_director.damage_supply_count==0,"stage load resets emergency allowance")
 	g.boss = {"hp":100}
@@ -75,7 +80,12 @@ func run() -> void:
 	g.supply_director.rng.seed = win
 	before = g.supply_director.rng.state
 	g._hurt_player(15)
-	check(g.enemies.size()==2 and before==g.supply_director.rng.state,"BossRush cannot exceed two emergency deliveries per stage")
+	check(g.enemies.size()==3 and g.supply_director.damage_supply_count==3,"BossRush permits the third emergency delivery")
+	g.invulnerability_seconds = 0
+	g.supply_director.rng.seed = win
+	before = g.supply_director.rng.state
+	g._hurt_player(15)
+	check(g.enemies.size()==3 and before==g.supply_director.rng.state,"BossRush cannot exceed three emergency deliveries per stage")
 	g._load_stage(3)
 	g.supply_director.rng.seed = win
 	g._hurt_player(15)
