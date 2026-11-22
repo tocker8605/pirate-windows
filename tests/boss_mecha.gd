@@ -1,6 +1,8 @@
 extends SceneTree
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Mecha = preload("res://scripts/renewed_art.gd")
+const Combat=preload("res://scripts/combat.gd")
+const Pilot=preload("res://scripts/pilot_geometry.gd")
 const Boss = preload("res://scripts/boss.gd")
 var checks: int = 0
 var failures: int = 0
@@ -33,5 +35,10 @@ func _initialize() -> void:
 			var z: Vector2 = right.pos+Vector2(25,0)
 			symmetric = symmetric and is_equal_approx(a.x+z.x,400) and is_equal_approx(a.y,z.y)
 		check(symmetric,"mecha arm anchors for%d/%d remain mirrored during boss movement"%pair)
+	var body: Dictionary=Catalog.create(95,Vector2(200,100))
+	var bounds: Array=Catalog.for_actor(body).collision.contact_bounds
+	check(bounds[0]==-35 and bounds[1]==0 and bounds[2]==35 and bounds[3]==85,"stage5 body contact rectangle isXminus35to35/Y0to85")
+	for sample in [[Vector2(-38.99,40),true],[Vector2(-39,40),false],[Vector2(38.99,40),true],[Vector2(39,40),false],[Vector2(0,-3.99),true],[Vector2(0,-4),false],[Vector2(0,88.99),true],[Vector2(0,89),false]]:
+		check(Combat.touches_player(body.pos+sample[0]-Pilot.COCKPIT,body)==sample[1],"stage5 contact edge includes cockpit radius correctly at%s"%sample[0])
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	quit(0 if failures==0 else 1)
