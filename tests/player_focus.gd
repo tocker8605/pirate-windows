@@ -29,6 +29,12 @@ func run() -> void:
 	g.events = []
 	g.invulnerability_seconds = 300
 	for slow in [false,true]:
+		g.player=Vector2(-9.9,200)
+		g._tick(Vector2.LEFT,false,false,false,1.0/60,slow)
+		check(g.player.x==-10,"normal and slow movement clamp atX-10")
+		g.player=Vector2(359.9,200)
+		g._tick(Vector2.RIGHT,false,false,false,1.0/60,slow)
+		check(g.player.x==360,"normal and slow movement clamp atX360")
 		g.player=Vector2(150,439.9)
 		g._tick(Vector2.DOWN,false,false,false,1.0/60,slow)
 		check(g.player.y==440,"normal and slow movement clamp atY440")

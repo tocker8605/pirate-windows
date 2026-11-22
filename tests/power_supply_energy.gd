@@ -1,5 +1,6 @@
 extends SceneTree
 const Game=preload("res://scripts/game.gd")
+const Items=preload("res://scripts/item_system.gd")
 var checks:=0
 var failures:=0
 func check(ok:bool,message:String)->void:
@@ -35,6 +36,27 @@ func run()->void:
 		g._drop_item({"kind":2,"pos":g.player+Vector2(25,25)})
 		g._update_items()
 		check(g.hp==80 and g.energy==20,"HP item recovery is30 without restoring energy")
+	g._load_stage(1)
+	g.delta_seconds=0
+	g.hp=50
+	g.energy=20
+	var point: Vector2=g.player+Vector2(25,25)
+	g._drop_item({"kind":99,"pos":point})
+	var unknown_id: int=g.items.at(0).entity_id
+	g._update_items()
+	check(g.hp==50 and g.energy==20 and g.power==1 and g.score==0 and g.items.contains(unknown_id),"unknown item kind grants no health, power, energy or score")
+	g._drop_item({"kind":Items.Kind.POWER,"pos":point})
+	var collected: Dictionary=g.items.at(1)
+	g._drop_item({"kind":Items.Kind.HEALTH,"pos":point})
+	g._drop_item({"kind":Items.Kind.HEALTH,"pos":Vector2(0,520)})
+	g._drop_item({"kind":Items.Kind.HEALTH,"pos":Vector2(0,519.9)})
+	var retained_id: int=g.items.at(4).entity_id
+	g._update_items()
+	check(g.hp==80 and g.energy==70 and g.power==2 and g.score==400,"consecutive pickups apply both item definitions exactly once")
+	check(collected.pos==point,"collection removes by entity ID without moving the item offscreen")
+	check(g.items.size()==2 and g.items.contains(unknown_id) and g.items.contains(retained_id) and g.items.valid(),"collection and offscreen cleanup preserve following entries and store integrity")
+	g._update_items()
+	check(g.score==400 and g.hp==80 and g.energy==70,"removed pickups cannot grant duplicate rewards")
 	g.audio.stop_all()
 	g.queue_free()
 	await process_frame

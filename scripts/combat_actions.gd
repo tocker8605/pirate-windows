@@ -6,6 +6,8 @@ const ProjectileGeometry=preload("res://scripts/player_projectile_geometry.gd")
 const Weapons = preload("res://scripts/player_weapons.gd")
 const Effects = preload("res://scripts/special_effects.gd")
 const Combat = preload("res://scripts/combat.gd")
+const ENEMY_BULLET_X_LIMITS := Vector2(-20,420)
+const ENEMY_BULLET_Y_LIMITS := Vector2(-20,500)
 static func apply_beam(g: Node) -> void:
 	if g.beam_remaining_seconds<=0.000001: return
 	var origin: Vector2=ProjectileGeometry.beam_origin(g.player)
@@ -45,7 +47,7 @@ static func damage_boss(g: Node, amount: float) -> void:
 static func update_bullets(g: Node) -> void:
 	for bullet in g.bullets:
 		ProjectileMotion.advance(bullet,g.delta_seconds)
-		if bullet.velocity==Vector2.ZERO or bullet.pos.x< -20 or bullet.pos.x>420 or bullet.pos.y< -20 or bullet.pos.y>500:
+		if bullet.velocity==Vector2.ZERO or bullet.pos.x<ENEMY_BULLET_X_LIMITS.x or bullet.pos.x>ENEMY_BULLET_X_LIMITS.y or bullet.pos.y<ENEMY_BULLET_Y_LIMITS.x or bullet.pos.y>ENEMY_BULLET_Y_LIMITS.y:
 			bullet.alive = false
 			continue
 		if Effects.shield_contains(g.shield_center,bullet.pos,g.shield_remaining_seconds):

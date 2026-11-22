@@ -1,5 +1,11 @@
 확장을 위한 코드 구조 (2026-11-22 정리)
 
+아이템과 보급기
+- scripts/item_system.gd의 Kind와 DEFINITIONS가 아이템 종류, 회복 효과, 고정 획득 점수를 관리합니다. 새 종류는 두 곳에 등록하며, 미등록 종류에는 획득 효과를 적용하지 않습니다.
+- 아이템은 획득 시 EntityStore에서 ID로 제거합니다. 화면 밖 좌표를 제거 표시로 사용하지 않습니다.
+- scripts/supply_director.gd의 DAMAGE_HEALTH_CHANCES는 추가 HP 보급기가 이미 등장한 횟수 순서의 확률표입니다. 표의 길이가 스테이지당 최대 추가 등장 횟수이며, 실패한 추첨은 횟수를 소비하지 않습니다.
+- 주인공 Y 이동 범위는 pilot_geometry.gd의 VERTICAL_LIMITS, 적탄 제거 범위는 combat_actions.gd의 ENEMY_BULLET_X_LIMITS/Y_LIMITS에서 조정합니다. 각 범위는 양 끝을 포함합니다.
+
 스테이지
 - data/stages.json이 스테이지 수, 음악, 배경 경로/구획 이름, 초기 스크롤, 구름, 원작 배경 지원 여부를 관리합니다.
 - stage01~05.json은 등장 타임라인입니다. stages.json은 타임라인 파일이 아닙니다.

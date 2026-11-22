@@ -7,8 +7,7 @@ const BOSS_MARGIN_SECONDS: float = 10.0
 const POWER_COUNT: int = 3
 const POWER_COUNTS_BY_START_LEVEL: Array[int] = [6,5,4,3,3,3,3]
 const HEALTH_COUNT: int = 3
-const DAMAGE_HEALTH_LIMIT: int = 3
-const DAMAGE_HEALTH_CHANCES: Array[float] = [0.5,0.35,0.2]
+const DAMAGE_HEALTH_CHANCES: Array[float] = [0.35,0.3,0.25]
 const SPAWN_X := Vector2(75,275)
 var rng := RandomNumberGenerator.new()
 var schedule: Array = []
@@ -56,7 +55,7 @@ func advance(g: Node) -> void:
 func on_player_hit(g: Node) -> void:
 	# Extra delivery: only successful rolls consume the per-stage allowance.
 	# Unlike scheduled deliveries this also applies during BossRush fights.
-	if g.state!="playing" or g.hp<=0 or damage_supply_count>=DAMAGE_HEALTH_LIMIT: return
+	if g.state!="playing" or g.hp<=0 or damage_supply_count>=DAMAGE_HEALTH_CHANCES.size(): return
 	if rng.randf()>=DAMAGE_HEALTH_CHANCES[damage_supply_count]: return
 	damage_supply_count += 1
 	_spawn(g,_delivery(g.stage_elapsed_seconds,202))
