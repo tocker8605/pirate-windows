@@ -134,3 +134,7 @@
 - beam_timeline.gd는 시작 게이트, HP 단계 선택, 주기별 경로 확정, 지속 발사의 시간 기준과 예측/발사/휴식 구간을 담당합니다. beam_attack.gd는 준비된 시간과 패턴으로 선분·피격 폭·표시 폭을 계산합니다.
 - beam_profile.gd는 기본 패턴(default_phase)과 HP별 패턴(health_phases)을 동일 필드의 읽기 전용 구조로 준비합니다. authored JSON 구조는 그대로이며 기본값 처리는 로딩 시 한 번만 수행합니다.
 - stage5_continuous_beam은 지속 레이저, stage5_autocannon은 기관포 회전/발사 검사를 담당합니다. beam_timing_equivalence는 이번 분리 이전의 실행 결과를 보관한 fixture와 시간·선분·폭·파티클·포대 결과를 비교합니다.
+
+- stage_resources.gd는 검증·정렬된 타임라인의 spawn 정의에서 각 스테이지의 리소스 목록을 수집합니다. StageSession은 play_stage 전에 렌더러의 실제 텍스처/아틀라스 캐시와 음악 캐시, 보스 HUD/경고 이미지를 준비합니다. 스테이지 번호별 분기 없이 일반/보스러시에 공통 적용되며 이벤트 소비·배치·난수·공격 타이머는 변경하지 않습니다.
+- EntityTextures.prepare_definition은 카탈로그에 지정된 본체/파츠, 지상 포대 해치/잔해와 바닥 장식 에셋을 준비합니다. Audio.prepare_music은 트랙을 재생하지 않고 보관하며 stop 후에도 재사용합니다. stage_resource_loading 검사는 모든 스테이지·모드와 원본 스프라이트 옵션의 캐시 준비, 등장 시 추가 로딩 없음, 음악 시점을 검증합니다.
+- 보스 로딩 측정: Godot --headless --audio-driver Dummy --path . --script tools/profile_boss_loading.gd. 출력은 스테이지 초기화 및 보스 에셋 접근의 CPU 경과시간이며 GPU 프레임 시간 전체를 의미하지 않습니다.

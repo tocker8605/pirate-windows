@@ -35,6 +35,20 @@ var cloud_nodes: Array = []
 var cloud_copies: Array = []
 var foreground: Node2D
 
+## Populate the same caches used by drawing, while the stage loading screen is active.
+func prepare_entities(ids: Array,renewed: bool) -> void:
+	for id in ids:
+		var definition: Dictionary=Catalog.definition(id)
+		if definition.has("ground_turret") or Geometry.layer(definition)=="floor":
+			if ground_art==null:ground_art=GroundArt.new()
+			ground_art.textures.prepare_definition(definition)
+		elif renewed:
+			renewal.prepare_entity(id)
+		else:
+			var frame: Texture2D=g.art.classic_frame(id,0)
+			var count: int=int(frame.atlas.get_width()/frame.region.size.x)
+			for index in range(1,count):g.art.classic_frame(id,index)
+
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	if foreground_only: return

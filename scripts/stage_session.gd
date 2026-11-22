@@ -3,6 +3,7 @@ const Campaign = preload("res://scripts/campaign_rules.gd")
 const StageEvents = preload("res://scripts/stage_events.gd")
 const Stages=preload("res://scripts/stage_catalog.gd")
 const Pilot = preload("res://scripts/pilot_geometry.gd")
+const Resources=preload("res://scripts/stage_resources.gd")
 static func load_stage(g: Node, number: int, preserve_run: bool = false) -> void:
 	var saved_hp: float = g.hp
 	var saved_power: int = g.power
@@ -59,6 +60,7 @@ static func load_stage(g: Node, number: int, preserve_run: bool = false) -> void
 		g.power = saved_power
 		g.score = saved_score
 	g.supply_director.plan(g.stage,g.power,g.events,g.run_settings.boss_rush)
+	Resources.prepare(g)
 	g.flow.play_stage(g)
 	g.presentation.reset(g)
 	g.view.vfx.reset()

@@ -12,6 +12,9 @@ var texture_cache=Textures.new()
 var wing_textures: Array = []
 func enemy_texture(kind: int) -> Texture2D:
 	return texture_cache.for_definition(Catalog.definition(kind))
+func prepare_entity(kind: int) -> void:
+	enemy_texture(kind)
+	if kind==8:prepare_hinged_wings()
 func station_texture() -> Texture2D:
 	return enemy_texture(3)
 func draw_station(c: Node2D, center: Vector2, scale: Vector2, phase: float, tint: Color = Color.WHITE) -> void:
@@ -80,7 +83,7 @@ func draw_enemy(c: Node2D, e: Dictionary, pos: Vector2, _frame: int) -> void:
 		c.draw_circle(Vector2.ZERO,3+pulse,Color(1,0.45,0.12,pulse*0.18)*Depth.tint_for(e),true,-1,true)
 	c.draw_set_transform(Vector2.ZERO)
 
-func draw_hinged_wings(c: Node2D, center: Vector2, yaw: float, scale: Vector2, fold: float, tint: Color) -> void:
+func prepare_hinged_wings() -> void:
 	if wing_textures.is_empty():
 		var source: Texture2D = enemy_texture(8)
 		for band in [Vector2(0,0.35),Vector2(0.35,0.30),Vector2(0.65,0.35)]:
@@ -89,6 +92,8 @@ func draw_hinged_wings(c: Node2D, center: Vector2, yaw: float, scale: Vector2, f
 			texture.region = Rect2(Vector2(source.get_width()*band.x,0),source.get_size()*Vector2(band.y,1))
 			texture.filter_clip = true
 			wing_textures.append(texture)
+func draw_hinged_wings(c: Node2D, center: Vector2, yaw: float, scale: Vector2, fold: float, tint: Color) -> void:
+	prepare_hinged_wings()
 	var base := Transform2D(yaw,center).scaled_local(scale)
 	var angle: float = clampf(fold,0,1)*deg_to_rad(55)
 	var wing_base := base.scaled_local(Vector2(1-0.35*fold,1))

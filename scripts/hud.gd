@@ -10,6 +10,9 @@ static func opaque(canvas: Node2D, art: RefCounted, id: String, pos: Vector2, re
 
 static func boss_bar_width(hp: float, maximum: float) -> int:
 	return clampi(int(250.0*hp/maximum),0,250) if maximum>0 else 0
+static func prepare_boss(art: RefCounted) -> void:
+	art.sprite("picbhp",Rect2i(0,0,284,24),Vector2i(0,24))
+	art.texture("picbhp")
 
 static func render(canvas: Node2D, art: RefCounted, hull: int, energy: float, weapon: int, power: int, score: int, boss_hp: int = -1, boss_max: int = 0) -> void:
 	masked(canvas,art,"pichud",Vector2(250,5),Rect2i(0,0,134,24),Vector2i(0,24))
