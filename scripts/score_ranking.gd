@@ -8,6 +8,7 @@ const CHARACTERS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
 const PATH: String = "user://rankings.json"
 var path: String
 var entries: Array = []
+var initialization_error: Error = OK
 func _init(save_path: String = PATH) -> void:
 	path = save_path
 	_load()
@@ -29,7 +30,11 @@ static func normalized_record(value: Dictionary) -> Dictionary:
 	# JSON numbers reload as floats; the display and live records use integers.
 	return {"score":int(value.score),"name":str(value.name),"weapon":int(value.weapon),"level":int(value.level),"mission":int(value.mission)}
 func _load() -> void:
-	if not FileAccess.file_exists(path): return
+	if not FileAccess.file_exists(path):
+		for i in range(LIMIT):
+			entries.append({"score":(LIMIT-i)*1000,"name":" ".repeat(NAME_LENGTH),"weapon":1,"level":1,"mission":1})
+		initialization_error = _save(entries)
+		return
 	var parser := JSON.new()
 	if parser.parse(FileAccess.get_file_as_string(path))!=OK: return
 	var document: Variant = parser.data
@@ -55,14 +60,15 @@ func submit(record: Dictionary, player_name: String) -> Error:
 	var updated: Array = entries.duplicate(true)
 	updated.insert(position,value)
 	if updated.size()>LIMIT: updated.resize(LIMIT)
+	var error: Error = _save(updated)
+	if error==OK: entries = updated
+	return error
+func _save(records: Array) -> Error:
 	var file := FileAccess.open(path+".tmp",FileAccess.WRITE)
 	if file==null: return FileAccess.get_open_error()
-	file.store_string(JSON.stringify({"schema_version":1,"entries":updated}))
+	file.store_string(JSON.stringify({"schema_version":1,"entries":records}))
 	file.flush()
 	var error: Error = file.get_error()
 	file.close()
 	if error!=OK: return error
-	error = DirAccess.rename_absolute(path+".tmp",path)
-	if error==OK:
-		entries = updated
-	return error
+	return DirAccess.rename_absolute(path+".tmp",path)
