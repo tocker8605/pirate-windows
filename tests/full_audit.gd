@@ -147,7 +147,7 @@ func run() -> void:
 	game.audio.sound("get",false)
 	game.audio.sound("damage",false)
 	check(game.audio.effect.stream.resource_path.ends_with("damage.wav") and game.audio.get_child_count()==2,"sndPlaySound emulation uses one interruptible effect voice")
-	check(game.music.stream!=null and game.music.stream.loop,"ordinary music repeats after reaching the end")
+	check(game.music.stream!=null and not game.music.stream.loop,"ordinary music stops after reaching the end")
 	var old_clouds: Array = [Vector2(10,80),Vector2(230,400)]
 	game.clouds = old_clouds.duplicate()
 	game.selected_stage = 2

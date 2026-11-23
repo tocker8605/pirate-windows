@@ -49,6 +49,7 @@ var clear_screen = ClearScreen.new()
 var screen_textures = ScreenTextures.new()
 const PLAYER_MOVE_SPEED: float = 200.0
 const PLAYER_SLOW_MOVE_SPEED: float = PLAYER_MOVE_SPEED*0.5
+const BOSS_MUSIC_LOOP := Vector2(2,122)
 var slow_movement_active: bool = false
 var supply_director = SupplyDirector.new()
 var presentation = Presentation.new()
@@ -190,10 +191,13 @@ func _submit_ranking(confirm_key: int) -> void:
 func _sync_audio() -> void:
 	if audio!=null: audio.sync(mute,state=="paused")
 
-func _play_music(track: String, from_seconds: float = 0, restart: bool = false, looping: bool = true) -> void:
+func _play_boss_music(track: String) -> void:
+	_play_music(track,0,false,true,BOSS_MUSIC_LOOP)
+
+func _play_music(track: String, from_seconds: float = 0, restart: bool = false, looping: bool = false, repeat_range: Vector2 = Vector2.ZERO) -> void:
 	if audio==null: return
 	music_track = track
-	audio.play(track,from_seconds,restart,looping)
+	audio.play(track,from_seconds,restart,looping,repeat_range)
 	_sync_audio()
 
 func _stop_music() -> void:

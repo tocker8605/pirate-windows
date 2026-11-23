@@ -40,9 +40,9 @@ func run() -> void:
 			g.event_cursor=0;g.stage_elapsed_seconds=at+0.01
 			g._read_events();g._redraw();await process_frame;await process_frame
 			check(loads(g)==before,"stage%d rush%s boss appearance and initial drawing perform zero texture/music cache misses %s -> %s"%[stage,rush,before,loads(g)])
-			check(g.music_track==Catalog.boss_definition(stage).music and g.music.stream.loop,"boss music still starts at its spawn and repeats")
+			check(g.music_track==Catalog.boss_definition(stage).music and g.music.stream.loop and g.audio.loop_range==Vector2(2,122),"boss music starts at its spawn and repeats2to122seconds")
 			var stream=g.music.stream
-			g._stop_music();g._play_music(Catalog.boss_definition(stage).music)
+			g._stop_music();g._play_boss_music(Catalog.boss_definition(stage).music)
 			check(is_same(stream,g.music.stream) and loads(g)==before,"music remains prepared across stop and replay")
 			if is_final:
 				g.score=1234567

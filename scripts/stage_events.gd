@@ -102,7 +102,7 @@ static func consume(g: Node) -> void:
 						g.scroll_speed = 0
 						g.scroll_target = 0
 					g.stats.boss_spawned = true
-					g._play_music(Catalog.definition(kind).music)
+					g._play_boss_music(Catalog.definition(kind).music)
 					g.banner = ""
 					g.banner_remaining_seconds = 0
 				else:

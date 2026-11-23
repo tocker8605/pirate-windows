@@ -121,7 +121,7 @@ static func run(g: Node) -> void:
 			if g.preview_mode=="boss-death":
 				g.boss = Catalog.create(int(Catalog.boss_definition(4).id),Vector2(200,100))
 				g.boss.hp = 0
-				g._play_music("boss01")
+				g._play_boss_music("boss01")
 			else: g.hp = 0
 			for i in range(60): g._tick(Vector2.ZERO,false,false,false)
 			if g.preview_mode=="loading":
