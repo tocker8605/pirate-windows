@@ -19,9 +19,9 @@
     {"at": 6, "action": "spawn", "definition_id": 41, "position": [75, -99], "pattern": 1072},
     {"at": 7, "action": "spawn", "definition_id": 41, "position": [275, -99], "pattern": 1072},
 
-    {"comment": "에너지 포대"},
-    {"at": 10, "action": "spawn", "definition_id": 52, "position": [75, -60], "start_exposed": true},
-    {"at": 10, "action": "spawn", "definition_id": 52, "position": [275, -60], "start_exposed": true},
+    {"comment": "기관 포대"},
+    {"at": 10, "action": "spawn", "definition_id": 51, "position": [125, -60], "start_exposed": true},
+    {"at": 10, "action": "spawn", "definition_id": 51, "position": [225, -60], "start_exposed": true},
 
     {"at": 12, "action": "scroll", "mode": 2, "speed": 60},
 
