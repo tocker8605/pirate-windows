@@ -1,8 +1,7 @@
 extends RefCounted
 const SpriteFont = preload("res://scripts/menu_sprite_font.gd")
 const Ranking = preload("res://scripts/score_ranking.gd")
-const CONFIRM_KEYS: Array = [KEY_ENTER,KEY_KP_ENTER,KEY_SPACE]
-const NEXT_KEYS: Array = [KEY_Z,KEY_X,KEY_C]
+const NEXT_KEYS: Array = [KEY_ENTER,KEY_KP_ENTER,KEY_SPACE,KEY_Z,KEY_X,KEY_C]
 var record: Dictionary = {}
 var rank: int = 1
 var player_name: String = "      "
@@ -25,7 +24,6 @@ func handle_key(event: InputEventKey) -> bool:
 		if not event.pressed: blocked_confirmation_key = 0
 		return false
 	if not event.pressed: return false
-	if event.keycode in CONFIRM_KEYS: return not event.echo
 	if event.keycode in NEXT_KEYS: return not event.echo and advance_cursor()
 	navigate(event.keycode)
 	return false
@@ -71,6 +69,6 @@ func render(canvas: Node2D) -> void:
 	row(canvas,230,rank,record,player_name,cursor if fmod(elapsed,0.8)<0.55 else -1)
 	SpriteFont.centered(canvas,295,"UP DOWN CHANGE CHARACTER")
 	SpriteFont.centered(canvas,320,"LEFT RIGHT MOVE CURSOR")
-	SpriteFont.centered(canvas,355,"Z X C NEXT OR FINISH AT LAST")
-	SpriteFont.centered(canvas,385,"ENTER SPACE TO FINISH")
+	SpriteFont.centered(canvas,355,"ENTER SPACE NEXT CHARACTER")
+	SpriteFont.centered(canvas,385,"LAST CHARACTER TO FINISH")
 	if save_failed: SpriteFont.centered(canvas,415,"SAVE FAILED PRESS ENTER TO RETRY")

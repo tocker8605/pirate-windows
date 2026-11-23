@@ -54,6 +54,9 @@ func run() -> void:
 				check(g.state==g.GameFlow.RANKING_ENTRY and g.rankings.entries==saved,"clear confirmation cannot immediately submit the blank name")
 				key(g,confirm,false)
 				g.ranking_entry.player_name="CLEAR "
+				for slot in range(5):
+					key(g,confirm)
+					check(g.state==g.GameFlow.RANKING_ENTRY and g.ranking_entry.cursor==slot+1,"clear name confirmation advances one character at a time")
 				key(g,confirm)
 				check(g.state==g.GameFlow.MENU and g.rankings.entries.any(func(entry):return entry.name=="CLEAR "),"finished name entry saves result and returns to the initial ranking list")
 			check(g.title.screen==g.title.RANKING and g.title.blocked_confirmation_key==confirm and g.music_track.is_empty(),"returning to initial title stops ending music and blocks the same confirmation")

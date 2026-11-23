@@ -108,6 +108,9 @@ func run() -> void:
 	key(g,KEY_SPACE,true)
 	check(g.state=="ranking_entry","held firing/confirm keys cannot auto-submit a name")
 	key(g,KEY_ENTER)
+	check(g.state=="ranking_entry" and g.ranking_entry.cursor==1,"Enter advances instead of submitting early")
+	g.ranking_entry.cursor=5
+	key(g,KEY_ENTER)
 	check(g.state=="menu" and g.title.screen==g.title.RANKING and g.rankings.entries[0].name=="TOCKER" and g.last_score==1234567,"submission saves the name and returns to the initial black title")
 	key(g,KEY_SPACE)
 	check(g.title.screen==g.title.RANKING,"confirm key cannot also skip the initial title")
@@ -122,13 +125,8 @@ func run() -> void:
 	released.pressed=false
 	g._unhandled_key_input(released)
 	check(g.state=="ranking_entry" and g.ranking_entry.background==g.clear_screen.background,"clear confirmation opens ranking with the ending background")
-	for code in Screen.CONFIRM_KEYS:
-		g.ranking_entry.begin(0,result(8000000+code%100))
-		g.flow.state = "ranking_entry"
-		key(g,code)
-		check(g.state=="menu" and g.rankings.entries.any(func(e): return e.name=="      "),"confirm key%s accepts a six-slot name including blanks"%code)
 	for code in Screen.NEXT_KEYS:
-		g.ranking_entry.begin(0,result(8500000+code))
+		g.ranking_entry.begin(0,result(8500000+code%100))
 		g.flow.state = "ranking_entry"
 		key(g,code,true)
 		check(g.ranking_entry.cursor==0 and g.state=="ranking_entry","held next key%s cannot skip blank slots"%code)
