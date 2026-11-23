@@ -136,8 +136,8 @@ func check_health_paths(spec: Dictionary) -> void:
 			var progress: float=0 if age<2 else (age-2)/4
 			var shots: Array=Beams.sample(owner,spec,age)
 			for i in range(2):
-				var start: float=([165,195] if hp<=2400 else [-10,10])[i]
-				var finish: float=([15,345] if hp<=2400 else [170,-170])[i]
+				var start: float=([170,190] if hp<=2400 else [-10,10])[i]
+				var finish: float=([20,340] if hp<=2400 else [170,-170])[i]
 				var expected: Vector2=Vector2.UP.rotated(deg_to_rad(lerpf(start,finish,progress)))
 				check((shots[i].end-shots[i].origin).normalized().distance_to(expected)<0.00001,"HP%d uses correct signed sweep at age%.3f"%[hp,age])
 				check(shots[i].damaging==(age>=2) and shots[i].width==(5 if age>=2 else 1),"HP change preserves telegraph and collision widths")
@@ -149,12 +149,12 @@ func check_health_paths(spec: Dictionary) -> void:
 	during=Beams.advance(owner,1,true)
 	check((during[0].end-during[0].origin).normalized().distance_to(Vector2.UP.rotated(deg_to_rad(-10)))<0.00001,"active beam follows its original telegraph despite HP change")
 	during=Beams.advance(owner,13,true)
-	check(not during[0].damaging and (during[0].end-during[0].origin).normalized().distance_to(Vector2.UP.rotated(deg_to_rad(165)))<0.00001,"next15second cycle adopts low-health prediction")
+	check(not during[0].damaging and (during[0].end-during[0].origin).normalized().distance_to(Vector2.UP.rotated(deg_to_rad(170)))<0.00001,"next15second cycle adopts low-health prediction")
 	during=Beams.advance(owner,2,true)
-	check(during[0].damaging and (during[0].end-during[0].origin).normalized().distance_to(Vector2.UP.rotated(deg_to_rad(165)))<0.00001,"low-health live beam starts at its predicted six-oclock offset")
+	check(during[0].damaging and (during[0].end-during[0].origin).normalized().distance_to(Vector2.UP.rotated(deg_to_rad(170)))<0.00001,"low-health live beam starts at its predicted six-oclock offset")
 	owner.hp=2401
 	during=Beams.advance(owner,2,true)
-	check((during[0].end-during[0].origin).normalized().distance_to(Vector2.UP.rotated(deg_to_rad(90)))<0.00001,"healing during active sweep cannot jump its path")
+	check((during[0].end-during[0].origin).normalized().distance_to(Vector2.UP.rotated(deg_to_rad(95)))<0.00001,"healing during active sweep cannot jump its path")
 	check(spec.health_phases[1].is_read_only() and spec.health_phases[1].beams.is_read_only() and spec.health_phases[1].beams[0].is_read_only(),"low-health paths share immutable prepared settings")
 	for ratio in [0,-0.1,1.1,"0.5",null]:
 		var doc: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(Catalog.PATH))

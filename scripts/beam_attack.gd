@@ -4,7 +4,7 @@ const Catalog=preload("res://scripts/enemy_catalog.gd")
 const Geometry=preload("res://scripts/entity_geometry.gd")
 const Shapes=preload("res://scripts/collision_geometry.gd")
 const Timeline=preload("res://scripts/beam_timeline.gd")
-static func sample(owner: Dictionary,spec: Dictionary,age: float,selected: Dictionary = {}) -> Array:
+static func sample(owner: Dictionary,spec: Dictionary,age: float,selected: Dictionary = {},choice: int = 0) -> Array:
 	if owner.get("hp",0)<=0:return []
 	var pattern: Dictionary=Timeline.phase_for(owner,spec) if selected.is_empty() else selected
 	var exposure: Dictionary=Timeline.exposure(spec,pattern,age)
@@ -21,7 +21,7 @@ static func sample(owner: Dictionary,spec: Dictionary,age: float,selected: Dicti
 	var origin: Vector2=Geometry.world_point(owner,spec.origin)
 	var result: Array=[]
 	var swing: float=0 if telegraph else sin(TAU*active_age/float(pattern.swing_period_seconds))*float(pattern.swing_radians)
-	for sweep in pattern.beams:
+	for sweep in pattern.beam_choices[posmod(choice,pattern.beam_choices.size())]:
 		# Do not wrap/shortest-path interpolate: the signed span specifies the sweep direction.
 		var angle: float=lerpf(float(sweep.from_radians),float(sweep.to_radians),progress)+swing
 		var direction: Vector2=Vector2.UP.rotated(angle+float(owner.get("pose_angle",0)))
@@ -32,6 +32,9 @@ static func sample(owner: Dictionary,spec: Dictionary,age: float,selected: Dicti
 static func advance(owner: Dictionary,seconds: float,scroll_stopped: bool) -> Array:
 	if owner.is_empty() or owner.get("hp",0)<=0:return []
 	var specs: Array=Catalog.for_actor(owner).get("beam_profiles",[])
+	return advance_profiles(owner,specs,seconds,scroll_stopped)
+static func advance_profiles(owner: Dictionary,specs: Array,seconds: float,scroll_stopped: bool) -> Array:
+	if owner.is_empty() or owner.get("hp",0)<=0:return []
 	if specs.is_empty():return []
 	var states: Dictionary=owner.get("beam_states",{})
 	var result: Array=[]
@@ -39,7 +42,7 @@ static func advance(owner: Dictionary,seconds: float,scroll_stopped: bool) -> Ar
 		var clock: Dictionary=states.get(spec.name,Timeline.new_clock())
 		if not Timeline.advance(clock,owner,spec,seconds,scroll_stopped):continue
 		states[spec.name]=clock
-		result.append_array(sample(owner,spec,Timeline.sample_age(clock),clock.phase))
+		result.append_array(sample(owner,spec,Timeline.sample_age(clock),clock.phase,int(clock.choice)))
 	owner.beam_states=states
 	return result
 static func advance_world(g: Node,seconds: float) -> void:

@@ -1,0 +1,60 @@
+{
+  "name": "chest_sweep",
+  "gate": "scroll_stopped",
+  "origin": [
+    0.079745,
+    46.735075
+  ],
+  "period_seconds": 15,
+  "telegraph_seconds": 2,
+  "active_seconds": 4,
+  "length": 1000,
+  "width": 5,
+  "telegraph_width": 1,
+  "color": "#369dff",
+  "damage_scale": 1,
+  "beams": [
+    {
+      "from_degrees": -10,
+      "to_degrees": 170
+    },
+    {
+      "from_degrees": 10,
+      "to_degrees": -170
+    }
+  ],
+  "width_transition_seconds": 0.2,
+  "health_phases": [
+    {
+      "at_or_below_ratio": 0.3333333333333333,
+      "continuous": true,
+      "swing": {
+        "amplitude_degrees": 30,
+        "period_seconds": 8
+      },
+      "beams": [
+        {
+          "from_degrees": 165,
+          "to_degrees": 165
+        },
+        {
+          "from_degrees": 195,
+          "to_degrees": 195
+        }
+      ]
+    },
+    {
+      "at_or_below_ratio": 0.6666666666666666,
+      "beams": [
+        {
+          "from_degrees": 165,
+          "to_degrees": 15
+        },
+        {
+          "from_degrees": 195,
+          "to_degrees": 345
+        }
+      ]
+    }
+  ]
+}

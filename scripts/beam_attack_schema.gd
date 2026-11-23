@@ -21,19 +21,28 @@ static func validate(value: Variant,prefix: String,errors: PackedStringArray) ->
 		if spec.has("damage_scale") and (not Check.number(spec.damage_scale) or float(spec.damage_scale)<=0):errors.append(prefix+"invalid beam damage scale")
 		if not spec.get("color") is String or not Color.html_is_valid(spec.get("color","")):errors.append(prefix+"invalid beam color")
 		validate_sweeps(spec.get("beams"),prefix,errors)
-		if spec.has("health_phases"):validate_phases(spec.health_phases,prefix+"health_phases.",errors)
-static func validate_phases(phases: Variant,prefix: String,errors: PackedStringArray) -> void:
+		if spec.has("health_phases"):validate_phases(spec.health_phases,prefix+"health_phases.",errors,float(spec.telegraph_seconds)+float(spec.active_seconds) if timing else 0)
+static func validate_phases(phases: Variant,prefix: String,errors: PackedStringArray,minimum_period: float = 0) -> void:
 	if not phases is Array:errors.append(prefix+"expected phase array");return
 	var thresholds: Array=[]
 	for phase in phases:
 		if not phase is Dictionary:errors.append(prefix+"invalid phase");continue
-		Check.unknown_fields(phase,["at_or_below_ratio","beams","continuous","swing"],prefix,errors)
+		Check.unknown_fields(phase,["at_or_below_ratio","beams","beam_choices","period_seconds","continuous","swing"],prefix,errors)
 		var ratio: Variant=phase.get("at_or_below_ratio")
 		if not Check.number(ratio) or float(ratio)<=0 or float(ratio)>1:errors.append(prefix+"invalid health ratio")
 		elif ratio in thresholds:errors.append(prefix+"duplicate health threshold")
 		else:thresholds.append(ratio)
 		if phase.has("continuous") and not phase.continuous is bool:errors.append(prefix+"continuous must be boolean")
-		validate_sweeps(phase.get("beams"),prefix,errors)
+		if phase.has("period_seconds"):
+			var period: Variant=phase.period_seconds
+			if not Check.number(period) or float(period)<=0 or float(period)<minimum_period:errors.append(prefix+"invalid phase period")
+		if phase.has("beams")==phase.has("beam_choices"):errors.append(prefix+"provide exactly one of beams or beam_choices")
+		elif phase.has("beam_choices"):
+			var choices: Variant=phase.beam_choices
+			if not choices is Array or choices.is_empty():errors.append(prefix+"empty beam choices")
+			else:
+				for beams in choices:validate_sweeps(beams,prefix+"beam_choices.",errors)
+		else:validate_sweeps(phase.beams,prefix,errors)
 		if phase.has("swing"):
 			var swing: Variant=phase.swing
 			if not swing is Dictionary:errors.append(prefix+"invalid swing");continue

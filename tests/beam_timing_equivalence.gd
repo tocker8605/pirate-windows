@@ -7,8 +7,10 @@ const Ground=preload("res://scripts/ground_turret.gd")
 const Fire=preload("res://scripts/enemy_fire.gd")
 const Rng=preload("res://scripts/random.gd")
 const PATH="res://tests/fixtures/beam_timing_before_refactor.json"
+const Profile=preload("res://scripts/beam_profile.gd")
 var rows: Array=[]
 func _initialize() -> void:
+	var historical: Dictionary=Profile.prepare(JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/chest_beam_before_pattern_tuning.json")))
 	for scenario in range(6):
 		var owner: Dictionary=Catalog.create(95,Vector2(200,70))
 		var fx=FX.new()
@@ -21,7 +23,7 @@ func _initialize() -> void:
 				4:owner.hp=1200 if tick<300 else 2400 if tick<700 else 3600 if tick<1000 else 1200
 				5:owner.hp=[2401,2400,1201,1200,1199,3600][(tick/120)%6]
 			var dt: float=[1.0/60,0.013,0.071,0.4,1.8][tick%5] if scenario==5 else 1.0/60
-			var beams: Array=Beams.advance(owner,dt,tick>=3)
+			var beams: Array=Beams.advance_profiles(owner,[historical],dt,tick>=3)
 			var clock: Dictionary=owner.get("beam_states",{}).get("chest_sweep",{})
 			if not clock.is_empty():rows.append([scenario,tick,"clock",clock.age,clock.cycle,clock.phase_start,bool(clock.phase.get("continuous",false))])
 			for beam in beams:rows.append([scenario,tick,"beam",beam.origin.x,beam.origin.y,beam.end.x,beam.end.y,beam.width,beam.visual_width,beam.damaging,beam.age,beam.color.to_html()])
