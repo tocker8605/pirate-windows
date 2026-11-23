@@ -28,7 +28,14 @@ func run() -> void:
 				e.orb_stationary=phase%2==0
 				boss.hp=[3000,2000,1000,2001,800,0][phase]*(boss.max_hp/3000.0)
 				if Ground.active(e):e.deployment_progress=1.0
-				volley("e%d/%d"%[kind,scenario],tick,Fire.advance(e,[1.0/60,0.013,0.071][tick%3],Vector2(175,380),boss))
+				var shots: Array=Fire.advance(e,[1.0/60,0.013,0.071][tick%3],Vector2(175,380),boss)
+				if kind==146:
+					# Compare the old algorithm in its original downward initial frame.
+					var center: Vector2=e.pos+Vector2(25,25)
+					for shot in shots:
+						shot.pos=center+(shot.pos-center).rotated(-PI)
+						shot.velocity=shot.velocity.rotated(-PI)
+				volley("e%d/%d"%[kind,scenario],tick,shots)
 	for stage in range(1,6):
 		var b: Dictionary=Catalog.create(90+stage,Vector2(200,100))
 		var parts: Array=[]
@@ -103,7 +110,8 @@ func run() -> void:
 			if row[0]!="world":continue
 			var start: int=6 if (row.size()-4)%5==2 else 4
 			for i in range(start,row.size(),5):
-				if row[i]==145:row[i+4]=0 # New rotation has dedicated coverage.
+				if int(row[i]) in [51,145]:row[i+4]=0 # New rotations have dedicated coverage.
+				if int(row[i])==146 and is_same(records,rows):row[i+4]-=PI # Compare its old downward initial frame.
 				if int(row[i]) in [51,52]:row[i+3]=0 # The new Y50 hatch trigger has explicit boundary tests.
 	# Ordinary turret bursts now stop belowY360; their new gate has boundary tests.
 	var original_turret_fire: Callable=func(row):return not (row.size()==7 and str(row[0]).get_slice("/",0) in ["e51","e52"])
@@ -122,7 +130,8 @@ func run() -> void:
 	for i in range(mini(expected.size(),rows.size())):
 		var same: bool=expected[i].size()==rows[i].size()
 		for j in range(mini(expected[i].size(),rows[i].size())):
-			if rows[i][j] is float or rows[i][j] is int:same=same and absf(float(rows[i][j])-float(expected[i][j]))<0.0001
+			var tolerance: float=0.0005 if str(rows[i][0]).get_slice("/",0)=="e146" and j>=5 else 0.0001
+			if rows[i][j] is float or rows[i][j] is int:same=same and absf(float(rows[i][j])-float(expected[i][j]))<tolerance
 			else:same=same and rows[i][j]==expected[i][j]
 		if not same:
 			failures+=1

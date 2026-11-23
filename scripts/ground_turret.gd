@@ -21,7 +21,7 @@ static func initialize(actor: Dictionary, scenery_distance: float, start_exposed
 	if settings.has("rotation"):
 		actor.ground_rotation_age=0.0
 		actor.ground_angle=deg_to_rad(settings.rotation.initial_degrees)-PI/2
-		var boss_x: float=boss.get("pos",Vector2(200,0)).x
+		var boss_x: float=boss.get("pos",Vector2(200,0)).x if Catalog.for_actor(actor).role=="part" else 200.0
 		actor.ground_rotation_direction=1 if actor.pos.x+Geometry.vector(settings.center).x<boss_x else -1
 static func prepare(actor: Dictionary,boss: Dictionary) -> void:
 	var hatch: Dictionary=Catalog.for_actor(actor).ground_turret.get("boss_hatch",{})

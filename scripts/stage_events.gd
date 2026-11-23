@@ -84,6 +84,7 @@ static func consume(g: Node) -> void:
 			"banner":
 				g.banner = "WARNING / BOSS APPROACHING" if event.name=="warning" else MissionBanner.label(g.stage,g.run_settings.boss_rush)
 				g.banner_remaining_seconds = 2.4 if event.name=="warning" else MissionBanner.duration(g.banner)
+				if event.name=="warning": g.supply_director.on_boss_warning(g)
 			"scroll":
 				g.map_mode = int(event.mode)
 				g.scroll_target = float(event.speed)

@@ -3379,7 +3379,11 @@
           25,
           25
         ],
-        "parallel": true
+        "parallel": true,
+        "rotation": {
+          "initial_degrees": 270,
+          "period_seconds": 6
+        }
       },
       "damage_smoke": {
         "below_ratio": 0.4,
@@ -4327,7 +4331,7 @@
           "hp_ratio": 0.3333333333333333
         },
         "rotation": {
-          "initial_degrees": 90,
+          "initial_degrees": 270,
           "period_seconds": 6
         },
         "parallel": true
@@ -4468,7 +4472,7 @@
           "hp_ratio": 0.6666666666666666
         },
         "rotation": {
-          "initial_degrees": 90,
+          "initial_degrees": 270,
           "period_seconds": 8
         }
       },

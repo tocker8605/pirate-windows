@@ -37,10 +37,16 @@ func _initialize() -> void:
 			var boss: Dictionary=Catalog.create(95,Vector2(200,70));boss.hp=1000
 			var turret: Dictionary=Catalog.create(kind,Vector2(175+side*60,215))
 			Ground.initialize(turret,0,true,boss)
+			# Compare in the fixture's original downward frame; current12oclock starts have dedicated tests.
+			var initial: float=turret.ground_angle
+			var center: Vector2=turret.pos+Vector2(25,25)
 			for tick in range(900):
 				var shots: Array=Fire.advance(turret,[1.0/60,0.013,0.071][tick%3],Vector2(10+tick%300,400),boss)
-				rows.append([kind,side,tick,turret.ground_angle,turret.ground_rotation_age])
-				for shot in shots:rows.append([kind,side,tick,shot.kind,shot.pos.x,shot.pos.y,shot.velocity.x,shot.velocity.y])
+				rows.append([kind,side,tick,turret.ground_angle-initial,turret.ground_rotation_age])
+				for shot in shots:
+					var pos: Vector2=center+(shot.pos-center).rotated(-initial)
+					var velocity: Vector2=shot.velocity.rotated(-initial)
+					rows.append([kind,side,tick,shot.kind,pos.x,pos.y,velocity.x,velocity.y])
 	if "--capture" in OS.get_cmdline_user_args():
 		var file=FileAccess.open(PATH,FileAccess.WRITE);file.store_string(JSON.stringify(rows))
 		print("Captured %d records before clock/profile refactoring"%rows.size());quit();return
@@ -49,7 +55,9 @@ func _initialize() -> void:
 	for i in range(mini(rows.size(),expected.size())):
 		var same: bool=rows[i].size()==expected[i].size()
 		for j in range(mini(rows[i].size(),expected[i].size())):
-			if rows[i][j] is float or rows[i][j] is int:same=same and absf(float(rows[i][j])-float(expected[i][j]))<0.0002
+			# Undoing the intentional180degree start uses float32 Vector2 rotations.
+			var tolerance: float=0.001 if rows[i].size()==8 and rows[i][0] in [145,146] and j>=6 else 0.0002
+			if rows[i][j] is float or rows[i][j] is int:same=same and absf(float(rows[i][j])-float(expected[i][j]))<tolerance
 			else:same=same and rows[i][j]==expected[i][j]
 		if not same:
 			failures+=1

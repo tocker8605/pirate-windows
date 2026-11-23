@@ -14,7 +14,7 @@ func seed_for(success: bool) -> int:
 	for seed_value in range(1000):
 		probe.seed = seed_value
 		var roll: float = probe.randf()
-		if (success and roll<0.25) or (not success and roll>=0.35): return seed_value
+		if (success and roll<0.2) or (not success and roll>=0.3): return seed_value
 	return -1
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
@@ -26,13 +26,13 @@ func run() -> void:
 	g.set_process(false)
 	for rush in [false,true]:
 		g.run_settings = g.run_settings.with_boss_rush(rush)
-		for used in range(3):
-			for band in range(4):
+		for used in range(2):
+			for band in range(3):
 				g._load_stage(1)
 				g.supply_director.damage_supply_count = used
 				var probe := RandomNumberGenerator.new()
-				var lower: float = [0.0,0.25,0.3,0.35][band]
-				var upper: float = [0.25,0.3,0.35,1.0][band]
+				var lower: float = [0.0,0.2,0.3][band]
+				var upper: float = [0.2,0.3,1.0][band]
 				var chosen: int = -1
 				for seed_value in range(1000):
 					probe.seed = seed_value
@@ -42,8 +42,8 @@ func run() -> void:
 						break
 				g.supply_director.rng.seed = chosen
 				g._hurt_player(1)
-				var expected: int = 1 if band<3-used else 0
-				check(chosen>=0 and g.enemies.size()==expected and g.supply_director.damage_supply_count==used+expected,"rush%s remaining%d roll band%d uses35/30/25percent and only successes consume allowance"%[rush,3-used,band])
+				var expected: int = 1 if band<2-used else 0
+				check(chosen>=0 and g.enemies.size()==expected and g.supply_director.damage_supply_count==used+expected,"rush%s remaining%d roll band%d uses30/20percent and only successes consume allowance"%[rush,2-used,band])
 	g.run_settings = g.run_settings.with_boss_rush(false)
 	var win: int = seed_for(true)
 	var miss: int = seed_for(false)
@@ -74,12 +74,7 @@ func run() -> void:
 	g.supply_director.rng.seed = win
 	before = g.supply_director.rng.state
 	g._hurt_player(15)
-	check(g.hp==40 and g.enemies.size()==3 and g.supply_director.damage_supply_count==3,"third successful hit uses the third emergency allowance")
-	g.invulnerability_seconds = 0
-	g.supply_director.rng.seed = win
-	before = g.supply_director.rng.state
-	g._hurt_player(15)
-	check(g.hp==25 and g.enemies.size()==3 and g.supply_director.rng.state==before,"fourth hit cannot roll or spawn after three allowances consumed")
+	check(g.hp==40 and g.enemies.size()==2 and g.supply_director.damage_supply_count==2 and g.supply_director.rng.state==before,"third hit cannot roll or spawn after two allowances consumed")
 	g._load_stage(2)
 	check(g.supply_director.damage_supply_count==0,"stage load resets emergency allowance")
 	g.boss = {"hp":100}
@@ -102,12 +97,7 @@ func run() -> void:
 	g.supply_director.rng.seed = win
 	before = g.supply_director.rng.state
 	g._hurt_player(15)
-	check(g.enemies.size()==3 and g.supply_director.damage_supply_count==3,"BossRush permits the third emergency delivery")
-	g.invulnerability_seconds = 0
-	g.supply_director.rng.seed = win
-	before = g.supply_director.rng.state
-	g._hurt_player(15)
-	check(g.enemies.size()==3 and before==g.supply_director.rng.state,"BossRush cannot exceed three emergency deliveries per stage")
+	check(g.enemies.size()==2 and before==g.supply_director.rng.state,"BossRush cannot exceed two emergency deliveries per stage")
 	g._load_stage(3)
 	g.supply_director.rng.seed = win
 	g._hurt_player(15)

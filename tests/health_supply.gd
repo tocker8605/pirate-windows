@@ -139,6 +139,37 @@ func run() -> void:
 		var part: Dictionary = Catalog.create(id,Vector2(100,100))
 		g._destroy_enemy(part)
 		check(g.items.size()==1 and g.items.at(0).kind==1,"actual BossRush part%d destruction still releases one power item"%id)
+	for rush in [false,true]:
+		g.run_settings=g.run_settings.with_boss_rush(rush)
+		for stage in range(1,6):
+			g._load_stage(stage)
+			var warning_events: Array=g.events.filter(func(event):return event.action=="banner" and event.name=="warning")
+			check(not warning_events.is_empty(),"stage%d rush%s has an authored WARNING event"%[stage,rush])
+			if warning_events.is_empty():continue
+			g.events=[warning_events[0]]
+			var scheduled: Array=g.supply_director.schedule.duplicate(true)
+			g.supply_director.damage_supply_count=2
+			g.stage_elapsed_seconds=float(g.events[0].at)
+			g._read_events()
+			check(g.enemies.is_empty(),"warning supply does not precede the existing WARNING dispatch boundary")
+			var combat_rng: int=Rng.state
+			g.stage_elapsed_seconds+=0.001
+			g._read_events()
+			var expected_count: int=0 if rush else 1
+			check(g.enemies.size()==expected_count and g.banner=="WARNING / BOSS APPROACHING","stage%d rush%s dispatches the intended HP bonus at WARNING start"%[stage,rush])
+			if not rush:
+				var bonus: Dictionary=g.enemies.at(0)
+				check(bonus.kind==202 and bonus.pos.x>=75 and bonus.pos.x<=275 and bonus.pos.y==480 and bonus.pattern==1074,"warning bonus uses the existing HP carrier and approach")
+			check(g.supply_director.schedule==scheduled and g.supply_director.damage_supply_count==2 and Rng.state==combat_rng,"warning bonus preserves basic delivery schedule, consumed hit allowance and combat RNG")
+			g.supply_director.on_boss_warning(g)
+			g._read_events()
+			check(g.enemies.size()==expected_count,"repeated WARNING cannot duplicate the stage bonus")
+	g.run_settings=g.run_settings.with_boss_rush(false)
+	g._load_stage(1)
+	g.events=[{"at":0,"action":"banner","name":"mission"}]
+	g.stage_elapsed_seconds=0.001
+	g._read_events()
+	check(g.enemies.is_empty() and not g.supply_director.warning_health_spawned,"MISSION banner does not trigger warning supplies and stage load resets the warning latch")
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	g.audio.stop_all()
 	g.queue_free()

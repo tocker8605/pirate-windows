@@ -36,12 +36,28 @@ func _initialize() -> void:
 		var twin: Array=Fire.advance(cannon,0.001,target)
 		check(twin.size()==2 and twin.all(func(s):return s.kind==1 and is_equal_approx(s.velocity.length(),210.0)),"autocannon fires original twin type at210px/s")
 		check(twin[0].velocity.is_equal_approx(twin[1].velocity),"both autocannon bullets share exactly the same aim angle")
+		check(twin[0].velocity.distance_to(Vector2.UP.rotated(TAU*0.36/6)*210)<0.001,"ordinary autocannon fires along continuous rotation independently of player position")
 		check(absf(twin[0].pos.distance_to(twin[1].pos)-10)<0.001,"original autocannon muzzle separation stays10px")
 		var spaced: bool=true
 		for frame in range(120):
 			for shot in twin:Motion.advance(shot,1.0/60)
 			spaced=spaced and absf(twin[0].pos.distance_to(twin[1].pos)-10)<0.001
 		check(spaced,"parallel autocannon bullets retain initial spacing throughout flight")
+	for side in [-1,1]:
+		var spinner: Dictionary=Catalog.create(51,Vector2(175+side*60,150))
+		Ground.initialize(spinner,0,true,Catalog.create(95,Vector2(300,70)))
+		var initial: float=spinner.ground_angle
+		check(Vector2.DOWN.rotated(initial).distance_to(Vector2.UP)<0.00001,"ordinary autocannon initially points at12oclock")
+		var volleys: int=0
+		for frame in range(360):
+			var previous: float=spinner.ground_angle
+			var pair: Array=Fire.advance(spinner,1.0/60,Vector2(0,400))
+			check(absf(spinner.ground_angle-previous-TAU/360*(-side))<0.00001,"ordinary autocannon rotates smoothly left-clockwise/right-counterclockwise")
+			if not pair.is_empty():
+				volleys+=1
+				var heading: Vector2=Vector2.UP.rotated(TAU*volleys*0.36/6*(-side))
+				check(pair.size()==2 and pair.all(func(s):return s.kind==1 and s.velocity.distance_to(heading*210)<0.001),"ordinary spinner preserves twin shot kind, speed and360ms cadence")
+		check(volleys==16 and absf(absf(spinner.ground_angle-initial)-TAU)<0.00001,"ordinary autocannon completes one turn in6seconds")
 	var world=World.new()
 	world.boss=Catalog.create(95,Vector2(200,80))
 	for kind in [145,146]:
@@ -69,20 +85,22 @@ func _initialize() -> void:
 		Ground.initialize(e,0,true,world.boss)
 		for i in range(37):
 			shots=Fire.advance(e,0.24,world.player,world.boss)
-			var expected: Vector2=Vector2.DOWN.rotated(deg_to_rad((i+1)*0.24/8.0*360*(-side)))
+			var expected: Vector2=Vector2.UP.rotated(deg_to_rad((i+1)*0.24/8.0*360*(-side)))
 			check(shots.size()==3 and shots[1].kind==4 and shots[0].kind==5 and shots[2].kind==5 and shots.all(func(s):return (s.velocity/160).distance_to(expected)<0.001),"side%d volley%d follows the continuous8second rotation in the correct direction"%[side,i])
 			check(absf(shots[0].pos.distance_to(shots[1].pos)-8)<0.001 and absf(shots[1].pos.distance_to(shots[2].pos)-8)<0.001,"rotating triplet%d preserves8px spacing"%i)
 	# Rotation must continue on frames without a shot, and complete exactly one turn.
 	for side in [-1,1]:
 		var rotor: Dictionary=Catalog.create(146,Vector2(175+side*60,215))
 		Ground.initialize(rotor,0,true,world.boss)
+		var initial: float=rotor.ground_angle
+		check(Vector2.DOWN.rotated(initial).distance_to(Vector2.UP)<0.00001,"energy boss turret initially points at12oclock")
 		var emitted: int=0
 		for frame in range(480):
 			var previous: float=rotor.ground_angle
 			var volley: Array=Fire.advance(rotor,1.0/60.0,world.player,world.boss)
 			emitted+=volley.size()/3
 			check(absf(float(rotor.ground_angle)-previous-TAU/480*(-side))<0.00001,"146 rotates smoothly on every frame, including between volleys")
-		check(absf(absf(float(rotor.ground_angle))-TAU)<0.00001 and emitted==33,"146 completes one turn in8seconds independently of its240ms firing timer")
+		check(absf(absf(float(rotor.ground_angle)-initial)-TAU)<0.00001 and emitted==33,"146 completes one turn in8seconds independently of its240ms firing timer")
 	# Projectile visible X and laser center must align with painted part bounds.
 	for kind in [141,142,143,144]:
 		var part: Dictionary=Catalog.create(kind,Vector2(200,100))

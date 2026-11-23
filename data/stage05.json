@@ -47,8 +47,8 @@
 
     {"comment": "기관 포대"},
     {"at": 25, "action": "spawn", "definition_id": 51, "position": [70, -60], "start_exposed": true},
-    {"at": 25, "action": "spawn", "definition_id": 51, "position": [140, -60], "start_exposed": false},
-    {"at": 25, "action": "spawn", "definition_id": 51, "position": [210, -60], "start_exposed": false},
+    {"at": 25, "action": "spawn", "definition_id": 52, "position": [140, -60], "start_exposed": false},
+    {"at": 25, "action": "spawn", "definition_id": 52, "position": [210, -60], "start_exposed": false},
     {"at": 25, "action": "spawn", "definition_id": 51, "position": [280, -60], "start_exposed": true},
 
     {"comment": "에너지 포대"},
@@ -60,8 +60,8 @@
     {"at": 35, "action": "spawn", "definition_id": 42, "position": [275, -99], "pattern": 1072},
 
     {"comment": "에너지 포대"},
-    {"at": 40, "action": "spawn", "definition_id": 52, "position": [100, -60], "start_exposed": false},
-    {"at": 40, "action": "spawn", "definition_id": 52, "position": [250, -60], "start_exposed": false},
+    {"at": 40, "action": "spawn", "definition_id": 52, "position": [270, -60], "start_exposed": false},
+    {"at": 41.2, "action": "spawn", "definition_id": 52, "position": [270, -60], "start_exposed": false},
 
     {"comment": "대형"},
     {"at": 42, "action": "spawn", "definition_id": 41, "position": [275, -99], "pattern": 1072},
@@ -86,10 +86,10 @@
     {"at": 54.6, "action": "spawn", "definition_id": 6, "position": [260, -50], "pattern": 1052},
 
     {"comment": "에너지 포대"},
-    {"at": 58, "action": "spawn", "definition_id": 52, "position": [70, -60], "start_exposed": false},
-    {"at": 58, "action": "spawn", "definition_id": 52, "position": [140, -60], "start_exposed": true},
-    {"at": 58, "action": "spawn", "definition_id": 52, "position": [210, -60], "start_exposed": true},
-    {"at": 58, "action": "spawn", "definition_id": 52, "position": [280, -60], "start_exposed": false},
+    {"at": 58, "action": "spawn", "definition_id": 52, "position": [70, -60], "start_exposed": true},
+    {"at": 58, "action": "spawn", "definition_id": 51, "position": [140, -60], "start_exposed": false},
+    {"at": 58, "action": "spawn", "definition_id": 51, "position": [210, -60], "start_exposed": false},
+    {"at": 58, "action": "spawn", "definition_id": 52, "position": [280, -60], "start_exposed": true},
 
     {"comment": "중형"},
     {"at": 59, "action": "spawn", "definition_id": 22, "position": [120, -90], "pattern": 1073},
@@ -125,13 +125,6 @@
 
     {"at": 70, "action": "scroll", "mode": 3, "speed": 60},
 
-    {"comment": "swept_wing_fighter 좌상"},
-    {"at": 72, "action": "spawn", "definition_id": 6, "position": [50, -50], "pattern": 1051},
-    {"at": 72.4, "action": "spawn", "definition_id": 7, "position": [60, -50], "pattern": 1051},
-    {"at": 72.8, "action": "spawn", "definition_id": 6, "position": [70, -50], "pattern": 1051},
-    {"at": 73.2, "action": "spawn", "definition_id": 7, "position": [80, -50], "pattern": 1051},
-    {"at": 73.6, "action": "spawn", "definition_id": 6, "position": [90, -50], "pattern": 1051},
-
     {"comment": "swept_wing_fighter 우상"},
     {"at": 74, "action": "spawn", "definition_id": 6, "position": [300, -50], "pattern": 1052},
     {"at": 74.4, "action": "spawn", "definition_id": 7, "position": [290, -50], "pattern": 1052},
@@ -150,18 +143,11 @@
     {"at": 81, "action": "spawn", "definition_id": 42, "position": [75, -99], "pattern": 1072},
 
     {"comment": "swept_wing_fighter 좌상"},
-    {"at": 83, "action": "spawn", "definition_id": 6, "position": [50, -50], "pattern": 1051},
-    {"at": 83.2, "action": "spawn", "definition_id": 7, "position": [60, -50], "pattern": 1051},
-    {"at": 83.4, "action": "spawn", "definition_id": 6, "position": [70, -50], "pattern": 1051},
-    {"at": 83.6, "action": "spawn", "definition_id": 7, "position": [80, -50], "pattern": 1051},
-    {"at": 83.8, "action": "spawn", "definition_id": 6, "position": [90, -50], "pattern": 1051},
-
-    {"comment": "swept_wing_fighter 우상"},
-    {"at": 85, "action": "spawn", "definition_id": 6, "position": [300, -50], "pattern": 1052},
-    {"at": 85.2, "action": "spawn", "definition_id": 7, "position": [290, -50], "pattern": 1052},
-    {"at": 85.4, "action": "spawn", "definition_id": 6, "position": [280, -50], "pattern": 1052},
-    {"at": 85.6, "action": "spawn", "definition_id": 7, "position": [270, -50], "pattern": 1052},
-    {"at": 85.8, "action": "spawn", "definition_id": 6, "position": [260, -50], "pattern": 1052},
+    {"at": 84, "action": "spawn", "definition_id": 6, "position": [50, -50], "pattern": 1051},
+    {"at": 84.2, "action": "spawn", "definition_id": 7, "position": [60, -50], "pattern": 1051},
+    {"at": 84.4, "action": "spawn", "definition_id": 6, "position": [70, -50], "pattern": 1051},
+    {"at": 84.6, "action": "spawn", "definition_id": 7, "position": [80, -50], "pattern": 1051},
+    {"at": 84.8, "action": "spawn", "definition_id": 6, "position": [90, -50], "pattern": 1051},
 
     {"comment": "포대"},
     {"at": 88, "action": "spawn", "definition_id": 51, "position": [140, -60], "start_exposed": false},

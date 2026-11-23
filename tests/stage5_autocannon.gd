@@ -12,6 +12,8 @@ func _initialize() -> void:
 		var boss: Dictionary=Catalog.create(95,Vector2(200,70));boss.hp=1200
 		var turret: Dictionary=Catalog.create(145,Vector2(175+side*60,215))
 		Ground.initialize(turret,0,true,boss)
+		var initial: float=turret.ground_angle
+		check(Vector2.DOWN.rotated(initial).distance_to(Vector2.UP)<0.00001,"boss autocannon initially points at12oclock")
 		var volleys: int=0
 		for frame in range(360):
 			var previous: float=turret.ground_angle
@@ -19,7 +21,7 @@ func _initialize() -> void:
 			check(absf(turret.ground_angle-previous-TAU/360*(-side))<0.00001,"autocannon rotates smoothly every frame in correct direction")
 			if not shots.is_empty():
 				volleys+=1
-				var expected: Vector2=Vector2.DOWN.rotated(TAU*volleys*0.18/6*(-side))
+				var expected: Vector2=Vector2.UP.rotated(TAU*volleys*0.18/6*(-side))
 				check(shots.size()==2 and shots.all(func(s):return s.kind==1 and s.velocity.distance_to(expected*210)<0.001),"autocannon twin bullets follow rotation instead of aiming at player")
-		check(volleys==33 and is_equal_approx(absf(turret.ground_angle),TAU),"autocannon completes six-second turn with 180ms cadence")
+		check(volleys==33 and is_equal_approx(absf(turret.ground_angle-initial),TAU),"autocannon completes six-second turn with 180ms cadence")
 	print("RESULT: %d checks, %d failures"%[checks,failures]);quit(0 if failures==0 else 1)
