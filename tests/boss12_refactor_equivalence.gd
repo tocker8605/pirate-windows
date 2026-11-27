@@ -37,6 +37,10 @@ func _initialize() -> void:
 		var output=FileAccess.open(PATH,FileAccess.WRITE);output.store_string(JSON.stringify(rows));output.close()
 		print("Captured %d original motion/volley records"%rows.size());quit();return
 	var expected: Array=JSON.parse_string(FileAccess.get_file_as_string(PATH))
+	# Enrage volleys at ticks400..699 were deliberately redesigned after this snapshot.
+	# Keep normal sweep, docking, timing outside that phase, and stage2 enrage comparisons.
+	var unchanged: Callable=func(row):return not (row[0]=="shot" and int(row[1]) in [0,1,2] and int(row[2])>=400 and int(row[2])<700)
+	expected=expected.filter(unchanged);rows=rows.filter(unchanged)
 	var failures: int=0 if expected.size()==rows.size() else 1
 	for i in range(mini(expected.size(),rows.size())):
 		var same: bool=expected[i].size()==rows[i].size()

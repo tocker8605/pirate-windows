@@ -36,6 +36,15 @@ static func emit(e: Dictionary,player: Vector2,channel: Dictionary,boss: Diction
 				var heading: Vector2=(player+Pilot.COCKPIT-origin).normalized() if v.get("aim_from_muzzle",false) else direction
 				if heading==Vector2.ZERO and v.has("zero_aim_direction"):heading=vector(v.zero_aim_direction).normalized()
 				for degrees in v.get("angles_degrees",[0]):add(result,origin,heading.rotated(deg_to_rad(degrees))*float(v.speed),kind)
+		"revolving":
+			var age: float=float(e.get("fire_age",0)) if fired_at<0 else fired_at
+			var starts: Dictionary=e.get("volley_origins",{})
+			if not starts.has(channel.name):starts[channel.name]=age
+			e.volley_origins=starts
+			var phase: float=TAU*fposmod(age-float(starts[channel.name]),float(v.period_seconds))/float(v.period_seconds)
+			for i in range(ports.size()):
+				var angle: float=deg_to_rad(float(v.initial_degrees))+phase*float(v.rotation_directions[i])+pose_angle
+				add(result,Geometry.world_point(e,vector(ports[i]),pose_angle),Vector2.DOWN.rotated(angle)*float(v.speed),kind)
 		"oscillating":
 			var age: float=float(e.get("fire_age",0)) if fired_at<0 else fired_at
 			var progress: float=(1-cos(TAU*fposmod(age,float(v.period_seconds))/float(v.period_seconds)))/2

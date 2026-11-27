@@ -69,16 +69,31 @@ func run() -> void:
 	var at12: Dictionary=batches[78]
 	check(absf(rad_to_deg(Vector2.DOWN.angle_to(at12.velocity))-60)<0.0001,"half-cycle reaches requested60degree endpoint")
 	for target in [Vector2(20,400),Vector2(340,300),Vector2(175,440)]:
-		var aimed_body: Dictionary=Catalog.create(91,Vector2(200,80))
-		check(Boss.advance(aimed_body,[],0.239,target).is_empty(),"enrage waits full240ms interval")
-		var volley: Array=Boss.advance(aimed_body,[],0.001,target)
-		check(volley.size()==2,"enrage fires both eyes together")
-		for shot in volley:
-			var delta: Vector2=target+Vector2(25,18)-shot.pos
-			check(shot.velocity.distance_to(delta.normalized()*250)<0.0001,"each eye individually aims at player cockpit at250px/s")
-			var arrival: Vector2=shot.pos+shot.velocity*(delta.length()/250)
-			check(arrival.distance_to(target+Vector2(25,18))<0.0001,"each trajectory passes through the exact player cockpit")
+		var revolving_body: Dictionary=Catalog.create(91,Vector2(200,80))
+		check(Boss.advance(revolving_body,[],0.119,target).is_empty(),"enrage waits full120ms interval")
+		var volley: Array=Boss.advance(revolving_body,[],0.001,target)
+		check(volley.size()==2 and volley.all(func(s):return s.velocity==Vector2(0,250)),"enrage begins downwards independent of target position")
+		volley=Boss.advance(revolving_body,[],0.12,target)
+		for i in range(2):
+			var expected: Vector2=Vector2.DOWN.rotated(TAU*0.12/4*(-1 if i==0 else 1))*250
+			check(volley[i].velocity.distance_to(expected)<0.0001,"left rotates counterclockwise and right clockwise with four-second period")
 
+	var entered: Dictionary=Catalog.create(91,Vector2(200,80))
+	Boss.advance(entered,parts,2.7)
+	var initial: Array=Boss.advance(entered,[],0.12,Vector2(0,400))
+	check(initial.size()==2 and initial.all(func(shot):return shot.velocity==Vector2(0,250)),"normal-phase elapsed time cannot shift initial enrage direction")
+	var start: float=entered.fire_age
+	for elapsed in [1.0,2.0,3.0,4.0]:
+		var rotated: Array=Boss.emit(entered,"eye_revolving",Vector2(350,400),start+elapsed)
+		for i in range(2):
+			var expected: Vector2=Vector2.DOWN.rotated(TAU*elapsed/4*(-1 if i==0 else 1))*250
+			check(rotated[i].velocity.distance_to(expected)<0.0001,"quarter-turn samples and full four-second revolution keep exact directions")
+	var fine_body: Dictionary=Catalog.create(91,Vector2(200,80))
+	var stepped: Array=[]
+	for tick in range(600):stepped.append_array(Boss.advance(fine_body,[],1.0/60))
+	var caught_up: Array=Boss.advance(Catalog.create(91,Vector2(200,80)),[],10)
+	check(stepped.size()==caught_up.size(),"continuous rotation preserves volley count across frame subdivision")
+	for i in range(mini(stepped.size(),caught_up.size())):check(stepped[i].velocity.distance_to(caught_up[i].velocity)<0.0001,"continuous rotation uses event time independently of frame size")
 	var doc: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(Catalog.PATH))
 	doc.entities["91"].fire_channels[0].volley.period_seconds=0
 	check(not Catalog.validate_document(doc).is_empty(),"invalid sweep period rejected")

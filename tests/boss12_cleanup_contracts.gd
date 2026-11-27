@@ -48,7 +48,7 @@ func _initialize() -> void:
 	check(Volleys.emit(owner,Vector2(175,400),extra).size()==1,"additional volley uses common geometry")
 	changed=source.duplicate(true);changed.entities["91"].fire_channels.append(extra)
 	check(Catalog.validate_document(changed).is_empty(),"first boss can add channels without special attack configuration")
-	var aimed: Dictionary=definition.fire_channels[1]
+	var aimed: Dictionary={"name":"zero_aim_probe","volley":{"type":"aimed","ports":[[-7,19.3]],"speed":250,"projectile_kind":1,"aim_from_muzzle":true,"zero_aim_direction":[0,1]}}
 	var origin:=Vector2(193,99.3)
 	var overlap: Array=Volleys.emit(Catalog.create(91,Vector2(200,80)),origin-Vector2(25,18),aimed)
 	check(overlap[0].velocity==Vector2(0,250),"coincident cockpit keeps the original downward aim fallback")
