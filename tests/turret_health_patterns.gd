@@ -18,7 +18,7 @@ func check(ok: bool,message: String) -> void:
 	else:failures+=1;push_error("FAIL: "+message)
 func _initialize() -> void:
 	check(Catalog.boss_definition(5).hp==3600,"stage5 boss has3600HP")
-	for kind in [51,52,145,146]:check(Catalog.definition(kind).hp==(120 if kind<100 else 800),"turret%d has the requested HP"%kind)
+	for kind in [51,52,145,146]:check(Catalog.definition(kind).hp==(120 if kind<100 else 1000 if kind==145 else 800),"turret%d has the requested HP"%kind)
 	for kind in [51,145]:check(Catalog.fire_channel(kind,"ground_shot").interval_seconds==(0.24 if kind==51 else 0.18),"autocannon%d uses its configured240or180ms interval"%kind)
 	check(Catalog.fire_channel(52,"ground_shot").interval_seconds==0.72 and Catalog.fire_channel(146,"ground_shot").interval_seconds==0.24,"energy turret cadences are720ms and240ms")
 	var normal: Dictionary=Catalog.create(52,Vector2(150,150))

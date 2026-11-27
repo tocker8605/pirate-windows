@@ -1531,13 +1531,13 @@
         },
         {
           "name": "chest_fan",
-          "interval_seconds": 0.3,
+          "interval_seconds": 0.4,
           "gate": "part_alive",
           "part_id": 113,
           "window_seconds": [
             6,
             0,
-            1.8
+            2
           ],
           "volley": {
             "type": "aimed",
@@ -1548,13 +1548,13 @@
               ]
             ],
             "projectile_kind": 5,
-            "speed": 240,
+            "speed": 250,
             "angles_degrees": [
-              -10,
-              -5,
+              -12,
+              -6,
               0,
-              5,
-              10
+              6,
+              12
             ],
             "aim_from_muzzle": true
           }
@@ -4352,8 +4352,8 @@
     "145": {
       "name": "supercomputer_autocannon_turret",
       "role": "part",
-      "hp": 800,
-      "score": 2000,
+      "hp": 1000,
+      "score": 2500,
       "score_scales_with_difficulty": true,
       "damageable": true,
       "death_sound": "bang-e",
