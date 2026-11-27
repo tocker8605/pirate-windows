@@ -1576,7 +1576,7 @@
         }
       ],
       "name": "boss_stage2",
-      "display_name": "VRMILION",
+      "display_name": "VERMILION",
       "role": "boss",
       "hp": 1250,
       "score": 5000,
@@ -1712,7 +1712,7 @@
       ],
       "attack": {
         "type": "paired_aimed_fan",
-        "speed": 220,
+        "speed": 250,
         "count": 4,
         "spread_degrees": 45,
         "projectile_kind": 6,
@@ -1728,7 +1728,7 @@
         ]
       },
       "name": "boss_stage3",
-      "display_name": "JUGGRNAUT",
+      "display_name": "JUGGERNAUT",
       "role": "boss",
       "hp": 1500,
       "score": 7000,

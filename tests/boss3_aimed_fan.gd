@@ -24,7 +24,7 @@ func run() -> void:
 	var left: Array = Boss.emit(b,"left_enrage",player)
 	var right: Array = Boss.emit(b,"right_enrage",player)
 	check(left.size()==4 and right.size()==4,"each shoulder emits its own complete four-way fan")
-	check((left+right).all(func(s): return s.kind==6 and is_equal_approx(s.velocity.length(),220)),"fan projectile type and speed retained")
+	check((left+right).all(func(s): return s.kind==6 and is_equal_approx(s.velocity.length(),250)),"fan projectile type and speed retained")
 	for side in range(2):
 		var shots: Array = left if side==0 else right
 		var muzzle: Vector2 = b.pos+Vector2(-43 if side==0 else 43,46)
