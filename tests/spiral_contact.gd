@@ -21,7 +21,7 @@ func run() -> void:
 	for i in range(5): a.append_array(Fire.advance(left,1.0/60))
 	check(a.is_empty(),"spiral waits for100ms instead of legacy phase cadence")
 	a.append_array(Fire.advance(left,1.0/60))
-	check(a.size()==2 and a[0].pos==Vector2(200,125) and a[0].velocity.distance_to((Vector2(0,-7))/0.03)<0.001,"sixth native tick fires centrally while moving vertically with zero horizontal speed")
+	check(a.size()==2 and a[0].pos==Vector2(200,125) and a[0].velocity.distance_to(Vector2(0,-230))<0.001,"sixth native tick fires centrally while moving vertically with zero horizontal speed")
 	check(a[0].velocity.distance_to(-a[1].velocity)<0.001 and a[0].pos==a[1].pos,"paired spiral rays share the centre and point exactly180degrees apart")
 	var b: Array = Fire.advance(left,0.1)
 	check(b.size()==2 and is_equal_approx(b[0].velocity.angle(),deg_to_rad(-75)),"centre-line belongs to the left half: clockwise from upward")
@@ -40,7 +40,7 @@ func run() -> void:
 	moving.velocity.x = (0/0.03)
 	check(Fire.advance(moving,0.05).is_empty(),"stopping does not release queued or partially accumulated shots")
 	var resumed: Array = Fire.advance(moving,0.05)
-	check(resumed.size()==2 and resumed[0].velocity.distance_to((Vector2(0,-7))/0.03)<0.001,"stopped actor fires after100ms and moving did not advance sweep angle")
+	check(resumed.size()==2 and resumed[0].velocity.distance_to(Vector2(0,-230))<0.001,"stopped actor fires after100ms and moving did not advance sweep angle")
 	var fresh: Dictionary = Catalog.create(5,Vector2(100,100))
 	var emitted := 0
 	var all_angles := []

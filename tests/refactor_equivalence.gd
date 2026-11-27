@@ -53,7 +53,7 @@ func _initialize() -> void:
     reference=reference.filter(func(row):return int(row[0]) not in [141,142,143,144])
     rows=rows.filter(func(row):return int(row[0]) not in [141,142,143,144])
     # Stage3 angular arms and alternating shoulder fans have dedicated behavior coverage.
-    var unchanged_stage3: Callable=func(row):return not (row.size()>4 and (int(row[0]) in [121,122] or (int(row[0])==93 and int(row[3])==6)))
+    var unchanged_stage3: Callable=func(row):return not (row.size()>4 and (int(row[0]) in [121,122,123,124] or (int(row[0])==93 and int(row[3])==6)))
     reference=reference.filter(unchanged_stage3)
     rows=rows.filter(unchanged_stage3)
     # New stage2 chest fan uses X200; retain all original side-muzzle enrage/RNG records.
@@ -70,6 +70,10 @@ func _initialize() -> void:
     var old_heavy_fan: Callable=func(row):return not (row.size()>4 and int(row[0])==42 and int(row[3])==6)
     reference=reference.filter(old_heavy_fan)
     rows=rows.filter(old_heavy_fan)
+    # Requested normal-enemy ballistics tuning has dedicated speed/cadence/trajectory tests.
+    var tuned: Dictionary={1:[1],2:[1],3:[5],5:[6],6:[7],11:[7,5],10:[1],21:[1],22:[7],41:[6]}
+    var unchanged_ballistics: Callable=func(row):return not (row.size()>4 and int(row[3]) in tuned.get(int(row[0]),[]))
+    reference=reference.filter(unchanged_ballistics);rows=rows.filter(unchanged_ballistics)
     checks+=1
     if rows.size()!=reference.size():failures+=1;push_error("FAIL: volley record count differs")
     for i in range(mini(rows.size(),reference.size())):

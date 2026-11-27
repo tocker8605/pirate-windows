@@ -48,13 +48,13 @@ func run() -> void:
 	check(Fire.advance(wing,0.47,player).is_empty() and Fire.advance(wing,0.01,player).size()==1,"variable wing enables aim atY80 with480ms cadence and no banked shots")
 	wing = Catalog.create(2,Vector2(100,79.99))
 	wing.velocity.x = 100
-	check(Fire.advance(wing,0.18,player).size()==1,"variable wing moving shot remains enabled aboveY80")
-	check(Fire.advance(a,0.35,player).is_empty() and Fire.advance(b,0.1,player).is_empty(),"new actors each wait their own first interval")
+	check(Fire.advance(wing,0.36,player).size()==1,"variable wing moving shot remains enabled aboveY80")
+	check(Fire.advance(a,0.39,player).is_empty() and Fire.advance(b,0.1,player).is_empty(),"new actors each wait their own first interval")
 	check(Fire.advance(a,0.01,player).size()==1 and Fire.advance(b,0.01,player).is_empty(),"one actor firing cannot advance another actor clock")
 	a.velocity.y = (4/0.03)
 	check(Fire.advance(a,5,player).is_empty(),"disabled movement gate emits no queued attacks")
 	a.velocity.y = (0/0.03)
-	check(Fire.advance(a,0.35,player).is_empty() and Fire.advance(a,0.01,player).size()==1,"reactivated gate waits one complete interval without a burst")
+	check(Fire.advance(a,0.39,player).is_empty() and Fire.advance(a,0.01,player).size()==1,"reactivated gate waits one complete interval without a burst")
 	a.hp = 0
 	check(Fire.advance(a,10,player).is_empty(),"destroyed actors cannot fire")
 	var body: Dictionary = Catalog.create(92,Vector2(200,100))
@@ -79,7 +79,7 @@ func run() -> void:
 	check(Boss.advance(Catalog.create(92,Vector2(200,100)),[],0.27).size()==6,"large stage2 time step retains all three due volleys")
 	body = Catalog.create(93,Vector2(200,100))
 	shots = Boss.advance(body,[],9,player)
-	check(shots.filter(func(s): return s.kind==6).size()==116 and shots.filter(func(s): return s.kind==2).size()==36,"stage3 alternating300ms fans and480ms missiles retain their configured rates")
+	check(shots.filter(func(s): return s.kind==6).size()==80 and shots.filter(func(s): return s.kind==2).size()==36,"stage3 alternating400ms fans and480ms missiles retain their configured rates")
 	var window_channel: Dictionary = Catalog.definition(121).fire_channels[0]
 	check(Scheduler.advance({},[window_channel],1.8,func(_c): return true).is_empty(),"left arm rests before its local firing window opens")
 	var invalid: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Catalog.PATH))

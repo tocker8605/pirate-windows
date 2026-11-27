@@ -28,7 +28,7 @@ func run() -> void:
 	var e: Dictionary = Catalog.create(6,Vector2(100,100))
 	e.velocity = Vector2(-200,100)
 	var shots: Array = Fire.emit(e,Vector2(175,400),"twin")
-	check(shots.all(func(s): return s.kind==7 and s.velocity.distance_to(Vector2(200,7/0.03))<0.001),"swept-wing correction leaves projectile type and motion-linked trajectory unchanged")
+	check(shots.all(func(s): return s.kind==7 and s.velocity.distance_to(Vector2(200,230))<0.001),"swept-wing correction leaves projectile type and motion-linked trajectory unchanged")
 	e = Catalog.create(8,Vector2(100,100))
 	e.velocity.y = 100
 	check(Fire.advance(e,0.239).is_empty(),"folding twins still wait240ms")
@@ -41,12 +41,12 @@ func run() -> void:
 		heavy.fire_age = float(sample[0])
 		shots = Fire.emit(heavy,player,"aim")
 		var angle: float = deg_to_rad(sample[1])
-		check(shots.size()==2 and shots[0].velocity.distance_to(direction.rotated(angle)*333.33333333333337)<0.001 and shots[1].velocity.distance_to(direction.rotated(-angle)*333.33333333333337)<0.001,"heavy cannons mirror the requested angle at %ss"%sample[0])
-		check(shots.all(func(s): return s.kind==6 and absf(s.velocity.length()-333.33333333333337)<0.001),"heavy sweep retains projectile type and speed at %ss"%sample[0])
+		check(shots.size()==2 and shots[0].velocity.distance_to(direction.rotated(angle)*280)<0.001 and shots[1].velocity.distance_to(direction.rotated(-angle)*280)<0.001,"heavy cannons mirror the requested angle at %ss"%sample[0])
+		check(shots.all(func(s): return s.kind==6 and absf(s.velocity.length()-280)<0.001),"heavy sweep retains projectile type and speed at %ss"%sample[0])
 	for age in [0.0,2.0,4.0,6.0,8.0]:
 		check(absf(Fire.heavy_cannon_angle(age-0.001)-Fire.heavy_cannon_angle(age+0.001))<0.001,"sweep is continuous across phase %s"%age)
 	var reference: Array = Fire.advance(Catalog.create(41,Vector2(100,100)),12,player)
-	check(reference.filter(func(s): return s.kind==6).size()==132 and reference.filter(func(s): return s.kind==2).size()==16,"12s preserves66 twin volleys and16missiles")
+	check(reference.filter(func(s): return s.kind==6).size()==108 and reference.filter(func(s): return s.kind==2).size()==16,"12s preserves54 twin volleys and16missiles")
 	for step in [1.0/30,1.0/60,0.2]:
 		heavy = Catalog.create(41,Vector2(100,100))
 		var sequence: Array = []

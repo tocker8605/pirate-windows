@@ -7,7 +7,7 @@
       "fire_channels": [
         {
           "name": "aim",
-          "interval_seconds": 0.36,
+          "interval_seconds": 0.4,
           "gate": "aim_window",
           "volley": {
             "type": "aimed",
@@ -17,7 +17,7 @@
                 20
               ]
             ],
-            "speed": 233.33333333333334,
+            "speed": 230,
             "projectile_kind": 1
           }
         }
@@ -81,7 +81,7 @@
       "fire_channels": [
         {
           "name": "moving",
-          "interval_seconds": 0.18,
+          "interval_seconds": 0.36,
           "gate": "moving",
           "volley": {
             "type": "motion_deflection",
@@ -91,7 +91,7 @@
                 20
               ]
             ],
-            "down_speed": 366.6666666666667,
+            "down_speed": 300,
             "projectile_kind": 1
           }
         },
@@ -174,14 +174,23 @@
           "interval_seconds": 0.12,
           "gate": "sweep_y",
           "volley": {
-            "type": "height_sweep",
+            "type": "oscillating",
             "ports": [
               [
                 25,
                 30
               ]
             ],
-            "speed_y": 266.6666666666667,
+            "period_seconds": 1.5,
+            "sweep_degrees": [
+              [
+                -20,
+                20
+              ]
+            ],
+            "clock_origin": "first_shot",
+            "initial_phase_degrees": -90,
+            "speed": 240,
             "projectile_kind": 5
           }
         }
@@ -363,7 +372,7 @@
       "attack": {
         "type": "spiral",
         "interval_seconds": 0.1,
-        "speed": 233.33333333333334,
+        "speed": 230,
         "step_degrees": 15,
         "requires_stationary_x": true,
         "opposed": true,
@@ -400,7 +409,7 @@
               ]
             ],
             "speed": 300,
-            "speed_y": 233.33333333333334,
+            "speed_y": 230,
             "projectile_kind": 7
           }
         }
@@ -725,7 +734,7 @@
       "fire_channels": [
         {
           "name": "twin",
-          "interval_seconds": 0.36,
+          "interval_seconds": 0.45,
           "gate": "descending",
           "volley": {
             "type": "fixed",
@@ -741,14 +750,14 @@
             ],
             "velocity": [
               0,
-              266.6666666666667
+              250
             ],
             "projectile_kind": 1
           }
         },
         {
           "name": "aim",
-          "interval_seconds": 0.3,
+          "interval_seconds": 0.4,
           "gate": "aim_window",
           "volley": {
             "type": "aimed",
@@ -758,7 +767,7 @@
                 20
               ]
             ],
-            "speed": 233.33333333333334,
+            "speed": 230,
             "projectile_kind": 1
           }
         }
@@ -832,7 +841,9 @@
                 25
               ]
             ],
-            "projectile_kind": 7
+            "projectile_kind": 7,
+            "secondary_speed_y": 240,
+            "primary_speed_scale": 1.2
           }
         }
       ],
@@ -993,7 +1004,7 @@
                 40
               ]
             ],
-            "speed": 333.33333333333337,
+            "speed": 320,
             "projectile_kind": 1
           }
         }
@@ -1095,7 +1106,7 @@
                 25
               ]
             ],
-            "speed": 333.33333333333337,
+            "speed": 320,
             "projectile_kind": 7
           }
         }
@@ -1163,7 +1174,7 @@
       "fire_channels": [
         {
           "name": "aim",
-          "interval_seconds": 0.18,
+          "interval_seconds": 0.22,
           "gate": "always",
           "volley": {
             "type": "sweeping_pair",
@@ -1177,7 +1188,7 @@
                 40
               ]
             ],
-            "speed": 333.33333333333337,
+            "speed": 280,
             "projectile_kind": 6
           }
         },
@@ -1670,7 +1681,7 @@
         },
         {
           "name": "left_enrage",
-          "interval_seconds": 0.3,
+          "interval_seconds": 0.4,
           "gate": "part_missing",
           "volley": {
             "type": "shoulder_fan",
@@ -1685,7 +1696,7 @@
         },
         {
           "name": "right_enrage",
-          "interval_seconds": 0.3,
+          "interval_seconds": 0.4,
           "gate": "part_missing",
           "volley": {
             "type": "shoulder_fan",
@@ -1701,7 +1712,7 @@
       ],
       "attack": {
         "type": "paired_aimed_fan",
-        "speed": 300.0,
+        "speed": 220,
         "count": 4,
         "spread_degrees": 45,
         "projectile_kind": 6,
@@ -2478,7 +2489,7 @@
       "fire_channels": [
         {
           "name": "triple",
-          "interval_seconds": 0.48,
+          "interval_seconds": 0.36,
           "gate": "always",
           "window_seconds": [
             3.6,
@@ -2494,7 +2505,7 @@
               ]
             ],
             "projectile_kind": 5,
-            "speed": 300.0,
+            "speed": 260,
             "angles_degrees": [
               -8,
               0,
@@ -2576,7 +2587,7 @@
       "fire_channels": [
         {
           "name": "triple",
-          "interval_seconds": 0.48,
+          "interval_seconds": 0.36,
           "gate": "always",
           "window_seconds": [
             3.6,
@@ -2592,7 +2603,7 @@
               ]
             ],
             "projectile_kind": 5,
-            "speed": 300.0,
+            "speed": 260,
             "angles_degrees": [
               -8,
               0,
@@ -2677,7 +2688,7 @@
       "fire_channels": [
         {
           "name": "rotating_cross",
-          "interval_seconds": 0.3,
+          "interval_seconds": 0.36,
           "gate": "orb_y_stationary",
           "projectile_kind": 3,
           "count": 4,
@@ -2685,7 +2696,7 @@
           "rotation_step_degrees": 10,
           "rotation_direction": 1,
           "initial_degrees": 90,
-          "speed": 300.0,
+          "speed": 260,
           "volley": {
             "type": "rotating",
             "ports": [
@@ -2781,7 +2792,7 @@
       "fire_channels": [
         {
           "name": "rotating_cross",
-          "interval_seconds": 0.3,
+          "interval_seconds": 0.36,
           "gate": "orb_y_stationary",
           "projectile_kind": 3,
           "count": 4,
@@ -2789,7 +2800,7 @@
           "rotation_step_degrees": 10,
           "rotation_direction": -1,
           "initial_degrees": 90,
-          "speed": 300.0,
+          "speed": 260,
           "volley": {
             "type": "rotating",
             "ports": [

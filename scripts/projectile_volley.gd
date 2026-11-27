@@ -20,6 +20,14 @@ static func aimed_fan(muzzle: Vector2,target: Vector2,count: int,arc: float,spee
 		var offset: float=lerpf(-arc/2,arc/2,float(i)/(count-1)) if count>1 else 0
 		add(result,muzzle,Vector2.from_angle(angle+offset)*speed,kind)
 	return result
+## Shared phase origin for time-driven volleys; shot cadence remains in AttackTimer.
+static func phase_age(e: Dictionary,channel: Dictionary,fired_at: float,first_shot: bool) -> float:
+	var age: float=float(e.get("fire_age",0)) if fired_at<0 else fired_at
+	if not first_shot:return age
+	var starts: Dictionary=e.get("volley_origins",{})
+	if not starts.has(channel.name):starts[channel.name]=age
+	e.volley_origins=starts
+	return age-float(starts[channel.name])
 static func emit(e: Dictionary,player: Vector2,channel: Dictionary,boss: Dictionary = {},fired_at: float = -1,body_attack: Dictionary = {}) -> Array:
 	var v: Dictionary=channel.get("volley",{})
 	var result: Array=[]
@@ -37,17 +45,15 @@ static func emit(e: Dictionary,player: Vector2,channel: Dictionary,boss: Diction
 				if heading==Vector2.ZERO and v.has("zero_aim_direction"):heading=vector(v.zero_aim_direction).normalized()
 				for degrees in v.get("angles_degrees",[0]):add(result,origin,heading.rotated(deg_to_rad(degrees))*float(v.speed),kind)
 		"revolving":
-			var age: float=float(e.get("fire_age",0)) if fired_at<0 else fired_at
-			var starts: Dictionary=e.get("volley_origins",{})
-			if not starts.has(channel.name):starts[channel.name]=age
-			e.volley_origins=starts
-			var phase: float=TAU*fposmod(age-float(starts[channel.name]),float(v.period_seconds))/float(v.period_seconds)
+			var age: float=phase_age(e,channel,fired_at,true)
+			var phase: float=TAU*fposmod(age,float(v.period_seconds))/float(v.period_seconds)
 			for i in range(ports.size()):
 				var angle: float=deg_to_rad(float(v.initial_degrees))+phase*float(v.rotation_directions[i])+pose_angle
 				add(result,Geometry.world_point(e,vector(ports[i]),pose_angle),Vector2.DOWN.rotated(angle)*float(v.speed),kind)
 		"oscillating":
-			var age: float=float(e.get("fire_age",0)) if fired_at<0 else fired_at
-			var progress: float=(1-cos(TAU*fposmod(age,float(v.period_seconds))/float(v.period_seconds)))/2
+			var age: float=phase_age(e,channel,fired_at,v.get("clock_origin","spawn")=="first_shot")
+			var phase: float=TAU*fposmod(age,float(v.period_seconds))/float(v.period_seconds)+deg_to_rad(float(v.get("initial_phase_degrees",0)))
+			var progress: float=(1-cos(phase))/2
 			for i in range(ports.size()):
 				var span: Array=v.sweep_degrees[i]
 				var angle: float=deg_to_rad(lerpf(float(span[0]),float(span[1]),progress))
@@ -77,8 +83,10 @@ static func emit(e: Dictionary,player: Vector2,channel: Dictionary,boss: Diction
 				var vy: float=random_component(v.y_random) if v.has("y_random") else float(v.speed_y)+absf(vx)*float(v.get("abs_x_factor",0))
 				add(result,origin,Vector2(vx,vy),kind)
 		"pod_twin":
-			add(result,Geometry.world_point(e,vector(ports[0]),pose_angle),Vector2(-e.velocity.x/2,300),7)
-			add(result,Geometry.world_point(e,vector(ports[0]),pose_angle),Vector2(-e.velocity.x/3,200),5)
+			var secondary: Vector2=Vector2(-e.velocity.x/3,float(v.secondary_speed_y))
+			var origin: Vector2=Geometry.world_point(e,vector(ports[0]),pose_angle)
+			add(result,origin,secondary*float(v.primary_speed_scale),7)
+			add(result,origin,secondary,5)
 		"aimed_sequence":
 			# One sequence per actor and named channel, advancing only when a volley fires.
 			var steps: Dictionary=e.get("volley_steps",{})

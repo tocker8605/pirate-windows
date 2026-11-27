@@ -94,9 +94,16 @@ func run() -> void:
 	expected=expected.filter(unchanged_wings)
 	rows=rows.filter(unchanged_wings)
 	# Only redesigned stage3 arm shots and body fans are excluded from old snapshots.
-	var unchanged_stage3: Callable=func(row):return not (row.size()==7 and (str(row[0]).get_slice("/",0) in ["e121","e122"] or (row[0]=="b3" and row[2]==6)))
+	var unchanged_stage3: Callable=func(row):return not (row.size()==7 and (str(row[0]).get_slice("/",0) in ["e121","e122","e123","e124"] or (row[0]=="b3" and row[2]==6)))
 	expected=expected.filter(unchanged_stage3)
 	rows=rows.filter(unchanged_stage3)
+	# First-boss attacks and second-boss chest fan were redesigned after this snapshot.
+	# Their original/body-independent behavior is checked by boss1_rocket_fists/boss2_chest_fan.
+	var revised_bodies: Callable=func(row):return not (row.size()==7 and (row[0]=="b1" or (row[0]=="b2" and is_equal_approx(float(row[3]),200))))
+	expected=expected.filter(revised_bodies);rows=rows.filter(revised_bodies)
+	# These two colliders were intentionally centred after the historical capture.
+	var centred_colliders: Callable=func(row):return not (row[0]=="collision" and int(row[1]) in [95,133])
+	expected=expected.filter(centred_colliders);rows=rows.filter(centred_colliders)
 	# New stage5 body volleys and their world projectiles have dedicated pattern tests.
 	var old_body: Callable=func(row):return not ((row.size()==7 and row[0]=="b5") or (row[0]=="bullet" and row[2] in [3,6]))
 	expected=expected.filter(old_body)
@@ -126,6 +133,10 @@ func run() -> void:
 	var old_energy_shots: Callable=func(row):return not (row[0]=="bullet" and int(row[2]) in [4,5])
 	expected=expected.filter(old_energy_shots)
 	rows=rows.filter(old_energy_shots)
+	# Intentional normal-enemy speed/rate changes are covered by enemy_ballistics_tuning.
+	var tuned: Dictionary={"e1":[1],"e2":[1],"e3":[5],"e5":[6],"e6":[7],"e11":[7,5],"e10":[1],"e21":[1],"e22":[7],"e41":[6]}
+	var unchanged_ballistics: Callable=func(row):return not (row.size()==7 and int(row[2]) in tuned.get(str(row[0]).get_slice("/",0),[]))
+	expected=expected.filter(unchanged_ballistics);rows=rows.filter(unchanged_ballistics)
 	var failures: int=0 if expected.size()==rows.size() else 1
 	for i in range(mini(expected.size(),rows.size())):
 		var same: bool=expected[i].size()==rows[i].size()

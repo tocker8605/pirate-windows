@@ -43,7 +43,7 @@ func _initialize() -> void:
 	var charge: Dictionary=actor(22)
 	var shots: Array=Fire.advance(charge,0.12,Vector2(175,380))
 	var orange: Array=shots.filter(func(s):return s.kind==7)
-	check(orange.size()==1 and orange[0].velocity.distance_to((Vector2(175,380)-charge.pos).normalized()*333.33333333333337)<0.001,"charge orange shot retains120ms cadence and original aiming/speed")
+	check(orange.size()==1 and orange[0].velocity.distance_to((Vector2(175,380)-charge.pos).normalized()*320)<0.001,"charge orange shot retains120ms cadence and original aiming/speed")
 	for y in [100,150]:
 		charge=actor(22);charge.pos.y=y
 		check(Fire.advance(charge,1,Vector2(175,380)).is_empty(),"charge gate remains strictly betweenY100and150")
