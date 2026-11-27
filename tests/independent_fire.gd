@@ -16,10 +16,8 @@ func check(ok: bool,message: String) -> void:
 		push_error("FAIL: "+message)
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
-	var channel_count := 0
 	for id in Catalog.ids():
 		for channel in Catalog.definition(id).get("fire_channels",[]):
-			channel_count += 1
 			var owner: Dictionary = {}
 			var events: Array = []
 			for tick in range(540): events.append_array(Scheduler.advance(owner,[channel],1.0/60,func(_c): return true))
@@ -34,9 +32,13 @@ func run() -> void:
 				for i in range(1,events.size()): uniform = uniform and is_equal_approx(events[i].at-events[i-1].at,float(channel.interval_seconds))
 				check(uniform,"entity%d/%s has constant event spacing"%[id,channel.name])
 			else:
-				var expected: int = 8 if id==95 else (16 if channel.name=="left_enrage" else 13) if id==93 else {111:49,112:8,121:6,122:9,143:33,144:25}[id]
-				check(events.size()==expected and events.all(func(e): return Scheduler.in_window(channel,e.at)),"entity%d preserves intentional local burst/rest windows without banking shots"%id)
-	check(channel_count==52,"all52independent attack channels including both boss-support turret types are audited")
+				var expected: Array=window_times(channel,9.0)
+				var matches: bool=expected.size()==events.size()
+				for i in range(mini(expected.size(),events.size())):matches=matches and is_equal_approx(float(expected[i]),float(events[i].at))
+				check(matches,"entity%d/%s obeys its declared burst/rest windows without banking shots"%[id,channel.name])
+	# Fixed examples test the timer contract independently of the catalog's enemy IDs/count.
+	var timed: Array=Scheduler.advance({},[{"name":"probe","interval_seconds":0.25,"window_seconds":[3.0,1.0,2.0]}],6.0,func(_c):return true)
+	check(timed.map(func(e):return e.at)==[1.25,1.5,1.75,4.25,4.5,4.75],"synthetic windows exclude endpoints and never bank cooldown time")
 	var a: Dictionary = Catalog.create(1,Vector2(100,100))
 	var b: Dictionary = Catalog.create(1,Vector2(100,100))
 	var player := Vector2(175,380)
@@ -57,10 +59,10 @@ func run() -> void:
 	check(Fire.advance(a,10,player).is_empty(),"destroyed actors cannot fire")
 	var body: Dictionary = Catalog.create(92,Vector2(200,100))
 	var parts: Array = [Catalog.create(111,Vector2.ZERO),Catalog.create(112,Vector2.ZERO),Catalog.create(113,Vector2.ZERO)]
-	check(Boss.advance(body,parts,10).is_empty(),"stage2 body does not bank attacks while centre module survives")
+	check(Boss.advance(body,parts,10).all(func(s):return s.pos.x==200),"stage2 only chest fan fires while centre survives; enrage cannot bank attacks")
 	check(body.hp==1250 and body.max_hp==1250,"stage2 bodyHP is1250")
 	check(parts[0].hp==300 and parts[1].hp==300 and parts[2].hp==400,"stage2 armsHP300 each and centreHP400")
-	check(Boss.advance(Catalog.create(92,Vector2.ZERO),[parts[2]],1).is_empty(),"centre alone suppresses enrage after both arms are destroyed")
+	check(Boss.advance(Catalog.create(92,Vector2.ZERO),[parts[2]],1).all(func(s):return s.pos.x==0),"centre alone enables chest fan and suppresses enrage after both arms are destroyed")
 	var dead_centre: Dictionary = parts[2].duplicate(true)
 	dead_centre.hp = 0
 	check(Boss.advance(Catalog.create(92,Vector2.ZERO),[parts[0],parts[1],dead_centre],0.09).size()==2,"dead centre pending removal enables enrage while both arms survive")
@@ -112,3 +114,20 @@ func run() -> void:
 	await process_frame
 	await create_timer(0.2).timeout
 	quit(0 if failures==0 else 1)
+
+func window_times(channel: Dictionary,horizon: float) -> Array:
+	var window: Array=channel.window_seconds
+	var interval: float=channel.interval_seconds
+	var times: Array=[]
+	if float(window[1])==0 and float(window[2])==float(window[0]):
+		for i in range(1,floori(horizon/interval+0.0000001)+1):times.append(i*interval)
+		return times
+	var cycle: int=0
+	while cycle*float(window[0])+float(window[1])<horizon:
+		var start: float=cycle*float(window[0])+float(window[1])
+		var finish: float=cycle*float(window[0])+float(window[2])
+		var step: int=1
+		while start+step*interval<finish-0.0000001 and start+step*interval<=horizon+0.0000001:
+			times.append(start+step*interval);step+=1
+		cycle+=1
+	return times

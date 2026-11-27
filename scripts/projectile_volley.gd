@@ -34,7 +34,15 @@ static func emit(e: Dictionary,player: Vector2,channel: Dictionary,boss: Diction
 			for port in ports:
 				var origin: Vector2=Geometry.world_point(e,vector(port),pose_angle)
 				var heading: Vector2=(player+Pilot.COCKPIT-origin).normalized() if v.get("aim_from_muzzle",false) else direction
+				if heading==Vector2.ZERO and v.has("zero_aim_direction"):heading=vector(v.zero_aim_direction).normalized()
 				for degrees in v.get("angles_degrees",[0]):add(result,origin,heading.rotated(deg_to_rad(degrees))*float(v.speed),kind)
+		"oscillating":
+			var age: float=float(e.get("fire_age",0)) if fired_at<0 else fired_at
+			var progress: float=(1-cos(TAU*fposmod(age,float(v.period_seconds))/float(v.period_seconds)))/2
+			for i in range(ports.size()):
+				var span: Array=v.sweep_degrees[i]
+				var angle: float=deg_to_rad(lerpf(float(span[0]),float(span[1]),progress))
+				add(result,Geometry.world_point(e,vector(ports[i]),pose_angle),Vector2.DOWN.rotated(angle+pose_angle)*float(v.speed),kind)
 		"expanding_ring":
 			var heading: Vector2=Vector2.DOWN.rotated(pose_angle)
 			for port in ports:

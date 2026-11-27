@@ -1405,35 +1405,6 @@
       },
       "stage": 1,
       "music": "boss01",
-      "attack": {
-        "type": "paired_sweep",
-        "interval_seconds": 0.3,
-        "enraged_interval_seconds": 0.24,
-        "period_seconds": 8,
-        "ports": [
-          [
-            -7,
-            19.3
-          ],
-          [
-            7,
-            19.3
-          ]
-        ],
-        "sweep_degrees": [
-          [
-            -30,
-            60
-          ],
-          [
-            30,
-            -60
-          ]
-        ],
-        "speed": 250,
-        "projectile_kind": 1,
-        "enraged_mode": "aimed"
-      },
       "damage_smoke": {
         "below_ratio": 0.4,
         "size": 16,
@@ -1468,7 +1439,62 @@
       },
       "visual": {
         "anchor": "top_center"
-      }
+      },
+      "fire_channels": [
+        {
+          "name": "eye_sweep",
+          "interval_seconds": 0.3,
+          "gate": "any_parts",
+          "volley": {
+            "type": "oscillating",
+            "ports": [
+              [
+                -7,
+                19.3
+              ],
+              [
+                7,
+                19.3
+              ]
+            ],
+            "period_seconds": 8,
+            "sweep_degrees": [
+              [
+                -30,
+                60
+              ],
+              [
+                30,
+                -60
+              ]
+            ],
+            "speed": 250,
+            "projectile_kind": 1
+          }
+        },
+        {
+          "name": "eye_aimed",
+          "interval_seconds": 0.24,
+          "gate": "no_parts",
+          "volley": {
+            "type": "aimed",
+            "ports": [
+              [
+                -7,
+                19.3
+              ],
+              [
+                7,
+                19.3
+              ]
+            ],
+            "speed": 250,
+            "projectile_kind": 1,
+            "aim_from_muzzle": true,
+            "zero_aim_direction": [0, 1]
+          }
+        }
+      ]
     },
     "92": {
       "fire_channels": [
@@ -1501,6 +1527,36 @@
               "step": -33.333333333333336,
               "count": 7
             }
+          }
+        },
+        {
+          "name": "chest_fan",
+          "interval_seconds": 0.3,
+          "gate": "part_alive",
+          "part_id": 113,
+          "window_seconds": [
+            6,
+            0,
+            1.8
+          ],
+          "volley": {
+            "type": "aimed",
+            "ports": [
+              [
+                0,
+                48
+              ]
+            ],
+            "projectile_kind": 5,
+            "speed": 240,
+            "angles_degrees": [
+              -10,
+              -5,
+              0,
+              5,
+              10
+            ],
+            "aim_from_muzzle": true
           }
         }
       ],

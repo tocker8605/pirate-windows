@@ -41,7 +41,7 @@ static func enabled(e: Dictionary, channel: Dictionary, boss: Dictionary = {}) -
 		"right_claw_y": return by>120
 		"detached": return CoreMotion.active(e) and e.get("core_phase","")!="settled"
 		"core_settled": return CoreMotion.active(e) and e.get("core_phase","")=="settled"
-	return true
+	return channel.gate=="always"
 
 static func heavy_cannon_angle(age: float) -> float:return Volleys.heavy_cannon_angle(age)
 static func emit(e: Dictionary, player: Vector2, attack: String, boss: Dictionary = {}, fired_at: float = -1) -> Array:

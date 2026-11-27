@@ -19,40 +19,40 @@ func run() -> void:
 		for tick in range(300):
 			Movement.steer(fist,Vector2(-1000,400),body.pos,1.0/60)
 			Motion.advance(fist,body,1.0/60)
-		check(fist.fist_phase=="docked" and fist.pos==Motion.dock(fist,body.pos) and fist.velocity==Vector2.ZERO,"both spawn patterns enter their correct arm socket before launching")
+		check(fist.fist_phase==Motion.Phase.DOCKED and fist.pos==Motion.dock(fist,body.pos) and fist.velocity==Vector2.ZERO,"both spawn patterns enter their correct arm socket before launching")
 		body.pos+=Vector2(13,-7)
 		Movement.steer(fist,Vector2(-1000,400),body.pos,1.0/60);Motion.advance(fist,body,1.0/60)
 		check(fist.pos==Motion.dock(fist,body.pos),"docked fist follows exact moving socket without oscillation")
 		Movement.steer(fist,Vector2(fist.pos.x+40,400),body.pos,1.0/60)
-		check(fist.fist_phase=="docked","40px launch boundary remains strict")
+		check(fist.fist_phase==Motion.Phase.DOCKED,"40px launch boundary remains strict")
 		Movement.steer(fist,Vector2(fist.pos.x+39.9,400),body.pos,1.0/60)
-		check(fist.fist_phase=="launching" and fist.pattern==2102 and fist.velocity.y>0,"matching playerX launches only a docked fist")
+		check(fist.fist_phase==Motion.Phase.LAUNCHING and fist.velocity.y>0,"matching playerX launches only a docked fist")
 		fist.pos.y=440;Movement.steer(fist,Vector2(-1000,400),body.pos,1.0/60)
-		check(fist.fist_phase=="launching","Y440 does not begin return until exceeded")
+		check(fist.fist_phase==Motion.Phase.LAUNCHING,"Y440 does not begin return until exceeded")
 		fist.pos.y=440.1;Movement.steer(fist,Vector2(fist.pos.x,400),body.pos,1.0/60)
-		check(fist.fist_phase=="returning" and fist.velocity.y<0,"Y greater than440 begins return even if player remains aligned")
+		check(fist.fist_phase==Motion.Phase.RETURNING and fist.velocity.y<0,"Y greater than440 begins return even if player remains aligned")
 		var docked: bool=false
 		for tick in range(300):
 			body.pos.y=80+10*sin(tick/60.0)
 			Movement.steer(fist,Vector2(fist.pos.x,400),body.pos,1.0/60)
 			Motion.advance(fist,body,1.0/60)
-			if fist.fist_phase=="docked":docked=true;break
+			if fist.fist_phase==Motion.Phase.DOCKED:docked=true;break
 		check(docked and fist.pos==Motion.dock(fist,body.pos) and fist.velocity==Vector2.ZERO,"return clamps exactly into moving socket before any relaunch")
-		fist.pos.y+=1;fist.velocity=Vector2(0,-333);fist.fist_phase="returning"
+		fist.pos.y+=1;fist.velocity=Vector2(0,-333);fist.fist_phase=Motion.Phase.RETURNING
 		Motion.advance(fist,body,0.5)
-		check(fist.fist_phase=="docked" and fist.pos==Motion.dock(fist,body.pos),"long return step cannot overshoot the socket")
+		check(fist.fist_phase==Motion.Phase.DOCKED and fist.pos==Motion.dock(fist,body.pos),"long return step cannot overshoot the socket")
 		var definition: Dictionary=Catalog.definition(id)
 		var coupling: Vector2=Geometry.image_point(definition,fist.pos,Vector2(0.62,0.06))
 		check(coupling.distance_to(body.pos+Vector2(-44 if id==101 else 44,46))<0.0001,"painted rear coupling, rather than fist image centre, aligns with socket")
-		fist.pos=Motion.dock(fist,body.pos)+Vector2(0,0.5);fist.velocity=Vector2(0,-100);fist.fist_phase="returning"
+		fist.pos=Motion.dock(fist,body.pos)+Vector2(0,0.5);fist.velocity=Vector2(0,-100);fist.fist_phase=Motion.Phase.RETURNING
 		Movement.steer(fist,Vector2(-1000,400),body.pos,1.0/60)
 		body.pos.y+=2
 		Motion.advance(fist,body,1.0/60)
-		check(fist.fist_phase=="docked" and fist.pos==Motion.dock(fist,body.pos),"socket crossing caused by parent motion cannot be missed")
-		fist.pos.y-=5;fist.velocity=Vector2(0,-300);fist.fist_phase="returning"
+		check(fist.fist_phase==Motion.Phase.DOCKED and fist.pos==Motion.dock(fist,body.pos),"socket crossing caused by parent motion cannot be missed")
+		fist.pos.y-=5;fist.velocity=Vector2(0,-300);fist.fist_phase=Motion.Phase.RETURNING
 		Motion.advance(fist,body,1.0/60)
 		check(fist.pos==Motion.dock(fist,body.pos),"returning fist above socket is clamped immediately instead of keeping upward inertia")
-		fist.fist_phase="launching";fist.velocity=Vector2(0,8)
+		fist.fist_phase=Motion.Phase.LAUNCHING;fist.velocity=Vector2(0,8)
 		body.pos.y+=2;Motion.advance(fist,body,1.0/60)
 		check(fist.pos.y>=Motion.dock(fist,body.pos).y,"descending body cannot overtake a newly launched fist")
 	var base: Dictionary=Catalog.create(91,Vector2(200,80))
@@ -80,7 +80,7 @@ func run() -> void:
 			check(arrival.distance_to(target+Vector2(25,18))<0.0001,"each trajectory passes through the exact player cockpit")
 
 	var doc: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(Catalog.PATH))
-	doc.entities["91"].attack.period_seconds=0
+	doc.entities["91"].fire_channels[0].volley.period_seconds=0
 	check(not Catalog.validate_document(doc).is_empty(),"invalid sweep period rejected")
 	var g=Game.new();g.automatic=false;g.mute=true
 	root.add_child(g);await process_frame;g.set_process(false)
@@ -88,14 +88,14 @@ func run() -> void:
 	g.boss=Catalog.create(91,Vector2(200,80));g.enemies.replace_all(parts);g.player=Vector2(-10,440)
 	for tick in range(240):g._tick(Vector2.ZERO,false,false,false)
 	for fist in g.enemies:
-		check(fist.fist_phase=="docked" and fist.pos==Motion.dock(fist,g.boss.pos),"actual game integration leaves untriggered fists docked on moving body")
+		check(fist.fist_phase==Motion.Phase.DOCKED and fist.pos==Motion.dock(fist,g.boss.pos),"actual game integration leaves untriggered fists docked on moving body")
 	var returns: int=0
 	for tick in range(1200):
 		var left_fist: Dictionary=g.enemies.at(0)
 		g.player.x=left_fist.pos.x
-		var before: String=left_fist.fist_phase
+		var before: int=left_fist.fist_phase
 		g._tick(Vector2.ZERO,false,false,false)
-		if before=="returning" and left_fist.fist_phase=="docked":returns+=1
+		if before==Motion.Phase.RETURNING and left_fist.fist_phase==Motion.Phase.DOCKED:returns+=1
 		for fist in g.enemies:
 			check(fist.pos.y>=Motion.dock(fist,g.boss.pos).y-0.0001,"repeated launches never put a fist above the moving coupling")
 	check(returns>=2,"moving-body integration completes repeated launch and docking cycles")

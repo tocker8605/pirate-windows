@@ -56,6 +56,8 @@ func _initialize() -> void:
     var unchanged_stage3: Callable=func(row):return not (row.size()>4 and (int(row[0]) in [121,122] or (int(row[0])==93 and int(row[3])==6)))
     reference=reference.filter(unchanged_stage3)
     rows=rows.filter(unchanged_stage3)
+    # New stage2 chest fan uses X200; retain all original side-muzzle enrage/RNG records.
+    rows=rows.filter(func(row):return not (int(row[0])==92 and row.size()>4 and is_equal_approx(float(row[4]),200)))
     # Stage1 body now fires paired angular sweeps; boss1_rocket_fists verifies its new behavior.
     reference=reference.filter(func(row):return not (int(row[0])==91 and row.size()>4))
     rows=rows.filter(func(row):return not (int(row[0])==91 and row.size()>4))

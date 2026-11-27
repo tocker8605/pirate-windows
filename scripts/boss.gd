@@ -6,10 +6,9 @@ const Attachment=preload("res://scripts/entity_attachment.gd")
 const SceneryMotion=preload("res://scripts/scenery_motion.gd")
 const Movement = preload("res://scripts/movement.gd")
 const AttackTimer = preload("res://scripts/attack_timer.gd")
-const Pilot=preload("res://scripts/pilot_geometry.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const CoreMotion = preload("res://scripts/boss_core_motion.gd")
-## Four original boss bodies, attached weapons and body attack phases.
+## Boss bodies, attached weapons and independent authored attack channels.
 static func parts_alive(enemies: Variant) -> bool:
 	for e in enemies:
 		if Catalog.is_part(int(e.kind)) and e.hp>0: return true
@@ -76,28 +75,28 @@ static func attach(e: Dictionary, b: Dictionary) -> void:
 static func enabled(enemies: Variant, channel: Dictionary) -> bool:
 	match str(channel.gate):
 		"no_parts": return not parts_alive(enemies)
+		"any_parts": return parts_alive(enemies)
 		"part_missing": return not has_part(enemies,int(channel.part_id))
+		"part_alive": return has_part(enemies,int(channel.part_id))
 		"parts_missing":
 			for part_id in channel.part_ids:
 				if has_part(enemies,int(part_id)): return false
 			return true
-	return true
+	return channel.gate=="always"
 
-static func emit(b: Dictionary, attack: String, player: Vector2 = Vector2.ZERO) -> Array:
+static func emit(b: Dictionary, attack: String, player: Vector2 = Vector2.ZERO, fired_at: float = -1) -> Array:
 	var definition: Dictionary=Catalog.for_actor(b)
-	return Volleys.emit(b,player,Catalog.fire_channel(int(definition.id),attack),{},-1,definition.get("attack",{}))
+	return Volleys.emit(b,player,Catalog.fire_channel(int(definition.id),attack),{},fired_at,definition.get("attack",{}))
 
-# The paired sweep has an independent100ms clock, not the legacy60ms phase clock.
-# Both ports start downward and share sweep progress with opposite rotation signs.
+# Common channels can coexist with legacy spiral channels during incremental migration.
 static func advance(b: Dictionary,enemies: Variant,seconds: float,player: Vector2 = Vector2.ZERO) -> Array:
 	var result: Array = []
 	if b.is_empty() or b.hp<=0: return result
 	PoseMotion.advance(b,seconds)
 	var definition: Dictionary=Catalog.for_actor(b)
-	if definition.get("attack",{}).get("type")=="paired_sweep": return _advance_paired_sweep(b,enemies,seconds,player)
 	var channels: Array = Catalog.boss_definition(int(b.stage)).get("fire_channels",[])
 	var events: Array = AttackTimer.advance(b,channels,seconds,func(channel): return enabled(enemies,channel))
-	for event in events: result.append_array(emit(b,event.name,player))
+	for event in events: result.append_array(emit(b,event.name,player,float(event.at)))
 	var attack: Dictionary = definition.get("attack",{})
 	if attack.get("type")!="spiral":return result
 	if attack.is_empty() or not attack.has("ports"): return result
@@ -111,27 +110,6 @@ static func advance(b: Dictionary,enemies: Variant,seconds: float,player: Vector
 			_add(result,b.pos+Vector2(port[0],port[1]),Vector2.from_angle(angle)*float(attack.speed),int(attack.projectile_kind))
 		sweep = fposmod(sweep+deg_to_rad(attack.step_degrees),TAU)
 	b.body_sweep = sweep
-	return result
-
-static func _advance_paired_sweep(b: Dictionary,enemies: Variant,seconds: float,player: Vector2) -> Array:
-	var attack: Dictionary=Catalog.for_actor(b).attack
-	var enraged: bool=not parts_alive(enemies)
-	var interval: float=attack.enraged_interval_seconds if enraged else attack.interval_seconds
-	var aimed: bool=enraged and attack.get("enraged_mode","")=="aimed"
-	var result: Array=[]
-	# Cadence changes reset only the shot interval; sweep phase remains continuous.
-	for event in AttackTimer.periodic(b,"body_paired_sweep",seconds,interval,true,true):
-		var progress: float=(1-cos(TAU*fposmod(float(event.at),float(attack.period_seconds))/float(attack.period_seconds)))/2
-		for i in range(attack.ports.size()):
-			var port: Array=attack.ports[i]
-			var span: Array=attack.sweep_degrees[i]
-			var angle: float=deg_to_rad(lerpf(float(span[0]),float(span[1]),progress))
-			var origin: Vector2=b.pos+Vector2(port[0],port[1])
-			var direction: Vector2=Vector2.DOWN.rotated(angle)
-			if aimed:
-				var delta: Vector2=player+Pilot.COCKPIT-origin
-				direction=delta.normalized() if delta!=Vector2.ZERO else Vector2.DOWN
-			_add(result,origin,direction*float(attack.speed),int(attack.projectile_kind))
 	return result
 
 static func _add(result: Array, pos: Vector2, velocity: Vector2, kind: int) -> void:

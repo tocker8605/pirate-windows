@@ -1,4 +1,5 @@
 extends RefCounted
+const Gates=preload("res://scripts/fire_gate_schema.gd")
 const Beams=preload("res://scripts/beam_attack_schema.gd")
 const Campaign = preload("res://scripts/campaign_rules.gd")
 const Visual=preload("res://scripts/entity_visual_schema.gd")
@@ -36,7 +37,7 @@ static func validate_document(document: Variant) -> PackedStringArray:
 		Check.nested_fields(d.get("collision",{}),["beam_bounds", "beam_rect", "contact_bounds", "shot_bounds"],prefix+"collision.",errors)
 		Check.nested_fields(d.get("motion",{}),["type", "upper_center", "lower_center", "lower_below_ratio", "speed", "lower_follow"],prefix+"motion.",errors)
 		Check.nested_fields(d.get("fire_channels",{}),["name", "gate", "interval_seconds", "projectile_kind", "part_id", "part_ids", "count", "initial_degrees", "rotation_direction", "rotation_step_degrees", "spacing_degrees", "speed", "window_seconds", "max_y", "volley"],prefix+"fire_channels.",errors)
-		Check.nested_fields(d.get("attack",{}),["count", "enraged_mode", "enraged_interval_seconds", "initial_degrees", "interval_seconds", "period_seconds", "sweep_degrees", "max_spread_degrees", "max_vertical_speed", "min_y", "opposed", "ports", "projectile_kind", "requires_stationary_x", "rotation_directions", "speed", "speed_y", "spread_degrees", "spread_directions", "step_degrees", "type"],prefix+"attack.",errors)
+		Check.nested_fields(d.get("attack",{}),["count", "initial_degrees", "interval_seconds", "max_spread_degrees", "max_vertical_speed", "min_y", "opposed", "ports", "projectile_kind", "requires_stationary_x", "rotation_directions", "speed", "speed_y", "spread_degrees", "spread_directions", "step_degrees", "type"],prefix+"attack.",errors)
 		Check.nested_fields(d.get("damage_smoke",{}),["below_hp", "below_ratio", "ports", "size"],prefix+"damage_smoke.",errors)
 		Check.nested_fields(d.get("drop",{}),["cargo_release", "item", "offset"],prefix+"drop.",errors)
 		Check.nested_fields(d.get("boss_rush_drop",{}),["cargo_release", "item", "offset"],prefix+"boss_rush_drop.",errors)
@@ -109,16 +110,7 @@ static func validate_document(document: Variant) -> PackedStringArray:
 					if not Check.number(channel.get("interval_seconds")) or float(channel.interval_seconds)<=0: errors.append(prefix+"invalid fire channel interval")
 					if channel.has("max_y") and not Check.number(channel.max_y):errors.append(prefix+"invalid fire channel max_y")
 					if channel.has("projectile_kind") and (not Check.number(channel.projectile_kind) or float(channel.projectile_kind)!=int(channel.projectile_kind) or int(channel.projectile_kind) not in range(1,9)): errors.append(prefix+"invalid channel projectile kind")
-					if channel.get("gate","") not in ["always","ground_ready","aim_window","moving","stationary_aim","sweep_y","descent_or_stationary","descending","flame_y","charge_y","fist_y","pod_y","orb_y","orb_y_stationary","orb_stationary","left_claw_y","right_claw_y","detached","core_settled","no_parts","part_missing","parts_missing"]: errors.append(prefix+"unknown fire gate")
-					if channel.get("gate") in ["part_missing","parts_missing"]:
-						var part_ids: Variant = [channel.get("part_id")] if channel.gate=="part_missing" else channel.get("part_ids")
-						if not part_ids is Array or part_ids.is_empty(): errors.append(prefix+"missing-part gate requires a nonempty part list")
-						else:
-							for part_id in part_ids:
-								if not Check.number(part_id) or float(part_id)!=int(part_id): errors.append(prefix+"invalid missing-part ID")
-								else:
-									var part_definition: Variant = document.entities.get(str(int(part_id)),{})
-									if not part_definition is Dictionary or part_definition.get("role","")!="part": errors.append(prefix+"missing-part gate must reference a part")
+					Gates.validate(channel,str(d.get("role","")),document.entities,prefix,errors)
 					if channel.has("rotation_direction") and (not Check.number(channel.rotation_direction) or absf(float(channel.rotation_direction))!=1.0): errors.append(prefix+"invalid rotation direction")
 					if channel.get("volley",{}) is Dictionary and channel.get("volley",{}).get("type")=="rotating":
 						for field in ["speed","spacing_degrees","rotation_step_degrees","projectile_kind"]:
@@ -133,7 +125,7 @@ static func validate_document(document: Variant) -> PackedStringArray:
 		if d.get("attack") is Dictionary:
 			var attack: Dictionary = d.attack
 			var attack_type: String = str(attack.get("type",""))
-			if attack_type not in ["spiral","paired_sweep","speed_spread","aimed_fan","paired_aimed_fan"]: errors.append(prefix+"unknown attack type")
+			if attack_type not in ["spiral","speed_spread","aimed_fan","paired_aimed_fan"]: errors.append(prefix+"unknown attack type")
 			if attack_type!="paired_aimed_fan" and (not Check.number(attack.get("interval_seconds")) or float(attack.interval_seconds)<=0): errors.append(prefix+"invalid attack interval")
 			if not Check.number(attack.get("projectile_kind")) or int(attack.projectile_kind) not in range(1,9): errors.append(prefix+"invalid attack projectile")
 			if attack.has("opposed") and not attack.opposed is bool: errors.append(prefix+"invalid opposed-shot flag")
@@ -159,12 +151,6 @@ static func validate_document(document: Variant) -> PackedStringArray:
 					if not Check.number(attack.get(field)) or float(attack[field])<=0: errors.append(prefix+"invalid speed spread "+field)
 				if not attack.get("ports") is Array or not attack.get("spread_directions") is Array: errors.append(prefix+"speed spread ports/directions missing")
 				elif attack.ports.size()!=attack.spread_directions.size() or not attack.spread_directions.all(func(v): return Check.number(v) and absf(float(v))==1.0): errors.append(prefix+"invalid spread directions")
-			elif attack_type=="paired_sweep":
-				if attack.has("enraged_mode") and attack.enraged_mode!="aimed":errors.append(prefix+"unknown paired sweep enrage mode")
-				for field in ["enraged_interval_seconds","speed","period_seconds"]:
-					if not Check.number(attack.get(field)) or float(attack[field])<=0:errors.append(prefix+"invalid paired sweep "+field)
-				if not attack.get("ports") is Array or attack.ports.size()!=2:errors.append(prefix+"paired sweep needs two ports")
-				if not attack.get("sweep_degrees") is Array or attack.sweep_degrees.size()!=2 or not attack.sweep_degrees.all(func(span):return Check.vector(span,2)):errors.append(prefix+"paired sweep needs two angle ranges")
 		if d.has("rocket_fist"):
 			var fist: Variant=d.rocket_fist
 			if not fist is Dictionary:errors.append(prefix+"invalid rocket fist settings")
