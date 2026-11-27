@@ -59,7 +59,7 @@ func run() -> void:
 	var parts: Array = [Catalog.create(111,Vector2.ZERO),Catalog.create(112,Vector2.ZERO),Catalog.create(113,Vector2.ZERO)]
 	check(Boss.advance(body,parts,10).is_empty(),"stage2 body does not bank attacks while centre module survives")
 	check(body.hp==1250 and body.max_hp==1250,"stage2 bodyHP is1250")
-	check(parts[0].hp==250 and parts[1].hp==250 and parts[2].hp==300,"stage2 armsHP250 each and centreHP300 unchanged")
+	check(parts[0].hp==300 and parts[1].hp==300 and parts[2].hp==400,"stage2 armsHP300 each and centreHP400")
 	check(Boss.advance(Catalog.create(92,Vector2.ZERO),[parts[2]],1).is_empty(),"centre alone suppresses enrage after both arms are destroyed")
 	var dead_centre: Dictionary = parts[2].duplicate(true)
 	dead_centre.hp = 0

@@ -18,7 +18,7 @@ func spawn(at: float, kind: int = 1) -> Dictionary:
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var original: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/timeline_v20.json"))
-	var expected_hp: Dictionary = {19:1,91:1000,92:1250,93:1500,94:1500,123:400,124:400,111:250,112:250,133:900}
+	var expected_hp: Dictionary = {19:1,91:1000,92:1250,93:1500,94:1500,123:400,124:400,101:250,102:250,111:300,112:300,113:400,133:900}
 	# Historical HP expectations remain independent of editable stage ordering/times.
 	for rows in original.values():
 		for row in rows:

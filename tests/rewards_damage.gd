@@ -78,7 +78,7 @@ func run() -> void:
 					g._update_lifecycle()
 					check(bool(direct_part.get("auto_destroyed",false))!=already_killed,"stage%d difficulty%d rush%s distinguishes automatic destruction from pending direct kill%s"%[stage,difficulty,rush,already_killed])
 					g._tick(Vector2.ZERO,false,false,false)
-					var expected: int = 123+[0,3000,5000,7000,10000][stage]*difficulty+([0,500,750,1200,1500][stage]*difficulty if already_killed else 0)
+					var expected: int = 123+[0,3000,5000,7000,10000][stage]*difficulty+([0,600,750,1200,1500][stage]*difficulty if already_killed else 0)
 					check(g.score==expected and g.enemies.is_empty(),"stage%d difficulty%d rush%s cleanup grants only body and direct-part rewards"%[stage,difficulty,rush])
 					g._tick(Vector2.ZERO,false,false,false)
 					check(g.score==expected,"repeated boss cleanup cannot award automatic part points")
@@ -92,7 +92,8 @@ func run() -> void:
 			check(g.score==25000*difficulty,"stage5 body awards25000base points at death in both modes")
 			g._finish_stage()
 			check(g.score==25000*difficulty,"stage5 body reward cannot repeat")
-	var part_scores: Dictionary = {101:500,102:500,111:750,112:750,113:1000,121:1200,122:1200,123:1200,124:1200,131:1500,132:1500,133:2000,51:240,52:240,141:2500,142:2500,143:2000,144:2000,145:2000,146:2000}
+	var part_scores: Dictionary = {101:600,102:600,111:750,112:750,113:1000,121:1200,122:1200,123:1200,124:1200,131:1500,132:1500,133:2000,51:400,52:400,141:2500,142:2500,143:2000,144:2000,145:2000,146:2000}
+	part_scores.merge({1:25,2:30,3:50,4:70,5:70,6:80,7:40,8:100,9:75,10:50,11:60,21:200,22:250,41:300,42:360})
 	g.run_settings = g.run_settings.with_boss_rush(false)
 	g._load_stage(1)
 	for kind in part_scores:
