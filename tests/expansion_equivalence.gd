@@ -124,7 +124,7 @@ func run() -> void:
 	var original_turret_fire: Callable=func(row):return not (row.size()==7 and str(row[0]).get_slice("/",0) in ["e51","e52"])
 	expected=expected.filter(original_turret_fire)
 	rows=rows.filter(original_turret_fire)
-	# HeavyB fan speed now250px/s, verified by heavy_aimed_fan.
+	# HeavyB fan speed now280px/s, verified by heavy_aimed_fan.
 	var old_heavy_fan: Callable=func(row):return not (row.size()==7 and str(row[0]).get_slice("/",0)=="e42" and row[2]==6)
 	expected=expected.filter(old_heavy_fan)
 	rows=rows.filter(old_heavy_fan)

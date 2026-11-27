@@ -1325,8 +1325,8 @@
       "part_side": 0,
       "attack": {
         "type": "aimed_fan",
-        "interval_seconds": 0.2,
-        "speed": 250,
+        "interval_seconds": 0.22,
+        "speed": 280,
         "count": 7,
         "spread_degrees": 180,
         "projectile_kind": 6

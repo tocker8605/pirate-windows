@@ -66,7 +66,7 @@ func _initialize() -> void:
     rows=rows.filter(func(row):return not (int(row[0])==95 and row.size()>4))
     reference=reference.filter(func(row):return not (int(row[0])==145 and row.size()>4))
     rows=rows.filter(func(row):return not (int(row[0])==145 and row.size()>4))
-    # HeavyB fan speed is deliberately250px/s; preserve missile and RNG comparisons.
+    # HeavyB fan speed is deliberately280px/s; preserve missile and RNG comparisons.
     var old_heavy_fan: Callable=func(row):return not (row.size()>4 and int(row[0])==42 and int(row[3])==6)
     reference=reference.filter(old_heavy_fan)
     rows=rows.filter(old_heavy_fan)
