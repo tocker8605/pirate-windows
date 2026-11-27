@@ -6,6 +6,7 @@ const Attachment=preload("res://scripts/entity_attachment.gd")
 const SceneryMotion=preload("res://scripts/scenery_motion.gd")
 const Movement = preload("res://scripts/movement.gd")
 const AttackTimer = preload("res://scripts/attack_timer.gd")
+const Pilot=preload("res://scripts/pilot_geometry.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const CoreMotion = preload("res://scripts/boss_core_motion.gd")
 ## Four original boss bodies, attached weapons and body attack phases.
@@ -93,7 +94,7 @@ static func advance(b: Dictionary,enemies: Variant,seconds: float,player: Vector
 	if b.is_empty() or b.hp<=0: return result
 	PoseMotion.advance(b,seconds)
 	var definition: Dictionary=Catalog.for_actor(b)
-	if definition.get("attack",{}).get("type")=="alternating": return _advance_first(b,enemies,seconds)
+	if definition.get("attack",{}).get("type")=="paired_sweep": return _advance_paired_sweep(b,enemies,seconds,player)
 	var channels: Array = Catalog.boss_definition(int(b.stage)).get("fire_channels",[])
 	var events: Array = AttackTimer.advance(b,channels,seconds,func(channel): return enabled(enemies,channel))
 	for event in events: result.append_array(emit(b,event.name,player))
@@ -112,16 +113,25 @@ static func advance(b: Dictionary,enemies: Variant,seconds: float,player: Vector
 	b.body_sweep = sweep
 	return result
 
-static func _advance_first(b: Dictionary,enemies: Variant,seconds: float) -> Array:
-	var attack: Dictionary = Catalog.for_actor(b).get("attack",{})
-	var result: Array = []
-	if attack.is_empty(): return result
-	var interval: float = attack.interval_seconds if parts_alive(enemies) else attack.enraged_interval_seconds
-	# The last fist disappearing starts a fresh half-length interval without a backlog burst.
-	for event in AttackTimer.periodic(b,"body_alternating",seconds,interval,true,true):
-		var side: float = 1 if fposmod(float(event.at),float(attack.side_hold_seconds)*2)>=float(attack.side_hold_seconds)-0.0000001 else -1
-		var port: Array = attack.ports[1 if side>0 else 0]
-		_add(result,b.pos+Vector2(port[0],port[1]),Vector2(side*(float(attack.horizontal_base)+b.velocity.y),float(attack.speed_y)),int(attack.projectile_kind))
+static func _advance_paired_sweep(b: Dictionary,enemies: Variant,seconds: float,player: Vector2) -> Array:
+	var attack: Dictionary=Catalog.for_actor(b).attack
+	var enraged: bool=not parts_alive(enemies)
+	var interval: float=attack.enraged_interval_seconds if enraged else attack.interval_seconds
+	var aimed: bool=enraged and attack.get("enraged_mode","")=="aimed"
+	var result: Array=[]
+	# Cadence changes reset only the shot interval; sweep phase remains continuous.
+	for event in AttackTimer.periodic(b,"body_paired_sweep",seconds,interval,true,true):
+		var progress: float=(1-cos(TAU*fposmod(float(event.at),float(attack.period_seconds))/float(attack.period_seconds)))/2
+		for i in range(attack.ports.size()):
+			var port: Array=attack.ports[i]
+			var span: Array=attack.sweep_degrees[i]
+			var angle: float=deg_to_rad(lerpf(float(span[0]),float(span[1]),progress))
+			var origin: Vector2=b.pos+Vector2(port[0],port[1])
+			var direction: Vector2=Vector2.DOWN.rotated(angle)
+			if aimed:
+				var delta: Vector2=player+Pilot.COCKPIT-origin
+				direction=delta.normalized() if delta!=Vector2.ZERO else Vector2.DOWN
+			_add(result,origin,direction*float(attack.speed),int(attack.projectile_kind))
 	return result
 
 static func _add(result: Array, pos: Vector2, velocity: Vector2, kind: int) -> void:

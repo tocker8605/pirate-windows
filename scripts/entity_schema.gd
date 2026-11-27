@@ -4,7 +4,7 @@ const Campaign = preload("res://scripts/campaign_rules.gd")
 const Visual=preload("res://scripts/entity_visual_schema.gd")
 const Volleys=preload("res://scripts/projectile_volley_schema.gd")
 const Check = preload("res://scripts/data_validation.gd")
-const FIELDS: Array = ["name","display_name","role","hp","score","score_scales_with_difficulty","damageable","explosion_seconds","death_sound","draw_size","draw_offset","part_side","collision","damage_smoke","boss_rush_drop","drop","stage","music","open_at_y","open_kind","on_defeat","attack","beam_attacks","fire_channels","motion","pose_motion","attachment","core_motion","movement_mode","boss_scroll","floor_decoration","visual","sprite_region","ground_turret","sprite_path","sprite_fit","classic_sprite"]
+const FIELDS: Array = ["name","display_name","role","hp","score","score_scales_with_difficulty","damageable","explosion_seconds","death_sound","draw_size","draw_offset","part_side","collision","damage_smoke","boss_rush_drop","drop","stage","music","open_at_y","open_kind","on_defeat","attack","beam_attacks","fire_channels","motion","pose_motion","attachment","core_motion","movement_mode","rocket_fist","boss_scroll","floor_decoration","visual","sprite_region","ground_turret","sprite_path","sprite_fit","classic_sprite"]
 static func validate_document(document: Variant) -> PackedStringArray:
 	var errors := PackedStringArray()
 	if not document is Dictionary or document.get("schema_version",0)!=2 or not document.get("entities") is Dictionary:
@@ -36,7 +36,7 @@ static func validate_document(document: Variant) -> PackedStringArray:
 		Check.nested_fields(d.get("collision",{}),["beam_bounds", "beam_rect", "contact_bounds", "shot_bounds"],prefix+"collision.",errors)
 		Check.nested_fields(d.get("motion",{}),["type", "upper_center", "lower_center", "lower_below_ratio", "speed", "lower_follow"],prefix+"motion.",errors)
 		Check.nested_fields(d.get("fire_channels",{}),["name", "gate", "interval_seconds", "projectile_kind", "part_id", "part_ids", "count", "initial_degrees", "rotation_direction", "rotation_step_degrees", "spacing_degrees", "speed", "window_seconds", "max_y", "volley"],prefix+"fire_channels.",errors)
-		Check.nested_fields(d.get("attack",{}),["count", "enraged_interval_seconds", "horizontal_base", "initial_degrees", "interval_seconds", "max_spread_degrees", "max_vertical_speed", "min_y", "opposed", "ports", "projectile_kind", "requires_stationary_x", "rotation_directions", "side_hold_seconds", "speed", "speed_y", "spread_degrees", "spread_directions", "step_degrees", "type"],prefix+"attack.",errors)
+		Check.nested_fields(d.get("attack",{}),["count", "enraged_mode", "enraged_interval_seconds", "initial_degrees", "interval_seconds", "period_seconds", "sweep_degrees", "max_spread_degrees", "max_vertical_speed", "min_y", "opposed", "ports", "projectile_kind", "requires_stationary_x", "rotation_directions", "speed", "speed_y", "spread_degrees", "spread_directions", "step_degrees", "type"],prefix+"attack.",errors)
 		Check.nested_fields(d.get("damage_smoke",{}),["below_hp", "below_ratio", "ports", "size"],prefix+"damage_smoke.",errors)
 		Check.nested_fields(d.get("drop",{}),["cargo_release", "item", "offset"],prefix+"drop.",errors)
 		Check.nested_fields(d.get("boss_rush_drop",{}),["cargo_release", "item", "offset"],prefix+"boss_rush_drop.",errors)
@@ -133,7 +133,7 @@ static func validate_document(document: Variant) -> PackedStringArray:
 		if d.get("attack") is Dictionary:
 			var attack: Dictionary = d.attack
 			var attack_type: String = str(attack.get("type",""))
-			if attack_type not in ["spiral","alternating","speed_spread","aimed_fan","paired_aimed_fan"]: errors.append(prefix+"unknown attack type")
+			if attack_type not in ["spiral","paired_sweep","speed_spread","aimed_fan","paired_aimed_fan"]: errors.append(prefix+"unknown attack type")
 			if attack_type!="paired_aimed_fan" and (not Check.number(attack.get("interval_seconds")) or float(attack.interval_seconds)<=0): errors.append(prefix+"invalid attack interval")
 			if not Check.number(attack.get("projectile_kind")) or int(attack.projectile_kind) not in range(1,9): errors.append(prefix+"invalid attack projectile")
 			if attack.has("opposed") and not attack.opposed is bool: errors.append(prefix+"invalid opposed-shot flag")
@@ -159,11 +159,22 @@ static func validate_document(document: Variant) -> PackedStringArray:
 					if not Check.number(attack.get(field)) or float(attack[field])<=0: errors.append(prefix+"invalid speed spread "+field)
 				if not attack.get("ports") is Array or not attack.get("spread_directions") is Array: errors.append(prefix+"speed spread ports/directions missing")
 				elif attack.ports.size()!=attack.spread_directions.size() or not attack.spread_directions.all(func(v): return Check.number(v) and absf(float(v))==1.0): errors.append(prefix+"invalid spread directions")
-			elif attack_type=="alternating":
-				for field in ["enraged_interval_seconds","speed_y","side_hold_seconds"]:
-					if not Check.number(attack.get(field)) or float(attack[field])<=0: errors.append(prefix+"invalid alternating attack "+field)
-				if not Check.number(attack.get("horizontal_base")): errors.append(prefix+"invalid alternating horizontal base")
-				if not attack.get("ports") is Array or attack.ports.size()!=2: errors.append(prefix+"alternating attack needs two ports")
+			elif attack_type=="paired_sweep":
+				if attack.has("enraged_mode") and attack.enraged_mode!="aimed":errors.append(prefix+"unknown paired sweep enrage mode")
+				for field in ["enraged_interval_seconds","speed","period_seconds"]:
+					if not Check.number(attack.get(field)) or float(attack[field])<=0:errors.append(prefix+"invalid paired sweep "+field)
+				if not attack.get("ports") is Array or attack.ports.size()!=2:errors.append(prefix+"paired sweep needs two ports")
+				if not attack.get("sweep_degrees") is Array or attack.sweep_degrees.size()!=2 or not attack.sweep_degrees.all(func(span):return Check.vector(span,2)):errors.append(prefix+"paired sweep needs two angle ranges")
+		if d.has("rocket_fist"):
+			var fist: Variant=d.rocket_fist
+			if not fist is Dictionary:errors.append(prefix+"invalid rocket fist settings")
+			else:
+				Check.unknown_fields(fist,["trigger_x_distance","return_y","launch_acceleration","return_acceleration","max_speed","coupling_uv"],prefix+"rocket_fist.",errors)
+				if not Check.vector(fist.get("coupling_uv"),2) or not fist.coupling_uv.all(func(v):return float(v)>=0 and float(v)<=1):errors.append(prefix+"invalid fist coupling UV")
+				for field in ["trigger_x_distance","return_y","launch_acceleration","return_acceleration","max_speed"]:
+					if not Check.number(fist.get(field)) or float(fist[field])<=0:errors.append(prefix+"invalid rocket fist "+field)
+			if not d.has("attachment"):errors.append(prefix+"rocket fist needs a docking attachment")
+
 		if not Check.number(d.get("explosion_seconds")) or float(d.get("explosion_seconds",0))<=0: errors.append(prefix+"invalid explosion duration")
 		if d.get("role")=="boss" and (int(d.get("stage",0)) not in range(1,Campaign.stage_count()+1) or not d.get("music") is String): errors.append(prefix+"boss stage/music missing")
 		if d.has("damage_smoke"):

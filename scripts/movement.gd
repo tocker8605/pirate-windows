@@ -1,5 +1,6 @@
 class_name PirateMovement
 extends RefCounted
+const RocketFist=preload("res://scripts/rocket_fist_motion.gd")
 const Catalog = preload("res://scripts/enemy_catalog.gd")
 const Depth = preload("res://scripts/enemy_depth.gd")
 ## Velocities are px/s and acceleration is px/s². No steering timer or tick grid.
@@ -11,6 +12,9 @@ static func steer(e: Dictionary, player: Vector2, boss: Vector2, seconds: float 
 		e.velocity=Vector2.ZERO
 		return
 	if seconds<=0: return
+	if RocketFist.active(e):
+		RocketFist.steer(e,player,boss,seconds)
+		return
 	var p: Vector2 = e.pos
 	if int(e.pattern)==int(Catalog.definition(int(e.kind)).get("core_motion",{}).get("pattern",-1)): return
 	var v: Vector2 = e.velocity
@@ -83,18 +87,6 @@ static func steer(e: Dictionary, player: Vector2, boss: Vector2, seconds: float 
 		1092: v=Vector2(0,v.y+acceleration)
 		1093: v=Vector2(0,v.y-acceleration*2)
 		1094: v=Vector2(0,v.y+acceleration*2)
-		2101:
-			if p.y<boss.y+25: v.y+=acceleration*5
-			elif p.y<boss.y+70: v.y=0
-			else: v.y-=acceleration*2
-			if absf(p.x-player.x)<40: e.pattern=2102
-		2102:
-			if p.y<420:
-				v.x=0
-				v.y+=acceleration*4
-			else:
-				v.y=0
-				e.pattern=2101
 		2201:
 			v.y=266.6666666666667
 			if p.y>400:

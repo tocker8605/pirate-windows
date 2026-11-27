@@ -1406,23 +1406,33 @@
       "stage": 1,
       "music": "boss01",
       "attack": {
-        "type": "alternating",
+        "type": "paired_sweep",
         "interval_seconds": 0.3,
-        "enraged_interval_seconds": 0.15,
-        "side_hold_seconds": 1.8,
+        "enraged_interval_seconds": 0.24,
+        "period_seconds": 8,
         "ports": [
           [
-            -40,
-            50
+            -7,
+            19.3
           ],
           [
-            40,
-            50
+            7,
+            19.3
           ]
         ],
-        "horizontal_base": 33.333333333333336,
-        "speed_y": 300.0,
-        "projectile_kind": 1
+        "sweep_degrees": [
+          [
+            -30,
+            60
+          ],
+          [
+            30,
+            -60
+          ]
+        ],
+        "speed": 250,
+        "projectile_kind": 1,
+        "enraged_mode": "aimed"
       },
       "damage_smoke": {
         "below_ratio": 0.4,
@@ -1969,10 +1979,11 @@
       },
       "attachment": {
         "offset": [
-          -65,
-          0
+          -44,
+          46
         ],
-        "follow_y": false
+        "follow_y": false,
+        "follow_x": false
       },
       "explosion_seconds": 0.8999999999999999,
       "sprite_path": "res://assets/bosses/stage01/left_fist.png",
@@ -1986,6 +1997,17 @@
       },
       "visual": {
         "flip_h": true
+      },
+      "rocket_fist": {
+        "trigger_x_distance": 40,
+        "return_y": 440,
+        "launch_acceleration": 493.82716049382714,
+        "return_acceleration": 246.91358024691357,
+        "max_speed": 333.3333333333333,
+        "coupling_uv": [
+          0.62,
+          0.06
+        ]
       }
     },
     "102": {
@@ -2066,10 +2088,11 @@
       },
       "attachment": {
         "offset": [
-          15,
-          0
+          44,
+          46
         ],
-        "follow_y": false
+        "follow_y": false,
+        "follow_x": false
       },
       "explosion_seconds": 0.8999999999999999,
       "sprite_path": "res://assets/bosses/stage01/right_fist.png",
@@ -2079,6 +2102,17 @@
         "frame_size": [
           50,
           50
+        ]
+      },
+      "rocket_fist": {
+        "trigger_x_distance": 40,
+        "return_y": 440,
+        "launch_acceleration": 493.82716049382714,
+        "return_acceleration": 246.91358024691357,
+        "max_speed": 333.3333333333333,
+        "coupling_uv": [
+          0.62,
+          0.06
         ]
       }
     },
