@@ -18,7 +18,7 @@ func spawn(at: float, kind: int = 1) -> Dictionary:
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var original: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/timeline_v20.json"))
-	var expected_hp: Dictionary = {19:1,91:1000,92:1250,93:1500,94:1500,123:400,124:400,101:250,102:250,111:300,112:300,113:400,133:900}
+	var expected_hp: Dictionary = {19:1,91:1000,92:1250,93:1500,94:1750,123:400,124:400,101:250,102:250,111:300,112:300,113:400,133:900}
 	# Historical HP expectations remain independent of editable stage ordering/times.
 	for rows in original.values():
 		for row in rows:
@@ -55,7 +55,7 @@ func run() -> void:
 	check(b.hp==100 and Catalog.definition(21).hp==100,"runtime damage cannot modify defaults or later spawns")
 	var override_actor: Dictionary = Catalog.create(94,Vector2.ZERO,0,{"hp":2000})
 	check(override_actor.hp==2000 and override_actor.max_hp==2000 and Catalog.smoke_threshold(override_actor)==800,"explicit boss HP override updates maxHP and relative smoke consistently")
-	check(Catalog.definition(94).hp==1500,"per-spawn override cannot change default boss HP")
+	check(Catalog.definition(94).hp==1750,"per-spawn override cannot change default boss HP")
 	check(Catalog.definition(1).is_read_only() and Catalog.definition(1).collision.is_read_only(),"shared definitions and nested metadata are immutable")
 	check(Timeline.validate_document(document([spawn(0)])).is_empty(),"valid named timeline is accepted")
 	check(not Timeline.validate_document(document([spawn(0,999)])).is_empty(),"unknown entity IDs fail validation")

@@ -101,8 +101,9 @@ func run() -> void:
 	# Their original/body-independent behavior is checked by boss1_rocket_fists/boss2_chest_fan.
 	var revised_bodies: Callable=func(row):return not (row.size()==7 and (row[0]=="b1" or (row[0]=="b2" and is_equal_approx(float(row[3]),200))))
 	expected=expected.filter(revised_bodies);rows=rows.filter(revised_bodies)
-	# These two colliders were intentionally centred after the historical capture.
-	var centred_colliders: Callable=func(row):return not (row[0]=="collision" and int(row[1]) in [95,133])
+	# Boss upper shot edges now match contact edges; stage5_ground checks the new bounds.
+	# The core collider was intentionally centred after the historical capture.
+	var centred_colliders: Callable=func(row):return not (row[0]=="collision" and int(row[1]) in [91,92,93,94,95,133])
 	expected=expected.filter(centred_colliders);rows=rows.filter(centred_colliders)
 	# New stage5 body volleys and their world projectiles have dedicated pattern tests.
 	var old_body: Callable=func(row):return not ((row.size()==7 and row[0]=="b5") or (row[0]=="bullet" and row[2] in [3,6]))

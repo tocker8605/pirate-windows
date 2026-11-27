@@ -24,8 +24,14 @@ func run() -> void:
 	check(Catalog.boss_definition(5).hp==3600 and Catalog.boss_definition(5).fire_channels.size()==3,"supercomputer has3600HP and three projectile channels independent from beam hazards")
 	for stage in range(1,6):
 		var body: Dictionary=Catalog.create(90+stage,Vector2(200,100))
-		for local_y in [-26.0,-24.0,59.0,61.0]:
-			check(Combat.shot_hits_boss(body.pos+Vector2(0,local_y),body)==(local_y>-25 and local_y<60),"stage%d body shares the same shot Y edges at%.1f"%[stage,local_y])
+		var top: float=0 if stage==5 else 15
+		for local_y in [-26.0,-24.0,-15.0,-14.0,-1.0,0.0,0.01,14.99,15.0,15.01,59.0,60.0,61.0,75.0]:
+			check(Combat.shot_point_hits(body.pos+Vector2(0,local_y),body)==(local_y>top and local_y<75),"stage%d strict shot Y bounds at%.2f"%[stage,local_y])
+		# Probe the former safe overlap: cockpit above the contact rectangle, shot inside old bounds.
+		var player: Vector2=body.pos+Vector2(-25,top-23)
+		check(not Combat.touches_player(player,body),"stage%d player above body is outside contact"%stage)
+		check(not Combat.shot_hits_boss(player+Vector2(10,0),body),"stage%d shot launched above body cannot damage it"%stage)
+		check(Combat.shot_point_hits(body.pos+Vector2(0,top+1),body),"stage%d ordinary hit below top remains valid"%stage)
 	var document: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://data/stage05.json"))
 	check(Events.validate_document(document).is_empty(),"stage5 timeline validates with both deployment modes")
 	check(Catalog.definition(53).is_empty() and document.events.all(func(e):return int(e.get("definition_id",0))!=53),"missile floor turret is removed from catalog and timeline")

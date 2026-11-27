@@ -1399,7 +1399,7 @@
       "collision": {
         "shot_bounds": [
           -75,
-          -10,
+          15,
           75,
           75
         ],
@@ -1595,7 +1595,7 @@
       "collision": {
         "shot_bounds": [
           -75,
-          -10,
+          15,
           75,
           75
         ],
@@ -1747,7 +1747,7 @@
       "collision": {
         "shot_bounds": [
           -75,
-          -10,
+          15,
           75,
           75
         ],
@@ -1879,7 +1879,7 @@
       "name": "boss_stage4",
       "display_name": "DEVILCLAW",
       "role": "boss",
-      "hp": 1500,
+      "hp": 1750,
       "score": 10000,
       "score_scales_with_difficulty": true,
       "damageable": true,
@@ -1896,7 +1896,7 @@
       "collision": {
         "shot_bounds": [
           -75,
-          -10,
+          15,
           75,
           75
         ],
@@ -3663,7 +3663,7 @@
       "collision": {
         "shot_bounds": [
           -31.8182,
-          -10,
+          0,
           31.8182,
           75
         ],

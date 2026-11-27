@@ -39,8 +39,8 @@ func run() -> void:
 	check(not Combat.shot_hits(Vector2(100,100),enemy(201)),"closed carrier cannot be shot")
 	check(Combat.shot_hits(Vector2(100,100),enemy(19)),"opened carrier can be rescued")
 	var boss: Dictionary = {"pos":Vector2(200,100)}
-	check(not Combat.shot_hits_boss(Vector2(110,100),boss) and Combat.shot_hits_boss(Vector2(111,100),boss),"boss original asymmetric left point boundary")
-	check(not Combat.shot_hits_boss(Vector2(260,100),boss) and Combat.shot_hits_boss(Vector2(259,100),boss),"boss original asymmetric right point boundary")
+	check(not Combat.shot_hits_boss(Vector2(110,110),boss) and Combat.shot_hits_boss(Vector2(111,110),boss),"boss original asymmetric left point boundary")
+	check(not Combat.shot_hits_boss(Vector2(260,110),boss) and Combat.shot_hits_boss(Vector2(259,110),boss),"boss original asymmetric right point boundary")
 	for pair in [[1,15],[21,35],[41,55],[131,15]]:
 		check(not Combat.beam_hits(Vector2(100,300),enemy(pair[0],Vector2(100+pair[1],100))) and Combat.beam_hits(Vector2(100,300),enemy(pair[0],Vector2(99+pair[1],100))),"kind %d beam_remaining_seconds uses original top-left X threshold"%pair[0])
 	check(not Combat.beam_hits(Vector2(100,300),enemy(201)),"beam cannot destroy an unopened carrier")
