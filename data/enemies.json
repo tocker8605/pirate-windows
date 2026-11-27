@@ -1546,13 +1546,13 @@
         },
         {
           "name": "chest_fan",
-          "interval_seconds": 0.4,
+          "interval_seconds": 0.6,
           "gate": "part_alive",
           "part_id": 113,
           "window_seconds": [
             6,
             0,
-            2
+            1.8
           ],
           "volley": {
             "type": "aimed",
@@ -1565,11 +1565,11 @@
             "projectile_kind": 5,
             "speed": 250,
             "angles_degrees": [
-              -12,
-              -6,
+              -16,
+              -8,
               0,
-              6,
-              12
+              8,
+              16
             ],
             "aim_from_muzzle": true
           }

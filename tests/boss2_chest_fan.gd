@@ -13,19 +13,21 @@ func _initialize() -> void:
 	var owner: Dictionary=Catalog.create(92,Vector2(200,80))
 	var player:=Vector2(50,400)
 	var random_before: int=Rng.state
-	check(Boss.advance(owner,[centre],0.399,player).is_empty(),"chest waits complete400ms")
+	check(Boss.advance(owner,[centre],0.599,player).is_empty(),"chest waits complete600ms")
 	var shots: Array=Boss.advance(owner,[centre],0.001,player)
 	check(shots.size()==5,"central part enables five-shot fan")
 	for i in range(shots.size()):
 		var shot: Dictionary=shots[i]
-		var expected: Vector2=(player+Pilot.COCKPIT-Vector2(200,128)).normalized().rotated(deg_to_rad(-12+i*6))*250
+		var expected: Vector2=(player+Pilot.COCKPIT-Vector2(200,128)).normalized().rotated(deg_to_rad(-16+i*8))*250
 		check(shot.pos==Vector2(200,128) and shot.kind==5,"small pink orbs originate at chest")
-		check(shot.velocity.distance_to(expected)<0.0001,"fan uses muzzle-to-cockpit aim and exact six-degree spacing")
+		check(shot.velocity.distance_to(expected)<0.0001,"fan uses muzzle-to-cockpit aim and exact eight-degree spacing")
 		check(is_equal_approx(shot.velocity.length(),250),"every ray has250px/s speed")
 	check(Rng.state==random_before,"aimed fan consumes no gameplay randomness")
-	check(Boss.advance(owner,[centre],1.2,player).size()==15,"active window preserves400ms volley cadence")
-	check(Boss.advance(owner,[centre],4.4,player).is_empty(),"fan is silent outside2second window")
-	check(Boss.advance(owner,[centre],0.4,player).size()==5,"six-second cycle resumes at next full interval")
+	check(Boss.advance(owner,[centre],0.599,player).is_empty(),"second volley waits full600ms")
+	check(Boss.advance(owner,[centre],0.001,player).size()==5,"second volley fires at1.2seconds")
+	check(Boss.advance(owner,[centre],0.6,player).is_empty(),"fan stops at exclusive1.8second edge")
+	check(Boss.advance(owner,[centre],4.2,player).is_empty(),"fan rests until six-second cycle ends")
+	check(Boss.advance(owner,[centre],0.6,player).size()==5,"six-second cycle resumes at next full interval")
 	centre.hp=0
 	shots=Boss.advance(owner,[centre],0.3,player)
 	check(not shots.is_empty() and shots.all(func(s):return s.pos.x!=200),"dead central part immediately stops chest fan and enables only existing side enrage")
@@ -39,7 +41,7 @@ func _initialize() -> void:
 	check(fine_shots.size()==coarse.size() and fine_shots.size()>0,"frame subdivision preserves firing windows and volley count")
 	for i in range(mini(fine_shots.size(),coarse.size())):check(fine_shots[i]==coarse[i],"fine and coarse simulation produce identical trajectories")
 	var second: Dictionary=Catalog.create(92,Vector2(200,80))
-	check(Boss.advance(second,[centre],0.399,player).is_empty(),"each boss owns an independent timer")
+	check(Boss.advance(second,[centre],0.599,player).is_empty(),"each boss owns an independent timer")
 	var doc: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(Catalog.PATH))
 	doc.entities["92"].fire_channels[1].part_id=999
 	check(not Catalog.validate_document(doc).is_empty(),"part_alive rejects unknown reference")
