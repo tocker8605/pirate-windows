@@ -394,7 +394,7 @@
       "fire_channels": [
         {
           "name": "twin",
-          "interval_seconds": 0.24,
+          "interval_seconds": 0.28,
           "gate": "descent_or_stationary",
           "volley": {
             "type": "motion_or_aim",
