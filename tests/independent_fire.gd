@@ -60,7 +60,7 @@ func run() -> void:
 	var body: Dictionary = Catalog.create(92,Vector2(200,100))
 	var parts: Array = [Catalog.create(111,Vector2.ZERO),Catalog.create(112,Vector2.ZERO),Catalog.create(113,Vector2.ZERO)]
 	check(Boss.advance(body,parts,10).all(func(s):return s.pos.x==200),"stage2 only chest fan fires while centre survives; enrage cannot bank attacks")
-	check(body.hp==1250 and body.max_hp==1250,"stage2 bodyHP is1250")
+	check(body.hp==1200 and body.max_hp==1200,"stage2 bodyHP is1200")
 	check(parts[0].hp==300 and parts[1].hp==300 and parts[2].hp==400,"stage2 armsHP300 each and centreHP400")
 	check(Boss.advance(Catalog.create(92,Vector2.ZERO),[parts[2]],1).all(func(s):return s.pos.x==0),"centre alone enables chest fan and suppresses enrage after both arms are destroyed")
 	var dead_centre: Dictionary = parts[2].duplicate(true)

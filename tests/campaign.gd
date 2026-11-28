@@ -14,7 +14,7 @@ func check(ok: bool, text: String) -> void:
 func part(kind: int, pos: Vector2 = Vector2.ZERO, pattern: int = 0) -> Dictionary:
 	return {"kind":kind,"pos":pos,"pattern":pattern,"velocity":Vector2.ZERO,"hp":200.0}
 func body(stage: int) -> Dictionary:
-	return {"stage":stage,"pos":Vector2(200,100),"velocity":Vector2.ZERO,"hp":1500.0 if stage==4 else (1500.0 if stage==3 else (1250.0 if stage==2 else 1000.0)),"max_hp":1500.0 if stage==4 else (1500.0 if stage==3 else (1250.0 if stage==2 else 1000.0)),"age":0}
+	return {"stage":stage,"pos":Vector2(200,100),"velocity":Vector2.ZERO,"hp":1800.0 if stage==4 else (1500.0 if stage==3 else (1200.0 if stage==2 else 1000.0)),"max_hp":1800.0 if stage==4 else (1500.0 if stage==3 else (1200.0 if stage==2 else 1000.0)),"age":0}
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var game = Game.new()
@@ -47,7 +47,7 @@ func run() -> void:
 		game.stage_elapsed_seconds = boss_time+0.03
 		game.frame = roundi(game.stage_elapsed_seconds/0.03)
 		game._read_events()
-		check(game.boss.max_hp==([0,1000,1250,1500,1500][stage]),"stage %d configured boss HP"%stage)
+		check(game.boss.max_hp==([0,1000,1200,1500,1800][stage]),"stage %d configured boss HP"%stage)
 		var found: Array = []
 		for e in game.enemies:
 			if e.kind>=100 and e.kind<200:
