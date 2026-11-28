@@ -11,7 +11,7 @@ static func apply_pickup(g: Node, kind: int) -> bool:
 	var effect: Dictionary = DEFINITIONS.get(kind,{})
 	if effect.is_empty(): return false
 	if effect.has("power"): g.power = mini(7,g.power+int(effect.power))
-	if effect.has("energy"): g.energy = minf(100,g.energy+float(effect.energy))
+	if effect.has("energy") and not g.run_settings.boss_rush: g.energy = minf(100,g.energy+float(effect.energy))
 	if effect.has("health"): g.hp = minf(100,g.hp+float(effect.health))
 	g.score += int(effect.score)
 	return true

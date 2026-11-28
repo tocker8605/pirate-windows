@@ -39,6 +39,7 @@ static func update(g: Node) -> void:
 static func begin_boss_death(g: Node) -> void:
 	if g.boss_defeated: return
 	g.boss_defeated = true
+	for pos in g.boss_timeout.defeat():g._explosion(pos,0.6,true)
 	g.enemy_beams.clear()
 	g.score += Rules.score(int(Catalog.for_actor(g.boss).id),g.run_settings.difficulty)
 	g._remember_score()

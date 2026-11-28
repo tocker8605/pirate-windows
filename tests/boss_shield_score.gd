@@ -33,21 +33,23 @@ func run() -> void:
 		g.score = 123
 		intercept(g)
 		check(g.score==123+25*difficulty and g.bullets.is_empty() and is_equal_approx(g.shield_remaining_seconds,2.94) and g.shield_contacts.size()==1,"difficulty%d ordinary shield_remaining_seconds interception retains points,absorption and shield_remaining_seconds cost"%difficulty)
-		for stage in range(1,5):
+		for stage in range(1,6):
 			g.boss = Catalog.create(90+stage,Vector2(200,60))
 			g.score = 123
 			intercept(g)
-			check(g.score==123 and g.bullets.is_empty() and is_equal_approx(g.shield_remaining_seconds,2.88) and g.shield_contacts.size()==1,"difficulty%d stage%d boss blocks shield points and doubles interception cost to120ms"%[difficulty,stage])
+			check(g.score==123+25*difficulty and g.bullets.is_empty() and is_equal_approx(g.shield_remaining_seconds,2.88) and g.shield_contacts.size()==1,"difficulty%d stage%d boss grants shield points and keeps doubled interception cost to120ms"%[difficulty,stage])
 	g.run_settings = g.run_settings.with_difficulty(5)
 	g.score = 123
 	for i in range(100): intercept(g)
-	check(g.score==123 and g.bullets.is_empty() and is_equal_approx(g.shield_remaining_seconds,2.88) and g.shield_contacts.size()==1,"100boss-phase interceptions cannot farm score and retain doubled shield costs")
+	check(g.score==123+100*125 and g.bullets.is_empty() and is_equal_approx(g.shield_remaining_seconds,2.88) and g.shield_contacts.size()==1,"100boss-phase interceptions grant their points and retain doubled shield costs")
+	g.score = 123
 	g.boss.hp = 0
 	g.boss_death_remaining_seconds = 7.2
 	intercept(g)
-	check(g.score==123 and g.bullets.is_empty(),"boss death animation cannot reopen shield_remaining_seconds score farming")
+	check(g.score==248 and g.bullets.is_empty(),"remaining intercepted bullets use the same scoring during boss death")
 	g.boss = {}
 	g.boss_death_remaining_seconds = 0
+	g.score = 123
 	g.banner = "WARNING / BOSS APPROACHING"
 	intercept(g)
 	check(g.score==248,"warning before actual boss appearance still permits ordinary shield_remaining_seconds reward")

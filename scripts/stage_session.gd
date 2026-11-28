@@ -52,6 +52,7 @@ static func load_stage(g: Node, number: int, preserve_run: bool = false) -> void
 	g.explosions.clear()
 	g.ground_wrecks.clear()
 	g.enemy_beams.clear()
+	g.boss_timeout.reset()
 	g.boss.clear()
 	g.accumulator = 0
 	g.stats = {"spawned":0,"killed":0,"shots":0,"hits":0,"boss_spawned":false,"supply_spawned":0}

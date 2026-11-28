@@ -55,7 +55,7 @@ static func update_bullets(g: Node) -> void:
 			g.shield_contacts.append(bullet.pos)
 			var shield_cost: float = 0.06 if g.boss.is_empty() else 0.12
 			g.shield_remaining_seconds = maxf(0,g.shield_remaining_seconds-shield_cost)
-			if g.boss.is_empty(): g.score += 25*g.run_settings.difficulty
+			g.score += 25*g.run_settings.difficulty
 		elif g.hp>0 and g.invulnerability_seconds==0 and Combat.hurts_player(g.player,bullet.pos):
 			g._hurt_player(Combat.incoming_damage(g.run_settings.difficulty))
 			bullet.alive = false

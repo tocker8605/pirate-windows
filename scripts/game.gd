@@ -1,5 +1,6 @@
 extends Node2D
 ## Fixed60Hz orchestration. Gameplay time is seconds and velocity is pixels/second.
+const BossTimeout=preload("res://scripts/boss_timeout.gd")
 const EnemyBeams=preload("res://scripts/beam_attack.gd")
 const Campaign = preload("res://scripts/campaign_rules.gd")
 const PoseMotion=preload("res://scripts/entity_pose_motion.gd")
@@ -115,6 +116,7 @@ var items = Entities.new()
 var explosions: Array = []
 var ground_wrecks: Array = []
 var enemy_beams: Array=[]
+var boss_timeout=BossTimeout.new()
 var boss: Dictionary = {}
 var mute: bool = false
 var automatic: bool = true
@@ -334,6 +336,7 @@ func _tick(direction: Vector2, firing: bool, use_laser: bool, use_shield: bool, 
 		if clock.recover(death_remaining_seconds==0,seconds) and not firing: energy = minf(100,energy+1)
 		return
 	EnemyBeams.advance_world(self,seconds)
+	enemy_beams.append_array(boss_timeout.advance(player,seconds))
 	_resolve_shots()
 	_update_items()
 	_update_bullets()

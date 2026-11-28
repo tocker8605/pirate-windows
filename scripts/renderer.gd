@@ -1,6 +1,7 @@
 extends Node2D
 ## Rendering consumes game state; input, simulation and audio live elsewhere.
 const ParticleLayers=preload("res://scripts/particle_layers.gd")
+const TimeoutArt=preload("res://scripts/boss_timeout_art.gd")
 const BeamArt=preload("res://scripts/enemy_beam_art.gd")
 const Ground = preload("res://scripts/ground_turret.gd")
 const Geometry=preload("res://scripts/entity_geometry.gd")
@@ -162,6 +163,7 @@ func _draw() -> void:
 	for e in g.enemies:
 		if not Depth.is_below(e): _draw_enemy_actor(e)
 
+	TimeoutArt.draw(self,g.boss_timeout.actors)
 	for blast in g.explosions: vfx.draw_explosion(self,blast,g.presentation.position(blast))
 	vfx.draw_particles(self,clampf(fraction,0,1),ParticleLayers.Layer.GENERAL)
 	for e in g.enemies:
@@ -241,6 +243,7 @@ func _draw_shot(shot: Dictionary) -> void:
 
 func _draw_hud() -> void:
 	HUD.render(self,g.art,clampi(Weapons.vb_integer(g.hp),0,100),clampf(g.energy,0,100),g.run_settings.weapon,g.power,g.score,int(g.boss.hp) if not g.boss.is_empty() and g.player.y<420 else -1,int(g.boss.get("max_hp",0)))
+	TimeoutArt.draw_timer(self,g.boss_timeout)
 
 func _draw_menu() -> void:
 	g.title.render(self,g.art,g.last_score,g.renewed_art and g.title.shows_background(),g.rankings.entries)

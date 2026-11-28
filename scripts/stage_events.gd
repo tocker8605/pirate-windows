@@ -97,6 +97,7 @@ static func consume(g: Node) -> void:
 					Ground.initialize(actor,g.scenery_distance,event.get("start_exposed",false),g.boss)
 				if Catalog.definition(kind).role=="boss":
 					g.boss = actor
+					g.boss_timeout.start(actor,g.stage)
 					if Catalog.definition(kind).get("movement_mode")=="scenery":Boss.bind_scenery(actor,g.scenery_distance)
 					# Boss Rush scroll timing belongs to its timeline, including delayed stops.
 					if not g.run_settings.boss_rush and Catalog.definition(kind).get("boss_scroll",{}).get("stop_on_spawn",false):
