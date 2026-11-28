@@ -177,4 +177,4 @@
 
 - 8번 folding_wing_fighter 미사일은0.6초 간격을 유지하며 X속도를 발사마다-15~+15px/s(1px/s 단위)로 무작위 선택합니다. 초기Y속도-33.333px/s와 이후 낙하 가속은 유지합니다.
 
-- 보스러시4면은 data/stages.json의 boss_rush_initial에서 background_y960/map_mode3/scroll_speed66.6667을 사용하여3구간 달 표면부터 시작하고 이후 달 동굴로 진행합니다. 일반4면의 지구 시작은 유지합니다.
+- 보스러시4면은 data/stages.json의 boss_rush_initial에서 background_y480/map_mode3/scroll_speed66.6667을 사용하여4구간 달 동굴부터 시작합니다. 일반4면의 지구 시작은 유지합니다.

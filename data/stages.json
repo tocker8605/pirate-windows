@@ -117,7 +117,7 @@
       "cloud_texture": "cl01",
       "classic_background": "stage4",
       "boss_rush_initial": {
-        "background_y": 960,
+        "background_y": 480,
         "map_mode": 3,
         "scroll_speed": 66.66666666666667
       }
