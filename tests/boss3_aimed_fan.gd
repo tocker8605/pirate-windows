@@ -36,13 +36,18 @@ func run() -> void:
 				check(rays[i].kind==6 and is_equal_approx(rays[i].velocity.length(),320),"sweeping rays use320px/s optical bullets")
 				check(absf(angle_difference(aim,rays[i].velocity.angle())-deg_to_rad(degrees))<0.0001,"both angle ranges follow mirrored six-second cosine sweep")
 	check(Boss.advance(body(),parts([121,122,123,124]),0.18,player).is_empty(),"intact arms suppress shoulder attacks")
-	check(Boss.advance(body(),parts([122,123,124]),0.18,player)==left,"left arm loss enables only left shoulder")
-	check(Boss.advance(body(),parts([121,123,124]),0.18,player)==right,"right arm loss enables only right shoulder")
+	check(Boss.advance(body(),parts([122,123,124]),0.18,player).is_empty(),"left arm loss alone cannot enable enrage")
+	check(Boss.advance(body(),parts([121,123,124]),0.18,player).is_empty(),"right arm loss alone cannot enable enrage")
 	check(Boss.advance(body(),parts([123,124]),0.18,player)==left+right,"both lost arms enable simultaneous mirrored shoulders")
 	b=body()
-	Boss.advance(b,parts([121,122,123,124]),1.0,player)
-	check(Boss.advance(b,parts([122,123,124]),0.179,player).filter(func(s):return s.kind==6).is_empty(),"arm loss starts fresh180ms timer")
-	check(Boss.advance(b,parts([122,123,124]),0.001,player).filter(func(s):return s.kind==6)==Boss.emit(b,"left_enrage",player,1.18),"new shoulder retains shared sweep phase")
+	Boss.advance(b,parts([122,123,124]),1.0,player)
+	check(Boss.advance(b,parts([123,124]),0.179,player).filter(func(s):return s.kind==6).is_empty(),"second arm loss starts fresh180ms timer without precharge")
+	var activation: Array=Boss.advance(b,parts([123,124]),0.001,player).filter(func(s):return s.kind==6)
+	check(activation==Boss.emit(b,"left_enrage",player,1.18)+Boss.emit(b,"right_enrage",player,1.18),"both shoulders activate together and retain shared sweep phase")
+	var dead_arms: Array=parts([121,122,123,124])
+	dead_arms[0].hp=0
+	dead_arms[1].hp=0
+	check(Boss.advance(body(),dead_arms,0.18,player)==left+right,"both zero-HP arms activate enrage before removal even with orbs alive")
 	var fine: Array=[]
 	b=body()
 	for tick in range(960):fine.append_array(Boss.advance(b,parts([123,124]),1.0/60,player).filter(func(s):return s.kind==6))
@@ -70,12 +75,12 @@ func run() -> void:
 	var shots: Array = Boss.emit(body(),"left_enrage",left[0].pos-Pilot.COCKPIT)
 	check(shots.all(func(s): return is_finite(s.velocity.x) and is_finite(s.velocity.y)),"coincident cockpit and shoulder have finite fallback")
 	var doc: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Catalog.PATH))
-	check(Catalog.validate_document(doc).is_empty(),"per-arm gates and sweeping ranges validate")
-	doc.entities["93"].fire_channels[1].part_id = 999
+	check(Catalog.validate_document(doc).is_empty(),"both-arms-missing gates and sweeping ranges validate")
+	doc.entities["93"].fire_channels[1].part_ids = [121,999]
 	check(not Catalog.validate_document(doc).is_empty(),"missing-part gate rejects nonexistent part ID")
 	for invalid_ids in [[], "121", null, 121.5, 93]:
 		doc = JSON.parse_string(FileAccess.get_file_as_string(Catalog.PATH))
-		doc.entities["93"].fire_channels[1].part_id = invalid_ids
+		doc.entities["93"].fire_channels[1].part_ids = invalid_ids
 		check(not Catalog.validate_document(doc).is_empty(),"invalid required-part list rejected: %s"%str(invalid_ids))
 	doc = JSON.parse_string(FileAccess.get_file_as_string(Catalog.PATH))
 	doc.entities["121"] = "invalid"
@@ -101,13 +106,13 @@ func run() -> void:
 	g.enemies.replace_all(parts([122,123,124]))
 	g.bullets.clear()
 	Pool.body(g,0.18)
-	check(g.bullets.size()==2 and g.bullets.all(func(s): return s.pos==Vector2(157,106)),"actual bullet emitter fires only destroyed left shoulder")
+	check(g.bullets.is_empty(),"actual bullet emitter suppresses enrage while one arm survives")
 	g.enemies.replace_all(parts([123,124]))
 	Pool.body(g,0.18)
 	var emitted: Array = []
 	for shot in g.bullets:
 		if shot.kind==6: emitted.append(shot)
-	check(emitted.size()==6 and emitted.filter(func(s):return s.pos==Vector2(157,106)).size()==4 and emitted.filter(func(s):return s.pos==Vector2(243,106)).size()==2,"actual bullet emitter enables both shoulders after both arms are lost")
+	check(emitted.size()==4 and emitted.filter(func(s):return s.pos==Vector2(157,106)).size()==2 and emitted.filter(func(s):return s.pos==Vector2(243,106)).size()==2,"actual bullet emitter enables both shoulders after both arms are lost")
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	g.audio.stop_all()
 	g.queue_free()

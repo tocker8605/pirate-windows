@@ -1684,7 +1684,7 @@
         {
           "name": "left_enrage",
           "interval_seconds": 0.18,
-          "gate": "part_missing",
+          "gate": "parts_missing",
           "volley": {
             "type": "oscillating",
             "ports": [
@@ -1713,12 +1713,15 @@
               ]
             ]
           },
-          "part_id": 121
+          "part_ids": [
+            121,
+            122
+          ]
         },
         {
           "name": "right_enrage",
           "interval_seconds": 0.18,
-          "gate": "part_missing",
+          "gate": "parts_missing",
           "volley": {
             "type": "oscillating",
             "ports": [
@@ -1747,7 +1750,10 @@
               ]
             ]
           },
-          "part_id": 122
+          "part_ids": [
+            121,
+            122
+          ]
         }
       ],
       "name": "boss_stage3",
