@@ -79,7 +79,7 @@ func run() -> void:
 	check(Boss.advance(Catalog.create(92,Vector2(200,100)),[],0.27).size()==6,"large stage2 time step retains all three due volleys")
 	body = Catalog.create(93,Vector2(200,100))
 	shots = Boss.advance(body,[],9,player)
-	check(shots.filter(func(s): return s.kind==6).size()==160 and shots.filter(func(s): return s.kind==2).size()==36,"stage3 simultaneous220ms shoulder pairs and480ms missiles use independent rates")
+	check(shots.filter(func(s): return s.kind==6).size()==200 and shots.filter(func(s): return s.kind==2).size()==36,"stage3 simultaneous180ms shoulder pairs and480ms missiles use independent rates")
 	var window_channel: Dictionary = Catalog.definition(121).fire_channels[0]
 	check(Scheduler.advance({},[window_channel],1.8,func(_c): return true).is_empty(),"left arm rests before its local firing window opens")
 	var invalid: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Catalog.PATH))

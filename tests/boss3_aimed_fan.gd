@@ -21,33 +21,33 @@ func run() -> void:
 	var b: Dictionary = body()
 	var player := Vector2(90,350)
 	check(b.hp==1500 and b.max_hp==1500,"stage3 bodyHP is1500")
-	var left: Array=Boss.emit(b,"left_enrage",player,0.22)
-	var right: Array=Boss.emit(b,"right_enrage",player,0.22)
+	var left: Array=Boss.emit(b,"left_enrage",player,0.18)
+	var right: Array=Boss.emit(b,"right_enrage",player,0.18)
 	check(left.size()==2 and right.size()==2,"each shoulder emits two sweeping rays")
-	for at in [0.0,0.22,2.0,4.0,6.0,8.0]:
-		var progress: float=(1+cos(TAU*at/8.0))/2
+	for at in [0.0,0.18,1.5,3.0,4.5,6.0]:
+		var progress: float=(1+cos(TAU*at/6.0))/2
 		var aim: float=(player-b.pos).angle()
 		for side in range(2):
 			var rays: Array=Boss.emit(b,"left_enrage" if side==0 else "right_enrage",player,at)
 			var sign: float=1 if side==0 else -1
 			for i in range(2):
-				var degrees: float=lerpf(-10.0 if i==0 else -7.0,20.0 if i==0 else 23.0,progress)*sign
+				var degrees: float=lerpf(-10.0 if i==0 else -7.0,10.0 if i==0 else 13.0,progress)*sign
 				check(rays[i].pos==b.pos+Vector2(-43 if side==0 else 43,46),"original shoulder muzzle retained")
-				check(rays[i].kind==6 and is_equal_approx(rays[i].velocity.length(),280),"sweeping rays use280px/s optical bullets")
-				check(absf(angle_difference(aim,rays[i].velocity.angle())-deg_to_rad(degrees))<0.0001,"both angle ranges follow mirrored eight-second cosine sweep")
-	check(Boss.advance(body(),parts([121,122,123,124]),0.22,player).is_empty(),"intact arms suppress shoulder attacks")
-	check(Boss.advance(body(),parts([122,123,124]),0.22,player)==left,"left arm loss enables only left shoulder")
-	check(Boss.advance(body(),parts([121,123,124]),0.22,player)==right,"right arm loss enables only right shoulder")
-	check(Boss.advance(body(),parts([123,124]),0.22,player)==left+right,"both lost arms enable simultaneous mirrored shoulders")
+				check(rays[i].kind==6 and is_equal_approx(rays[i].velocity.length(),320),"sweeping rays use320px/s optical bullets")
+				check(absf(angle_difference(aim,rays[i].velocity.angle())-deg_to_rad(degrees))<0.0001,"both angle ranges follow mirrored six-second cosine sweep")
+	check(Boss.advance(body(),parts([121,122,123,124]),0.18,player).is_empty(),"intact arms suppress shoulder attacks")
+	check(Boss.advance(body(),parts([122,123,124]),0.18,player)==left,"left arm loss enables only left shoulder")
+	check(Boss.advance(body(),parts([121,123,124]),0.18,player)==right,"right arm loss enables only right shoulder")
+	check(Boss.advance(body(),parts([123,124]),0.18,player)==left+right,"both lost arms enable simultaneous mirrored shoulders")
 	b=body()
 	Boss.advance(b,parts([121,122,123,124]),1.0,player)
-	check(Boss.advance(b,parts([122,123,124]),0.219,player).filter(func(s):return s.kind==6).is_empty(),"arm loss starts fresh220ms timer")
-	check(Boss.advance(b,parts([122,123,124]),0.001,player).filter(func(s):return s.kind==6)==Boss.emit(b,"left_enrage",player,1.22),"new shoulder retains shared sweep phase")
+	check(Boss.advance(b,parts([122,123,124]),0.179,player).filter(func(s):return s.kind==6).is_empty(),"arm loss starts fresh180ms timer")
+	check(Boss.advance(b,parts([122,123,124]),0.001,player).filter(func(s):return s.kind==6)==Boss.emit(b,"left_enrage",player,1.18),"new shoulder retains shared sweep phase")
 	var fine: Array=[]
 	b=body()
 	for tick in range(960):fine.append_array(Boss.advance(b,parts([123,124]),1.0/60,player).filter(func(s):return s.kind==6))
 	var coarse: Array=Boss.advance(body(),parts([123,124]),16.0,player).filter(func(s):return s.kind==6)
-	check(fine.size()==288 and coarse.size()==fine.size(),"both shoulders emit72 paired volleys over16seconds")
+	check(fine.size()==352 and coarse.size()==fine.size(),"both shoulders emit88 paired volleys over16seconds")
 	for i in range(mini(fine.size(),coarse.size())):
 		check(fine[i].pos==coarse[i].pos and fine[i].velocity.distance_to(coarse[i].velocity)<0.001,"fine and coarse steps preserve sweeping trajectory")
 	for kind in [121,122]:
@@ -59,7 +59,7 @@ func run() -> void:
 			for i in range(3):
 				check(volley[i].kind==5 and is_equal_approx(volley[i].velocity.length(),260.0) and absf(angle_difference(aim,volley[i].velocity.angle())-deg_to_rad(-8+8*i))<0.0001,"arm%d uses constant-speed minus8/zero/plus8degree spread at every range"%kind)
 		check(Catalog.fire_channel(kind,"triple").interval_seconds==0.36,"arm cadence is360ms")
-	check(not Boss.emit(body(),"left_enrage",Vector2(310,350),0.22)[0].velocity.distance_to(left[0].velocity)<0.001,"fan retargets current cockpit for each volley")
+	check(not Boss.emit(body(),"left_enrage",Vector2(310,350),0.18)[0].velocity.distance_to(left[0].velocity)<0.001,"fan retargets current cockpit for each volley")
 	Rng.state = 0x50000
 	var before: int = Rng.state
 	Boss.emit(body(),"left_enrage",player)
@@ -100,10 +100,10 @@ func run() -> void:
 	g.player = player
 	g.enemies.replace_all(parts([122,123,124]))
 	g.bullets.clear()
-	Pool.body(g,0.22)
+	Pool.body(g,0.18)
 	check(g.bullets.size()==2 and g.bullets.all(func(s): return s.pos==Vector2(157,106)),"actual bullet emitter fires only destroyed left shoulder")
 	g.enemies.replace_all(parts([123,124]))
-	Pool.body(g,0.22)
+	Pool.body(g,0.18)
 	var emitted: Array = []
 	for shot in g.bullets:
 		if shot.kind==6: emitted.append(shot)

@@ -85,6 +85,11 @@ func run() -> void:
 		quit()
 		return
 	var expected: Array=JSON.parse_string(FileAccess.get_file_as_string(PATH))
+	# Folding missiles now randomize only X speed; retain every other historical field.
+	# Dedicated folding tests cover the new range, RNG use and reproducibility.
+	for records in [expected,rows]:
+		for row in records:
+			if row.size()==7 and str(row[0]).get_slice("/",0)=="e8" and row[2]==2:row[5]=0.0
 	# Only the deliberately changed plasma volley rows are replaced by dedicated behavior tests.
 	var unchanged_plasma: Callable=func(row):return not (row.size()==7 and str(row[0]).get_slice("/",0) in ["e22","e131","e132"] and row[2]==5)
 	expected=expected.filter(unchanged_plasma)
