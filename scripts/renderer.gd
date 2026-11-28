@@ -240,7 +240,7 @@ func _draw_shot(shot: Dictionary) -> void:
 	vfx.draw_shot(self,shot,g.presentation.player(g),g.run_settings.weapon,pos,g.renewed_art)
 
 func _draw_hud() -> void:
-	HUD.render(self,g.art,clampi(Weapons.vb_integer(g.hp),0,100),clampf(g.energy,0,100),g.run_settings.weapon,g.power,g.score,int(g.boss.hp) if not g.boss.is_empty() else -1,int(g.boss.get("max_hp",0)))
+	HUD.render(self,g.art,clampi(Weapons.vb_integer(g.hp),0,100),clampf(g.energy,0,100),g.run_settings.weapon,g.power,g.score,int(g.boss.hp) if not g.boss.is_empty() and g.player.y<400 else -1,int(g.boss.get("max_hp",0)))
 
 func _draw_menu() -> void:
 	g.title.render(self,g.art,g.last_score,g.renewed_art and g.title.shows_background(),g.rankings.entries)
