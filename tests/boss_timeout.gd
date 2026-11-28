@@ -35,7 +35,7 @@ func run() -> void:
 	var before_rng: int=Rng.state
 	check(timer.advance(g.player,90).is_empty(),"appearance phase has no beams")
 	for i in range(2):
-		check(timer.actors[i].pos==[Vector2(50,75),Vector2(300,75)][i],"reapers use requested top-left positions")
+		check(timer.actors[i].pos==[Vector2(25,125),Vector2(325,125)][i],"reapers use requested top-left positions")
 		check(is_equal_approx(timer.actors[i].scale,0.1) and is_equal_approx(timer.actors[i].opacity,0.1),"reapers begin5x5 at10percent opacity")
 	timer.advance(g.player,0.75)
 	check(timer.actors.all(func(a):return is_equal_approx(a.scale,0.55) and is_equal_approx(a.opacity,0.55)),"appearance size and alpha interpolate together")
@@ -61,7 +61,7 @@ func run() -> void:
 		check(direction.dot((target-beams[i].origin).normalized())>0.9999,"each beam tracks current cockpit")
 		check(Vector2.UP.rotated(timer.actors[i].pose_angle).dot(direction)>0.9999,"reaper sprite faces its laser target")
 	check(Rng.state==before_rng,"deadline, facing and tracking use no gameplay randomness")
-	g.shots.append({"pos":Vector2(60,85),"kind":1,"alive":true,"impact_remaining_seconds":-1})
+	g.shots.append({"pos":Vector2(35,135),"kind":1,"alive":true,"impact_remaining_seconds":-1})
 	Actions.resolve_shots(g)
 	g.player=Vector2(175,400);g.beam_remaining_seconds=1
 	Actions.apply_beam(g)
