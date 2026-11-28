@@ -3671,7 +3671,7 @@
     },
     "95": {
       "name": "boss_stage5",
-      "display_name": "CORE SYNAPSE",
+      "display_name": "CORESYNAPSE",
       "role": "boss",
       "stage": 5,
       "music": "boss01",
