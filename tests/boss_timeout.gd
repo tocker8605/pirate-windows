@@ -23,7 +23,7 @@ func run() -> void:
 	check(timer.remaining()==-1,"deadline is hidden before actual boss spawn")
 	for stage in range(1,6):
 		timer.start(Catalog.create(90+stage,Vector2(200,80)),stage)
-		var limit: int=180 if stage==5 else 90
+		var limit: int=160 if stage==5 else 80
 		check(timer.remaining()==limit,"stage%d has correct boss deadline"%stage)
 		check(timer.advance(g.player,limit-0.001).is_empty() and timer.actors.is_empty() and timer.remaining()==1,"deadline cannot activate early")
 		timer.advance(g.player,0.001)
@@ -31,9 +31,9 @@ func run() -> void:
 	timer.reset()
 	g.events=[{"at":0,"action":"spawn","definition_id":91,"position":[200,-100]}]
 	g.event_cursor=0;g.stage_elapsed_seconds=0.01;g._read_events()
-	check(is_same(timer.owner,g.boss) and timer.remaining()==90,"actual spawn event arms boss-owned timer")
+	check(is_same(timer.owner,g.boss) and timer.remaining()==80,"actual spawn event arms boss-owned timer")
 	var before_rng: int=Rng.state
-	check(timer.advance(g.player,90).is_empty(),"appearance phase has no beams")
+	check(timer.advance(g.player,80).is_empty(),"appearance phase has no beams")
 	for i in range(2):
 		check(timer.actors[i].pos==[Vector2(25,125),Vector2(325,125)][i],"reapers use requested top-left positions")
 		check(is_equal_approx(timer.actors[i].scale,0.1) and is_equal_approx(timer.actors[i].opacity,0.1),"reapers begin5x5 at10percent opacity")
@@ -90,13 +90,13 @@ func run() -> void:
 	g.boss=Catalog.create(92,Vector2(200,80));timer.start(g.boss,2)
 	g.flow.state="paused"
 	g._tick(Vector2.ZERO,false,false,false,10)
-	check(timer.remaining()==90,"pause freezes boss deadline")
+	check(timer.remaining()==80,"pause freezes boss deadline")
 	g._load_stage(1);g.events=[];g.supply_director.schedule.clear()
 	g.boss=Catalog.create(91,Vector2(200,80));timer.start(g.boss,1)
-	timer.elapsed=89.99
+	timer.elapsed=79.99
 	g._tick(Vector2.ZERO,false,false,false)
 	check(timer.actors.size()==2 and timer.remaining()==0 and g.enemy_beams.is_empty(),"real game tick crosses deadline into harmless appearance")
-	timer.elapsed=93.7
+	timer.elapsed=83.7
 	g.invulnerability_seconds=0
 	g._tick(Vector2.ZERO,false,false,false)
 	check(g.enemy_beams.size()==2 and g.enemy_beams.all(func(b):return b.damaging) and g.hp<100,"real game tick connects persistent tracking beams to damage")
