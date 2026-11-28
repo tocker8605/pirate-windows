@@ -31,7 +31,7 @@ func run() -> void:
 			var saved: Array=g.rankings.entries.duplicate(true)
 			g._complete_stage()
 			check(g.state==g.GameFlow.CLEAR and g.score==0 and g.last_score==1234567,"rush%s clear waits for confirmation and remembers the score"%rush)
-			check(g.clear_screen.record=={"score":1234567,"weapon":2,"level":3,"mission":5} and g.flow.completed_run.ranking_eligible==not rush,"clear screen snapshots run result and eligibility")
+			check(g.clear_screen.record=={"score":1234567,"weapon":2,"level":3,"mission":5,"cleared":true} and g.flow.completed_run.ranking_eligible==not rush,"clear screen snapshots run result and eligibility")
 			check(g.clear_screen.background!=null and g.music_track=="title" and g.music.playing and g.accumulator==0,"clear screen has prepared artwork and starts title music while gameplay time is stopped")
 			check(not g.music.stream.loop and g.music.stream.get_length()>189 and absf(g.music.get_playback_position()-189)<0.5,"normal and Boss Rush clear music starts at189seconds")
 			var frame: int=g.frame

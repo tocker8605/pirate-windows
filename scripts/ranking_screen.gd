@@ -48,6 +48,8 @@ static func suffix(number: int) -> String:
 		2: return "ND"
 		3: return "RD"
 	return "TH"
+static func mission_label(result: Dictionary) -> String:
+	return "ALLCLEAR" if result.get("cleared",false) and result.get("mission",0)==Ranking.Campaign.stage_count() else "MISSION"
 static func row(canvas: Node2D, y: float, number: int, result: Dictionary, name_override: String = "", active_cursor: int = -1) -> void:
 	var digits: String = str(number)
 	SpriteFont.text(canvas,Vector2(15,y),digits,true)
@@ -58,8 +60,12 @@ static func row(canvas: Node2D, y: float, number: int, result: Dictionary, name_
 	if result.has("weapon"): SpriteFont.weapon_icon(canvas,Vector2(215,y),int(result.weapon))
 	SpriteFont.text(canvas,Vector2(235,y),"LEVEL")
 	SpriteFont.text(canvas,Vector2(285,y),str(result.get("level",0)),true)
-	SpriteFont.text(canvas,Vector2(305,y),"MISSION")
-	SpriteFont.text(canvas,Vector2(375,y),str(result.get("mission",0)),true)
+	if mission_label(result)=="ALLCLEAR":
+		SpriteFont.text(canvas,Vector2(305,y),"ALL",true)
+		SpriteFont.text(canvas,Vector2(335,y),"CLEAR")
+	else:
+		SpriteFont.text(canvas,Vector2(305,y),"MISSION")
+		SpriteFont.text(canvas,Vector2(375,y),str(result.get("mission",0)),true)
 static func board(canvas: Node2D, records: Array) -> void:
 	for i in range(Ranking.LIMIT): row(canvas,105+i*28,i+1,records[i] if i<records.size() else {})
 func render(canvas: Node2D) -> void:

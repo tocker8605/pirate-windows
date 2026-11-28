@@ -60,6 +60,23 @@ func run() -> void:
 	file.close()
 	check(Ranking.new(PATH).entries.is_empty(),"existing empty file is preserved instead of replacing it with defaults")
 	clear_files()
+	var completed: Dictionary=result(123456)
+	completed.mission=5
+	completed.cleared=true
+	check(store.submit(completed,"CLEAR")==OK,"completed campaign record saves")
+	var cleared_store=Ranking.new(PATH)
+	check(cleared_store.entries[0].get("cleared",false) and Screen.mission_label(cleared_store.entries[0])=="ALLCLEAR","clear status survives reload and displays ALLCLEAR")
+	completed.erase("cleared")
+	check(Screen.mission_label(completed)=="MISSION","legacy mission5 record is not assumed cleared")
+	completed.cleared=false
+	check(Screen.mission_label(completed)=="MISSION","failed mission5 displays mission instead of clear")
+	completed.name="PLAYER"
+	completed.cleared="true"
+	check(not Ranking.valid_record(completed),"nonboolean clear status rejected")
+	completed.cleared=true
+	completed.mission=4
+	check(not Ranking.valid_record(completed),"clear status requires final mission")
+	clear_files()
 	var screen = Screen.new()
 	screen.begin(1,result())
 	check(screen.player_name=="      ","every new name starts with six blank slots")
@@ -118,7 +135,7 @@ func run() -> void:
 	g.events = []
 	g.score = 7654321
 	g._complete_stage()
-	check(g.state=="clear" and g.clear_screen.record.mission==5 and g.clear_screen.record.score==7654321,"fifth-boss clear preserves the final run on the clear screen")
+	check(g.state=="clear" and g.clear_screen.record.mission==5 and g.clear_screen.record.get("cleared",false) and g.clear_screen.record.score==7654321,"fifth-boss clear preserves the final run on the clear screen")
 	key(g,KEY_SPACE)
 	var released := InputEventKey.new()
 	released.keycode=KEY_SPACE

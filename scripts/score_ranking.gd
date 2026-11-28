@@ -22,13 +22,16 @@ static func clean_name(value: String) -> String:
 	return result.rpad(NAME_LENGTH," ")
 static func valid_record(value: Variant) -> bool:
 	if not value is Dictionary: return false
+	if value.has("cleared") and (not value.cleared is bool or (value.cleared and value.get("mission")!=Campaign.stage_count())):return false
 	for field in ["score","weapon","level","mission"]:
 		var number: Variant = value.get(field)
 		if not (number is int or number is float) or not is_finite(float(number)) or float(number)!=int(number): return false
 	return value.get("name") is String and value.name==clean_name(value.name) and value.score>=0 and value.score<=MAX_SCORE and value.weapon>=1 and value.weapon<=3 and value.level>=1 and value.level<=5 and value.mission>=1 and value.mission<=Campaign.stage_count()
 static func normalized_record(value: Dictionary) -> Dictionary:
 	# JSON numbers reload as floats; the display and live records use integers.
-	return {"score":int(value.score),"name":str(value.name),"weapon":int(value.weapon),"level":int(value.level),"mission":int(value.mission)}
+	var record: Dictionary={"score":int(value.score),"name":str(value.name),"weapon":int(value.weapon),"level":int(value.level),"mission":int(value.mission)}
+	if value.get("cleared",false):record.cleared=true
+	return record
 func _load() -> void:
 	if not FileAccess.file_exists(path):
 		for i in range(LIMIT):
