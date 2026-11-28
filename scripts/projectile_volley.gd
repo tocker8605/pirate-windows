@@ -57,7 +57,8 @@ static func emit(e: Dictionary,player: Vector2,channel: Dictionary,boss: Diction
 			for i in range(ports.size()):
 				var span: Array=v.sweep_degrees[i]
 				var angle: float=deg_to_rad(lerpf(float(span[0]),float(span[1]),progress))
-				add(result,Geometry.world_point(e,vector(ports[i]),pose_angle),Vector2.DOWN.rotated(angle+pose_angle)*float(v.speed),kind)
+				var heading: Vector2=direction if v.get("aim_relative",false) else Vector2.DOWN.rotated(pose_angle)
+				add(result,Geometry.world_point(e,vector(ports[i]),pose_angle),heading.rotated(angle)*float(v.speed),kind)
 		"expanding_ring":
 			var heading: Vector2=Vector2.DOWN.rotated(pose_angle)
 			for port in ports:

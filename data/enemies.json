@@ -1681,52 +1681,73 @@
         },
         {
           "name": "left_enrage",
-          "interval_seconds": 0.4,
+          "interval_seconds": 0.22,
           "gate": "part_missing",
           "volley": {
-            "type": "shoulder_fan",
-            "port_index": 0
+            "type": "oscillating",
+            "ports": [
+              [
+                -43,
+                46
+              ],
+              [
+                -43,
+                46
+              ]
+            ],
+            "speed": 280,
+            "projectile_kind": 6,
+            "period_seconds": 8,
+            "initial_phase_degrees": 180,
+            "aim_relative": true,
+            "sweep_degrees": [
+              [
+                -10,
+                20
+              ],
+              [
+                -7,
+                23
+              ]
+            ]
           },
-          "part_id": 121,
-          "window_seconds": [
-            8,
-            0,
-            4
-          ]
+          "part_id": 121
         },
         {
           "name": "right_enrage",
-          "interval_seconds": 0.4,
+          "interval_seconds": 0.22,
           "gate": "part_missing",
           "volley": {
-            "type": "shoulder_fan",
-            "port_index": 1
+            "type": "oscillating",
+            "ports": [
+              [
+                43,
+                46
+              ],
+              [
+                43,
+                46
+              ]
+            ],
+            "speed": 280,
+            "projectile_kind": 6,
+            "period_seconds": 8,
+            "initial_phase_degrees": 180,
+            "aim_relative": true,
+            "sweep_degrees": [
+              [
+                10,
+                -20
+              ],
+              [
+                7,
+                -23
+              ]
+            ]
           },
-          "part_id": 122,
-          "window_seconds": [
-            8,
-            4,
-            8
-          ]
+          "part_id": 122
         }
       ],
-      "attack": {
-        "type": "paired_aimed_fan",
-        "speed": 250,
-        "count": 4,
-        "spread_degrees": 45,
-        "projectile_kind": 6,
-        "ports": [
-          [
-            -43,
-            46
-          ],
-          [
-            43,
-            46
-          ]
-        ]
-      },
       "name": "boss_stage3",
       "display_name": "JUGGERNAUT",
       "role": "boss",
