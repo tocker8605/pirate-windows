@@ -58,6 +58,14 @@ func run() -> void:
 	g.stage_elapsed_seconds = g.frame*0.03
 	g._read_events()
 	check(g.map_mode==3 and g.scroll_target==(2/0.03) and g.background_y==1920,"t91 releases space and decelerates without teleporting the viewport")
+	g.run_settings=g.run_settings.with_boss_rush(true)
+	g._load_stage(4)
+	check(g.background_y==960 and g.map_mode==3,"Boss Rush stage4 starts at third region with the lunar traversal enabled")
+	check(Regions.sample(g.background_y,4).near==3 and Regions.sample(g.background_y+479,4).near==3,"entire initial Boss Rush viewport is Moon surface")
+	check(is_equal_approx(g.scroll_speed,66.66666666666667) and is_equal_approx(g.scroll_target,66.66666666666667),"Boss Rush stage4 starts at its timeline scroll speed without fast Earth departure")
+	g.run_settings=g.run_settings.with_boss_rush(false)
+	g._load_stage(4)
+	check(g.background_y==3360 and g.map_mode==2,"normal stage4 still starts at Earth")
 	print("RESULT: %d checks, %d failures"%[checks,failures])
 	g.audio.stop_all()
 	await create_timer(0.15).timeout
